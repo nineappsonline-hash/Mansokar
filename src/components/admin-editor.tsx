@@ -1,0 +1,917 @@
+"use client";
+import { useState } from "react";
+import { ApiForm } from "./forms";
+export function JsonEditor({
+  action,
+  initial,
+  label = "Save",
+  title,
+}: {
+  action: string;
+  initial: unknown;
+  label?: string;
+  title: string;
+}) {
+  const [value, setValue] = useState(JSON.stringify(initial, null, 2));
+  return (
+    <div className="panel stack">
+      <h2>{title}</h2>
+      <ApiForm action={action} label={label}>
+        <label>
+          JSON · bilingual fields / integer piasters
+          <textarea
+            className="code-editor"
+            name="json"
+            rows={15}
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            spellCheck={false}
+          />
+        </label>
+      </ApiForm>
+    </div>
+  );
+}
+export function Importer() {
+  const [json, setJson] = useState("[]");
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [validated, setValidated] = useState(false);
+  const update = (v: string) => {
+    setJson(v);
+    setValidated(false);
+  };
+  async function submit(commit: boolean) {
+    setBusy(true);
+    try {
+      const response = await fetch(
+        "/api/admin-import" + (commit ? "" : "-preview"),
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ json }),
+        },
+      );
+      const data = await response.json();
+      if (!response.ok) throw Error(data.error);
+      setMessage(data.message);
+      setValidated(!commit);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Import failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <div className="panel stack">
+      <h2>Product import · preview → validate → commit</h2>
+      <p className="muted">
+        JSON product rows, or upload the CSV/XLSX template. SKU is the upsert
+        key. All rows commit in one transaction; no deletions. Optional
+        vehicle_config_id rows map exact configurations transactionally.
+      </p>
+      <a className="text-link" href="/api/admin-export?format=xlsx">
+        Export XLSX ↗
+      </a>
+      <a className="text-link" href="/api/admin-export">
+        Download current catalog / CSV template ↗
+      </a>
+      <label>
+        CSV / XLSX (max 1 MB)
+        <input
+          type="file"
+          accept=".csv,.xlsx"
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            setBusy(true);
+            try {
+              if (file.size > 1_000_000)
+                throw Error("Maximum file size is 1 MB");
+              const data = new FormData();
+              data.append("file", file);
+              const response = await fetch("/api/admin-file", {
+                method: "POST",
+                body: data,
+              });
+              const result = await response.json();
+              if (!response.ok) throw Error(result.error);
+              update(JSON.stringify(result.rows, null, 2));
+              setMessage(
+                "File parsed. Run dry-run validation before committing.",
+              );
+            } catch (error) {
+              setMessage(
+                error instanceof Error ? error.message : "Invalid file",
+              );
+            } finally {
+              setBusy(false);
+            }
+          }}
+        />
+      </label>
+      <label>
+        Product rows
+        <textarea
+          className="code-editor"
+          rows={16}
+          value={json}
+          onChange={(e) => update(e.target.value)}
+        />
+      </label>
+      <div className="admin-nav">
+        <button
+          className="button secondary"
+          disabled={busy}
+          onClick={() => submit(false)}
+        >
+          Validate / dry run
+        </button>
+        <button
+          className="button"
+          disabled={busy || !validated}
+          onClick={() => submit(true)}
+        >
+          Commit validated import
+        </button>
+      </div>
+      <p role="status" className="prose">
+        {message}
+      </p>
+    </div>
+  );
+}
+export function ImageUpload() {
+  const [message, setMessage] = useState("");
+  return (
+    <div className="panel stack">
+      <h2>Catalog image upload</h2>
+      <p>
+        JPEG, PNG or WebP up to 5 MB. Images are decoded, resized, stripped of
+        metadata and stored in a private bucket. Use the returned path in
+        ordered image metadata.
+      </p>
+      <input
+        aria-label="Product image"
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          try {
+            const form = new FormData();
+            form.append("image", file);
+            const response = await fetch("/api/upload?kind=catalog", {
+              method: "POST",
+              body: form,
+            });
+            const result = await response.json();
+            if (!response.ok) throw Error(result.error);
+            setMessage("Image path: " + result.path);
+          } catch (error) {
+            setMessage(
+              error instanceof Error ? error.message : "Upload failed",
+            );
+          }
+        }}
+      />
+      <p role="status">{message}</p>
+    </div>
+  );
+}
+
+export function ProductEditor({
+  initial,
+  manufacturers,
+  categories,
+}: {
+  initial: Record<string, any>;
+  manufacturers: string[];
+  categories: { slug: string; name: { en: string } }[];
+}) {
+  const [value, setValue] = useState(initial);
+  const field = (key: string, label: string, type = "text") => (
+    <label key={key}>
+      {label}
+      <input
+        type={type}
+        value={value[key] ?? ""}
+        onChange={(e) =>
+          setValue({
+            ...value,
+            [key]:
+              type === "number"
+                ? e.target.value === ""
+                  ? null
+                  : Number(e.target.value)
+                : e.target.value,
+          })
+        }
+      />
+    </label>
+  );
+  return (
+    <section className="panel stack">
+      <h2>{value.id ? "Edit product" : "New product"}</h2>
+      <ApiForm
+        action="admin-product"
+        label="Save product"
+        extra={{ json: JSON.stringify(value) }}
+      >
+        {field("sku", "SKU")}
+        {field("slug", "URL slug")}
+        {(["name", "description", "warranty"] as const).flatMap((key) =>
+          (["en", "ar"] as const).map((lang) => (
+            <label key={key + lang}>
+              {key} · {lang}
+              <textarea
+                dir={lang === "ar" ? "rtl" : "ltr"}
+                value={value[key]?.[lang] ?? ""}
+                onChange={(e) => {
+                  const next = {
+                    ...(value[key] ?? { en: "", ar: "" }),
+                    [lang]: e.target.value,
+                  };
+                  setValue({
+                    ...value,
+                    [key]:
+                      key === "warranty" && !next.en && !next.ar ? null : next,
+                  });
+                }}
+              />
+            </label>
+          )),
+        )}
+        <label>
+          Manufacturer
+          <select
+            value={value.manufacturer}
+            onChange={(e) =>
+              setValue({ ...value, manufacturer: e.target.value })
+            }
+          >
+            {manufacturers.map((m) => (
+              <option key={m}>{m}</option>
+            ))}
+          </select>
+        </label>
+        <label>
+          Category
+          <select
+            value={value.category}
+            onChange={(e) => setValue({ ...value, category: e.target.value })}
+          >
+            {categories.map((c) => (
+              <option key={c.slug} value={c.slug}>
+                {c.name.en}
+              </option>
+            ))}
+          </select>
+        </label>
+        {field("family", "Part family")}
+        {field("partNumber", "Primary part number")}
+        <label>
+          Additional part numbers (one per line)
+          <textarea
+            value={(value.partNumbers ?? []).join("\n")}
+            onChange={(e) =>
+              setValue({
+                ...value,
+                partNumbers: e.target.value.split("\n").filter(Boolean),
+              })
+            }
+          />
+        </label>
+        {field("price", "List price · piasters", "number")}
+        {field("sale", "Sale price · piasters (blank to disable)", "number")}
+        {field("cost", "Private cost · piasters", "number")}
+        <label>
+          Type
+          <select
+            value={value.type}
+            onChange={(e) => setValue({ ...value, type: e.target.value })}
+          >
+            <option value="oem">OEM</option>
+            <option value="aftermarket">Aftermarket</option>
+          </select>
+        </label>
+        <label>
+          Status
+          <select
+            value={value.status}
+            onChange={(e) => setValue({ ...value, status: e.target.value })}
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </label>
+        {["demo", "orderable"].map((key) => (
+          <label className="check" key={key}>
+            <input
+              type="checkbox"
+              checked={Boolean(value[key])}
+              onChange={(e) => setValue({ ...value, [key]: e.target.checked })}
+            />
+            {key}
+          </label>
+        ))}
+      </ApiForm>
+      {value.id && (
+        <button
+          className="button secondary"
+          onClick={() =>
+            setValue({
+              ...value,
+              id: undefined,
+              sku: value.sku + "-COPY",
+              slug: value.slug + "-copy",
+              status: "draft",
+              orderable: false,
+            })
+          }
+        >
+          Duplicate as draft
+        </button>
+      )}
+      <details>
+        <summary>Advanced product fields</summary>
+        <JsonEditor
+          title="Specifications, synonyms, editorial and SEO"
+          action="admin-product"
+          initial={value}
+        />
+      </details>
+    </section>
+  );
+}
+
+export function FitmentEditor({
+  products,
+  vehicles,
+  fitments,
+}: {
+  products: { id: string; sku: string }[];
+  vehicles: { id: string; name: { en: string } }[];
+  fitments: { product_id: string; vehicle_config_id: string }[];
+}) {
+  const [product, setProduct] = useState(products[0]?.id ?? "");
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<string[]>(
+    fitments
+      .filter((f) => f.product_id === product)
+      .map((f) => f.vehicle_config_id),
+  );
+  return (
+    <section className="panel stack">
+      <h2>Exact vehicle fitments</h2>
+      <label>
+        Product
+        <select
+          value={product}
+          onChange={(e) => {
+            setProduct(e.target.value);
+            setSelected(
+              fitments
+                .filter((f) => f.product_id === e.target.value)
+                .map((f) => f.vehicle_config_id),
+            );
+          }}
+        >
+          {products.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.sku}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label>
+        Find vehicle
+        <input value={query} onChange={(e) => setQuery(e.target.value)} />
+      </label>
+      <p>
+        {selected.length} exact configurations selected. Unselected
+        configurations are unconfirmed.
+      </p>
+      <ApiForm
+        action="admin-fitments"
+        label="Save exact fitments"
+        extra={{ product, vehicles: selected }}
+      >
+        <div className="admin-list">
+          {vehicles
+            .filter((v) =>
+              v.name.en.toLowerCase().includes(query.toLowerCase()),
+            )
+            .map((v) => (
+              <label className="check" key={v.id}>
+                <input
+                  type="checkbox"
+                  checked={selected.includes(v.id)}
+                  onChange={(e) =>
+                    setSelected(
+                      e.target.checked
+                        ? [...selected, v.id]
+                        : selected.filter((id) => id !== v.id),
+                    )
+                  }
+                />
+                {v.name.en}
+              </label>
+            ))}
+        </div>
+      </ApiForm>
+    </section>
+  );
+}
+
+export type MerchantField = {
+  path: string;
+  label: string;
+  type?:
+    "text" | "textarea" | "number" | "checkbox" | "datetime-local" | "select";
+  options?: { value: string; label: string }[];
+  nullable?: boolean;
+  required?: boolean;
+};
+export function MerchantForm({
+  title,
+  action,
+  initial,
+  fields,
+}: {
+  title: string;
+  action: string;
+  initial: Record<string, any>;
+  fields: MerchantField[];
+}) {
+  const [value, setValue] = useState(initial);
+  const get = (path: string) =>
+    path.split(".").reduce<any>((node, key) => node?.[key], value);
+  const set = (path: string, next: unknown) => {
+    const copy = structuredClone(value);
+    const keys = path.split(".");
+    let node = copy;
+    for (const key of keys.slice(0, -1)) node = node[key] ??= {};
+    node[keys.at(-1)!] = next;
+    setValue(copy);
+  };
+  return (
+    <section className="panel stack">
+      <h2>{title}</h2>
+      <ApiForm
+        action={action}
+        label="Save"
+        extra={{ json: JSON.stringify(value) }}
+      >
+        {fields.map((field) => {
+          const current = get(field.path);
+          return (
+            <label
+              key={field.path}
+              className={field.type === "checkbox" ? "check" : undefined}
+            >
+              {field.label}
+              {field.type === "checkbox" ? (
+                <input
+                  type="checkbox"
+                  checked={Boolean(current)}
+                  onChange={(e) => set(field.path, e.target.checked)}
+                />
+              ) : field.type === "textarea" ? (
+                <textarea
+                  rows={field.path.startsWith("body.") ? 10 : 4}
+                  dir={field.path.endsWith(".ar") ? "rtl" : "ltr"}
+                  value={current ?? ""}
+                  required={field.required}
+                  onChange={(e) => set(field.path, e.target.value)}
+                />
+              ) : field.type === "select" ? (
+                <select
+                  value={current ?? ""}
+                  onChange={(e) => set(field.path, e.target.value || null)}
+                >
+                  {field.options?.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type={field.type ?? "text"}
+                  required={field.required}
+                  min={field.type === "number" ? 0 : undefined}
+                  value={
+                    field.type === "datetime-local"
+                      ? (current?.slice(0, 16) ?? "")
+                      : (current ?? "")
+                  }
+                  onChange={(e) =>
+                    set(
+                      field.path,
+                      field.type === "number"
+                        ? e.target.value === "" && field.nullable
+                          ? null
+                          : Number(e.target.value)
+                        : field.type === "datetime-local"
+                          ? e.target.value
+                            ? new Date(e.target.value + "Z").toISOString()
+                            : null
+                          : e.target.value === "" && field.nullable
+                            ? null
+                            : e.target.value,
+                    )
+                  }
+                />
+              )}
+            </label>
+          );
+        })}
+      </ApiForm>
+    </section>
+  );
+}
+
+export function RelationsEditor({
+  products,
+  initial,
+}: {
+  products: { id: string; sku: string; name: { en: string } }[];
+  initial: { product_id: string; related_id: string; kind: string }[];
+}) {
+  const [product, setProduct] = useState(products[0]?.id ?? "");
+  const [query, setQuery] = useState("");
+  const entries = (id: string) =>
+    initial
+      .filter((r) => r.product_id === id)
+      .map((r) => ({ id: r.related_id, kind: r.kind }));
+  const [relations, setRelations] = useState(entries(product));
+  return (
+    <section className="panel stack">
+      <h2>Curated recommendations</h2>
+      <label>
+        Source product
+        <select
+          value={product}
+          onChange={(e) => {
+            setProduct(e.target.value);
+            setRelations(entries(e.target.value));
+          }}
+        >
+          {products.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.sku} · {p.name.en}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p>
+        “Together” suggestions appear only when confirmed for the shopper’s
+        selected vehicle. Replacing this list is atomic.
+      </p>
+      <label>
+        Find a related product
+        <input value={query} onChange={(e) => setQuery(e.target.value)} />
+      </label>
+      <ApiForm
+        action="admin-relations"
+        label="Save recommendations"
+        extra={{ json: JSON.stringify({ product, relations }) }}
+      >
+        <div className="admin-list">
+          {products
+            .filter(
+              (p) =>
+                p.id !== product &&
+                (p.sku + " " + p.name.en)
+                  .toLowerCase()
+                  .includes(query.toLowerCase()),
+            )
+            .map((p) => (
+              <label key={p.id}>
+                {p.sku} · {p.name.en}
+                <select
+                  value={relations.find((r) => r.id === p.id)?.kind ?? ""}
+                  onChange={(e) =>
+                    setRelations([
+                      ...relations.filter((r) => r.id !== p.id),
+                      ...(e.target.value
+                        ? [{ id: p.id, kind: e.target.value }]
+                        : []),
+                    ])
+                  }
+                >
+                  <option value="">No recommendation</option>
+                  <option value="alternative">Alternative</option>
+                  <option value="together">Buy together</option>
+                </select>
+              </label>
+            ))}
+        </div>
+      </ApiForm>
+    </section>
+  );
+}
+
+export function ImageManager({
+  products,
+  product,
+  initial,
+}: {
+  products: { id: string; sku: string; name: { en: string } }[];
+  product: string;
+  initial: { path: string; alt: { ar: string; en: string }; url: string }[];
+}) {
+  const [images, setImages] = useState(initial);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  return (
+    <section className="panel stack">
+      <h2>Product image manager</h2>
+      <label>
+        Product
+        <select
+          value={product}
+          onChange={(e) => {
+            window.location.assign(
+              "/admin?module=images&id=" + encodeURIComponent(e.target.value),
+            );
+          }}
+        >
+          {products.map((p) => (
+            <option key={p.id} value={p.id}>
+              {p.sku} · {p.name.en}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p>
+        The first image is the cover. Add bilingual descriptions and save to
+        publish this image order.
+      </p>
+      <label>
+        Upload product photo
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          disabled={busy || images.length >= 10 || !product}
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            setBusy(true);
+            setMessage("");
+            try {
+              const form = new FormData();
+              form.append("image", file);
+              const response = await fetch("/api/upload?kind=catalog", {
+                method: "POST",
+                body: form,
+              });
+              const result = await response.json();
+              if (!response.ok) throw Error(result.error);
+              setImages((current) => [
+                ...current,
+                { path: result.path, url: result.url, alt: { ar: "", en: "" } },
+              ]);
+              setMessage("Uploaded. Add descriptions and save.");
+            } catch (error) {
+              setMessage((error as Error).message);
+            } finally {
+              setBusy(false);
+              e.target.value = "";
+            }
+          }}
+        />
+      </label>
+      <p role="status">{message}</p>
+      <ApiForm
+        action="admin-images"
+        label="Save image order and descriptions"
+        extra={{
+          json: JSON.stringify({
+            product,
+            images: images.map(({ path, alt }) => ({ path, alt })),
+          }),
+        }}
+      >
+        {images.map((image, index) => (
+          <article className="panel stack" key={image.path}>
+            {image.url && (
+              <img
+                src={image.url}
+                alt={image.alt.en}
+                width={180}
+                height={150}
+                style={{ objectFit: "contain" }}
+              />
+            )}
+            <h3>{index === 0 ? "Cover photo" : `Photo ${index + 1}`}</h3>
+            {(["ar", "en"] as const).map((lang) => (
+              <label key={lang}>
+                Image description · {lang}
+                <input
+                  required
+                  minLength={1}
+                  maxLength={500}
+                  dir={lang === "ar" ? "rtl" : "ltr"}
+                  value={image.alt[lang]}
+                  onChange={(e) =>
+                    setImages((current) =>
+                      current.map((x, i) =>
+                        i === index
+                          ? { ...x, alt: { ...x.alt, [lang]: e.target.value } }
+                          : x,
+                      ),
+                    )
+                  }
+                />
+              </label>
+            ))}
+            <div className="admin-nav">
+              <button
+                type="button"
+                disabled={index === 0}
+                onClick={() =>
+                  setImages((current) => {
+                    const next = [...current];
+                    [next[index - 1], next[index]] = [
+                      next[index],
+                      next[index - 1],
+                    ];
+                    return next;
+                  })
+                }
+              >
+                Move earlier
+              </button>
+              <button
+                type="button"
+                disabled={index === images.length - 1}
+                onClick={() =>
+                  setImages((current) => {
+                    const next = [...current];
+                    [next[index], next[index + 1]] = [
+                      next[index + 1],
+                      next[index],
+                    ];
+                    return next;
+                  })
+                }
+              >
+                Move later
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  setImages((current) => current.filter((_, i) => i !== index))
+                }
+              >
+                Remove from product
+              </button>
+            </div>
+          </article>
+        ))}
+        {!images.length && <p>No product photos attached.</p>}
+      </ApiForm>
+    </section>
+  );
+}
+
+export function BrandingMedia({
+  slots,
+  initial,
+}: {
+  slots: { slot: string; label: string }[];
+  initial: Record<
+    string,
+    { path: string; alt: { ar: string; en: string }; url?: string }
+  >;
+}) {
+  const [slot, setSlot] = useState(slots[0]?.slot ?? "hero");
+  const [record, setRecord] = useState<{
+    path: string | null;
+    url?: string;
+    alt: { ar: string; en: string };
+  }>(
+    initial[slot] ?? {
+      path: null as string | null,
+      alt: { ar: "صورة المتجر", en: "Store image" },
+    },
+  );
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  return (
+    <section className="panel stack">
+      <h2>Branding and editorial media</h2>
+      <label htmlFor="branding-slot">Image location</label>
+      <select
+        id="branding-slot"
+        value={slot}
+        onChange={(e) => {
+          setSlot(e.target.value);
+          setRecord(
+            initial[e.target.value] ?? {
+              path: null,
+              alt: { ar: "صورة المتجر", en: "Store image" },
+            },
+          );
+          setMessage("");
+        }}
+      >
+        {slots.map((s) => (
+          <option key={s.slot} value={s.slot}>
+            {s.label}
+          </option>
+        ))}
+      </select>
+      <p>
+        Uploaded images override the default artwork. Remove the assignment and
+        save to restore it. Photos and raster logos are sanitized as JPEG;
+        transparency is flattened.
+      </p>
+      {record.url && (
+        <img
+          src={record.url}
+          alt={record.alt.en}
+          width={280}
+          height={180}
+          style={{ objectFit: "contain", maxWidth: "100%" }}
+        />
+      )}
+      <label>
+        Upload replacement
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          disabled={busy}
+          onChange={async (e) => {
+            const file = e.target.files?.[0];
+            if (!file) return;
+            setBusy(true);
+            setMessage("");
+            try {
+              const form = new FormData();
+              form.append("image", file);
+              const response = await fetch("/api/upload?kind=site", {
+                method: "POST",
+                body: form,
+              });
+              const result = await response.json();
+              if (!response.ok) throw Error(result.error);
+              setRecord((current) => ({
+                ...current,
+                path: result.path,
+                url: result.url,
+              }));
+              setMessage("Uploaded. Save the assignment to use it.");
+            } catch (error) {
+              setMessage((error as Error).message);
+            } finally {
+              setBusy(false);
+              e.target.value = "";
+            }
+          }}
+        />
+      </label>
+      <p role="status">{message}</p>
+      <ApiForm
+        action="admin-site-media"
+        label="Save media assignment"
+        extra={{
+          json: JSON.stringify({ slot, path: record.path, alt: record.alt }),
+        }}
+      >
+        {(["ar", "en"] as const).map((lang) => (
+          <label key={lang}>
+            Media description · {lang}
+            <input
+              value={record.alt[lang]}
+              required
+              minLength={1}
+              maxLength={500}
+              dir={lang === "ar" ? "rtl" : "ltr"}
+              onChange={(e) =>
+                setRecord((current) => ({
+                  ...current,
+                  alt: { ...current.alt, [lang]: e.target.value },
+                }))
+              }
+            />
+          </label>
+        ))}
+        <button
+          type="button"
+          className="button secondary"
+          onClick={() =>
+            setRecord({
+              path: null,
+              alt: { ar: "صورة المتجر", en: "Store image" },
+            })
+          }
+        >
+          Restore default artwork
+        </button>
+      </ApiForm>
+    </section>
+  );
+}

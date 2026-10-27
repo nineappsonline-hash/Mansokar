@@ -1,0 +1,15 @@
+.git
+.agents
+.codex
+.aws
+.env*
+.next
+node_modules
+docs
+tests
+supabase
+playwright-report
+test-results
+*.tsbuildinfo
+AGENTS.md
+MANSOKAR_MASTER_SPEC_V2.md

@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "ar: brand card opens model selector",
+    "ar: 320px heading fits",
+    "en: brand card opens model selector",
+    "en: 320px heading fits"
+  ],
+  "assets": "public/images/cinematic/",
+  "reference": "user-provided screenshot"
+}

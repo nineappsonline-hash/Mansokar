@@ -1,0 +1,322 @@
+[
+  {
+    "locale": "ar",
+    "width": 1440,
+    "route": "",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 1440,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 1440,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 1440,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 1024,
+    "route": "",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 1024,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 1024,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 1024,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 768,
+    "route": "",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 768,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 768,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 768,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "ar",
+    "width": 390,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "ar",
+    "width": 320,
+    "route": "",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "ar",
+    "width": 320,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "ar",
+    "width": 320,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "ar",
+    "width": 320,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Tajawal, Inter, Tahoma, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "en",
+    "width": 1440,
+    "route": "",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 1440,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 1440,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 1440,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 1024,
+    "route": "",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 1024,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 1024,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 1024,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 768,
+    "route": "",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 768,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 768,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 768,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "18px"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "en",
+    "width": 390,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "en",
+    "width": 320,
+    "route": "",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "en",
+    "width": 320,
+    "route": "/products/precision-oil-filter",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "en",
+    "width": 320,
+    "route": "/catalog",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "17px"
+  },
+  {
+    "locale": "en",
+    "width": 320,
+    "route": "/checkout",
+    "overflow": false,
+    "font": "Inter, Arial, sans-serif",
+    "body": "17px"
+  }
+]

@@ -1,0 +1,50 @@
+{
+  "opel-astra": {
+    "path": "/images/vehicles/opel-astra.jpg",
+    "title": "Opel Astra"
+  },
+  "opel-corsa": {
+    "path": "/images/vehicles/opel-corsa.jpg",
+    "title": "Opel Corsa"
+  },
+  "opel-insignia": {
+    "path": "/images/vehicles/opel-insignia.jpg",
+    "title": "Opel Insignia"
+  },
+  "peugeot-301": {
+    "path": "/images/vehicles/peugeot-301.jpg",
+    "title": "Peugeot 301 (2012)"
+  },
+  "peugeot-308": {
+    "path": "/images/vehicles/peugeot-308.jpg",
+    "title": "Peugeot 308"
+  },
+  "peugeot-3008": {
+    "path": "/images/vehicles/peugeot-3008.jpg",
+    "title": "Peugeot 3008"
+  },
+  "citroen-c3": {
+    "path": "/images/vehicles/citroen-c3.jpg",
+    "title": "Citroën C3"
+  },
+  "citroen-c4": {
+    "path": "/images/vehicles/citroen-c4.jpg",
+    "title": "Citroën C4"
+  },
+  "citroen-c5-aircross": {
+    "path": "/images/vehicles/citroen-c5-aircross.jpg",
+    "title": "Citroën C5 Aircross"
+  },
+  "mg-5": {
+    "path": "/images/vehicles/mg-5.jpg",
+    "title": "MG 5"
+  },
+  "mg-6": {
+    "path": "/images/vehicles/mg-6.jpg",
+    "title": "MG 6"
+  },
+  "mg-zs": {
+    "path": "/images/vehicles/mg-zs.jpg",
+    "title": "MG ZS (2017)"
+  }
+}

@@ -1,0 +1,105 @@
+import Link from "next/link";
+import { ArrowUpRight, Package } from "lucide-react";
+import { productImages } from "@/lib/db";
+import { partArt } from "@/lib/visuals";
+import {
+  fitmentLabel,
+  money,
+  type Locale,
+  type Product,
+  type Vehicle,
+} from "@/lib/catalog";
+import { PurchaseButtons } from "./purchase-buttons";
+import { t } from "@/lib/i18n";
+export async function ProductCard({
+  product: p,
+  locale,
+  vehicle,
+  confirmed,
+}: {
+  product: Product;
+  locale: Locale;
+  vehicle?: Vehicle;
+  confirmed?: boolean;
+}) {
+  let media;
+  try {
+    media = (await productImages(p.id))[0];
+  } catch {
+    /* A missing photo does not conceal the product. */
+  }
+  const w = t(locale);
+  return (
+    <article className="product-card" aria-label={p.name[locale]}>
+      <Link
+        href={`/${locale}/products/${p.slug}`}
+        className="product-art"
+        data-analytics="select_item"
+        data-productid={p.id}
+      >
+        {media ? (
+          <img src={media.url} alt={media.alt[locale]} loading="lazy" />
+        ) : p.demo ? (
+          <img
+            src={partArt(p.category)}
+            alt={
+              locale === "ar"
+                ? "رسم توضيحي لمنتج تجريبي"
+                : "Demo product illustration"
+            }
+            loading="lazy"
+          />
+        ) : (
+          <div className="offer-image-placeholder">
+            <Package size={70} aria-hidden="true" />
+            <span>
+              {locale === "ar"
+                ? "صورة المنتج غير متاحة"
+                : "Product photo unavailable"}
+            </span>
+          </div>
+        )}
+        {p.demo && <span>{w.demoProduct}</span>}
+        {p.sale !== null && p.price > 0 && (
+          <b>
+            −
+            {new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en", {
+              style: "percent",
+              maximumFractionDigits: 0,
+            }).format((p.price - p.sale) / p.price)}
+          </b>
+        )}
+      </Link>
+      <div className="product-info">
+        <span className="eyebrow muted">
+          {p.manufacturer} /{" "}
+          {p.type === "oem" ? "OEM" : locale === "ar" ? "بديل" : "Aftermarket"}
+        </span>
+        <h3>
+          <Link href={`/${locale}/products/${p.slug}`}>{p.name[locale]}</Link>
+        </h3>
+        <span className="small muted" dir="ltr">
+          {p.partNumber}
+        </span>
+        <p className="small muted">
+          {fitmentLabel(vehicle, !!confirmed, locale)}
+        </p>
+        <div className="product-price">
+          <span>{money(p.sale ?? p.price, locale)}</span>
+          {p.sale !== null && <del>{money(p.price, locale)}</del>}
+        </div>
+        <PurchaseButtons
+          product={{ id: p.id, name: p.name, orderable: p.orderable }}
+          locale={locale}
+        />
+        <Link
+          className="product-details-link"
+          href={`/${locale}/products/${p.slug}`}
+        >
+          {w.view}
+          <ArrowUpRight size={17} aria-hidden="true" />
+        </Link>
+      </div>
+    </article>
+  );
+}

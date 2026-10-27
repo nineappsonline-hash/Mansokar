@@ -1,0 +1,42 @@
+[
+  {
+    "route": "/en",
+    "violations": []
+  },
+  {
+    "route": "/en/products/precision-oil-filter",
+    "violations": []
+  },
+  {
+    "route": "/en/catalog",
+    "violations": []
+  },
+  {
+    "route": "/en/checkout",
+    "violations": []
+  },
+  {
+    "route": "/en/request-part",
+    "violations": []
+  },
+  {
+    "route": "/ar",
+    "violations": []
+  },
+  {
+    "route": "/ar/products/precision-oil-filter",
+    "violations": []
+  },
+  {
+    "route": "/ar/catalog",
+    "violations": []
+  },
+  {
+    "route": "/ar/checkout",
+    "violations": []
+  },
+  {
+    "route": "/ar/request-part",
+    "violations": []
+  }
+]

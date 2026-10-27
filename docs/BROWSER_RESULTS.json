@@ -1,0 +1,18 @@
+{
+  "base": "https://mansokar.vercel.app",
+  "checks": [
+    "en: home + four brand model pages",
+    "ar: home + four brand model pages",
+    "selected fitment privacy + add to cart",
+    "gallery keyboard open / Escape close",
+    "wrong engine remains unconfirmed",
+    "language switch preserves product and active engine",
+    "admin access denied without verified allowlist",
+    "ar: mobile home/product without overflow + bottom action bar",
+    "en: mobile home/product without overflow + bottom action bar",
+    "comparison requires two same-family products; Arabic brand metadata and linked breadcrumb schema verified",
+    "category autocomplete navigates to its localized category landing page",
+    "preview indexing is disabled and homepage canonical URLs do not redirect"
+  ],
+  "errors": []
+}

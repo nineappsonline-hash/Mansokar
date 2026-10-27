@@ -1,0 +1,7 @@
+{
+  "requests": 20,
+  "concurrency": 4,
+  "medianMs": 74,
+  "p95Ms": 131,
+  "scope": "Local production runtime, read-only demo catalog; no Supabase/database/network/provider load certification."
+}

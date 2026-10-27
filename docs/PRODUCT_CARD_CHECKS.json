@@ -1,0 +1,12 @@
+{
+  "checks": [
+    "ar: distinct cards, correct item added, buy now preserves cart without doubling quantity",
+    "ar: product-page buy now honors quantity",
+    "ar: offer card has both actions",
+    "ar: home/catalog/offers layouts fit 320–1440px",
+    "en: distinct cards, correct item added, buy now preserves cart without doubling quantity",
+    "en: product-page buy now honors quantity",
+    "en: offer card has both actions",
+    "en: home/catalog/offers layouts fit 320–1440px"
+  ]
+}

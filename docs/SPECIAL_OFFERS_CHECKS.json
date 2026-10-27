@@ -1,0 +1,14 @@
+{
+  "checks": [
+    "ar: valid sale, original price and exact savings",
+    "ar: view-all navigation",
+    "ar: selected-car fitment and product navigation",
+    "ar: wrong engine never advertised as fitting",
+    "ar: responsive 320–1440px",
+    "en: valid sale, original price and exact savings",
+    "en: view-all navigation",
+    "en: selected-car fitment and product navigation",
+    "en: wrong engine never advertised as fitting",
+    "en: responsive 320–1440px"
+  ]
+}

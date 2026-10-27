@@ -1,0 +1,27 @@
+{
+  "findings": [
+    {
+      "case": "Existing SKU import accepts newer fields but does not update them",
+      "sku": "DEMO-001",
+      "requested": {
+        "cost": 12345,
+        "warranty": {
+          "ar": "ضمان اختبار",
+          "en": "Test warranty"
+        },
+        "editorial": {
+          "why": {
+            "ar": "محتوى اختبار",
+            "en": "Test editorial"
+          }
+        }
+      },
+      "stored": {
+        "cost": null,
+        "warranty": null,
+        "editorial": {}
+      },
+      "scope": "Ephemeral embedded PostgreSQL using checked-in migrations and demo seed; no live database modified"
+    }
+  ]
+}
