@@ -24,7 +24,7 @@ export async function ProductCard({
 }) {
   let media;
   try {
-    media = (await productImages(p.id))[0];
+    media = (await productImages(p.id))?.[0] ?? undefined;
   } catch {
     /* A missing photo does not conceal the product. */
   }

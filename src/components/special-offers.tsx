@@ -41,7 +41,7 @@ export async function SpecialOffers({
     offers.map(async (product) => {
       let media;
       try {
-        media = (await productImages(product.id))[0];
+        media = (await productImages(product.id))?.[0] ?? undefined;
       } catch {
         /* Unavailable media must not hide the offer. */
       }

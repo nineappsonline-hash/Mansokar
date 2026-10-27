@@ -885,7 +885,15 @@ export default async function Page({ params, searchParams }: Props) {
     const p = products.find((p) => p.slug === path[1]);
     if (!p) notFound();
     const confirmed = flags[p.id];
-    const media = await productImages(p.id);
+    let media: {
+      url: string;
+      alt: { ar: string; en: string };
+    }[] = [];
+    try {
+      media = await productImages(p.id);
+    } catch {
+      /* A missing photo does not conceal the product. */
+    }
     const areas = await deliveryAreas();
     const policies = await policyPages(
       p.policy_refs?.length
@@ -963,7 +971,7 @@ export default async function Page({ params, searchParams }: Props) {
               demo={p.demo}
             />
             <p className="image-caption">
-              {media.length
+              {media.length ?? 0
                 ? locale === "ar"
                   ? "صور المنتج المقدمة من التاجر"
                   : "Merchant-supplied product images"

@@ -7,7 +7,7 @@ import { demoProducts, demoFits, type Product } from "./catalog";
 export function configured() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   );
 }
 export async function authClient() {
@@ -43,6 +43,7 @@ export function service() {
 }
 export const publicProductFields =
   "id,sku,slug,name,description,manufacturer,category,family,type,price,sale,partNumber,partNumbers,synonyms,seo,policy_refs,condition,demo,orderable,status,specs,warranty,editorial";
+
 export async function allRows<T = Record<string, unknown>>(
   table: string,
   fields = "*",
@@ -429,50 +430,70 @@ export async function heroSlideshow(fallbackUrl: string) {
     autoplay: true,
   };
   if (!configured()) return fallback;
-  const [{ data: rows, error }, { data: settings, error: settingsError }] =
-    await Promise.all([
-      service()
-        .from("hero_slides")
-        .select("id,path,alt")
-        .eq("enabled", true)
-        .order("position")
-        .order("id")
-        .limit(10),
-      service()
-        .from("site_settings")
-        .select("value")
-        .eq("key", "hero_slideshow")
-        .maybeSingle(),
-    ]);
-  if (error || settingsError) throw error || settingsError;
-  const interval = Number(settings?.value?.intervalSeconds);
-  const intervalSeconds = Number.isFinite(interval)
-    ? Math.min(30, Math.max(3, interval))
-    : 6;
-  const autoplay = settings?.value?.autoplay !== false;
-  if (!rows.length) return { ...fallback, intervalSeconds, autoplay };
-  const signed = await service()
-    .storage.from("catalog-images")
-    .createSignedUrls(
-      rows.map((r) => r.path),
-      600,
+  let rowsError: { message?: string } | null = null;
+  let settingsError: { message?: string } | null = null;
+  try {
+    const [{ data: rows, error }, { data: settings, error: sError }] =
+      await Promise.all([
+        service()
+          .from("hero_slides")
+          .select("id,path,alt")
+          .eq("enabled", true)
+          .order("position")
+          .order("id")
+          .limit(10),
+        service()
+          .from("site_settings")
+          .select("value")
+          .eq("key", "hero_slideshow")
+          .maybeSingle(),
+      ]);
+    rowsError = error;
+    settingsError = sError;
+    if (rowsError || settingsError) {
+      return {
+        ...fallback,
+        intervalSeconds: 6,
+        autoplay: true,
+        _error:
+          rowsError?.message ??
+          settingsError?.message ??
+          "heroSlideshow query failed",
+      };
+    }
+    const interval = Number(settings?.value?.intervalSeconds);
+    const intervalSeconds = Number.isFinite(interval)
+      ? Math.min(30, Math.max(3, interval))
+      : 6;
+    const autoplay = settings?.value?.autoplay !== false;
+    if (!rows?.length) return { ...fallback, intervalSeconds, autoplay };
+    const signed = await service()
+      .storage.from("catalog-images")
+      .createSignedUrls(
+        rows.map((r) => r.path),
+        600,
+      );
+    if (signed.error) return { ...fallback, intervalSeconds, autoplay };
+    const urls = new Map(
+      signed.data
+        .filter((r) => r.path && r.signedUrl && !r.error)
+        .map((r) => [r.path, r.signedUrl!]),
     );
-  if (signed.error) return { ...fallback, intervalSeconds, autoplay };
-  const urls = new Map(
-    signed.data
-      .filter((r) => r.path && r.signedUrl && !r.error)
-      .map((r) => [r.path, r.signedUrl!]),
-  );
-  const slides = rows
-    .filter((r) => urls.has(r.path))
-    .map((r) => ({
-      id: r.id,
-      url: urls.get(r.path)!,
-      alt: r.alt as { ar: string; en: string },
-    }));
-  return {
-    slides: slides.length ? slides : fallback.slides,
-    intervalSeconds,
-    autoplay,
-  };
+    const slides = rows
+      .filter((r) => urls.has(r.path))
+      .map((r) => ({
+        id: r.id,
+        url: urls.get(r.path)!,
+        alt: r.alt as { ar: string; en: string },
+      }));
+    return {
+      slides: slides.length ? slides : fallback.slides,
+      intervalSeconds,
+      autoplay,
+    };
+  } finally {
+    /* Kept for diagnostic parity in case we add structured logging later. */
+    void rowsError;
+    void settingsError;
+  }
 }
