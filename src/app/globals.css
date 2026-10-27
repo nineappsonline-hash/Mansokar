@@ -1902,7 +1902,7 @@ th {
   gap: 16px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }.cinematic-brand {
-  height: 320px;
+  height: 340px;
   isolation: isolate;
   border-radius: 18px !important;
   border: 1px solid rgba(255, 188, 50, 0.35);
@@ -2052,12 +2052,12 @@ th {
   }
   .cinematic-intro {
     min-height: 940px;
-  }
-  .brand-deck .brand-grid {
+  }.brand-deck .brand-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;}
+    gap: 18px;
+  }
 .cinematic-brand {
-    height: 340px;
+    height: 360px;
     border-radius: 20px !important;
   }
 }
@@ -2097,8 +2097,8 @@ th {
     gap: 14px;
   }
   .cinematic-brand {
-    height: 280px;
-    border-radius: 14px !important;
+    height: 300px;
+    border-radius: 16px !important;
   }
   .manufacturer-emblem {
     height: 62px;
@@ -2262,8 +2262,8 @@ th {
     gap: 12px;
   }
   .cinematic-brand {
-    height: 220px;
-    border-radius: 10px !important;
+    height: 245px;
+    border-radius: 12px !important;
   }
   .brand-identity {
     padding-bottom: 11px;
@@ -2304,16 +2304,6 @@ th {
   }
 }
 
-/* Brand cards should stay wide and cinematic on the homepage brand deck. */
-.storefront-home .brand-deck .brand-grid{
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-@media (max-width: 1200px) and (min-width: 761px){
-  .storefront-home .brand-deck .brand-grid{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 @media (max-width: 380px) {
   .storefront-home .cinematic-headline {
     font-size: 56px !important;
