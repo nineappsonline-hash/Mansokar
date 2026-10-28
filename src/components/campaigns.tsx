@@ -18,7 +18,7 @@ export async function Campaigns({ locale }: { locale: Locale }) {
   const media = await siteMedia(data.map((c) => "campaign-" + c.id));
   return (
     <section
-      className="shell section"
+      className="shell section campaign-section"
       aria-label={locale === "ar" ? "حملات المتجر" : "Store campaigns"}
     >
       <div className="three-col">

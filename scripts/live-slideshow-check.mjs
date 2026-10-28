@@ -122,7 +122,7 @@ try {
         .getByRole("button", { name: "Save hero slideshow", exact: true })
         .click(),
     ]);
-    assert.equal(response.status(), 200);
+    assert.equal(response.status(), 200, await response.text());
   };
   await save();
   let saved = await check(
