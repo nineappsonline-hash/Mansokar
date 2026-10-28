@@ -1,3 +1,13 @@
+import { SiteMap } from "@/components/site-map";
+import { StoreQuestions } from "@/components/store-questions";
+import { searchPages } from "@/lib/seo-pages";
+import { ContactForm } from "@/components/contact-form";
+import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
+import { buyingGuides } from "@/lib/buying-guides";
+import { BuyingGuide } from "@/components/buying-guide";
+import { ProductAnswers } from "@/components/product-answers";
+import { InstallmentsGuide } from "@/components/installments-guide";
+import { productSearchCopy, productStructuredData } from "@/lib/product-seo";
 import { HeroSlideshow } from "@/components/hero-slideshow";
 import { Campaigns } from "@/components/campaigns";
 import { ShippingEstimate } from "@/components/shipping-estimate";
@@ -74,8 +84,12 @@ export async function generateMetadata({
   const { locale, path = [] } = await params;
   const slug = path.join("/");
   const filters = await searchParams;
+  const accountPage =
+    /^(cart|checkout|account|garage|compare|track-order|order)(\/|$)/.test(
+      slug,
+    );
   const privatePage =
-    /^(cart|checkout|account|garage|compare|track-order|order)/.test(slug) ||
+    accountPage ||
     slug === "catalog" ||
     Object.keys(filters).some((k) =>
       [
@@ -90,25 +104,17 @@ export async function generateMetadata({
         "page",
       ].includes(k),
     );
-  let productMeta: {
-    name: Record<string, string>;
-    description: Record<string, string>;
-    demo: boolean;
-    seo?: {
-      title?: Record<string, string>;
-      description?: Record<string, string>;
-    };
-  } | null = null;
-  if (configured() && path[0] === "products" && path[1]) {
-    const { data, error } = await service()
-      .from("products")
-      .select("name,description,demo,seo")
-      .eq("slug", path[1])
-      .eq("status", "published")
-      .maybeSingle();
-    if (error) throw error;
-    productMeta = data;
-  }
+  const productMeta =
+    path[0] === "products" && path.length === 2
+      ? ((await catalog({ slug: path[1] }))[0] ?? null)
+      : null;
+  const productCopy = productMeta
+    ? productSearchCopy(productMeta, locale === "ar" ? "ar" : "en")
+    : null;
+  const productMedia =
+    productMeta && !productMeta.demo
+      ? await productImages(productMeta.id).catch(() => [])
+      : [];
   let pageMeta: {
     title?: Record<string, string>;
     description?: Record<string, string>;
@@ -146,14 +152,23 @@ export async function generateMetadata({
     }
   }
   if (path[0] === "brands" && path[1] && !pageMeta) {
-    const { brands, models } = await vehicleCatalog();
+    const { brands: storedBrands, models } = await vehicleCatalog();
+    const brands = coveredBrands(storedBrands);
     const brand = brands.find((b) => b.slug === path[1]);
     const model = models.find((m) => m.brand === path[1] && m.slug === path[2]);
     if (brand) {
-      const nameAr = brand.ar + (model ? " " + model.name.ar : "");
-      const nameEn = brand.name + (model ? " " + model.name.en : "");
+      const target = targetModel(brand.slug, path[2]);
+      const nameAr =
+        brand.ar +
+        (path[2] ? " " + (model?.name.ar ?? target?.name.ar ?? path[2]) : "");
+      const nameEn =
+        brand.name +
+        (path[2] ? " " + (model?.name.en ?? target?.name.en ?? path[2]) : "");
       pageMeta = {
-        title: { ar: "قطع غيار " + nameAr, en: nameEn + " spare parts" },
+        title: {
+          ar: "قطع غيار " + nameAr + " في مصر",
+          en: nameEn + " spare parts in Egypt",
+        },
         description: {
           ar:
             "استعرض قطع غيار " +
@@ -167,9 +182,63 @@ export async function generateMetadata({
       };
     }
   }
+  const guide =
+    path[0] === "guides" && path.length === 2
+      ? buyingGuides.find((g) => g.slug === path[1])
+      : undefined;
+  if (!pageMeta && guide)
+    pageMeta = { title: guide.title, description: guide.description };
+  if (!pageMeta && slug === "site-map")
+    pageMeta = {
+      title: {
+        ar: "خريطة الموقع: السيارات والمنتجات وأدلة الشراء",
+        en: "Site map: vehicles, products and buying guides",
+      },
+      description: {
+        ar: "تصفح روابط صفحات الماركات والموديلات وقطع الغيار والأدلة المنشورة بالعربية والإنجليزية.",
+        en: "Browse direct links to vehicle brands, models, spare parts and published buying guides in Arabic and English.",
+      },
+    };
+  if (!pageMeta && slug === "faq")
+    pageMeta = {
+      title: {
+        ar: "أسئلة عن شراء قطع الغيار والشحن والضمان",
+        en: "Spare-parts buying, shipping and warranty questions",
+      },
+      description: {
+        ar: "إجابات عن توافق قطع الغيار والأسعار بالجنيه والشحن العادي والسريع والضمان وطلب التواصل.",
+        en: "Answers about parts compatibility, EGP prices, normal and express delivery, warranty and callback requests.",
+      },
+    };
+  if (!pageMeta && slug === "contact")
+    pageMeta = {
+      title: {
+        ar: "تواصل معنا للشحن والاسترجاع والضمان",
+        en: "Contact us about shipping, returns and warranty",
+      },
+      description: {
+        ar: "سيب رقم موبايلك واستفسارك عن الشحن أو الاسترجاع أو ضمان قطع الغيار، وسيتواصل معك فريق المتجر.",
+        en: "Leave your mobile number and inquiry about delivery, returns or spare-part warranty for the store team to contact you.",
+      },
+    };
+  if (!pageMeta && slug === "guides")
+    pageMeta = {
+      title: {
+        ar: "أدلة شراء قطع غيار السيارات في مصر",
+        en: "Car spare-parts buying guides in Egypt",
+      },
+      description: {
+        ar: "اعرف إزاي تطابق رقم القطعة وتراجع التوافق وماركة القطعة وبلد المنشأ وتقارن الأسعار قبل الشراء.",
+        en: "Learn how to check part numbers, compatibility, item brand and country of origin, and compare prices before buying.",
+      },
+    };
   const l: Locale = locale === "ar" ? "ar" : "en";
   const labels = t(l);
   const routeTitles: Record<string, string> = {
+    installments:
+      l === "ar"
+        ? "تقسيط قطع غيار السيارات في مصر: الكروت وشركات التمويل"
+        : "Car parts installments in Egypt: cards and finance companies",
     catalog: labels.catalog,
     offers: labels.offers,
     cart: labels.cart,
@@ -187,13 +256,16 @@ export async function generateMetadata({
   const settings = await storefrontSettings();
   return {
     description:
-      productMeta?.seo?.description?.[locale] ??
-      productMeta?.description[locale] ??
+      productCopy?.description ??
+      (slug === "installments"
+        ? l === "ar"
+          ? "دليل تقسيط قطع الغيار في مصر بالكريدت كارد وشركات التمويل، وشروط الأهلية والتكلفة وتوافر الدفع في المتجر."
+          : "A guide to credit cards, spare-parts installments in Egypt, eligibility, total costs and store payment availability."
+        : undefined) ??
       pageMeta?.description?.[locale] ??
       (!slug ? settings.heroIntro?.[l] : undefined),
     title:
-      productMeta?.seo?.title?.[locale] ??
-      productMeta?.name[locale] ??
+      productCopy?.title ??
       pageMeta?.title?.[locale] ??
       (slug
         ? (routeTitles[slug] ?? slug.split("/").at(-1)?.replaceAll("-", " "))
@@ -201,6 +273,24 @@ export async function generateMetadata({
           (l === "ar"
             ? "درايف بارتس · لكل رحلة"
             : "DriveParts · The road ahead"))),
+    ...(productMeta && productCopy
+      ? {
+          openGraph: {
+            type: "website",
+            title: productCopy.title,
+            description: productCopy.description,
+            url: `/${l}/products/${productMeta.slug}`,
+            locale: l === "ar" ? "ar_EG" : "en_EG",
+            images: productMedia.map((m) => ({ url: m.url, alt: m.alt[l] })),
+          },
+          twitter: {
+            card: productMedia.length ? "summary_large_image" : "summary",
+            title: productCopy.title,
+            description: productCopy.description,
+            images: productMedia.map((m) => m.url),
+          },
+        }
+      : {}),
     alternates: {
       canonical: slug ? `/${locale}/${slug}` : `/${locale}`,
       languages: {
@@ -216,7 +306,7 @@ export async function generateMetadata({
         !productMeta?.demo &&
         (!["about", "contact", "faq", "guides", "policies"].includes(path[0]) ||
           Boolean(pageMeta)),
-      follow: !privatePage,
+      follow: !accountPage,
     },
   };
 }
@@ -227,7 +317,12 @@ export default async function Page({ params, searchParams }: Props) {
     w = t(locale),
     q = await searchParams,
     route = path.join("/");
-  const { brands, vehicles, models: vehicleModels } = await vehicleCatalog();
+  const {
+    brands: storedBrands,
+    vehicles,
+    models: vehicleModels,
+  } = await vehicleCatalog();
+  const brands = coveredBrands(storedBrands);
   const settings = await storefrontSettings();
   const mediaSlots = [
     "hero",
@@ -434,7 +529,7 @@ export default async function Page({ params, searchParams }: Props) {
           vehicle={vehicle}
           fitments={flags}
         />
-        <section className="shell section">
+        <section className="shell section home-featured">
           <Reveal>
             <div className="section-heading">
               <div>
@@ -485,7 +580,7 @@ export default async function Page({ params, searchParams }: Props) {
             ))}
           </div>
         </section>
-        <section className="shell section narrow">
+        <section className="shell section narrow home-faq">
           <Reveal>
             <h2>
               {faq?.title?.[locale] ??
@@ -548,7 +643,16 @@ export default async function Page({ params, searchParams }: Props) {
           <span className="eyebrow">
             {brand.name.toUpperCase()} / MODEL SELECT
           </span>
-          <h1>{w.models}</h1>
+          <h1>
+            {locale === "ar"
+              ? `قطع غيار ${brand.ar} في مصر`
+              : `${brand.name} spare parts in Egypt`}
+          </h1>
+          <p className="lead">
+            {locale === "ar"
+              ? "اختار موديل سيارتك، ثم راجع سنة الصنع والمحرك ورقم القطعة. الأسعار بالجنيه المصري والتوافق يتأكد فقط عند وجود مطابقة صريحة."
+              : "Choose your model, then check year, engine and part number. Prices are in EGP; compatibility is confirmed only by an explicit match."}
+          </p>
           <form className="search-form">
             <input
               name="q"
@@ -592,7 +696,9 @@ export default async function Page({ params, searchParams }: Props) {
                     )}
                   </div>
                   <h2>
-                    {brand.name} {model.toUpperCase()}
+                    {locale === "ar" ? brand.ar : brand.name}{" "}
+                    {targetModel(brand.slug, model)?.name[locale] ??
+                      model.toUpperCase()}
                   </h2>
                   <span>
                     {locale === "ar"
@@ -609,6 +715,15 @@ export default async function Page({ params, searchParams }: Props) {
     } else {
       const model = path[2];
       if (!brand.models.includes(model)) notFound();
+      const info = targetModel(brand.slug, model);
+      const modelName =
+        vehicleModels.find((m) => m.brand === brand.slug && m.slug === model)
+          ?.name[locale] ??
+        info?.name[locale] ??
+        model.toUpperCase();
+      const modelVehicles = vehicles.filter(
+        (v) => v.brand === brand.slug && v.model === model,
+      );
       content = (
         <div className="shell section">
           <Breadcrumb
@@ -625,10 +740,11 @@ export default async function Page({ params, searchParams }: Props) {
             <div>
               <span className="eyebrow">VEHICLE CONFIGURATION</span>
               <h1>
-                {brand.name}
-                <br />
-                {model.toUpperCase()}
+                {locale === "ar"
+                  ? `قطع غيار ${brand.ar} ${modelName} في مصر`
+                  : `${brand.name} ${modelName} spare parts in Egypt`}
               </h1>
+              {info && <p className="lead">{info.note[locale]}</p>}
               <p className="lead">{w.config}</p>
               <p className="muted">
                 {locale === "ar"
@@ -639,13 +755,68 @@ export default async function Page({ params, searchParams }: Props) {
                 <CarFront size={180} strokeWidth={0.5} />
               </div>
             </div>
-            <SelectVehicle
-              locale={locale}
-              vehicles={vehicles.filter(
-                (v) => v.brand === brand.slug && v.model === model,
-              )}
-            />
+            {modelVehicles.length ? (
+              <SelectVehicle locale={locale} vehicles={modelVehicles} />
+            ) : (
+              <div className="panel stack">
+                <h2>
+                  {locale === "ar"
+                    ? "تكوين سيارتك مش موجود؟"
+                    : "Your configuration is missing?"}
+                </h2>
+                <p>
+                  {locale === "ar"
+                    ? "بيانات السنة والمحرك لهذا الموديل غير متاحة حاليًا في الاختيار. ابعت بيانات السيارة ورقم القطعة لمراجعتها قبل الطلب."
+                    : "Year and engine configurations for this model are not currently available in the selector. Send your vehicle details and part number for review before ordering."}
+                </p>
+                <Link
+                  className="button secondary"
+                  href={`/${locale}/request-part`}
+                >
+                  {locale === "ar" ? "استفسر عن قطعة" : "Request a part"}
+                </Link>
+              </div>
+            )}
           </div>
+          <section className="section stack">
+            <h2>
+              {locale === "ar"
+                ? "قبل ما تشتري قطعة الغيار"
+                : "Before buying a replacement part"}
+            </h2>
+            <p>
+              {locale === "ar"
+                ? `راجع رقم القطعة وماركتها وبلد المنشأ الموثق قبل شراء قطع ${brand.ar} ${modelName}. بعد اختيار التكوين، اعتمد على رسالة التوافق لكل منتج، وراجع السعر بالجنيه والشحن وشروط الاسترجاع.`
+                : `Check the part number, item brand and documented country of origin when buying ${brand.name} ${modelName} parts. After selecting a configuration, read each product's fitment result and review the EGP price, shipping and returns.`}
+            </p>
+            <h3>
+              {locale === "ar"
+                ? "هل أقدر أشتري بالتقسيط؟"
+                : "Can I buy in installments?"}
+            </h3>
+            <p>
+              {locale === "ar"
+                ? "الكروت والتقسيط غير متاحين حاليًا في المتجر. دليل التقسيط يوضح الفرق بين تقسيط البنك وشركات التمويل وما يجب مراجعته في العرض."
+                : "Cards and installments are not currently available at this store. The guide explains bank versus finance-company plans and what to check in an offer."}
+            </p>
+            <Link href={`/${locale}/installments`}>
+              {locale === "ar"
+                ? "دليل الكروت والتقسيط"
+                : "Cards and installments guide"}{" "}
+              ↗
+            </Link>
+            {buyingGuides.map((g) => (
+              <Link key={g.slug} href={`/${locale}/guides/${g.slug}`}>
+                {g.title[locale]} ↗
+              </Link>
+            ))}
+            <Link href={`/${locale}/brands/${brand.slug}`}>
+              {locale === "ar"
+                ? `موديلات ${brand.ar} الأخرى`
+                : `Other ${brand.name} models`}{" "}
+              ↗
+            </Link>
+          </section>
         </div>
       );
     }
@@ -898,7 +1069,7 @@ export default async function Page({ params, searchParams }: Props) {
     const policies = await policyPages(
       p.policy_refs?.length
         ? p.policy_refs
-        : ["policies/shipping", "policies/returns"],
+        : ["policies/shipping", "policies/returns", "policies/warranty"],
     );
     const together = await relatedProducts(p.id, "together", vehicle?.id);
     const curatedAlternatives = await relatedProducts(
@@ -921,20 +1092,14 @@ export default async function Page({ params, searchParams }: Props) {
           <script
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "Product",
-                name: p.name[locale],
-                sku: p.sku,
-                manufacturer: { "@type": "Organization", name: p.manufacturer },
-                description: p.description[locale],
-                offers: {
-                  "@type": "Offer",
-                  priceCurrency: "EGP",
-                  price: `${Math.trunc((p.sale ?? p.price) / 100)}.${String((p.sale ?? p.price) % 100).padStart(2, "0")}`,
-                  url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"}/${locale}/products/${p.slug}`,
-                },
-              }).replace(/</g, "\\u003c"),
+              __html: JSON.stringify(
+                productStructuredData(
+                  p,
+                  locale,
+                  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+                  media.map((m) => m.url),
+                ),
+              ).replace(/</g, "\\u003c"),
             }}
           />
         )}
@@ -971,7 +1136,7 @@ export default async function Page({ params, searchParams }: Props) {
               demo={p.demo}
             />
             <p className="image-caption">
-              {media.length ?? 0
+              {(media.length ?? 0)
                 ? locale === "ar"
                   ? "صور المنتج المقدمة من التاجر"
                   : "Merchant-supplied product images"
@@ -1001,12 +1166,36 @@ export default async function Page({ params, searchParams }: Props) {
                 <p className="lead">{p.editorial.why[locale]}</p>
               )}
               <div className="spec-grid">
-                {Object.entries(p.specs).map(([key, value]) => (
-                  <div key={key}>
-                    <span className="muted small">{key}</span>
-                    <p>{value}</p>
-                  </div>
-                ))}
+                {Object.entries(p.specs)
+                  .filter(
+                    ([key, value]) =>
+                      value &&
+                      (!key.startsWith("fitment_notes_") ||
+                        key === `fitment_notes_${locale}`),
+                  )
+                  .map(([key, value]) => (
+                    <div key={key}>
+                      <span className="muted small">
+                        {(
+                          {
+                            country_of_origin:
+                              locale === "ar"
+                                ? "بلد المنشأ"
+                                : "Country of origin",
+                            fitting_position:
+                              locale === "ar"
+                                ? "مكان التركيب"
+                                : "Fitting position",
+                            [`fitment_notes_${locale}`]:
+                              locale === "ar"
+                                ? "قيود التوافق"
+                                : "Compatibility restrictions",
+                          } as Record<string, string>
+                        )[key] ?? key}
+                      </span>
+                      <p>{value}</p>
+                    </div>
+                  ))}
               </div>
               {p.editorial?.installation && (
                 <details className="accordion">
@@ -1031,7 +1220,13 @@ export default async function Page({ params, searchParams }: Props) {
                     : "Delivery fees depend on your area. Review the published policies and product warranty terms before ordering."}
                 </p>
                 <Link href={`/${locale}/policies/returns`}>
-                  {locale === "ar" ? "عرض السياسة" : "View policy"}
+                  {locale === "ar" ? "سياسة الاسترجاع" : "Return policy"}
+                </Link>
+                <Link href={`/${locale}/policies/shipping`}>
+                  {locale === "ar" ? "سياسة الشحن" : "Shipping policy"}
+                </Link>
+                <Link href={`/${locale}/policies/warranty`}>
+                  {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
                 </Link>
               </details>
             </div>
@@ -1084,6 +1279,7 @@ export default async function Page({ params, searchParams }: Props) {
             </p>
           </aside>
         </div>
+        <ProductAnswers product={p} locale={locale} />
         <ShippingEstimate locale={locale} areas={areas} />
         {together.length > 0 && (
           <section className="section">
@@ -1125,7 +1321,17 @@ export default async function Page({ params, searchParams }: Props) {
         </section>
       </div>
     );
-  } else if (route === "cart")
+  } else if (route === "site-map")
+    content = (
+      <SiteMap
+        pages={await searchPages()}
+        locale={locale}
+        page={Number(q.page) || 1}
+      />
+    );
+  else if (route === "installments")
+    content = <InstallmentsGuide locale={locale} />;
+  else if (route === "cart")
     content = (
       <div className="shell section">
         <h1>{w.cart}</h1>
@@ -1566,7 +1772,7 @@ export default async function Page({ params, searchParams }: Props) {
     path[0] === "guides" ||
     path[0] === "policies"
   ) {
-    const allowed = ["privacy", "terms", "shipping", "returns"];
+    const allowed = ["privacy", "terms", "shipping", "returns", "warranty"];
     if (
       path[0] === "policies" &&
       (!allowed.includes(path[1]) || path.length !== 2)
@@ -1582,7 +1788,12 @@ export default async function Page({ params, searchParams }: Props) {
         .maybeSingle();
       cms = data;
     }
-    if (path[0] === "guides" && path.length > 1 && !cms) notFound();
+    const builtInGuide =
+      path[0] === "guides" && path.length === 2
+        ? buyingGuides.find((g) => g.slug === path[1])
+        : undefined;
+    if (path[0] === "guides" && path.length > 1 && !cms && !builtInGuide)
+      notFound();
     const guidePages =
       route === "guides" && path.length === 1 && configured()
         ? ((
@@ -1594,87 +1805,113 @@ export default async function Page({ params, searchParams }: Props) {
               .order("slug")
           ).data ?? [])
         : [];
-    content = (
-      <div className="shell section narrow">
-        <Breadcrumb
-          locale={locale}
-          items={[
-            ...(path[0] === "guides" && path.length > 1
-              ? [{ label: w.guides, href: `/${locale}/guides` }]
-              : []),
-            {
-              label: cms?.title[locale] ?? route.replaceAll("/", " / "),
-              href: `/${locale}/${route}`,
-            },
-          ]}
-        />
-        <span className="eyebrow">MANSOKAR / INFORMATION</span>
-        <h1>
-          {cms?.title[locale] ??
-            {
-              about: locale === "ar" ? "من نحن" : "About Mansokar",
-              contact: locale === "ar" ? "تواصل معنا" : "Contact",
-              faq:
-                locale === "ar" ? "أسئلة شائعة" : "Frequently asked questions",
-              guides: w.guides,
-            }[route] ??
-            (locale === "ar" ? "السياسات" : "Policies")}
-        </h1>
-        {guidePages.length > 0 && (
-          <div className="stack">
-            {guidePages.map((guide) => (
+    content =
+      builtInGuide && !cms ? (
+        <BuyingGuide guide={builtInGuide} locale={locale} />
+      ) : (
+        <div className="shell section narrow">
+          <Breadcrumb
+            locale={locale}
+            items={[
+              ...(path[0] === "guides" && path.length > 1
+                ? [{ label: w.guides, href: `/${locale}/guides` }]
+                : []),
+              {
+                label: cms?.title[locale] ?? route.replaceAll("/", " / "),
+                href: `/${locale}/${route}`,
+              },
+            ]}
+          />
+          <span className="eyebrow">MANSOKAR / INFORMATION</span>
+          <h1>
+            {cms?.title[locale] ??
+              {
+                about: locale === "ar" ? "من نحن" : "About Mansokar",
+                contact: locale === "ar" ? "تواصل معنا" : "Contact",
+                faq:
+                  locale === "ar"
+                    ? "أسئلة شائعة"
+                    : "Frequently asked questions",
+                guides: w.guides,
+              }[route] ??
+              (locale === "ar" ? "السياسات" : "Policies")}
+          </h1>
+          {route === "guides" && (
+            <div className="stack">
+              {buyingGuides
+                .filter(
+                  (g) =>
+                    !guidePages.some(
+                      (page) => page.slug === `guides/${g.slug}`,
+                    ),
+                )
+                .map((g) => (
+                  <Link
+                    className="panel"
+                    key={g.slug}
+                    href={`/${locale}/guides/${g.slug}`}
+                  >
+                    <h2>{g.title[locale]}</h2>
+                    <p>{g.description[locale]}</p>
+                  </Link>
+                ))}
+            </div>
+          )}
+          {guidePages.length > 0 && (
+            <div className="stack">
+              {guidePages.map((guide) => (
+                <Link
+                  className="panel"
+                  key={guide.slug}
+                  href={`/${locale}/${guide.slug}`}
+                >
+                  {guide.title[locale]} ↗
+                </Link>
+              ))}
+            </div>
+          )}
+          {route === "contact" && (
+            <ContactForm locale={locale} enabled={configured()} />
+          )}
+          {path[0] === "policies" &&
+            ["shipping", "returns", "warranty"].includes(path[1]) &&
+            cms && (
               <Link
-                className="panel"
-                key={guide.slug}
-                href={`/${locale}/${guide.slug}`}
+                className="button secondary"
+                href={`/${locale}/contact#callback`}
               >
-                {guide.title[locale]} ↗
+                {locale === "ar"
+                  ? "اطلب تواصل بخصوص هذه السياسة"
+                  : "Request help with this policy"}{" "}
+                ↗
               </Link>
-            ))}
-          </div>
-        )}
-        {cms ? (
-          <p className="prose">{cms.body[locale]}</p>
-        ) : route === "about" ? (
-          <p className="lead">
-            {w.intro} {w.demo}
-          </p>
-        ) : route === "faq" ? (
-          <>
-            <details className="accordion">
-              <summary>
-                {locale === "ar"
-                  ? "كيف أتحقق من توافق القطعة؟"
-                  : "How do I check fitment?"}
-              </summary>
-              <p>
-                {locale === "ar"
-                  ? "اختر العلامة والموديل والسنة والمحرك. يظهر التأكيد فقط عند وجود ربط صريح بنفس التكوين."
-                  : "Choose make, model, year and engine. Fitment is confirmed only with an explicit matching configuration."}
-              </p>
-            </details>
-            <details className="accordion">
-              <summary>
-                {locale === "ar"
-                  ? "هل يمكنني الشراء دون حساب؟"
-                  : "Can I order without an account?"}
-              </summary>
-              <p>
-                {locale === "ar"
-                  ? "نعم، عند تفعيل الطلبات والتوصيل. المتجر الحالي تجريبي."
-                  : "Yes, when checkout and delivery are enabled. This store currently contains demo data."}
-              </p>
-            </details>
-          </>
-        ) : (
-          <p className="notice">
-            {locale === "ar"
-              ? "هذا المحتوى ينتظر اعتماد التاجر قبل الإطلاق. معلومات الاتصال والسياسات والدليل غير معتمدة بعد."
-              : "This content awaits merchant approval before launch. Contact information, policies and guides have not been approved yet."}
-          </p>
-        )}
-      </div>
-    );
+            )}
+          {cms ? (
+            <div className="stack">
+              {cms.body[locale]
+                .split(/\n\s*\n/)
+                .map((paragraph: string, index: number) => (
+                  <p className="prose" key={index}>
+                    {paragraph}
+                  </p>
+                ))}
+            </div>
+          ) : route === "guides" || route === "contact" ? null : route ===
+            "about" ? (
+            <p className="lead">
+              {w.intro} {w.demo}
+            </p>
+          ) : route === "faq" ? (
+            <StoreQuestions locale={locale} />
+          ) : (
+            <p className="notice">
+              {locale === "ar"
+                ? "هذا المحتوى ينتظر اعتماد التاجر قبل الإطلاق. معلومات الاتصال والسياسات والدليل غير معتمدة بعد."
+                : "This content awaits merchant approval before launch. Contact information, policies and guides have not been approved yet."}
+            </p>
+          )}
+        </div>
+      );
   } else notFound();
   return (
     <Shell locale={locale} vehicle={vehicle} home={!route}>

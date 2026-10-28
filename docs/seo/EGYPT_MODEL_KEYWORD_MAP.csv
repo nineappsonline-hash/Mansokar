@@ -1,0 +1,17 @@
+﻿Model,Proposed Arabic URL,Proposed English URL,Primary Arabic query,Secondary terms and angle,Priority
+Opel Insignia,/ar/brands/opel/insignia,/en/brands/opel/insignia,قطع غيار أوبل انسيجنيا,اوبل انسجنيا، Opel Insignia parts Egypt; distinguish generation/engine,To validate against Egypt search data and actual stock
+Opel Astra,/ar/brands/opel/astra,/en/brands/opel/astra,قطع غيار أوبل استرا,أسترا، Astra J، Astra K; separate verified generations,To validate against Egypt search data and actual stock
+Opel Grandland,/ar/brands/opel/grandland,/en/brands/opel/grandland,قطع غيار أوبل جراند لاند,جراندلاند، Grandland X; verify generation and engine,To validate against Egypt search data and actual stock
+Opel Crossland,/ar/brands/opel/crossland,/en/brands/opel/crossland,قطع غيار أوبل كروس لاند,كروسلاند، Crossland X; service and brake parts,To validate against Egypt search data and actual stock
+MG 5,/ar/brands/mg/5,/en/brands/mg/5,قطع غيار ام جي 5,"إم جي 5، MG5، MG 5; filters, brakes, service parts",To validate against Egypt search data and actual stock
+MG 6,/ar/brands/mg/6,/en/brands/mg/6,قطع غيار ام جي 6,إم جي 6، MG6، MG 6; engine/version verification,To validate against Egypt search data and actual stock
+MG HS,/ar/brands/mg/hs,/en/brands/mg/hs,قطع غيار MG HS,ام جي اتش اس، إم جي HS; avoid mixing generations,To validate against Egypt search data and actual stock
+MG RX5,/ar/brands/mg/rx5,/en/brands/mg/rx5,قطع غيار MG RX5,ام جي RX5، RX 5; verify generation/engine,To validate against Egypt search data and actual stock
+MG ZS,/ar/brands/mg/zs,/en/brands/mg/zs,قطع غيار MG ZS,ام جي زد اس، إم جي ZS; exact engine/version,To validate against Egypt search data and actual stock
+Chevrolet Cruze,/ar/brands/chevrolet/cruze,/en/brands/chevrolet/cruze,قطع غيار شيفروليه كروز,شيفرولية كروز، Chevrolet Cruze parts Egypt,To validate against Egypt search data and actual stock
+Chevrolet Malibu,/ar/brands/chevrolet/malibu,/en/brands/chevrolet/malibu,قطع غيار شيفروليه ماليبو,شيفرولية ماليبو، Malibu; year/engine fitment,To validate against Egypt search data and actual stock
+Chevrolet Captiva,/ar/brands/chevrolet/captiva,/en/brands/chevrolet/captiva,قطع غيار شيفروليه كابتيفا,كابتيفـا، Captiva; distinguish generations,To validate against Egypt search data and actual stock
+Peugeot 2008,/ar/brands/peugeot/2008,/en/brands/peugeot/2008,قطع غيار بيجو 2008,Peugeot 2008 parts Egypt; model number is not a model year,To validate against Egypt search data and actual stock
+Peugeot 3008,/ar/brands/peugeot/3008,/en/brands/peugeot/3008,قطع غيار بيجو 3008,Peugeot 3008 parts Egypt; generation/engine first,To validate against Egypt search data and actual stock
+Citroën C3,/ar/brands/citroen/c3,/en/brands/citroen/c3,قطع غيار سيتروين C3,ستروين سي 3، Citroen C3; distinguish C3 from C3 Aircross,To validate against Egypt search data and actual stock
+Citroën C5,/ar/brands/citroen/c5,/en/brands/citroen/c5,قطع غيار سيتروين C5,ستروين سي 5، Citroen C5; distinguish C5 from C5 Aircross,To validate against Egypt search data and actual stock

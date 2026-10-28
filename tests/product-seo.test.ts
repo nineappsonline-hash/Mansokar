@@ -1,0 +1,352 @@
+import { test } from "node:test";
+import assert from "node:assert/strict";
+import { demoProducts } from "../src/lib/catalog";
+import {
+  productAnswers,
+  productSearchCopy,
+  productStructuredData,
+} from "../src/lib/product-seo";
+
+const p = {
+  ...demoProducts[0],
+  demo: false,
+  price: 20000,
+  sale: 12550,
+  cost: 9000,
+  specs: { country_of_origin: "Germany" },
+};
+
+test("each SKU has localized metadata and merchant overrides", () => {
+  for (const locale of ["ar", "en"] as const) {
+    const copy = productSearchCopy(p, locale);
+    assert.ok(copy.title.includes(p.partNumber));
+    assert.ok(copy.title.includes(p.name[locale]));
+    assert.ok(copy.description.includes(p.manufacturer));
+  }
+  assert.equal(
+    productSearchCopy(
+      { ...p, seo: { title: { ar: "عنوان مخصص", en: "Custom title" } } },
+      "en",
+    ).title,
+    "Custom title",
+  );
+});
+
+test("product markup uses public identifiers, real images and EGP without claiming stock or finance", () => {
+  const data = productStructuredData(p, "ar", "https://example.com", [
+    "/part.jpg",
+  ])!;
+  assert.equal(data.offers.price, "125.50");
+  assert.equal(data.offers.priceCurrency, "EGP");
+  assert.equal(data.mpn, p.partNumber);
+  assert.deepEqual(data.image, ["https://example.com/part.jpg"]);
+  assert.equal(data.url, `https://example.com/ar/products/${p.slug}`);
+  const json = JSON.stringify(data);
+  assert.ok(!json.includes('"cost"'));
+  assert.ok(!json.includes("availability"));
+  assert.ok(!json.includes("acceptedPaymentMethod"));
+  assert.equal(
+    productStructuredData(demoProducts[0], "en", "https://example.com", []),
+    null,
+  );
+  assert.equal(
+    productStructuredData(
+      { ...p, status: "draft" },
+      "en",
+      "https://example.com",
+      [],
+    ),
+    null,
+  );
+});
+
+test("stable product media URLs are included in product schema and sitemap entries", async () => {
+  const { collectSearchPages, sitemapEntries } =
+    await import("../src/lib/seo-inventory");
+  const pages = collectSearchPages({
+    brands: [],
+    modelNames: [],
+    categories: [],
+    cms: [],
+    guides: [],
+    products: [p],
+    productImages: [
+      { id: "11111111-1111-4111-8111-111111111111", product_id: p.id },
+    ],
+  });
+  const productPage = pages.find((page) => page.kind === "product")!;
+  assert.deepEqual(productPage.images, [
+    "/product-media/11111111-1111-4111-8111-111111111111",
+  ]);
+  const entries = sitemapEntries([productPage], "https://example.com/path");
+  assert.deepEqual(entries[0].images, [
+    "https://example.com/product-media/11111111-1111-4111-8111-111111111111",
+  ]);
+  const data = productStructuredData(p, "en", "https://example.com", [
+    productPage.images![0],
+  ])!;
+  assert.deepEqual(data.image, entries[0].images);
+});
+
+test("visible answers reflect the SKU and current payment limitations in both languages", () => {
+  for (const locale of ["ar", "en"] as const) {
+    const answers = productAnswers(p, locale);
+    assert.equal(answers.length, 4);
+    assert.ok(answers.some((a) => a.answer.includes(p.partNumber)));
+    assert.ok(answers.some((a) => a.answer.includes("Germany")));
+    assert.match(
+      answers[3].answer,
+      locale === "ar" ? /غير متاحين/ : /not currently available/,
+    );
+    assert.ok(!JSON.stringify(answers).includes("9000"));
+  }
+});
+
+test("target model coverage preserves existing navigation without inventing fitment data", async () => {
+  const { coveredBrands, targetBrands } =
+    await import("../src/lib/vehicle-coverage");
+  const existing = [
+    { slug: "opel", name: "Opel", ar: "أوبل", models: ["astra", "corsa"] },
+  ];
+  const before = JSON.stringify(existing);
+  const covered = coveredBrands(existing);
+  assert.equal(JSON.stringify(existing), before);
+  assert.equal(targetBrands.flatMap((b) => b.models).length, 16);
+  assert.equal(covered.length, 5);
+  assert.ok(covered.find((b) => b.slug === "opel")!.models.includes("corsa"));
+  assert.ok(
+    covered.find((b) => b.slug === "chevrolet")!.models.includes("captiva"),
+  );
+  assert.deepEqual(coveredBrands(covered), covered);
+  assert.ok(!JSON.stringify(covered).includes("vehicle_config_id"));
+});
+
+test("buying guides have complete Arabic and English answers and unique routes", async () => {
+  const { buyingGuides } = await import("../src/lib/buying-guides");
+  assert.equal(
+    new Set(buyingGuides.map((g) => g.slug)).size,
+    buyingGuides.length,
+  );
+  for (const guide of buyingGuides) {
+    assert.ok(/^[a-z0-9-]+$/.test(guide.slug));
+    for (const locale of ["ar", "en"] as const) {
+      assert.ok(guide.title[locale]);
+      assert.ok(guide.description[locale]);
+      assert.ok(guide.sections.length >= 3);
+      assert.ok(
+        guide.sections.every((s) => s.heading[locale] && s.body[locale]),
+      );
+    }
+  }
+});
+
+test("vehicle fields allow unknown details and validate optional powertrain values", async () => {
+  const { vehicleInput } = await import("../src/lib/vehicle-input");
+  const base = {
+    id: "config-1",
+    model_id: "opel-astra",
+    year: 2021,
+    engine: "1.4 petrol",
+  };
+  assert.equal(vehicleInput.safeParse(base).success, true);
+  assert.equal(
+    vehicleInput.safeParse({
+      ...base,
+      fuel_type: "petrol",
+      forced_induction: "turbo",
+      transmission: "automatic",
+      engine_capacity: 1400,
+    }).success,
+    true,
+  );
+  assert.equal(
+    vehicleInput.safeParse({ ...base, transmission: "unknown-option" }).success,
+    false,
+  );
+  assert.equal(
+    vehicleInput.safeParse({ ...base, engine_capacity: -1 }).success,
+    false,
+  );
+  assert.equal(vehicleInput.safeParse({ ...base, year: 1940 }).success, false);
+});
+
+test("blank localized SEO fields retain automatic metadata and restrictions appear in answers", async () => {
+  const { productInput } = await import("../src/lib/validation");
+  const partial = {
+    ...p,
+    seo: {
+      title: { ar: "عنوان عربي", en: "" },
+      description: { ar: "", en: "" },
+    },
+    specs: { ...p.specs, fitment_notes_en: "Front only; excludes version X" },
+  };
+  assert.equal(productInput.safeParse(partial).success, true);
+  assert.equal(productSearchCopy(partial, "ar").title, "عنوان عربي");
+  assert.ok(productSearchCopy(partial, "en").title.includes(p.partNumber));
+  assert.ok(
+    productAnswers(partial, "en").some((a) =>
+      a.answer.includes("excludes version X"),
+    ),
+  );
+});
+
+test("callback inquiries require a valid mobile number, consent and a meaningful message", async () => {
+  const { contactInput } = await import("../src/lib/contact-input");
+  const input = {
+    phone: "01012345678",
+    topic: "warranty",
+    inquiry: "Please contact me about the warranty for my order.",
+    consent: "yes",
+    ui_locale: "en",
+  };
+  assert.equal(contactInput.safeParse(input).success, true);
+  assert.equal(
+    contactInput.safeParse({ ...input, phone: "invalid" }).success,
+    false,
+  );
+  assert.equal(
+    contactInput.safeParse({ ...input, consent: undefined }).success,
+    false,
+  );
+  assert.equal(
+    contactInput.safeParse({ ...input, topic: "invalid" }).success,
+    false,
+  );
+  assert.equal(
+    contactInput.safeParse({ ...input, inquiry: " " }).success,
+    false,
+  );
+});
+
+test("Egypt shipping coverage has 27 governorates and validates configured rates", async () => {
+  const { governorates, shippingLabel } = await import("../src/lib/shipping");
+  const { shippingInput } = await import("../src/lib/shipping-input");
+  assert.equal(governorates.length, 27);
+  assert.equal(new Set(governorates.map((g) => g.code)).size, 27);
+  const option = {
+    id: "eg-cairo-standard",
+    name: "Cairo - standard",
+    governorate: "Cairo",
+    service_type: "standard" as const,
+    amount: 12550,
+    delivery_min_hours: 48,
+    delivery_max_hours: 120,
+    business_days: true,
+  };
+  assert.ok(shippingLabel(option, "ar").includes("القاهرة"));
+  assert.ok(shippingLabel(option, "en").includes("2–5 business days"));
+  assert.ok(
+    shippingLabel(
+      {
+        ...option,
+        service_type: "express",
+        delivery_min_hours: null,
+        delivery_max_hours: 48,
+        business_days: false,
+      },
+      "en",
+    ).includes("Within 48 hours"),
+  );
+  assert.equal(
+    shippingInput.safeParse({ ...option, enabled: true }).success,
+    true,
+  );
+  assert.equal(
+    shippingInput.safeParse({
+      ...option,
+      enabled: true,
+      starts_at: "2099-01-01T00:00:00+00:00",
+      ends_at: null,
+    }).success,
+    true,
+  );
+  assert.equal(
+    shippingInput.safeParse({ ...option, amount: null, enabled: false })
+      .success,
+    true,
+  );
+  assert.equal(
+    shippingInput.safeParse({ ...option, amount: null, enabled: true }).success,
+    false,
+  );
+  assert.equal(
+    shippingInput.safeParse({ ...option, amount: -1, enabled: true }).success,
+    false,
+  );
+  assert.equal(
+    shippingInput.safeParse({ ...option, amount: 0, enabled: true }).success,
+    true,
+  );
+});
+
+test("sitemap inventory excludes demos, drafts and invalid/private CMS routes", async () => {
+  const { collectSearchPages, sitemapEntries } =
+    await import("../src/lib/seo-inventory");
+  const common = {
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل", models: ["astra"] }],
+    modelNames: [
+      { brand: "opel", slug: "astra", name: { ar: "استرا", en: "Astra" } },
+    ],
+    categories: [],
+    guides: [],
+    products: [
+      demoProducts[0],
+      { ...p, slug: "real-part" },
+      { ...p, slug: "draft-part", status: "draft" },
+    ],
+    cms: [
+      {
+        slug: "policies/returns",
+        title: { ar: "الإرجاع", en: "Returns" },
+        published: true,
+      },
+      {
+        slug: "policies/warranty",
+        title: { ar: "الضمان", en: "Warranty" },
+        published: false,
+      },
+      { slug: "account", title: { ar: "خاص", en: "Private" }, published: true },
+      {
+        slug: "nonexistent-route",
+        title: { ar: "غير موجود", en: "Missing" },
+        published: true,
+      },
+    ],
+  };
+  const pages = collectSearchPages(common);
+  assert.ok(pages.some((page) => page.path === "/products/real-part"));
+  assert.ok(pages.some((page) => page.path === "/policies/returns"));
+  for (const excluded of [
+    "/products/" + demoProducts[0].slug,
+    "/products/draft-part",
+    "/policies/warranty",
+    "/account",
+    "/nonexistent-route",
+  ])
+    assert.ok(!pages.some((page) => page.path === excluded));
+  const entries = sitemapEntries(pages, "https://example.com/ignored-path/");
+  assert.equal(entries.length, pages.length * 2);
+  assert.ok(
+    entries.every(
+      (e) =>
+        e.url.startsWith("https://example.com/") &&
+        !e.url.includes("ignored-path"),
+    ),
+  );
+  assert.ok(
+    entries.every(
+      (e) =>
+        e.alternates.languages.ar.startsWith("https://example.com/ar") &&
+        e.alternates.languages.en.startsWith("https://example.com/en"),
+    ),
+  );
+  assert.equal(new Set(entries.map((e) => e.url)).size, entries.length);
+});
+
+test("site identity provides stable entity IDs without unsupported merchant claims", async () => {
+  const { siteIdentity } = await import("../src/lib/site-identity");
+  const data = siteIdentity("https://example.com/en", "Mansokar");
+  assert.equal(data["@graph"][0]["@id"], "https://example.com/#organization");
+  assert.ok(!JSON.stringify(data).includes("address"));
+  assert.ok(!JSON.stringify(data).includes("aggregateRating"));
+});

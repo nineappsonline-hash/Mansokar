@@ -29,8 +29,18 @@ export const productInput = z
       .optional(),
     seo: z
       .object({
-        title: localized.optional(),
-        description: localized.optional(),
+        title: z
+          .object({
+            ar: z.string().max(200).default(""),
+            en: z.string().max(200).default(""),
+          })
+          .optional(),
+        description: z
+          .object({
+            ar: z.string().max(500).default(""),
+            en: z.string().max(500).default(""),
+          })
+          .optional(),
       })
       .optional(),
     policy_refs: z.array(z.string().max(150)).max(20).optional(),

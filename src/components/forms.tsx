@@ -1,4 +1,5 @@
 "use client";
+import { shippingLabel, type ShippingArea } from "@/lib/shipping";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale, Vehicle } from "@/lib/catalog";
@@ -59,11 +60,13 @@ export function ApiForm({
             document.documentElement.lang === "ar"
               ? action === "auth" && body.mode === "signup"
                 ? "راجع بريدك الإلكتروني لتأكيد الحساب، ثم قم بتسجيل الدخول."
-                : action === "request"
-                  ? "تم حفظ طلبك للمراجعة."
-                  : action === "privacy-request"
-                    ? "تم حفظ طلب حذف البيانات للمراجعة."
-                    : "تم الحفظ."
+                : action === "contact"
+                  ? "تم استلام طلبك. سنتواصل معك على الرقم المسجل."
+                  : action === "request"
+                    ? "تم حفظ طلبك للمراجعة."
+                    : action === "privacy-request"
+                      ? "تم حفظ طلب حذف البيانات للمراجعة."
+                      : "تم الحفظ."
               : data.message || "Saved",
           );
           if (action === "auth") {
@@ -286,7 +289,7 @@ export function Checkout({
     area_id?: string;
   }[];
   locale: Locale;
-  areas: { id: string; name: string; governorate: string; amount: number }[];
+  areas: ShippingArea[];
   enabled: boolean;
   vehicle?: string;
 }) {
@@ -432,7 +435,9 @@ export function Checkout({
           />
         </label>
         <label>
-          {locale === "ar" ? "المحافظة والمنطقة" : "Governorate & area"}
+          {locale === "ar"
+            ? "المحافظة وطريقة الشحن"
+            : "Governorate & shipping method"}
           <select
             name="area"
             required
@@ -442,11 +447,18 @@ export function Checkout({
             <option value="">—</option>
             {areas.map((a) => (
               <option value={a.id} key={a.id}>
-                {a.governorate} / {a.name} · {money(a.amount, locale)}
+                {shippingLabel(a, locale)} · {money(a.amount, locale)}
               </option>
             ))}
           </select>
         </label>
+        {area && (
+          <p className="muted">
+            {locale === "ar"
+              ? "مدة التوصيل من تأكيد الطلب وتوافر المنتجات. أيام العمل لا تشمل الجمعة والعطلات الرسمية."
+              : "Delivery time runs from order confirmation and product availability. Business days exclude Fridays and public holidays."}
+          </p>
+        )}
         {!areas.length && (
           <p className="notice">
             {locale === "ar"

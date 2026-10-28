@@ -181,13 +181,22 @@ export async function Shell({
           </div>
           <div>
             <h3>{locale === "ar" ? "المساعدة" : "Help & information"}</h3>
-            {["about", "contact", "faq", "credits"].map((x) => (
+            {[
+              "about",
+              "contact",
+              "faq",
+              "site-map",
+              "installments",
+              "credits",
+            ].map((x) => (
               <Link key={x} href={`/${locale}/${x}`}>
                 {locale === "ar"
                   ? {
                       about: "من نحن",
                       contact: "تواصل معنا",
                       faq: "أسئلة شائعة",
+                      "site-map": "خريطة الموقع",
+                      installments: "الكروت والتقسيط",
                       credits: "مصادر الصور",
                     }[x]
                   : x}
@@ -196,23 +205,26 @@ export async function Shell({
           </div>
           <div>
             <h3>{locale === "ar" ? "السياسات" : "Policies"}</h3>
-            {["privacy", "terms", "shipping", "returns"].map((x) => (
-              <Link key={x} href={`/${locale}/policies/${x}`}>
-                {locale === "ar"
-                  ? {
-                      privacy: "الخصوصية",
-                      terms: "الشروط",
-                      shipping: "الشحن",
-                      returns: "الإرجاع",
-                    }[x]
-                  : x}
-              </Link>
-            ))}
+            {["privacy", "terms", "shipping", "returns", "warranty"].map(
+              (x) => (
+                <Link key={x} href={`/${locale}/policies/${x}`}>
+                  {locale === "ar"
+                    ? {
+                        privacy: "الخصوصية",
+                        terms: "الشروط",
+                        shipping: "الشحن",
+                        returns: "الإرجاع",
+                        warranty: "الضمان",
+                      }[x]
+                    : x}
+                </Link>
+              ),
+            )}
           </div>
         </div>
         <div className="shell footer-bottom">
           <span>© {new Date().getFullYear()} Mansokar</span>
-          <span>OPEL　/　PEUGEOT　/　CITROËN　/　MG</span>
+          <span>OPEL　/　MG　/　CHEVROLET　/　PEUGEOT　/　CITROËN</span>
         </div>
       </footer>
     </div>

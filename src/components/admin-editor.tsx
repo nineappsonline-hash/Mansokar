@@ -64,12 +64,21 @@ export function Importer() {
   }
   return (
     <div className="panel stack">
-      <h2>Product import · preview → validate → commit</h2>
+      <h2>Import and export products with Excel</h2>
       <p className="muted">
-        JSON product rows, or upload the CSV/XLSX template. SKU is the upsert
-        key. All rows commit in one transaction; no deletions. Optional
-        vehicle_config_id rows map exact configurations transactionally.
+        Download your products, edit them in Excel, then upload and validate
+        before saving. Match products by SKU. Include names, item brand
+        (manufacturer), country_of_origin, cost and selling price. Prices are in
+        Egyptian pounds (EGP): enter 100 for EGP 100, or 125.50 for EGP 125.50.
+        The Vehicles sheet lists compatible car IDs; repeat a product row for
+        each car it suits.
       </p>
+      <a
+        className="button secondary"
+        href="/api/admin-export?format=xlsx&template=true"
+      >
+        Download Excel import template ↗
+      </a>
       <a className="text-link" href="/api/admin-export?format=xlsx">
         Export XLSX ↗
       </a>
@@ -84,6 +93,7 @@ export function Importer() {
           onChange={async (e) => {
             const file = e.target.files?.[0];
             if (!file) return;
+            setValidated(false);
             setBusy(true);
             try {
               if (file.size > 1_000_000)
@@ -195,7 +205,13 @@ export function ProductEditor({
       {label}
       <input
         type={type}
-        value={value[key] ?? ""}
+        step={type === "number" ? "0.01" : undefined}
+        min={type === "number" ? "0" : undefined}
+        value={
+          type === "number" && value[key] != null
+            ? value[key] / 100
+            : (value[key] ?? "")
+        }
         onChange={(e) =>
           setValue({
             ...value,
@@ -203,7 +219,7 @@ export function ProductEditor({
               type === "number"
                 ? e.target.value === ""
                   ? null
-                  : Number(e.target.value)
+                  : Math.round(Number(e.target.value) * 100)
                 : e.target.value,
           })
         }
@@ -243,7 +259,7 @@ export function ProductEditor({
           )),
         )}
         <label>
-          Manufacturer
+          Item brand / manufacturer
           <select
             value={value.manufacturer}
             onChange={(e) =>
@@ -268,6 +284,169 @@ export function ProductEditor({
             ))}
           </select>
         </label>
+        <label>
+          Country of origin
+          <input
+            value={value.specs?.country_of_origin ?? ""}
+            onChange={(e) =>
+              setValue({
+                ...value,
+                specs: { ...value.specs, country_of_origin: e.target.value },
+              })
+            }
+          />
+        </label>
+        <fieldset className="stack">
+          <legend>Product compatibility details</legend>
+          <label>
+            Fitting position
+            <select
+              value={value.specs?.fitting_position ?? ""}
+              onChange={(e) =>
+                setValue({
+                  ...value,
+                  specs: { ...value.specs, fitting_position: e.target.value },
+                })
+              }
+            >
+              <option value="">Not supplied</option>
+              {[
+                "front",
+                "rear",
+                "front left",
+                "front right",
+                "rear left",
+                "rear right",
+                "left",
+                "right",
+                "engine bay",
+                "cabin",
+                "other",
+              ].map((position) => (
+                <option key={position} value={position}>
+                  {position}
+                </option>
+              ))}
+              {value.specs?.fitting_position &&
+                ![
+                  "front",
+                  "rear",
+                  "front left",
+                  "front right",
+                  "rear left",
+                  "rear right",
+                  "left",
+                  "right",
+                  "engine bay",
+                  "cabin",
+                  "other",
+                ].includes(value.specs.fitting_position) && (
+                  <option value={value.specs.fitting_position}>
+                    {value.specs.fitting_position}
+                  </option>
+                )}
+            </select>
+          </label>
+          {(["ar", "en"] as const).map((lang) => (
+            <label key={lang}>
+              Compatibility restrictions / exclusions · {lang}
+              <textarea
+                maxLength={1000}
+                dir={lang === "ar" ? "rtl" : "ltr"}
+                value={value.specs?.[`fitment_notes_${lang}`] ?? ""}
+                onChange={(e) =>
+                  setValue({
+                    ...value,
+                    specs: {
+                      ...value.specs,
+                      [`fitment_notes_${lang}`]: e.target.value,
+                    },
+                  })
+                }
+              />
+            </label>
+          ))}
+          <p className="muted">
+            Public buying notes, for example front only or not suitable for a
+            specified engine. Select the verified configurations in Compatible
+            vehicles after saving the product.
+          </p>
+        </fieldset>
+        <fieldset className="stack">
+          <legend>SEO and search terms</legend>
+          {(["ar", "en"] as const).flatMap((lang) => [
+            <label key={`title-${lang}`}>
+              Search title · {lang}
+              <input
+                maxLength={200}
+                dir={lang === "ar" ? "rtl" : "ltr"}
+                value={value.seo?.title?.[lang] ?? ""}
+                onChange={(e) =>
+                  setValue({
+                    ...value,
+                    seo: {
+                      ...value.seo,
+                      title: {
+                        ar: "",
+                        en: "",
+                        ...value.seo?.title,
+                        [lang]: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </label>,
+            <label key={`description-${lang}`}>
+              Search description · {lang}
+              <textarea
+                maxLength={500}
+                dir={lang === "ar" ? "rtl" : "ltr"}
+                value={value.seo?.description?.[lang] ?? ""}
+                onChange={(e) =>
+                  setValue({
+                    ...value,
+                    seo: {
+                      ...value.seo,
+                      description: {
+                        ar: "",
+                        en: "",
+                        ...value.seo?.description,
+                        [lang]: e.target.value,
+                      },
+                    },
+                  })
+                }
+              />
+            </label>,
+            <label key={`synonyms-${lang}`}>
+              Alternative names / search terms · {lang} (one per line)
+              <textarea
+                dir={lang === "ar" ? "rtl" : "ltr"}
+                value={(value.synonyms?.[lang] ?? []).join("\n")}
+                onChange={(e) =>
+                  setValue({
+                    ...value,
+                    synonyms: {
+                      ar: [],
+                      en: [],
+                      ...value.synonyms,
+                      [lang]: e.target.value
+                        .split("\n")
+                        .map((v) => v.trim())
+                        .filter(Boolean),
+                    },
+                  })
+                }
+              />
+            </label>,
+          ])}
+          <p className="muted">
+            Leave search titles and descriptions blank to use the automatic
+            product-specific text. Alternative names help shoppers find the
+            part.
+          </p>
+        </fieldset>
         {field("family", "Part family")}
         {field("partNumber", "Primary part number")}
         <label>
@@ -282,9 +461,13 @@ export function ProductEditor({
             }
           />
         </label>
-        {field("price", "List price · piasters", "number")}
-        {field("sale", "Sale price · piasters (blank to disable)", "number")}
-        {field("cost", "Private cost · piasters", "number")}
+        {field("price", "Selling / list price · EGP", "number")}
+        {field(
+          "sale",
+          "Discounted sale price · EGP (blank to disable)",
+          "number",
+        )}
+        {field("cost", "Private cost · EGP", "number")}
         <label>
           Type
           <select
@@ -349,12 +532,16 @@ export function FitmentEditor({
   products,
   vehicles,
   fitments,
+  initialProduct,
 }: {
+  initialProduct?: string;
   products: { id: string; sku: string }[];
   vehicles: { id: string; name: { en: string } }[];
   fitments: { product_id: string; vehicle_config_id: string }[];
 }) {
-  const [product, setProduct] = useState(products[0]?.id ?? "");
+  const [product, setProduct] = useState(
+    initialProduct ?? products[0]?.id ?? "",
+  );
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string[]>(
     fitments
@@ -363,7 +550,15 @@ export function FitmentEditor({
   );
   return (
     <section className="panel stack">
-      <h2>Exact vehicle fitments</h2>
+      <h2>Compatible vehicles · exact configurations</h2>
+      <p className="muted">
+        Select only configurations verified for this part number. Save fitting
+        position and exclusions in the product fields above. Unselected vehicles
+        remain unconfirmed.
+      </p>
+      <a className="text-link" href="/admin?module=vehicles">
+        Add or edit vehicle configurations ↗
+      </a>
       <label>
         Product
         <select

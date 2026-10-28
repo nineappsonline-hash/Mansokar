@@ -19,8 +19,10 @@ export default function robots(): MetadataRoute.Robots {
             "/en/garage",
             "/ar/order/",
             "/en/order/",
-            "/ar/catalog?",
-            "/en/catalog?",
+            "/ar/compare",
+            "/en/compare",
+            "/ar/track-order",
+            "/en/track-order",
           ]
         : "/",
     },

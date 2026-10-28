@@ -1,3 +1,10 @@
+import { AdminSeo } from "@/components/admin-seo";
+import {
+  ShippingRateEditor,
+  FreeShippingEditor,
+} from "@/components/admin-shipping";
+import { governorates } from "@/lib/shipping";
+import { VehicleConfigurationEditor } from "@/components/admin-vehicle-configuration";
 import { HeroSlidesEditor } from "@/components/admin-hero-slides";
 import { AdminCustomers } from "@/components/admin-customers";
 import { AdminReports } from "@/components/admin-reports";
@@ -45,6 +52,7 @@ const modules = [
   "import",
   "reports",
   "analytics",
+  "seo",
   "settings",
   "branding",
   "hero-slideshow",
@@ -84,7 +92,8 @@ export default async function Admin({
   let content: React.ReactNode;
   if (module === "overview" || module === "reports") {
     content = <AdminReports module={module} from={from} to={to} />;
-  } else if (module === "analytics") {
+  } else if (module === "seo") content = <AdminSeo />;
+  else if (module === "analytics") {
     const { data } = await db
       .from("analytics_events")
       .select("event,amount")
@@ -106,10 +115,13 @@ export default async function Admin({
     );
   } else if (module === "products") {
     const products = await allRows<any>("products");
-    const [manufacturers, categories] = await Promise.all([
-      allRows<any>("manufacturers"),
-      allRows<any>("categories"),
-    ]);
+    const [manufacturers, categories, fitments, { vehicles }] =
+      await Promise.all([
+        allRows<any>("manufacturers"),
+        allRows<any>("categories"),
+        allRows<any>("product_fitments"),
+        vehicleCatalog(),
+      ]);
     content = (
       <div className="two-col">
         <div className="panel stack">
@@ -127,21 +139,37 @@ export default async function Admin({
             Slugs and SKUs are unique.
           </p>
         </div>
-        <ProductEditor
-          key={id}
-          manufacturers={manufacturers.map((m) => m.name)}
-          categories={categories}
-          initial={
-            products.find((p) => p.id === id) ?? {
-              ...demoProducts[0],
-              id: undefined,
-              sku: "NEW-SKU",
-              slug: "new-product",
-              status: "draft",
-              orderable: false,
+        <div className="stack">
+          <ProductEditor
+            key={id}
+            manufacturers={manufacturers.map((m) => m.name)}
+            categories={categories}
+            initial={
+              products.find((p) => p.id === id) ?? {
+                ...demoProducts[0],
+                id: undefined,
+                sku: "NEW-SKU",
+                slug: "new-product",
+                status: "draft",
+                orderable: false,
+              }
             }
-          }
-        />
+          />
+          {products.some((p) => p.id === id) ? (
+            <FitmentEditor
+              key={`fitments-${id}`}
+              initialProduct={id}
+              products={products.map((p) => ({ id: p.id, sku: p.sku }))}
+              vehicles={vehicles}
+              fitments={fitments}
+            />
+          ) : (
+            <p className="panel">
+              Save the product first, then select the exact vehicles it fits
+              here. You can also use Admin → Fitments.
+            </p>
+          )}
+        </div>
       </div>
     );
   } else if (module === "customers") {
@@ -342,78 +370,71 @@ export default async function Admin({
         .eq("key", "shipping")
         .maybeSingle(),
     ]);
+    const selected = areas.find((a) => a.id === id);
+    const governorate = selected?.governorate ?? "Cairo";
+    const rates =
+      selected && !selected.id.startsWith("eg-")
+        ? [selected]
+        : areas.filter(
+            (a) => a.governorate === governorate && a.id.startsWith("eg-"),
+          );
     content = (
       <div className="two-col">
         <section className="panel stack">
-          <h2>Delivery areas</h2>
-          <Link className="button secondary" href="/admin?module=shipping">
-            New delivery area
-          </Link>
-          {areas.map((a) => (
-            <Link key={a.id} href={"/admin?module=shipping&id=" + a.id}>
-              {a.governorate} / {a.name} · {a.enabled ? "Enabled" : "Disabled"}
-            </Link>
-          ))}
-          <MerchantForm
-            title="Free delivery threshold"
-            action="admin-free-shipping"
-            initial={{
-              free_shipping_threshold:
-                shippingSettings?.value?.free_shipping_threshold ?? null,
-            }}
-            fields={[
-              {
-                path: "free_shipping_threshold",
-                label: "Threshold · piasters (blank disables)",
-                type: "number",
-                nullable: true,
-              },
-            ]}
+          <h2>Egyptian governorates · shipping rates</h2>
+          <p>
+            Set and enable normal and express rates separately for each
+            governorate. All prices here are in EGP. New rates stay blank and
+            disabled until you configure them.
+          </p>
+          {governorates.map((g) => {
+            const options = areas.filter(
+              (a) => a.governorate === g.en && a.id.startsWith("eg-"),
+            );
+            return (
+              <Link
+                key={g.code}
+                href={`/admin?module=shipping&id=eg-${g.code}-standard`}
+                aria-current={governorate === g.en ? "page" : undefined}
+              >
+                {g.en} · {g.ar}
+                <br />
+                {options
+                  .map(
+                    (a) =>
+                      `${a.service_type === "express" ? "Express" : "Normal"}: ${a.amount == null ? "not configured" : money(a.amount, "en")} (${a.enabled ? "enabled" : "disabled"})`,
+                  )
+                  .join(" / ")}
+              </Link>
+            );
+          })}
+          <details>
+            <summary>Existing local/custom delivery areas</summary>
+            {areas
+              .filter((a) => !a.id.startsWith("eg-"))
+              .map((a) => (
+                <p key={a.id}>
+                  <Link href={`/admin?module=shipping&id=${a.id}`}>
+                    {a.governorate} / {a.name}
+                  </Link>
+                </p>
+              ))}
+          </details>
+          <FreeShippingEditor
+            amount={shippingSettings?.value?.free_shipping_threshold ?? null}
           />
         </section>
-        <MerchantForm
-          key={id}
-          title="Delivery area and approved rate"
-          action="admin-shipping"
-          initial={
-            areas.find((a) => a.id === id) ?? {
-              id: "",
-              governorate: "",
-              name: "",
-              amount: 0,
-              enabled: false,
-              starts_at: new Date().toISOString(),
-              ends_at: null,
-            }
-          }
-          fields={[
-            { path: "id", label: "Area identifier", required: true },
-            { path: "governorate", label: "Governorate", required: true },
-            { path: "name", label: "Area name", required: true },
-            {
-              path: "amount",
-              label: "Approved delivery rate · piasters",
-              type: "number",
-              required: true,
-            },
-            {
-              path: "starts_at",
-              label: "Effective from (UTC)",
-              type: "datetime-local",
-              required: true,
-            },
-            {
-              path: "ends_at",
-              label: "Effective until (UTC, blank for ongoing)",
-              type: "datetime-local",
-            },
-            {
-              path: "enabled",
-              label: "Enable approved delivery area",
-              type: "checkbox",
-            },
-          ]}
-        />
+        <div className="stack">
+          {rates.map((rate) => (
+            <ShippingRateEditor key={rate.id} initial={rate} />
+          ))}
+          {!rates.length && (
+            <p className="panel">
+              Apply the governorate shipping migration to initialize these
+              options.
+            </p>
+          )}
+        </div>
       </div>
     );
   } else if (module === "cms") {
@@ -428,7 +449,10 @@ export default async function Admin({
           ))}
           <p>
             Use policies/privacy, policies/terms, policies/shipping,
-            policies/returns, about, contact, faq, guides.
+            policies/returns, policies/warranty, about, contact, faq, guides.
+            Shipping, returns and warranty drafts need review of delivery
+            estimates, support contacts and supplier coverage before marking
+            them published.
           </p>
         </div>
         <MerchantForm
@@ -580,15 +604,18 @@ export default async function Admin({
             <h3>{r.contact}</h3>
             <p>{r.description}</p>
             <p>
-              {r.vehicle_config_id ??
-                Object.values(r.vehicle_details ?? {}).join(" · ")}
+              {r.vehicle_details?.request_type === "contact"
+                ? `Callback request · ${r.vehicle_details.topic}`
+                : (r.vehicle_config_id ??
+                  Object.values(r.vehicle_details ?? {}).join(" · "))}
             </p>
-            {!r.vehicle_config_id && (
-              <p className="notice">
-                Customer-described vehicle; exact fitment requires manual
-                verification.
-              </p>
-            )}
+            {!r.vehicle_config_id &&
+              r.vehicle_details?.request_type !== "contact" && (
+                <p className="notice">
+                  Customer-described vehicle; exact fitment requires manual
+                  verification.
+                </p>
+              )}
             {r.image_path && (
               <a
                 href={`/api/inquiry-image?id=${r.id}`}
@@ -666,7 +693,16 @@ export default async function Admin({
             {configs.map((c) => (
               <p key={c.id}>
                 <Link href={"/admin?module=vehicles&id=" + c.id}>
-                  {c.id} · {c.year} · {c.engine}
+                  {c.id} · {c.year} · {c.engine} ·{" "}
+                  {[
+                    c.fuel_type,
+                    c.forced_induction,
+                    c.transmission,
+                    c.body,
+                    c.trim,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")}
                 </Link>
               </p>
             ))}
@@ -697,6 +733,7 @@ export default async function Admin({
                   { value: "peugeot", label: "Peugeot" },
                   { value: "citroen", label: "Citroën" },
                   { value: "mg", label: "MG" },
+                  { value: "chevrolet", label: "Chevrolet" },
                 ],
               },
               { path: "slug", label: "Model URL slug", required: true },
@@ -731,7 +768,11 @@ export default async function Admin({
                 type: "select",
                 options: modelOptions,
               },
-              { path: "name", label: "Generation name", required: true },
+              {
+                path: "name",
+                label: "Generation / chassis code (e.g. Astra J)",
+                required: true,
+              },
               {
                 path: "year_start",
                 label: "First model year",
@@ -746,60 +787,26 @@ export default async function Admin({
               },
             ]}
           />
-          <MerchantForm
+          <VehicleConfigurationEditor
             key={"config" + id}
-            title="Exact vehicle configuration"
-            action="admin-vehicle"
+            models={models}
+            generations={generations}
             initial={
               configs.find((c) => c.id === id) ?? {
                 id: "",
                 model_id: models[0]?.id ?? "",
-                year: 2020,
+                year: new Date().getFullYear(),
                 engine: "",
                 generation_id: null,
                 engine_code: null,
                 engine_capacity: null,
+                fuel_type: null,
+                forced_induction: null,
+                transmission: null,
                 body: null,
                 trim: null,
               }
             }
-            fields={[
-              { path: "id", label: "Configuration identifier", required: true },
-              {
-                path: "model_id",
-                label: "Configuration model",
-                type: "select",
-                options: modelOptions,
-              },
-              {
-                path: "year",
-                label: "Model year",
-                type: "number",
-                required: true,
-              },
-              { path: "engine", label: "Engine description", required: true },
-              {
-                path: "generation_id",
-                label: "Generation (optional)",
-                type: "select",
-                options: [
-                  { value: "", label: "Not supplied" },
-                  ...generations.map((g) => ({
-                    value: g.id,
-                    label: g.model_id + " · " + g.name,
-                  })),
-                ],
-              },
-              { path: "engine_code", label: "Engine code", nullable: true },
-              {
-                path: "engine_capacity",
-                label: "Engine capacity · cc",
-                type: "number",
-                nullable: true,
-              },
-              { path: "body", label: "Body style", nullable: true },
-              { path: "trim", label: "Trim", nullable: true },
-            ]}
           />
         </div>
       </div>

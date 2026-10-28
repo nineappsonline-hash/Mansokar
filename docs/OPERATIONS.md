@@ -29,3 +29,41 @@ Online payments, installments, transaction messaging/OTP and refunds need actual
 ## Search indexing cutover
 
 The preview sends `X-Robots-Tag: noindex, nofollow`. Keep `STORE_LAUNCH_APPROVED` unset/false while merchant data and policies are unapproved. At the approved production cutover, set it to `true` and redeploy. Private/filter pages and demo products continue to use noindex independently; unapproved placeholder CMS pages also remain noindex. Homepage canonical URLs match `/ar` and `/en` without an extra redirect.
+## Homepage hero slideshow
+
+Open `/admin?module=hero-slideshow` as an enabled administrator. Upload landscape images, add both Arabic and English descriptions, and save. Enable at least two images for automatic rotation; one enabled image remains static. You can reorder, disable or remove images and choose a 3–30 second interval. The original hero image configured in Branding is displayed whenever no slideshow images are enabled. Uploads are private and presented through signed URLs. The editor previews unsaved changes, while the public page changes only after saving.
+
+
+## Vehicle and product compatibility data
+
+In **Admin → Vehicles**, create a model under the correct brand, then its generation/chassis designation and year range, then one exact configuration per model year. Fuel, induction, transmission, engine code/capacity, body and trim may remain blank until verified. Do not use a generation year range as evidence that all years share the same part.
+
+In **Admin → Products**, enter the item brand, country of origin, part numbers, fitting position and Arabic/English compatibility exclusions. Save the product first, then choose its verified configurations in **Compatible vehicles** on the same page and save the fitments separately. Unselected configurations remain unconfirmed. SEO titles/descriptions are optional per language; blank values use the automatic product text. Alternative names help catalog search. Excel exports use EGP and include restrictions and a detailed vehicle-reference sheet.
+
+The `vehicle_configuration_details` migration adds optional powertrain fields and registers Chevrolet plus the requested model identities. It does not create real engine/year configurations or assign fitments. The migration has been applied to the linked Mansokar database; deploy the application build separately.
+
+## Approved policy drafts and callback requests
+
+Shipping, returns and warranty drafts are saved in **Admin → CMS** at `policies/shipping`, `policies/returns`, and `policies/warranty`. The owner approved 2–5 working days and product-specific supplier warranties; support uses a callback form. See `docs/policies/POLICY_DRAFTS.md` for the full bilingual wording and sources.
+
+Deploy the application containing `/ar/contact`, `/en/contact` and `/api/contact` before publishing those CMS drafts, then verify a callback reaches **Admin → Inquiries**. The form stores the phone number, topic, inquiry and consent privately. Staff must review and follow up manually; no email/SMS transport or callback schedule is configured. Do not mark callback inquiries as vehicle-fitment requests.
+
+`scripts/save-policy-drafts.mjs` previews the supplied content by default. `--save-drafts` inserts missing drafts without overwriting existing pages; `--update-drafts` explicitly updates only existing unpublished drafts. It never publishes a page. `scripts/policy-check.mjs` checks draft visibility, CMS content and a disposable callback inquiry when run with `CONFIRM_LIVE_QA=mansokar` and the server environment.
+
+## Governorate shipping rates
+
+**Admin → Shipping** lists all 27 Egyptian governorates. Select a governorate, enter separate normal and express rates in **EGP**, then enable each option you offer. Rates begin blank and disabled; zero is an explicit free-delivery rate, not an unset value. Existing custom/local delivery areas and prices are preserved under the expandable list.
+
+Normal delivery is **2–5 business days**; express delivery is **within 48 elapsed hours**, measured from order confirmation and product availability. Normal business days exclude Fridays and public holidays. Checkout and the product delivery estimator show the selected governorate, method, window and rate. The selected area's server-side rate is used by the checkout quote and order transaction and included in the order's shipping snapshot.
+
+Both governorate migrations have been applied to the linked database. The shipping policy draft has been updated with the confirmed windows. New governorate options remain unavailable to shoppers until their rate is set and they are enabled. The existing optional free-shipping threshold applies to all enabled methods, including express; its admin editor now accepts EGP.
+
+`scripts/shipping-check.mjs` verifies governorate coverage and independent EGP rate saves/reloads using future-dated disposable rates that are never offered to shoppers. Run it only with `CONFIRM_LIVE_QA=mansokar` and the server environment.
+
+## Sitemap and SEO diagnostics
+
+`/sitemap.xml` now runs at request time and shares its inventory with `/ar/site-map` and `/en/site-map`. It remains available for review while launch indexing is disabled. Demo/draft products and unpublished CMS policies are excluded. Only supported public CMS routes are included. The XML lists both locales with absolute canonical URLs and language alternates; the HTML map provides crawlable links, with product pagination.
+
+**Admin → SEO** shows the canonical origin, indexing flag, real-product count and data gaps. To verify Google Search Console ownership using a meta tag, configure the owner-supplied `GOOGLE_SITE_VERIFICATION` token and redeploy. This does not submit the sitemap automatically. After production validation and the deliberate indexing cutover, submit the canonical site's `/sitemap.xml` in the verified Search Console property.
+
+The 28 October live audit found `/sitemap.xml` already returned 200, but the deployed site still sent `noindex, nofollow`; the database contained eight demo products and no published real products. Do not remove the indexing launch control merely to get demonstration products into search. The new XML/HTML sitemap and dashboard changes still require application deployment.

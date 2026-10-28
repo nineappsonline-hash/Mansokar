@@ -1,4 +1,4 @@
-import { requireAdmin, allRows } from "@/lib/db";
+import { requireAdmin, allRows, vehicleCatalog } from "@/lib/db";
 import { exportCsv, exportXlsx } from "@/lib/spreadsheets";
 import { enforceRate } from "@/lib/rate-limit";
 import type { Product } from "@/lib/catalog";
@@ -18,6 +18,9 @@ export async function GET(request: Request) {
         ...(byProduct.get(f.product_id) ?? []),
         f.vehicle_config_id,
       ]);
+    const { vehicles } = await vehicleCatalog();
+    const template =
+      new URL(request.url).searchParams.get("template") === "true";
     const rows = products.flatMap((p) => {
       const ids = byProduct.get(p.id);
       return ids?.length
@@ -27,7 +30,7 @@ export async function GET(request: Request) {
     const xlsx = new URL(request.url).searchParams.get("format") === "xlsx";
     return new Response(
       xlsx
-        ? new Uint8Array(await exportXlsx(rows))
+        ? new Uint8Array(await exportXlsx(template ? [] : rows, vehicles))
         : "\uFEFF" + exportCsv(rows),
       {
         headers: {

@@ -7,7 +7,7 @@ import { demoProducts, demoFits, type Product } from "./catalog";
 export function configured() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
   );
 }
 export async function authClient() {
@@ -230,9 +230,12 @@ export async function vehicleCatalog() {
         engineCapacity: c.engine_capacity,
         body: c.body,
         trim: c.trim,
+        fuelType: c.fuel_type,
+        forcedInduction: c.forced_induction,
+        transmission: c.transmission,
         name: {
-          ar: `${b?.ar} ${m?.name.ar} ${c.year} · ${[c.engine, c.engine_code, c.vehicle_generations?.name, c.body, c.trim].filter(Boolean).join(" · ")}`,
-          en: `${b?.name} ${m?.name.en} ${c.year} · ${[c.engine, c.engine_code, c.vehicle_generations?.name, c.body, c.trim].filter(Boolean).join(" · ")}`,
+          ar: `${b?.ar} ${m?.name.ar} ${c.year} · ${[c.engine, c.engine_code, c.vehicle_generations?.name, c.fuel_type, c.forced_induction, c.transmission, c.body, c.trim].filter(Boolean).join(" · ")}`,
+          en: `${b?.name} ${m?.name.en} ${c.year} · ${[c.engine, c.engine_code, c.vehicle_generations?.name, c.fuel_type, c.forced_induction, c.transmission, c.body, c.trim].filter(Boolean).join(" · ")}`,
         },
       };
     }),
@@ -260,22 +263,14 @@ export async function productImages(productId: string) {
   if (!configured()) return [];
   const { data, error } = await service()
     .from("product_images")
-    .select("path,alt,position")
+    .select("id,alt,position")
     .eq("product_id", productId)
     .order("position");
   if (error) throw error;
-  return Promise.all(
-    (data ?? []).map(async (row) => {
-      const { data, error } = await service()
-        .storage.from("catalog-images")
-        .createSignedUrl(row.path, 600);
-      if (error) throw error;
-      return {
-        url: data.signedUrl,
-        alt: row.alt as { ar: string; en: string },
-      };
-    }),
-  );
+  return (data ?? []).map((row) => ({
+    url: `/product-media/${row.id}`,
+    alt: row.alt as { ar: string; en: string },
+  }));
 }
 export type CategoryRecord = {
   slug: string;
@@ -409,7 +404,9 @@ export async function deliveryAreas() {
   const now = new Date().toISOString();
   const { data, error } = await service()
     .from("shipping_areas")
-    .select("id,name,governorate,amount")
+    .select(
+      "id,name,governorate,amount,service_type,delivery_min_hours,delivery_max_hours,business_days",
+    )
     .eq("enabled", true)
     .lte("starts_at", now)
     .or(`ends_at.is.null,ends_at.gt.${now}`);

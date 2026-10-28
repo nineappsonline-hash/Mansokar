@@ -1,11 +1,12 @@
 "use client";
+import { shippingLabel, type ShippingArea } from "@/lib/shipping";
 import { useState } from "react";
 import { money, type Locale } from "@/lib/catalog";
 export function ShippingEstimate({
   areas,
   locale,
 }: {
-  areas: { id: string; name: string; governorate: string; amount: number }[];
+  areas: ShippingArea[];
   locale: Locale;
 }) {
   const [id, setId] = useState("");
@@ -16,12 +17,14 @@ export function ShippingEstimate({
       {areas.length ? (
         <>
           <label>
-            {locale === "ar" ? "المحافظة والمنطقة" : "Governorate & area"}
+            {locale === "ar"
+              ? "المحافظة وطريقة الشحن"
+              : "Governorate & shipping method"}
             <select value={id} onChange={(e) => setId(e.target.value)}>
               <option value="">—</option>
               {areas.map((a) => (
                 <option key={a.id} value={a.id}>
-                  {a.governorate} / {a.name}
+                  {shippingLabel(a, locale)}
                 </option>
               ))}
             </select>

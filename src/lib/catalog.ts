@@ -12,6 +12,9 @@ export type Vehicle = {
   engineCapacity?: number;
   body?: string;
   trim?: string;
+  fuelType?: string;
+  forcedInduction?: string;
+  transmission?: string;
 };
 export type Product = {
   id: string;
@@ -59,6 +62,7 @@ export const brands = [
     models: ["c3", "c4", "c5-aircross"],
   },
   { slug: "mg", name: "MG", ar: "إم جي", models: ["5", "6", "zs"] },
+  { slug: "chevrolet", name: "Chevrolet", ar: "شيفروليه", models: [] },
 ];
 export const vehicles: Vehicle[] = brands.flatMap((b, bi) =>
   b.models.flatMap((model, mi) =>

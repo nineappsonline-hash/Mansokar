@@ -70,6 +70,13 @@ test("XLSX exports preserve private admin fields and treat formula-like product 
     ...demoProducts[0],
     name: { ar: "اسم المنتج", en: "=SUM(1,2)" },
     cost: 12345,
+    specs: {
+      ...demoProducts[0].specs,
+      country_of_origin: "Germany",
+      fitting_position: "front",
+      fitment_notes_ar: "أمامي فقط",
+      fitment_notes_en: "Front only",
+    },
     warranty: { ar: "ضمان المورد", en: "Supplier warranty" },
     partNumbers: ["OEM-12"],
     vehicle_config_id: "opel-astra-2021-0",
@@ -80,8 +87,62 @@ test("XLSX exports preserve private admin fields and treat formula-like product 
     "export.xlsx",
   );
   assert.equal(rows[0].cost, 12345);
+  assert.deepEqual(rows[0].specs, p.specs);
   assert.deepEqual(rows[0].partNumbers, ["OEM-12"]);
   assert.deepEqual(rows[0].name, p.name);
   assert.deepEqual(rows[0].warranty, p.warranty);
   assert.equal(validateImport(rows).valid, true);
+});
+
+test("blank Excel templates include car reference and country column", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const { vehicles } = await import("../src/lib/catalog");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportXlsx([], vehicles));
+  assert.equal(workbook.worksheets[0].name, "Products");
+  assert.equal(workbook.worksheets[0].rowCount, 1);
+  assert.ok(
+    (workbook.worksheets[0].getRow(1).values as unknown[]).includes(
+      "country_of_origin",
+    ),
+  );
+  assert.equal(
+    workbook.getWorksheet("Vehicles")?.getCell("A2").value,
+    vehicles[0].id,
+  );
+  assert.ok(workbook.getWorksheet("Instructions"));
+});
+
+test("Excel prices use EGP, preserve decimals and reject fractional piasters", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const { columns } = await import("../src/lib/spreadsheets");
+  const product = {
+    ...demoProducts[0],
+    price: 20000,
+    sale: 15025,
+    cost: 12550,
+  };
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportXlsx([product]));
+  const sheet = workbook.worksheets[0];
+  const cell = (key: "price" | "sale" | "cost") =>
+    sheet.getRow(2).getCell(columns.indexOf(key) + 1);
+  assert.equal(cell("price").value, 200);
+  assert.equal(cell("sale").value, 150.25);
+  assert.equal(cell("cost").value, 125.5);
+  cell("price").value = 300.99;
+  const bytes = new Uint8Array(await workbook.xlsx.writeBuffer());
+  const rows = await parseSpreadsheet(
+    bytes.buffer as ArrayBuffer,
+    "products.xlsx",
+  );
+  assert.equal(rows[0].price, 30099);
+  assert.equal(rows[0].sale, 15025);
+  assert.equal(rows[0].cost, 12550);
+  cell("cost").value = 1.001;
+  const invalid = new Uint8Array(await workbook.xlsx.writeBuffer());
+  await assert.rejects(
+    parseSpreadsheet(invalid.buffer as ArrayBuffer, "products.xlsx"),
+    /two decimal places/,
+  );
 });

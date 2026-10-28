@@ -29,16 +29,24 @@ export function BrandCard({
           : `Shop ${brand.name} parts`
       }
     >
-      <Image
-        className="brand-closeup"
-        src={photo ?? `/images/cinematic/${brand.slug}-v2.webp`}
-        alt=""
-        fill
-        sizes="(max-width:600px) 50vw, 25vw"
-      />
+      {(photo || brand.slug !== "chevrolet") && (
+        <Image
+          className="brand-closeup"
+          src={photo ?? `/images/cinematic/${brand.slug}-v2.webp`}
+          alt=""
+          fill
+          sizes="(max-width:600px) 50vw, 25vw"
+        />
+      )}
       <div className="brand-card-shade" />
       <div className="brand-identity">
-        <img className="manufacturer-emblem" src={emblemSrc} alt={brand.name} />
+        {(logo || brand.slug !== "chevrolet") && (
+          <img
+            className="manufacturer-emblem"
+            src={emblemSrc}
+            alt={brand.name}
+          />
+        )}
         <span className="brand-wordmark" lang="en" dir="ltr">
           {brand.name.toUpperCase()}
         </span>

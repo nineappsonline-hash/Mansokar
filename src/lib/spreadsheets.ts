@@ -1,6 +1,6 @@
 import ExcelJS from "exceljs";
 import { csvCell } from "./importer";
-import type { Product } from "./catalog";
+import type { Product, Vehicle } from "./catalog";
 export const columns = [
   "sku",
   "slug",
@@ -27,12 +27,29 @@ export const columns = [
   "editorial",
   "seo",
   "policy_refs",
+  "country_of_origin",
+  "fitting_position",
+  "fitment_notes_ar",
+  "fitment_notes_en",
 ] as const;
 type ExportProduct = Product & { vehicle_config_id?: string };
 function exportValue(
   p: ExportProduct,
   c: (typeof columns)[number],
 ): string | number | boolean | null | undefined {
+  if (c === "price" || c === "sale" || c === "cost") {
+    const amount = p[c];
+    return amount == null ? "" : amount / 100;
+  }
+  if (
+    [
+      "country_of_origin",
+      "fitting_position",
+      "fitment_notes_ar",
+      "fitment_notes_en",
+    ].includes(c)
+  )
+    return p.specs[c] ?? "";
   if (c === "name_ar") return p.name.ar;
   if (c === "name_en") return p.name.en;
   if (c === "description_ar") return p.description.ar;
@@ -73,7 +90,10 @@ export function exportCsv(products: ExportProduct[]) {
     ),
   ].join("\r\n");
 }
-export async function exportXlsx(products: ExportProduct[]) {
+export async function exportXlsx(
+  products: ExportProduct[],
+  vehicles: Vehicle[] = [],
+) {
   const workbook = new ExcelJS.Workbook();
   const sheet = workbook.addWorksheet("Products");
   sheet.addRow([...columns]);
@@ -89,6 +109,95 @@ export async function exportXlsx(products: ExportProduct[]) {
   sheet.columns.forEach((c) => {
     c.width = 24;
   });
+  for (const key of ["price", "sale", "cost"] as const) {
+    sheet.getColumn(columns.indexOf(key) + 1).numFmt = "0.00";
+  }
+  const guide = workbook.addWorksheet("Instructions");
+  [
+    ["Column", "How to fill it"],
+    [
+      "sku",
+      "Unique product code. Existing SKUs are updated; new SKUs are added.",
+    ],
+    ["name_en / name_ar", "Product names in English and Arabic."],
+    [
+      "manufacturer",
+      "Item brand. Use a brand already added in the admin Manufacturers section.",
+    ],
+    ["country_of_origin", "Country where the item was made, e.g. Germany."],
+    ["fitting_position", "Where the part fits: front, rear, left, right, etc."],
+    [
+      "fitment_notes_ar / fitment_notes_en",
+      "Public compatibility restrictions and exclusions. These notes do not establish fitment on their own.",
+    ],
+    ["cost", "Private cost price in EGP. Enter 125.50 for EGP 125.50."],
+    ["price", "Selling / list price in EGP. Enter 200 for EGP 200."],
+    [
+      "sale",
+      "Optional discounted selling price in EGP, less than price. Leave blank for no discount.",
+    ],
+    [
+      "vehicle_config_id",
+      "Copy an exact car ID from Vehicles. Repeat the product row with the same SKU for each compatible car.",
+    ],
+    [
+      "status",
+      "Use draft or published. New products should be reviewed as drafts.",
+    ],
+    [
+      "Required fields",
+      "Fill sku, slug (lowercase letters/numbers/hyphens), name_ar, name_en, description_ar, description_en, manufacturer, category (existing slug), family, price, partNumber. Set type to oem or aftermarket, demo to false, orderable to true or false, status to draft or published. Leave optional fields blank; specs can be {}.",
+    ],
+    [
+      "Import",
+      "Upload the Products sheet as the first sheet. Maximum 1000 rows and 1 MB. Validate before saving.",
+    ],
+  ].forEach((row) => guide.addRow(row));
+  guide.getRow(1).font = { bold: true };
+  guide.getColumn(1).width = 28;
+  guide.getColumn(2).width = 110;
+  const cars = workbook.addWorksheet("Vehicles");
+  cars.addRow([
+    "vehicle_config_id",
+    "Car (English)",
+    "Car (Arabic)",
+    "brand",
+    "model",
+    "year",
+    "generation",
+    "engine",
+    "engine_capacity_cc",
+    "engine_code",
+    "fuel_type",
+    "forced_induction",
+    "transmission",
+    "body",
+    "trim",
+  ]);
+  vehicles.forEach((v) =>
+    cars.addRow([
+      v.id,
+      v.name.en,
+      v.name.ar,
+      v.brand,
+      v.model,
+      v.year,
+      v.generation,
+      v.engine,
+      v.engineCapacity,
+      v.engineCode,
+      v.fuelType,
+      v.forcedInduction,
+      v.transmission,
+      v.body,
+      v.trim,
+    ]),
+  );
+  cars.getRow(1).font = { bold: true };
+  cars.columns.forEach((c) => {
+    c.width = 60;
+  });
+  cars.views = [{ state: "frozen", ySplit: 1 }];
   return workbook.xlsx.writeBuffer();
 }
 export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
@@ -111,6 +220,10 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
         "partNumbers",
         "synonyms",
         "cost",
+        "country_of_origin",
+        "fitting_position",
+        "fitment_notes_ar",
+        "fitment_notes_en",
         "warranty",
         "editorial",
         "seo",
@@ -138,13 +251,25 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
       category: values.category,
       family: values.family,
       type: values.type,
-      price: Number(values.price),
-      sale: values.sale === "" ? null : Number(values.sale),
+      price: parseEgp(values.price, n, "price"),
+      sale: values.sale === "" ? null : parseEgp(values.sale, n, "sale"),
       partNumber: values.partNumber,
       demo: values.demo === "true",
       orderable: values.orderable === "true",
       status: values.status,
-      specs: JSON.parse(values.specs || "{}"),
+      specs: {
+        ...JSON.parse(values.specs || "{}"),
+        ...Object.fromEntries(
+          [
+            "country_of_origin",
+            "fitting_position",
+            "fitment_notes_ar",
+            "fitment_notes_en",
+          ]
+            .filter((key) => values[key] !== undefined)
+            .map((key) => [key, values[key].trim()]),
+        ),
+      },
       ...Object.fromEntries(
         [
           "partNumbers",
@@ -158,7 +283,7 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
           .map((k) => [k, JSON.parse(values[k])]),
       ),
       ...(values.cost !== undefined
-        ? { cost: values.cost === "" ? null : Number(values.cost) }
+        ? { cost: values.cost === "" ? null : parseEgp(values.cost, n, "cost") }
         : {}),
       ...(values.vehicle_config_id
         ? { fitments: [values.vehicle_config_id] }
@@ -180,6 +305,17 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
     } else grouped.set(key, row);
   }
   return [...grouped.values()];
+}
+
+function parseEgp(value: string, row: number, field: string) {
+  if (!/^\d+(?:\.\d{1,2})?$/.test(value?.trim() ?? ""))
+    throw Error(
+      `Row ${row}: ${field} must be an EGP amount with at most two decimal places`,
+    );
+  const amount = Math.round(Number(value) * 100);
+  if (!Number.isSafeInteger(amount))
+    throw Error(`Row ${row}: ${field} is too large`);
+  return amount;
 }
 
 function validateZip(data: Buffer) {

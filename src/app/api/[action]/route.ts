@@ -1,3 +1,6 @@
+import { shippingInput } from "@/lib/shipping-input";
+import { contactInput } from "@/lib/contact-input";
+import { vehicleInput } from "@/lib/vehicle-input";
 import { apiError } from "@/lib/api-errors";
 import { readLimited } from "@/lib/body";
 import { NextResponse, type NextRequest } from "next/server";
@@ -30,7 +33,11 @@ export async function POST(
     const length = Number(request.headers.get("content-length") || 0);
     if (length > 2_000_000)
       return NextResponse.json({ error: "Request too large" }, { status: 413 });
-    await enforceRate(request, action, action === "auth" ? 8 : 30);
+    await enforceRate(
+      request,
+      action,
+      ["auth", "contact"].includes(action) ? 8 : 30,
+    );
     if (!configured())
       return NextResponse.json(
         {
@@ -87,6 +94,28 @@ export async function POST(
         .insert({ event: input.event, product_id: productId });
       if (error) throw error;
       return NextResponse.json({ message: "Recorded" });
+    }
+    if (action === "contact") {
+      const input = contactInput.parse(b);
+      const { error } = await db.from("part_requests").insert({
+        contact: input.phone,
+        description: input.inquiry,
+        consent: true,
+        status: "pending",
+        vehicle_config_id: null,
+        vehicle_details: {
+          request_type: "contact",
+          topic: input.topic,
+          locale: input.ui_locale,
+        },
+      });
+      if (error) throw error;
+      return NextResponse.json({
+        message:
+          input.ui_locale === "ar"
+            ? "تم استلام طلبك. سنتواصل معك على الرقم المسجل."
+            : "Your inquiry has been received. We will contact you on the number provided.",
+      });
     }
     if (action === "auth") {
       const input = z
@@ -274,7 +303,7 @@ export async function POST(
       const details = custom
         ? z
             .object({
-              make: z.enum(["opel", "peugeot", "citroen", "mg"]),
+              make: z.enum(["opel", "peugeot", "citroen", "mg", "chevrolet"]),
               model: z.string().trim().min(1).max(100),
               year: z.coerce.number().int().min(1950).max(2100),
               engine: z.string().trim().min(1).max(100),
@@ -442,7 +471,7 @@ export async function POST(
             slot: z
               .string()
               .regex(
-                /^(hero|logo|brand-(opel|peugeot|citroen|mg)-(photo|logo)|model-[a-z0-9-]+|campaign-[a-f0-9-]+)$/,
+                /^(hero|logo|brand-(opel|peugeot|citroen|mg|chevrolet)-(photo|logo)|model-[a-z0-9-]+|campaign-[a-f0-9-]+)$/,
               ),
             path: z
               .string()
@@ -619,17 +648,7 @@ export async function POST(
         if (error) throw error;
         details = { rows: result.rows.length };
       } else if (action === "admin-shipping") {
-        const input = z
-          .object({
-            id: z.string().min(1).max(100),
-            governorate: z.string().min(1).max(100),
-            name: z.string().min(1).max(100),
-            enabled: z.boolean(),
-            amount: z.number().int().min(0),
-            starts_at: z.iso.datetime().optional(),
-            ends_at: z.iso.datetime().nullable().optional(),
-          })
-          .parse(JSON.parse(b.json));
+        const input = shippingInput.parse(JSON.parse(b.json));
         const { error } = await commit(input);
         if (error) throw error;
         details = { area: input.id };
@@ -747,19 +766,7 @@ export async function POST(
         if (error) throw error;
         details = { code: input.code };
       } else if (action === "admin-vehicle") {
-        const input = z
-          .object({
-            id: z.string().min(1).max(100),
-            model_id: z.string().min(1).max(100),
-            year: z.number().int().min(1950).max(2100),
-            engine: z.string().min(1).max(100),
-            generation_id: z.string().max(100).nullable().optional(),
-            engine_code: z.string().max(100).nullable().optional(),
-            engine_capacity: z.number().int().positive().nullable().optional(),
-            body: z.string().max(100).nullable().optional(),
-            trim: z.string().max(100).nullable().optional(),
-          })
-          .parse(JSON.parse(b.json));
+        const input = vehicleInput.parse(JSON.parse(b.json));
         const { error } = await commit(input);
         if (error) throw error;
         details = input;
@@ -780,7 +787,7 @@ export async function POST(
         const input = z
           .object({
             id: z.string().min(1).max(100),
-            brand: z.enum(["opel", "peugeot", "citroen", "mg"]),
+            brand: z.enum(["opel", "peugeot", "citroen", "mg", "chevrolet"]),
             slug: z.string().regex(/^[a-z0-9-]+$/),
             name: z.object({ ar: z.string().min(1), en: z.string().min(1) }),
             image: z

@@ -15,6 +15,31 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
     );
     await db.exec(migration);
     await db.exec(seed);
+    const governorateRates = await db.query<{
+      count: number;
+      governorates: number;
+      unconfigured: number;
+    }>(
+      "select count(*)::int as count,count(distinct governorate)::int as governorates,count(*) filter(where amount is null and not enabled)::int as unconfigured from public.shipping_areas where id like 'eg-%'",
+    );
+    assert.equal(governorateRates.rows[0].count, 54);
+    assert.equal(governorateRates.rows[0].governorates, 27);
+    assert.equal(governorateRates.rows[0].unconfigured, 54);
+    assert.equal(
+      (
+        await db.query<{ count: number }>(
+          "select count(*)::int as count from public.shipping_areas where id like 'eg-%' and service_type='express' and delivery_max_hours=48 and not business_days",
+        )
+      ).rows[0].count,
+      27,
+    );
+    await assert.rejects(
+      db.query(
+        "update public.shipping_areas set enabled=true where id='eg-cairo-express'",
+      ),
+      /shipping_enabled_rate_required/,
+    );
+
     assert.equal(
       (
         await db.query<{ value: string }>(
@@ -275,6 +300,128 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
     await db.exec("reset role");
     const uid = "00000000-0000-4000-8000-000000000010";
     await db.query("insert into public.admins(user_id) values($1)", [uid]);
+    await db.query(
+      "select public.admin_commit($1,'admin-shipping',$2::jsonb)",
+      [
+        uid,
+        JSON.stringify({
+          id: "eg-cairo-standard",
+          governorate: "Cairo",
+          name: "Cairo - standard",
+          amount: 12345,
+          enabled: true,
+        }),
+      ],
+    );
+    const standardQuote = await db.query<{ result: { shipping: number } }>(
+      "select public.checkout_quote($1::jsonb,$2::jsonb,'eg-cairo-standard',null,null,true) as result",
+      [
+        JSON.stringify([{ id: "demo-1", qty: 1 }]),
+        JSON.stringify({ phone: "01000000000" }),
+      ],
+    );
+    assert.equal(standardQuote.rows[0].result.shipping, 12345);
+    await assert.rejects(
+      db.query(
+        "select public.checkout_quote($1::jsonb,$2::jsonb,'eg-cairo-express',null,null,true)",
+        [
+          JSON.stringify([{ id: "demo-1", qty: 1 }]),
+          JSON.stringify({ phone: "01000000000" }),
+        ],
+      ),
+      /Delivery area/,
+    );
+    const vehiclePayload = {
+      id: "qa-captiva-auto",
+      model_id: "chevrolet-captiva",
+      year: 2021,
+      engine: "QA engine",
+      engine_capacity: 1500,
+      engine_code: "QA-CODE",
+      fuel_type: "petrol",
+      forced_induction: "turbo",
+      transmission: "automatic",
+      body: "SUV",
+      trim: "QA trim",
+    };
+    await db.query("select public.admin_commit($1,'admin-vehicle',$2::jsonb)", [
+      uid,
+      JSON.stringify(vehiclePayload),
+    ]);
+    const savedVehicle = (
+      await db.query<{ fuel_type: string; transmission: string }>(
+        "select fuel_type,transmission from public.vehicle_configs where id=$1",
+        [vehiclePayload.id],
+      )
+    ).rows[0];
+    assert.equal(savedVehicle.fuel_type, "petrol");
+    assert.equal(savedVehicle.transmission, "automatic");
+    await db.query("select public.admin_commit($1,'admin-vehicle',$2::jsonb)", [
+      uid,
+      JSON.stringify({
+        ...vehiclePayload,
+        id: "qa-captiva-manual",
+        transmission: "manual",
+      }),
+    ]);
+    await assert.rejects(
+      db.query("select public.admin_commit($1,'admin-vehicle',$2::jsonb)", [
+        uid,
+        JSON.stringify({ ...vehiclePayload, id: "qa-captiva-duplicate" }),
+      ]),
+      /duplicate key/,
+    );
+    await assert.rejects(
+      db.query("select public.admin_commit($1,'admin-vehicle',$2::jsonb)", [
+        uid,
+        JSON.stringify({
+          ...vehiclePayload,
+          id: "qa-captiva-invalid",
+          fuel_type: "invalid",
+        }),
+      ]),
+      /check constraint/,
+    );
+    await db.query(
+      "select public.admin_commit($1,'admin-generation',$2::jsonb)",
+      [
+        uid,
+        JSON.stringify({
+          id: "qa-ongoing",
+          model_id: "chevrolet-captiva",
+          name: "QA generation",
+          year_start: 2020,
+          year_end: null,
+        }),
+      ],
+    );
+    await db.query("select public.admin_commit($1,'admin-vehicle',$2::jsonb)", [
+      uid,
+      JSON.stringify({ ...vehiclePayload, generation_id: "qa-ongoing" }),
+    ]);
+    await assert.rejects(
+      db.query("select public.admin_commit($1,'admin-vehicle',$2::jsonb)", [
+        uid,
+        JSON.stringify({
+          ...vehiclePayload,
+          model_id: "opel-astra",
+          generation_id: "qa-ongoing",
+        }),
+      ]),
+      /Generation must match/,
+    );
+    const chevroletInquiry = await db.query(
+      "select public.create_inquiry_v2('qa contact',null,'QA Chevrolet inquiry',null,null,$1::jsonb)",
+      [
+        JSON.stringify({
+          make: "chevrolet",
+          model: "Captiva",
+          year: 2021,
+          engine: "QA engine",
+        }),
+      ],
+    );
+    assert.equal(chevroletInquiry.rows.length, 1);
     await db.query(
       "select public.admin_commit($1,'admin-taxonomy',$2::jsonb)",
       [uid, JSON.stringify({ kind: "manufacturer", name: "Atomic Maker" })],
