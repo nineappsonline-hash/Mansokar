@@ -17,6 +17,8 @@ export function BrandCard({
     logo ??
     (brand.slug === "citroen"
       ? "/images/brands/citroen-2022.svg"
+      : brand.slug === "chevrolet"
+        ? "/images/brands/chevrolet.png"
       : `/images/brands/${brand.slug}.svg`);
 
   return (
