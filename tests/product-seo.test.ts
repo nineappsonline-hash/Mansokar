@@ -16,6 +16,31 @@ const p = {
   specs: { country_of_origin: "Germany" },
 };
 
+test("automatic product content uses selected vehicle facts and preserves existing URLs", async () => {
+  const { automaticProduct } = await import("../src/lib/product-automation");
+  const input = {
+    name: { ar: "فلتر زيت", en: "Oil filter" },
+    manufacturer: "Bosch",
+    partNumber: "ABC-123",
+    vehicles: [{ name: { ar: "أوبل أسترا 2021", en: "Opel Astra 2021" } }],
+    months: 12,
+    sku: "MS-1234567890ABCDEF",
+  };
+  const result = automaticProduct(input);
+  assert.match(result.slug, /oil-filter-bosch-opel-astra-2021/);
+  assert.match(result.description.ar, /أوبل أسترا 2021/);
+  assert.match(result.description.en, /Bosch.*Opel Astra 2021/);
+  assert.match(result.warranty!.en, /12-month/);
+  assert.equal(automaticProduct({ ...input, months: null }).warranty, null);
+  assert.equal(
+    automaticProduct({ ...input, slug: "existing-url" }).slug,
+    "existing-url",
+  );
+  assert.ok(result.slug.length <= 150);
+  assert.ok(result.seo.title.en.includes("Egypt"));
+  assert.ok(!JSON.stringify(result).includes("InStock"));
+});
+
 test("each SKU has localized metadata and merchant overrides", () => {
   for (const locale of ["ar", "en"] as const) {
     const copy = productSearchCopy(p, locale);

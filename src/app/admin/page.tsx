@@ -1,4 +1,5 @@
 import { AdminSeo } from "@/components/admin-seo";
+import { SimpleProductEditor } from "@/components/simple-product-editor";
 import {
   ShippingRateEditor,
   FreeShippingEditor,
@@ -23,7 +24,6 @@ import {
   ImageUpload,
   ImageManager,
   BrandingMedia,
-  ProductEditor,
   FitmentEditor,
   MerchantForm,
   RelationsEditor,
@@ -120,10 +120,9 @@ export default async function Admin({
     );
   } else if (module === "products") {
     const products = await allRows<any>("products");
-    const [manufacturers, categories, fitments, { vehicles }] =
+    const [manufacturers, fitments, { vehicles, brands, models }] =
       await Promise.all([
         allRows<any>("manufacturers"),
-        allRows<any>("categories"),
         allRows<any>("product_fitments"),
         vehicleCatalog(),
       ]);
@@ -145,10 +144,15 @@ export default async function Admin({
           </p>
         </div>
         <div className="stack">
-          <ProductEditor
+          <SimpleProductEditor
             key={id}
             manufacturers={manufacturers.map((m) => m.name)}
-            categories={categories}
+            vehicles={vehicles}
+            brands={brands}
+            models={models}
+            selected={fitments
+              .filter((f) => f.product_id === id)
+              .map((f) => f.vehicle_config_id)}
             initial={
               products.find((p) => p.id === id) ?? {
                 ...demoProducts[0],
@@ -160,20 +164,6 @@ export default async function Admin({
               }
             }
           />
-          {products.some((p) => p.id === id) ? (
-            <FitmentEditor
-              key={`fitments-${id}`}
-              initialProduct={id}
-              products={products.map((p) => ({ id: p.id, sku: p.sku }))}
-              vehicles={vehicles}
-              fitments={fitments}
-            />
-          ) : (
-            <p className="panel">
-              Save the product first, then select the exact vehicles it fits
-              here. You can also use Admin → Fitments.
-            </p>
-          )}
         </div>
       </div>
     );

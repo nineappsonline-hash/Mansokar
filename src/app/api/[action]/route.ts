@@ -16,6 +16,7 @@ import {
   vehicleCatalog,
 } from "@/lib/db";
 import { checkoutInput, productInput } from "@/lib/validation";
+import { automaticProduct } from "@/lib/product-automation";
 import { validateImport } from "@/lib/importer";
 import { assertDemoAllowed, availablePayments } from "@/lib/payments";
 
@@ -572,6 +573,83 @@ export async function POST(
         if (error) throw error;
       } else if (action === "admin-product") {
         const parsed = typeof b.json === "string" ? JSON.parse(b.json) : b;
+        if (parsed.automatic === true) {
+          const ids = z
+            .array(z.string().min(1).max(100))
+            .max(500)
+            .parse(parsed.fitments ?? []);
+          const months = z
+            .number()
+            .int()
+            .min(1)
+            .max(600)
+            .nullable()
+            .parse(parsed.warrantyMonths);
+          const existing = parsed.id
+            ? await db
+                .from("products")
+                .select("*")
+                .eq("id", z.string().parse(parsed.id))
+                .single()
+            : null;
+          if (existing?.error) throw existing.error;
+          const { vehicles } = await vehicleCatalog();
+          const selected = ids.map((id) => vehicles.find((v) => v.id === id));
+          if (selected.some((v) => !v))
+            throw Error("Unknown vehicle configuration");
+          const sku =
+            existing?.data?.sku ||
+            `MS-${crypto.randomUUID().replaceAll("-", "").slice(0, 16).toUpperCase()}`;
+          const manufacturer = z
+            .string()
+            .trim()
+            .min(1)
+            .max(100)
+            .parse(parsed.manufacturer);
+          if (parsed.addBrand === true) {
+            const { error } = await db
+              .from("manufacturers")
+              .upsert(
+                { name: manufacturer },
+                { onConflict: "name", ignoreDuplicates: true },
+              );
+            if (error) throw error;
+          }
+          const auto = automaticProduct({
+            name: z
+              .object({
+                ar: z.string().trim().min(1).max(200),
+                en: z.string().trim().min(1).max(200),
+              })
+              .parse(parsed.name),
+            manufacturer,
+            partNumber: parsed.partNumber,
+            vehicles: selected as any,
+            months,
+            sku,
+            slug: existing?.data?.slug,
+          });
+          const { error: categoryError } = await db.from("categories").upsert(
+            {
+              slug: "spare-parts",
+              name: { ar: "قطع غيار", en: "Spare parts" },
+            },
+            { onConflict: "slug", ignoreDuplicates: true },
+          );
+          if (categoryError) throw categoryError;
+          Object.assign(parsed, auto, {
+            manufacturer,
+            id: existing?.data?.id || crypto.randomUUID(),
+            category: existing?.data?.category || "spare-parts",
+            family: existing?.data?.family || sku,
+            specs: {
+              ...parsed.specs,
+              ...(months === null
+                ? { warranty_months: "" }
+                : { warranty_months: String(months) }),
+            },
+          });
+        }
         const { fitments: ignored, ...product } = productInput.parse(parsed);
         if (!product.id) {
           const { data: existing } = await db
@@ -581,8 +659,20 @@ export async function POST(
             .maybeSingle();
           if (existing) product.id = existing.id;
         }
-        const { error } = await commit(product);
+        const { error } =
+          parsed.automatic === true
+            ? await db.rpc("admin_commit", {
+                p_actor: admin.id,
+                p_action: "admin-import",
+                p_payload: [{ ...product, fitments: parsed.fitments ?? [] }],
+              })
+            : await commit(product);
         if (error) throw error;
+        if (parsed.automatic === true) {
+          return NextResponse.json({
+            redirect: `/admin?module=products&id=${product.id}`,
+          });
+        }
         details = { sku: product.sku };
       } else if (action === "admin-fitments") {
         const input = z
