@@ -98,6 +98,13 @@
   line-height: 1.55;
   display: flex;
 }
+.workspace [lang="ar"],
+.workspace input[dir="rtl"],
+.workspace textarea[dir="rtl"] {
+  font-family: var(--font-arabic);
+  font-size: 18px;
+  line-height: 1.7;
+}
 .sidebar {
   width: 252px;
   flex: none;

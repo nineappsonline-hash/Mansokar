@@ -86,7 +86,11 @@ try {
     "2021",
   );
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.waitForFunction(() => (document.querySelector('aside')?.getBoundingClientRect().right ?? 1) <= 0);
+  await page.waitForFunction(
+    () =>
+      (document.querySelector("aside")?.getBoundingClientRect().right ?? 1) <=
+      0,
+  );
   assert.ok(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
@@ -97,8 +101,53 @@ try {
     path: "docs/screenshots/admin-vehicles-mobile.png",
     fullPage: true,
   });
+  const arabicSize = await page
+    .locator('[lang="ar"]')
+    .first()
+    .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+  assert.ok(arabicSize >= 18, "Arabic names should be at least 18px");
+  const blocked = await page.request.post(
+    base + "/api/admin-delete-vehicle-record",
+    { headers: { Origin: base }, data: { kind: "model", id: modelId } },
+  );
+  assert.equal(
+    blocked.status(),
+    409,
+    "Model with saved cars must be protected",
+  );
+  await page
+    .getByRole("button", {
+      name: `Delete QA ${marker} 2021 · 1.5 petrol`,
+      exact: true,
+    })
+    .click();
+  const deletion = page.waitForResponse((r) =>
+    r.url().endsWith("/api/admin-delete-vehicle-record"),
+  );
+  await page
+    .getByRole("button", { name: "Confirm delete", exact: true })
+    .click();
+  assert.equal((await deletion).status(), 200);
+  await page
+    .getByRole("heading", { name: "No years added yet", exact: true })
+    .waitFor();
+  const { data: remaining } = await db
+    .from("vehicle_configs")
+    .select("id")
+    .eq("model_id", modelId);
+  assert.equal(remaining.length, 0);
+  await page
+    .getByRole("button", { name: `Delete model QA ${marker}`, exact: true })
+    .click();
+  const modelDeletion = page.waitForResponse((r) =>
+    r.url().endsWith("/api/admin-delete-vehicle-record"),
+  );
+  await page
+    .getByRole("button", { name: "Confirm delete", exact: true })
+    .click();
+  assert.equal((await modelDeletion).status(), 200);
   console.log(
-    "Vehicle make/model navigation, new model, year/engine save, edit/reload and mobile layout passed.",
+    "Vehicle navigation, save/edit, mobile layout, Arabic sizing, protected model deletion, car deletion and empty model deletion passed.",
   );
 } finally {
   await browser?.close();

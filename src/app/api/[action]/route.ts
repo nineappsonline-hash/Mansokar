@@ -861,6 +861,40 @@ export async function POST(
         const { error } = await commit(input);
         if (error) throw error;
         details = { code: input.code };
+      } else if (action === "admin-delete-vehicle-record") {
+        const input = z
+          .object({
+            kind: z.enum(["car", "model", "generation"]),
+            id: z.string().min(1).max(100),
+          })
+          .parse(b);
+        const table = {
+          car: "vehicle_configs",
+          model: "vehicle_models",
+          generation: "vehicle_generations",
+        }[input.kind];
+        const { data: removed, error: deleteError } = await db
+          .from(table)
+          .delete()
+          .eq("id", input.id)
+          .select("id");
+        if (deleteError?.code === "23503")
+          return NextResponse.json(
+            {
+              error:
+                input.kind === "model"
+                  ? "This model still has saved cars or generations. Remove those first."
+                  : "This record is used by products, customer cars, orders or inquiries. Remove its links first; historical order records must be retained.",
+            },
+            { status: 409 },
+          );
+        if (deleteError) throw deleteError;
+        if (!removed?.length)
+          return NextResponse.json(
+            { error: "This record no longer exists. Refresh the page." },
+            { status: 404 },
+          );
+        details = input;
       } else if (action === "admin-vehicle") {
         const input = vehicleInput.parse(JSON.parse(b.json));
         const { error } = await commit(input);

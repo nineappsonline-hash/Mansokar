@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   CarFront,
   ChevronRight,
@@ -97,7 +98,9 @@ export function AdminVehicles({
               }}
             >
               <strong>{b.name}</strong>
-              <small>{b.ar}</small>
+              <small lang="ar" dir="rtl">
+                {b.ar}
+              </small>
               <ChevronRight size={16} />
             </button>
           ))}
@@ -136,7 +139,9 @@ export function AdminVehicles({
               >
                 <div>
                   <strong>{m.name.en}</strong>
-                  <small>{m.name.ar}</small>
+                  <small lang="ar" dir="rtl">
+                    {m.name.ar}
+                  </small>
                 </div>
                 <span>
                   {configs.filter((c) => c.model_id === m.id).length} saved
@@ -208,6 +213,16 @@ export function AdminVehicles({
                 >
                   <Pencil size={14} /> Edit model name
                 </button>
+                <DeleteRecord
+                  kind="model"
+                  id={model.id}
+                  label={`model ${model.name.en}`}
+                  onDeleted={() => {
+                    setModelId("");
+                    setConfig(null);
+                    setEditingModel(false);
+                  }}
+                />
               </div>
               {editingModel && (
                 <ModelForm key={model.id} brand={brand} initial={model} />
@@ -258,6 +273,14 @@ export function AdminVehicles({
                       >
                         <Pencil size={14} /> Edit
                       </button>
+                      <DeleteRecord
+                        kind="car"
+                        id={c.id}
+                        label={`${model.name.en} ${c.year} · ${c.engine}`}
+                        onDeleted={() => {
+                          if (config?.id === c.id) setConfig(null);
+                        }}
+                      />
                     </div>
                   ))}
                 </div>
@@ -278,6 +301,11 @@ export function AdminVehicles({
                         {g.name} · {g.year_start}–{g.year_end ?? "present"}
                       </summary>
                       <GenerationForm modelId={model.id} initial={g} />
+                      <DeleteRecord
+                        kind="generation"
+                        id={g.id}
+                        label={`generation ${g.name}`}
+                      />
                     </details>
                   ))}
               </details>
@@ -285,6 +313,88 @@ export function AdminVehicles({
           )}
         </section>
       </div>
+    </div>
+  );
+}
+function DeleteRecord({
+  kind,
+  id,
+  label,
+  onDeleted,
+}: {
+  kind: "car" | "model" | "generation";
+  id: string;
+  label: string;
+  onDeleted?: () => void;
+}) {
+  const [confirm, setConfirm] = useState(false),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  const router = useRouter();
+  return (
+    <div className={styles.deleteControl}>
+      {!confirm ? (
+        <button
+          type="button"
+          className={styles.deleteButton}
+          aria-label={`Delete ${label}`}
+          onClick={() => {
+            setConfirm(true);
+            setError("");
+          }}
+        >
+          Delete
+        </button>
+      ) : (
+        <div
+          className={styles.confirm}
+          role="group"
+          aria-label={`Confirm deletion of ${label}`}
+        >
+          <p>Delete {label}? This cannot be undone.</p>
+          <div>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  const response = await fetch(
+                    "/api/admin-delete-vehicle-record",
+                    {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ kind, id }),
+                    },
+                  );
+                  const result = await response.json();
+                  if (!response.ok) throw Error(result.error);
+                  setConfirm(false);
+                  onDeleted?.();
+                  router.refresh();
+                } catch (e) {
+                  setError(e instanceof Error ? e.message : "Unable to delete");
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              {busy ? "Deleting…" : "Confirm delete"}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                setConfirm(false);
+                setError("");
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+          {error && <p role="alert">{error}</p>}
+        </div>
+      )}
     </div>
   );
 }
