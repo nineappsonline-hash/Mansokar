@@ -77,6 +77,7 @@ export default async function Admin({
     const destination = new URLSearchParams({ module: "products" });
     if (id && module !== "taxonomy") destination.set("id", id);
     if (module === "images") destination.set("tab", "photos");
+    if (module === "fitments") destination.set("tab", "vehicles");
     if (module === "taxonomy") destination.set("view", "brands");
     if (module === "import") destination.set("view", "excel");
     redirect("/admin?" + destination.toString());
@@ -139,7 +140,7 @@ export default async function Admin({
         manufacturers={manufacturers.map((m) => m.name)}
         selectedId={selected?.id}
         initialView={view === "brands" || view === "excel" ? view : "products"}
-        initialTab={tab === "photos" ? "photos" : "details"}
+        initialTab={tab === "photos" || tab === "vehicles" ? tab : "details"}
         editor={
           <SimpleProductEditor
             key={id}

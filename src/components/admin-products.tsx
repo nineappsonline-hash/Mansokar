@@ -11,6 +11,7 @@ import {
   FileSpreadsheet,
 } from "lucide-react";
 import { ApiForm } from "./forms";
+import { ProductEditorTab } from "./product-editor-context";
 import styles from "./admin-products.module.css";
 export function AdminProducts({
   products,
@@ -150,8 +151,16 @@ export function AdminProducts({
                 aria-current={tab === "details" ? "page" : undefined}
                 onClick={() => setTab("details")}
               >
+                <Package size={17} />
+                Product details
+              </button>
+              <button
+                type="button"
+                aria-current={tab === "vehicles" ? "page" : undefined}
+                onClick={() => setTab("vehicles")}
+              >
                 <CarFront size={17} />
-                Details & cars it fits
+                Cars & years
               </button>
               <button
                 type="button"
@@ -162,7 +171,11 @@ export function AdminProducts({
                 Photos
               </button>
             </nav>
-            <div hidden={tab !== "details"}>{editor}</div>
+            <div hidden={tab === "photos"}>
+              <ProductEditorTab.Provider value={tab}>
+                {editor}
+              </ProductEditorTab.Provider>
+            </div>
             <div hidden={tab !== "photos"}>
               {selected ? (
                 photos

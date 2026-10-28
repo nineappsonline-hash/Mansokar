@@ -1,0 +1,36 @@
+.dropzone {
+  border: 2px dashed #c6d2e2;
+  border-radius: 12px;
+  background: #f7faff;
+  text-align: center;
+  padding: 30px 20px;
+  color: #526d90;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.dropzone.active {
+  background: #fff2d8;
+  border-color: #d5a349;
+}
+.dropzone strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 7px;
+}
+.dropzone p {
+  margin: 0 0 14px;
+  font-size: 12px;
+}
+.dropzone input {
+  max-width: 340px;
+  margin: auto;
+  background: white;
+}
+.dropzone label {
+  display: block;
+}
+.dropzone:focus-within {
+  outline: 2px solid #c8974b;
+  outline-offset: 3px;
+}

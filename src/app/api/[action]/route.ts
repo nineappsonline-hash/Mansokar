@@ -17,6 +17,7 @@ import {
 } from "@/lib/db";
 import { checkoutInput, productInput } from "@/lib/validation";
 import { automaticProduct } from "@/lib/product-automation";
+import { applicationSpecs } from "@/lib/product-applications";
 import { validateImport } from "@/lib/importer";
 import { assertDemoAllowed, availablePayments } from "@/lib/payments";
 
@@ -593,7 +594,37 @@ export async function POST(
                 .single()
             : null;
           if (existing?.error) throw existing.error;
-          const { vehicles } = await vehicleCatalog();
+          const { vehicles, models, brands } = await vehicleCatalog();
+          const applications = z
+            .array(
+              z.object({
+                model_id: z.string().min(1).max(100),
+                years: z
+                  .array(z.number().int().min(1950).max(2100))
+                  .min(1)
+                  .max(151),
+              }),
+            )
+            .max(30)
+            .optional()
+            .parse(parsed.applications);
+          if (
+            applications?.some((a) => !models.some((m) => m.id === a.model_id))
+          )
+            throw Error("Unknown car model");
+          const applicationNames = applications?.map((a) => {
+            const m = models.find((m) => m.id === a.model_id)!;
+            const brand = brands.find((b) => b.slug === m.brand);
+            const years = [...new Set(a.years)]
+              .sort((a, b) => a - b)
+              .join(", ");
+            return {
+              name: {
+                ar: `${brand?.ar || m.brand} ${m.name.ar} (${years})`,
+                en: `${brand?.name || m.brand} ${m.name.en} (${years})`,
+              },
+            };
+          });
           const selected = ids.map((id) => vehicles.find((v) => v.id === id));
           if (selected.some((v) => !v))
             throw Error("Unknown vehicle configuration");
@@ -624,7 +655,9 @@ export async function POST(
               .parse(parsed.name),
             manufacturer,
             partNumber: parsed.partNumber,
-            vehicles: selected as any,
+            vehicles: applicationNames?.length
+              ? applicationNames
+              : (selected as any),
             months,
             sku,
             slug: existing?.data?.slug,
@@ -643,7 +676,9 @@ export async function POST(
             category: existing?.data?.category || "spare-parts",
             family: existing?.data?.family || sku,
             specs: {
-              ...parsed.specs,
+              ...(applications
+                ? applicationSpecs(parsed.specs || {}, applications)
+                : parsed.specs),
               ...(months === null
                 ? { warranty_months: "" }
                 : { warranty_months: String(months) }),

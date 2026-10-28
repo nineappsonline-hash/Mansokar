@@ -16,6 +16,27 @@ const p = {
   specs: { country_of_origin: "Germany" },
 };
 
+test("multiple model-year selections preserve independent years and unrelated product specifications", async () => {
+  const { readApplications, applicationSpecs } =
+    await import("../src/lib/product-applications");
+  const specs = applicationSpecs(
+    { country_of_origin: "Germany", "car_years:old-model": "2020" },
+    [
+      { model_id: "opel-astra", years: [2022, 2020, 2020] },
+      { model_id: "mg-5", years: [2021] },
+    ],
+  );
+  assert.deepEqual(readApplications(specs), [
+    { model_id: "opel-astra", years: [2020, 2022] },
+    { model_id: "mg-5", years: [2021] },
+  ]);
+  assert.equal(specs.country_of_origin, "Germany");
+  assert.equal(specs["car_years:old-model"], undefined);
+  assert.deepEqual(applicationSpecs(specs, []), {
+    country_of_origin: "Germany",
+  });
+});
+
 test("automatic product content uses selected vehicle facts and preserves existing URLs", async () => {
   const { automaticProduct } = await import("../src/lib/product-automation");
   const input = {

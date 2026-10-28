@@ -1170,6 +1170,7 @@ export default async function Page({ params, searchParams }: Props) {
                   .filter(
                     ([key, value]) =>
                       value &&
+                      !key.startsWith("car_years:") &&
                       (!key.startsWith("fitment_notes_") ||
                         key === `fitment_notes_${locale}`),
                   )

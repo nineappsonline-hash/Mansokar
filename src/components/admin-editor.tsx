@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { ApiForm } from "./forms";
+import uploadStyles from "./product-upload.module.css";
 export function JsonEditor({
   action,
   initial,
@@ -825,6 +826,47 @@ export function ImageManager({
   const [images, setImages] = useState(initial);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [dragging, setDragging] = useState(false);
+  async function uploadFiles(files: File[]) {
+    if (busy || !product || !files.length) return;
+    const remaining = 10 - images.length;
+    if (remaining <= 0) {
+      setMessage("Maximum 10 photos per product.");
+      return;
+    }
+    setBusy(true);
+    setMessage("Uploading photos…");
+    let uploaded = 0;
+    const errors: string[] = [];
+    for (const file of files.slice(0, remaining)) {
+      try {
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
+          throw Error("Choose JPG, PNG or WebP images.");
+        if (file.size > 5_000_000) throw Error("Maximum image size is 5 MB.");
+        const form = new FormData();
+        form.append("image", file);
+        const response = await fetch("/api/upload?kind=catalog", {
+          method: "POST",
+          body: form,
+        });
+        const result = await response.json();
+        if (!response.ok) throw Error(result.error);
+        setImages((current) => [
+          ...current,
+          { path: result.path, url: result.url, alt: { ar: "", en: "" } },
+        ]);
+        uploaded++;
+      } catch (error) {
+        errors.push(
+          `${file.name}: ${error instanceof Error ? error.message : "Upload failed"}`,
+        );
+      }
+    }
+    setMessage(
+      `${uploaded} photo${uploaded === 1 ? "" : "s"} uploaded. Add descriptions and save.${files.length > remaining ? " Only the first " + remaining + " files were accepted (10 photos maximum)." : ""} ${errors.join(" ")}`,
+    );
+    setBusy(false);
+  }
   return (
     <section className="panel stack">
       <h2>Product photos</h2>
@@ -851,40 +893,45 @@ export function ImageManager({
         The first image is the cover. Add bilingual descriptions and save to
         publish this image order.
       </p>
-      <label>
-        Upload product photo
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          disabled={busy || images.length >= 10 || !product}
-          onChange={async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            setBusy(true);
-            setMessage("");
-            try {
-              const form = new FormData();
-              form.append("image", file);
-              const response = await fetch("/api/upload?kind=catalog", {
-                method: "POST",
-                body: form,
-              });
-              const result = await response.json();
-              if (!response.ok) throw Error(result.error);
-              setImages((current) => [
-                ...current,
-                { path: result.path, url: result.url, alt: { ar: "", en: "" } },
-              ]);
-              setMessage("Uploaded. Add descriptions and save.");
-            } catch (error) {
-              setMessage((error as Error).message);
-            } finally {
-              setBusy(false);
+      <div
+        className={
+          uploadStyles.dropzone + " " + (dragging ? uploadStyles.active : "")
+        }
+        data-testid="product-photo-dropzone"
+        onDragOver={(e) => {
+          e.preventDefault();
+          if (!busy) setDragging(true);
+        }}
+        onDragLeave={() => setDragging(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setDragging(false);
+          void uploadFiles(Array.from(e.dataTransfer.files));
+        }}
+      >
+        <strong>
+          {busy ? "Uploading photos…" : "Drag & drop product photos here"}
+        </strong>
+        <p>
+          Drop several pictures at once, or choose files below. JPG, PNG or WebP
+          · 5 MB each · up to 10 photos.
+        </p>
+        <label>
+          Choose product photos
+          <input
+            aria-label="Upload product photo"
+            type="file"
+            multiple
+            accept="image/jpeg,image/png,image/webp"
+            disabled={busy || images.length >= 10 || !product}
+            onChange={(e) => {
+              const files = Array.from(e.target.files ?? []);
               e.target.value = "";
-            }
-          }}
-        />
-      </label>
+              void uploadFiles(files);
+            }}
+          />
+        </label>
+      </div>
       <p role="status">{message}</p>
       <ApiForm
         action="admin-images"

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { chromium } from "playwright";
+import sharp from "sharp";
 if (process.env.CONFIRM_LIVE_QA !== "mansokar")
   throw Error("Set CONFIRM_LIVE_QA=mansokar");
 const base = process.env.BASE_URL || "http://localhost:3104";
@@ -14,6 +15,7 @@ const marker = randomUUID();
 const email = `product-qa-${marker}@example.invalid`,
   password = randomUUID() + "Aa1!";
 let user, browser, product;
+const uploadedPaths = [];
 const maker = `QA ${marker}`;
 try {
   const result = await db.auth.admin.createUser({
@@ -75,7 +77,7 @@ try {
     .getByRole("heading", { name: "Add product photos", exact: true })
     .waitFor();
   await page
-    .getByRole("button", { name: "Details & cars it fits", exact: true })
+    .getByRole("button", { name: "Product details", exact: true })
     .click();
   assert.equal(
     await page.getByLabel("Spare part name · en").inputValue(),
@@ -94,14 +96,54 @@ try {
   const config = configs[0];
   const { data: model, error: modelError } = await db
     .from("vehicle_models")
-    .select("brand,slug")
+    .select("id,brand,slug,name")
     .eq("id", config.model_id)
     .single();
   if (modelError) throw modelError;
-  await page.getByLabel(/Car make/).selectOption(model.brand);
-  await page.getByLabel(/Car model/).selectOption(model.slug);
-  await page.getByLabel(/Model year/).selectOption(String(config.year));
-  await page.locator("fieldset input[type=checkbox]").first().check();
+  const brandNames = {
+    opel: "Opel",
+    mg: "MG",
+    chevrolet: "Chevrolet",
+    peugeot: "Peugeot",
+    citroen: "Citroën",
+  };
+  const firstName = `${brandNames[model.brand]} ${model.name.en}`;
+  await page.getByRole("button", { name: "Cars & years", exact: true }).click();
+  await page.getByRole("checkbox", { name: firstName, exact: true }).check();
+  const firstGroup = page.getByRole("group", { name: firstName, exact: true });
+  await firstGroup.getByLabel(/From year/).selectOption(String(config.year));
+  await firstGroup
+    .getByLabel(/Through year/)
+    .selectOption(String(config.year + 1));
+  await firstGroup
+    .getByRole("button", { name: "Add year range", exact: true })
+    .click();
+  const { data: otherModels } = await db
+    .from("vehicle_models")
+    .select("id,brand,name")
+    .neq("brand", model.brand)
+    .limit(1);
+  const other = otherModels[0],
+    otherName = `${brandNames[other.brand]} ${other.name.en}`;
+  await page.getByRole("checkbox", { name: otherName, exact: true }).check();
+  await page
+    .getByRole("group", { name: otherName, exact: true })
+    .getByRole("checkbox", { name: "2021", exact: true })
+    .check();
+  await page
+    .getByText("Optional: exact engine versions", { exact: true })
+    .click();
+  await page
+    .getByRole("checkbox", {
+      name: new RegExp(
+        `${brandNames[model.brand]} ${model.name.en} ${config.year} ·`,
+      ),
+    })
+    .first()
+    .check();
+  await page
+    .getByRole("button", { name: "Product details", exact: true })
+    .click();
   await page.getByLabel("Warranty · months (blank if not supplied)").fill("12");
   await page.getByLabel("Part number", { exact: true }).fill("QA-" + marker);
   await page.getByLabel("Sale price · EGP", { exact: true }).fill("1250");
@@ -122,6 +164,12 @@ try {
   assert.match(product.slug, /qa-oil-filter/);
   assert.ok(product.description.en.includes(String(config.year)));
   assert.ok(product.description.en.includes(maker));
+  assert.equal(
+    product.specs[`car_years:${model.id}`],
+    `${config.year},${config.year + 1}`,
+  );
+  assert.equal(product.specs[`car_years:${other.id}`], "2021");
+  assert.ok(product.description.en.includes(other.name.en));
   assert.equal(product.specs.warranty_months, "12");
   assert.match(product.warranty.en, /12-month/);
   assert.ok(product.seo.title.en.includes("Egypt"));
@@ -142,11 +190,81 @@ try {
     await page.getByLabel(/Type/).locator("option[value=oem]").textContent(),
     "Original",
   );
+  await page.getByRole("button", { name: "Cars & years", exact: true }).click();
+  assert.equal(
+    await page
+      .getByRole("group", { name: firstName, exact: true })
+      .getByRole("checkbox", { name: String(config.year), exact: true })
+      .isChecked(),
+    true,
+  );
+  assert.equal(
+    await page
+      .getByRole("group", { name: otherName, exact: true })
+      .getByRole("checkbox", { name: "2021", exact: true })
+      .isChecked(),
+    true,
+  );
+  await page.screenshot({
+    path: "docs/screenshots/admin-product-cars-desktop.png",
+    fullPage: true,
+  });
+  await page
+    .getByRole("button", { name: "Product details", exact: true })
+    .click();
   await page.getByRole("button", { name: "Photos", exact: true }).click();
   await page
     .getByRole("heading", { name: "Product photos", exact: true })
     .waitFor();
   assert.ok(await page.getByLabel("Upload product photo").isEnabled());
+  const png = await sharp({
+    create: { width: 20, height: 20, channels: 3, background: "#f5b53f" },
+  })
+    .png()
+    .toBuffer();
+  page.on("response", async (r) => {
+    if (r.url().includes("/api/upload?kind=catalog") && r.ok()) {
+      const data = await r.json();
+      uploadedPaths.push(data.path);
+    }
+  });
+  const transfer = await page.evaluateHandle((base64) => {
+    const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+    const dt = new DataTransfer();
+    dt.items.add(new File([bytes], "one.png", { type: "image/png" }));
+    dt.items.add(new File([bytes], "two.png", { type: "image/png" }));
+    return dt;
+  }, png.toString("base64"));
+  await page
+    .getByTestId("product-photo-dropzone")
+    .dispatchEvent("drop", { dataTransfer: transfer });
+  await page.getByText(/2 photos uploaded/).waitFor();
+  const altAr = page.getByLabel("Image description · ar"),
+    altEn = page.getByLabel("Image description · en");
+  for (let i = 0; i < 2; i++) {
+    await altAr.nth(i).fill("صورة اختبار");
+    await altEn.nth(i).fill("QA photo");
+  }
+  const imageSave = page.waitForResponse((r) =>
+    r.url().endsWith("/api/admin-images"),
+  );
+  await page
+    .getByRole("button", {
+      name: "Save image order and descriptions",
+      exact: true,
+    })
+    .click();
+  assert.equal((await imageSave).status(), 200);
+  const { data: savedImages, error: imageError } = await db
+    .from("product_images")
+    .select("path")
+    .eq("product_id", product.id);
+  if (imageError) throw imageError;
+  assert.equal(savedImages.length, 2);
+  await page.screenshot({
+    path: "docs/screenshots/admin-product-photos-desktop.png",
+    fullPage: true,
+  });
   await page.getByRole("button", { name: "Item brands", exact: true }).click();
   await page
     .getByRole("heading", { name: "Your item brands", exact: true })
@@ -195,6 +313,17 @@ try {
     path: "docs/screenshots/admin-product-mobile.png",
     fullPage: true,
   });
+  await page.getByRole("button", { name: "Cars & years", exact: true }).click();
+  assert.ok(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+    "Mobile car-year tab overflow",
+  );
+  await page.screenshot({
+    path: "docs/screenshots/admin-product-cars-mobile.png",
+    fullPage: true,
+  });
   console.log(
     "Combined product workspace: product save, fitments, brand, photos context, Excel template, legacy redirects, unsaved tab state and mobile layout passed.",
   );
@@ -208,6 +337,8 @@ try {
     product = data?.[0];
   }
   if (product) await db.from("products").delete().eq("id", product.id);
+  if (uploadedPaths.length)
+    await db.storage.from("catalog-images").remove(uploadedPaths);
   await db.from("manufacturers").delete().eq("name", maker);
   if (user) {
     await db.from("admin_audit_logs").delete().eq("user_id", user.id);

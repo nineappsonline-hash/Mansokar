@@ -61,7 +61,7 @@ export const productInput = z
     editorial: z
       .object({ why: localized.optional(), installation: localized.optional() })
       .optional(),
-    specs: z.record(z.string().max(100), z.string().max(1000)).default({}),
+    specs: z.record(z.string().max(120), z.string().max(1000)).default({}),
   })
   .refine((p) => p.sale === null || p.sale < p.price, {
     message: "Sale must be less than list price",
