@@ -40,6 +40,7 @@ export function SimpleProductEditor({
   const [year, setYear] = useState("");
   const [months, setMonths] = useState(initial.specs?.warranty_months ?? "");
   const [makers, setMakers] = useState(manufacturers);
+  const availableMakers = [...new Set([...manufacturers, ...makers])];
   const [addBrand, setAddBrand] = useState(false);
   const candidates = vehicles.filter(
     (v) => v.brand === make && v.model === model && String(v.year) === year,
@@ -97,13 +98,13 @@ export function SimpleProductEditor({
             }}
           />
           <datalist id="item-brands">
-            {makers.map((m) => (
+            {availableMakers.map((m) => (
               <option key={m} value={m} />
             ))}
           </datalist>
         </label>
         {value.manufacturer.trim() &&
-          !makers.includes(value.manufacturer.trim()) && (
+          !availableMakers.includes(value.manufacturer.trim()) && (
             <button
               type="button"
               className="button secondary"

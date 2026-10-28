@@ -1,4 +1,6 @@
 import { AdminSeo } from "@/components/admin-seo";
+import { AdminProducts } from "@/components/admin-products";
+import { redirect } from "next/navigation";
 import { AdminWorkspace, AdminSignIn } from "@/components/admin-workspace";
 import { SimpleProductEditor } from "@/components/simple-product-editor";
 import {
@@ -20,44 +22,18 @@ import {
 } from "@/lib/db";
 import { AuthForm, ApiForm } from "@/components/forms";
 import {
-  JsonEditor,
   Importer,
-  ImageUpload,
   ImageManager,
   BrandingMedia,
-  FitmentEditor,
   MerchantForm,
   RelationsEditor,
 } from "@/components/admin-editor";
-import { demoProducts, money } from "@/lib/catalog";
+import { money } from "@/lib/catalog";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administration",
   robots: { index: false, follow: false },
 };
-const modules = [
-  "overview",
-  "products",
-  "images",
-  "recommendations",
-  "campaigns",
-  "customers",
-  "taxonomy",
-  "fitments",
-  "vehicles",
-  "orders",
-  "inquiries",
-  "shipping",
-  "promotions",
-  "cms",
-  "import",
-  "reports",
-  "analytics",
-  "seo",
-  "settings",
-  "branding",
-  "hero-slideshow",
-];
 export default async function Admin({
   searchParams,
 }: {
@@ -68,6 +44,8 @@ export default async function Admin({
     to?: string;
     q?: string;
     page?: string;
+    view?: string;
+    tab?: string;
   }>;
 }) {
   let admin;
@@ -85,7 +63,24 @@ export default async function Admin({
       </AdminSignIn>
     );
   }
-  const { module = "overview", id, from, to, q, page } = await searchParams;
+  const {
+    module = "overview",
+    id,
+    from,
+    to,
+    q,
+    page,
+    view,
+    tab,
+  } = await searchParams;
+  if (["images", "fitments", "taxonomy", "import"].includes(module)) {
+    const destination = new URLSearchParams({ module: "products" });
+    if (id && module !== "taxonomy") destination.set("id", id);
+    if (module === "images") destination.set("tab", "photos");
+    if (module === "taxonomy") destination.set("view", "brands");
+    if (module === "import") destination.set("view", "excel");
+    redirect("/admin?" + destination.toString());
+  }
   const db = service();
   let content: React.ReactNode;
   if (module === "overview" || module === "reports") {
@@ -112,31 +107,40 @@ export default async function Admin({
       </div>
     );
   } else if (module === "products") {
-    const products = await allRows<any>("products");
-    const [manufacturers, fitments, { vehicles, brands, models }] =
+    const [products, manufacturers, fitments, { vehicles, brands, models }] =
       await Promise.all([
+        allRows<any>("products"),
         allRows<any>("manufacturers"),
         allRows<any>("product_fitments"),
         vehicleCatalog(),
       ]);
+    const selected = products.find((p) => p.id === id);
+    const { data: images, error: imageError } = selected
+      ? await db
+          .from("product_images")
+          .select("path,alt,position")
+          .eq("product_id", selected.id)
+          .order("position")
+      : { data: [], error: null };
+    if (imageError) throw imageError;
+    const initialImages = await Promise.all(
+      (images ?? []).map(async (image) => {
+        const { data, error } = await db.storage
+          .from("catalog-images")
+          .createSignedUrl(image.path, 600);
+        if (error) throw error;
+        return { ...image, url: data.signedUrl };
+      }),
+    );
     content = (
-      <div className="two-col">
-        <div className="panel stack">
-          <h2>Products</h2>
-          {products.map((p) => (
-            <Link key={p.id} href={`/admin?module=products&id=${p.id}`}>
-              {p.sku} · {p.name.en} · {p.status}
-            </Link>
-          ))}
-          <Link className="button secondary" href="/admin?module=products">
-            New product
-          </Link>
-          <p className="muted">
-            Select a product to edit its details, or create a new part for your
-            catalog.
-          </p>
-        </div>
-        <div className="stack">
+      <AdminProducts
+        key={`${id || "new"}-${view || "products"}-${tab || "details"}`}
+        products={products}
+        manufacturers={manufacturers.map((m) => m.name)}
+        selectedId={selected?.id}
+        initialView={view === "brands" || view === "excel" ? view : "products"}
+        initialTab={tab === "photos" ? "photos" : "details"}
+        editor={
           <SimpleProductEditor
             key={id}
             manufacturers={manufacturers.map((m) => m.name)}
@@ -146,19 +150,20 @@ export default async function Admin({
             selected={fitments
               .filter((f) => f.product_id === id)
               .map((f) => f.vehicle_config_id)}
-            initial={
-              products.find((p) => p.id === id) ?? {
-                ...demoProducts[0],
-                id: undefined,
-                sku: "NEW-SKU",
-                slug: "new-product",
-                status: "draft",
-                orderable: false,
-              }
-            }
+            initial={selected ?? {}}
           />
-        </div>
-      </div>
+        }
+        photos={
+          <ImageManager
+            key={selected?.id}
+            products={products}
+            product={selected?.id ?? ""}
+            initial={initialImages}
+            fixedProduct
+          />
+        }
+        excel={<Importer />}
+      />
     );
   } else if (module === "customers") {
     content = <AdminCustomers actor={admin.id} id={id} q={q} page={page} />;
@@ -307,47 +312,6 @@ export default async function Admin({
           ]}
         />
       </div>
-    );
-  } else if (module === "images") {
-    const products = await allRows<any>("products", "id,sku,name");
-    const selected = products.some((p) => p.id === id)
-      ? id
-      : (products[0]?.id ?? "");
-    const { data: images, error } = await db
-      .from("product_images")
-      .select("path,alt,position")
-      .eq("product_id", selected)
-      .order("position");
-    if (error) throw error;
-    const initial = await Promise.all(
-      (images ?? []).map(async (image) => {
-        const { data, error } = await db.storage
-          .from("catalog-images")
-          .createSignedUrl(image.path, 600);
-        if (error) throw error;
-        return { ...image, url: data.signedUrl };
-      }),
-    );
-    content = (
-      <ImageManager
-        key={selected}
-        products={products}
-        product={selected}
-        initial={initial}
-      />
-    );
-  } else if (module === "fitments") {
-    const [products, fitments, { vehicles }] = await Promise.all([
-      allRows<any>("products", "id,sku"),
-      allRows<any>("product_fitments"),
-      vehicleCatalog(),
-    ]);
-    content = (
-      <FitmentEditor
-        products={products}
-        fitments={fitments}
-        vehicles={vehicles}
-      />
     );
   } else if (module === "shipping") {
     const [areas, { data: shippingSettings }] = await Promise.all([
@@ -645,8 +609,7 @@ export default async function Admin({
         ))}
       </div>
     );
-  } else if (module === "import") content = <Importer />;
-  else if (module === "vehicles") {
+  } else if (module === "vehicles") {
     const [models, configs, generations] = await Promise.all([
       allRows<any>("vehicle_models"),
       allRows<any>("vehicle_configs"),
@@ -747,98 +710,6 @@ export default async function Admin({
                 { value: "", label: "All categories" },
                 ...categories.map((c) => ({ value: c.slug, label: c.name.en })),
               ],
-            },
-          ]}
-        />
-      </div>
-    );
-  } else if (module === "taxonomy") {
-    const categories = await allRows<any>("categories");
-    const selected = categories.find((c) => c.slug === id);
-    content = (
-      <div className="two-col">
-        <section className="panel stack">
-          <h2>Categories</h2>
-          <Link className="button secondary" href="/admin?module=taxonomy">
-            New category
-          </Link>
-          {categories
-            .sort((a, b) => a.sort_order - b.sort_order)
-            .map((c) => (
-              <Link key={c.slug} href={"/admin?module=taxonomy&id=" + c.slug}>
-                {c.parent_slug ? "↳ " : ""}
-                {c.name.en} · {c.sort_order}
-              </Link>
-            ))}
-          <MerchantForm
-            title="Manufacturer"
-            action="admin-taxonomy"
-            initial={{ kind: "manufacturer", name: "" }}
-            fields={[
-              { path: "name", label: "Manufacturer name", required: true },
-            ]}
-          />
-        </section>
-        <MerchantForm
-          key={id}
-          title="Category content and hierarchy"
-          action="admin-taxonomy"
-          initial={
-            selected
-              ? {
-                  ...selected,
-                  kind: "category",
-                  localized: selected.name,
-                  name: undefined,
-                }
-              : {
-                  kind: "category",
-                  slug: "",
-                  localized: { ar: "", en: "" },
-                  parent_slug: null,
-                  sort_order: 0,
-                  description: { ar: "", en: "" },
-                }
-          }
-          fields={[
-            { path: "slug", label: "Category URL slug", required: true },
-            ...["ar", "en"].flatMap((lang) => [
-              {
-                path: "localized." + lang,
-                label: "Category name · " + lang,
-                required: true,
-              },
-              {
-                path: "description." + lang,
-                label: "Category introduction · " + lang,
-                type: "textarea" as const,
-              },
-              {
-                path: "seo.title." + lang,
-                label: "Category SEO title · " + lang,
-              },
-              {
-                path: "seo.description." + lang,
-                label: "Category SEO description · " + lang,
-                type: "textarea" as const,
-              },
-            ]),
-            {
-              path: "parent_slug",
-              label: "Parent category",
-              type: "select",
-              options: [
-                { value: "", label: "Top level" },
-                ...categories
-                  .filter((c) => c.slug !== id)
-                  .map((c) => ({ value: c.slug, label: c.name.en })),
-              ],
-            },
-            {
-              path: "sort_order",
-              label: "Sort order (lower first)",
-              type: "number",
-              required: true,
             },
           ]}
         />

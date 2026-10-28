@@ -120,29 +120,32 @@ export function Importer() {
           }}
         />
       </label>
-      <label>
-        Product rows
-        <textarea
-          className="code-editor"
-          rows={16}
-          value={json}
-          onChange={(e) => update(e.target.value)}
-        />
-      </label>
+      <details>
+        <summary>Advanced: review parsed spreadsheet data</summary>
+        <label>
+          Imported product rows
+          <textarea
+            className="code-editor"
+            rows={16}
+            value={json}
+            onChange={(e) => update(e.target.value)}
+          />
+        </label>
+      </details>
       <div className="admin-nav">
         <button
           className="button secondary"
           disabled={busy}
           onClick={() => submit(false)}
         >
-          Validate / dry run
+          Check file
         </button>
         <button
           className="button"
           disabled={busy || !validated}
           onClick={() => submit(true)}
         >
-          Commit validated import
+          Import checked products
         </button>
       </div>
       <p role="status" className="prose">
@@ -812,34 +815,38 @@ export function ImageManager({
   products,
   product,
   initial,
+  fixedProduct = false,
 }: {
   products: { id: string; sku: string; name: { en: string } }[];
   product: string;
   initial: { path: string; alt: { ar: string; en: string }; url: string }[];
+  fixedProduct?: boolean;
 }) {
   const [images, setImages] = useState(initial);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   return (
     <section className="panel stack">
-      <h2>Product image manager</h2>
-      <label>
-        Product
-        <select
-          value={product}
-          onChange={(e) => {
-            window.location.assign(
-              "/admin?module=images&id=" + encodeURIComponent(e.target.value),
-            );
-          }}
-        >
-          {products.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.sku} · {p.name.en}
-            </option>
-          ))}
-        </select>
-      </label>
+      <h2>Product photos</h2>
+      {!fixedProduct && (
+        <label>
+          Product
+          <select
+            value={product}
+            onChange={(e) => {
+              window.location.assign(
+                "/admin?module=images&id=" + encodeURIComponent(e.target.value),
+              );
+            }}
+          >
+            {products.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.sku} · {p.name.en}
+              </option>
+            ))}
+          </select>
+        </label>
+      )}
       <p>
         The first image is the cover. Add bilingual descriptions and save to
         publish this image order.

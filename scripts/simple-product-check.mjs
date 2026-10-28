@@ -70,6 +70,17 @@ try {
   await page.goto(base + "/admin?module=products");
   await page.getByLabel("Spare part name · en").fill("QA oil filter " + marker);
   await page.getByLabel("Spare part name · ar").fill("فلتر زيت للاختبار");
+  await page.getByRole("button", { name: "Photos", exact: true }).click();
+  await page
+    .getByRole("heading", { name: "Add product photos", exact: true })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "Details & cars it fits", exact: true })
+    .click();
+  assert.equal(
+    await page.getByLabel("Spare part name · en").inputValue(),
+    "QA oil filter " + marker,
+  );
   await page.getByLabel("Item brand — search or select").fill(maker);
   await page
     .getByRole("button", { name: `Add “${maker}” as a new item brand` })
@@ -131,8 +142,61 @@ try {
     await page.getByLabel(/Type/).locator("option[value=oem]").textContent(),
     "Original",
   );
+  await page.getByRole("button", { name: "Photos", exact: true }).click();
+  await page
+    .getByRole("heading", { name: "Product photos", exact: true })
+    .waitFor();
+  assert.ok(await page.getByLabel("Upload product photo").isEnabled());
+  await page.getByRole("button", { name: "Item brands", exact: true }).click();
+  await page
+    .getByRole("heading", { name: "Your item brands", exact: true })
+    .waitFor();
+  await page.getByLabel("Search item brands").fill(maker);
+  await page
+    .getByRole("button", { name: "Excel import & export", exact: true })
+    .click();
+  await page
+    .getByRole("link", {
+      name: "Download Excel import template ↗",
+      exact: true,
+    })
+    .waitFor();
+  const template = await page.request.get(
+    base + "/api/admin-export?format=xlsx&template=true",
+  );
+  assert.equal(template.status(), 200);
+  for (const [old, section] of [
+    ["images", "Product photos"],
+    ["taxonomy", "Your item brands"],
+    ["import", "Import and export products with Excel"],
+  ]) {
+    await page.goto(base + `/admin?module=${old}&id=${product.id}`);
+    await page.getByRole("heading", { name: section, exact: true }).waitFor();
+    assert.equal(new URL(page.url()).searchParams.get("module"), "products");
+  }
+  await page.goto(base + `/admin?module=products&id=${product.id}`);
+  await page.screenshot({
+    path: "docs/screenshots/admin-products-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.waitForFunction(
+    () =>
+      (document.querySelector("aside")?.getBoundingClientRect().right ?? 1) <=
+      0,
+  );
+  assert.ok(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+    "Combined product page mobile overflow",
+  );
+  await page.screenshot({
+    path: "docs/screenshots/admin-product-mobile.png",
+    fullPage: true,
+  });
   console.log(
-    "Simplified product creation, brand creation, automatic content, warranty and fitments passed.",
+    "Combined product workspace: product save, fitments, brand, photos context, Excel template, legacy redirects, unsaved tab state and mobile layout passed.",
   );
 } finally {
   await browser?.close();

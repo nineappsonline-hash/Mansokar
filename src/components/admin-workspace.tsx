@@ -47,12 +47,8 @@ const navigation: { title: string; items: [string, string, LucideIcon][] }[] = [
     title: "Catalog",
     items: [
       ["products", "Products", Package],
-      ["images", "Product images", Image],
       ["vehicles", "Vehicles", Car],
-      ["fitments", "Vehicle fitments", Link2],
-      ["taxonomy", "Item brands & taxonomy", Tags],
       ["recommendations", "Recommendations", Layers],
-      ["import", "Import & export", Upload],
     ],
   },
   {
