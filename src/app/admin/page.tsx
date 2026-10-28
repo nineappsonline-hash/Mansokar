@@ -1,4 +1,5 @@
 import { AdminSeo } from "@/components/admin-seo";
+import { AdminWorkspace, AdminSignIn } from "@/components/admin-workspace";
 import { SimpleProductEditor } from "@/components/simple-product-editor";
 import {
   ShippingRateEditor,
@@ -74,22 +75,14 @@ export default async function Admin({
     admin = await requireAdmin();
   } catch {
     return (
-      <main className="shell section">
-        <Link className="logo" href="/en">
-          Drive<span>Parts</span>
-        </Link>
-        <h1>Administrator access</h1>
-        <p className="notice">
-          A verified account on the server-managed administrator allowlist is
-          required. There is no demo admin bypass.
-        </p>
+      <AdminSignIn>
         <AuthForm
           locale="en"
           configured={configured()}
           allowSignup={false}
           destination="admin"
         />
-      </main>
+      </AdminSignIn>
     );
   }
   const { module = "overview", id, from, to, q, page } = await searchParams;
@@ -139,8 +132,7 @@ export default async function Admin({
             New product
           </Link>
           <p className="muted">
-            Manufacturers and categories must exist before assigning a product.
-            Slugs and SKUs are unique.
+            Select a product to edit its details, or create a new part for your catalog.
           </p>
         </div>
         <div className="stack">
@@ -1055,29 +1047,8 @@ export default async function Admin({
       </div>
     );
   return (
-    <main className="shell section" lang="en" dir="ltr">
-      <div className="section-heading">
-        <div>
-          <span className="eyebrow">MANSOKAR / ADMINISTRATION</span>
-          <h1>Control room.</h1>
-          <p className="muted">{admin.email}</p>
-        </div>
-        <Link className="button secondary" href="/en">
-          View storefront ↗
-        </Link>
-      </div>
-      <nav className="admin-nav">
-        {modules.map((m) => (
-          <Link
-            href={`/admin?module=${m}`}
-            key={m}
-            aria-current={m === module ? "page" : undefined}
-          >
-            {m}
-          </Link>
-        ))}
-      </nav>
+    <AdminWorkspace module={module} email={admin.email ?? "Administrator"}>
       {content}
-    </main>
+    </AdminWorkspace>
   );
 }

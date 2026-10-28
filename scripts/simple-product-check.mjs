@@ -33,7 +33,40 @@ try {
   await page.getByLabel("Email", { exact: true }).fill(email);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Sign in", exact: true }).click();
-  await page.getByRole("heading", { name: "Control room." }).waitFor();
+  await page.getByRole("heading", { name: "Overview", exact: true }).waitFor();
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.screenshot({
+    path: "docs/screenshots/admin-overview-desktop.png",
+    fullPage: true,
+  });
+  await page.setViewportSize({ width: 390, height: 844 });
+  assert.ok(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+    "Mobile dashboard overflow",
+  );
+  await page
+    .getByRole("button", { name: "Open navigation", exact: true })
+    .click();
+  await page
+    .getByRole("navigation", { name: "Administration" })
+    .getByRole("link", { name: "Products", exact: true })
+    .click();
+  await page
+    .getByRole("heading", { name: "New product", exact: true })
+    .waitFor();
+  await page.screenshot({
+    path: "docs/screenshots/admin-product-mobile.png",
+    fullPage: true,
+  });
+  assert.ok(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+    "Mobile form overflow",
+  );
+  await page.setViewportSize({ width: 1440, height: 1000 });
   await page.goto(base + "/admin?module=products");
   await page.getByLabel("Spare part name · en").fill("QA oil filter " + marker);
   await page.getByLabel("Spare part name · ar").fill("فلتر زيت للاختبار");
