@@ -83,7 +83,11 @@ export default async function Admin({
           A verified account on the server-managed administrator allowlist is
           required. There is no demo admin bypass.
         </p>
-        <AuthForm locale="en" configured={configured()} />
+        <AuthForm
+          locale="en"
+          configured={configured()}
+          allowSignup={false}
+        />
       </main>
     );
   }

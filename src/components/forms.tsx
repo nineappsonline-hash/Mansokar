@@ -115,9 +115,11 @@ export function ApiForm({
 export function AuthForm({
   locale,
   configured,
+  allowSignup = true,
 }: {
   locale: Locale;
   configured: boolean;
+  allowSignup?: boolean;
 }) {
   return (
     <div className="panel narrow">
@@ -155,17 +157,21 @@ export function AuthForm({
             autoComplete="current-password"
           />
         </label>
-        <label>
-          {locale === "ar" ? "الإجراء" : "Action"}
-          <select name="mode">
-            <option value="login">
-              {locale === "ar" ? "تسجيل الدخول" : "Sign in"}
-            </option>
-            <option value="signup">
-              {locale === "ar" ? "إنشاء حساب" : "Create account"}
-            </option>
-          </select>
-        </label>
+        {allowSignup ? (
+          <label>
+            {locale === "ar" ? "الإجراء" : "Action"}
+            <select name="mode">
+              <option value="login">
+                {locale === "ar" ? "تسجيل الدخول" : "Sign in"}
+              </option>
+              <option value="signup">
+                {locale === "ar" ? "إنشاء حساب" : "Create account"}
+              </option>
+            </select>
+          </label>
+        ) : (
+          <input type="hidden" name="mode" value="login" />
+        )}
       </ApiForm>
     </div>
   );
