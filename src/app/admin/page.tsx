@@ -6,7 +6,7 @@ import {
   FreeShippingEditor,
 } from "@/components/admin-shipping";
 import { governorates } from "@/lib/shipping";
-import { VehicleConfigurationEditor } from "@/components/admin-vehicle-configuration";
+import { AdminVehicles } from "@/components/admin-vehicles";
 import { HeroSlidesEditor } from "@/components/admin-hero-slides";
 import { AdminCustomers } from "@/components/admin-customers";
 import { AdminReports } from "@/components/admin-reports";
@@ -132,7 +132,8 @@ export default async function Admin({
             New product
           </Link>
           <p className="muted">
-            Select a product to edit its details, or create a new part for your catalog.
+            Select a product to edit its details, or create a new part for your
+            catalog.
           </p>
         </div>
         <div className="stack">
@@ -651,152 +652,13 @@ export default async function Admin({
       allRows<any>("vehicle_configs"),
       allRows<any>("vehicle_generations"),
     ]);
-    const modelOptions = models.map((m) => ({ value: m.id, label: m.name.en }));
     content = (
-      <div className="stack">
-        <section className="panel stack">
-          <h2>Vehicle catalog</h2>
-          <Link href="/admin?module=vehicles">New records</Link>
-          <details>
-            <summary>Existing models</summary>
-            {models.map((m) => (
-              <p key={m.id}>
-                <Link href={"/admin?module=vehicles&id=" + m.id}>
-                  {m.name.en}
-                </Link>
-              </p>
-            ))}
-          </details>
-          <details>
-            <summary>Existing generations</summary>
-            {generations.map((g) => (
-              <p key={g.id}>
-                <Link href={"/admin?module=vehicles&id=" + g.id}>{g.name}</Link>
-              </p>
-            ))}
-          </details>
-          <details>
-            <summary>Existing exact configurations</summary>
-            {configs.map((c) => (
-              <p key={c.id}>
-                <Link href={"/admin?module=vehicles&id=" + c.id}>
-                  {c.id} · {c.year} · {c.engine} ·{" "}
-                  {[
-                    c.fuel_type,
-                    c.forced_induction,
-                    c.transmission,
-                    c.body,
-                    c.trim,
-                  ]
-                    .filter(Boolean)
-                    .join(" · ")}
-                </Link>
-              </p>
-            ))}
-          </details>
-        </section>
-        <div className="two-col">
-          <MerchantForm
-            key={"model" + id}
-            title="Vehicle model"
-            action="admin-model"
-            initial={
-              models.find((m) => m.id === id) ?? {
-                id: "",
-                brand: "opel",
-                slug: "",
-                name: { ar: "", en: "" },
-                image: null,
-              }
-            }
-            fields={[
-              { path: "id", label: "Model identifier", required: true },
-              {
-                path: "brand",
-                label: "Brand",
-                type: "select",
-                options: [
-                  { value: "opel", label: "Opel" },
-                  { value: "peugeot", label: "Peugeot" },
-                  { value: "citroen", label: "Citroën" },
-                  { value: "mg", label: "MG" },
-                  { value: "chevrolet", label: "Chevrolet" },
-                ],
-              },
-              { path: "slug", label: "Model URL slug", required: true },
-              { path: "name.ar", label: "Model name · ar", required: true },
-              { path: "name.en", label: "Model name · en", required: true },
-              {
-                path: "image",
-                label:
-                  "Optional local image path (uploaded photos use Branding)",
-                nullable: true,
-              },
-            ]}
-          />
-          <MerchantForm
-            key={"generation" + id}
-            title="Vehicle generation"
-            action="admin-generation"
-            initial={
-              generations.find((g) => g.id === id) ?? {
-                id: "",
-                model_id: models[0]?.id ?? "",
-                name: "",
-                year_start: 2020,
-                year_end: null,
-              }
-            }
-            fields={[
-              { path: "id", label: "Generation identifier", required: true },
-              {
-                path: "model_id",
-                label: "Generation model",
-                type: "select",
-                options: modelOptions,
-              },
-              {
-                path: "name",
-                label: "Generation / chassis code (e.g. Astra J)",
-                required: true,
-              },
-              {
-                path: "year_start",
-                label: "First model year",
-                type: "number",
-                required: true,
-              },
-              {
-                path: "year_end",
-                label: "Last model year (blank for ongoing)",
-                type: "number",
-                nullable: true,
-              },
-            ]}
-          />
-          <VehicleConfigurationEditor
-            key={"config" + id}
-            models={models}
-            generations={generations}
-            initial={
-              configs.find((c) => c.id === id) ?? {
-                id: "",
-                model_id: models[0]?.id ?? "",
-                year: new Date().getFullYear(),
-                engine: "",
-                generation_id: null,
-                engine_code: null,
-                engine_capacity: null,
-                fuel_type: null,
-                forced_induction: null,
-                transmission: null,
-                body: null,
-                trim: null,
-              }
-            }
-          />
-        </div>
-      </div>
+      <AdminVehicles
+        models={models}
+        configs={configs}
+        generations={generations}
+        initialId={id}
+      />
     );
   } else if (module === "promotions") {
     const [coupons, categories] = await Promise.all([

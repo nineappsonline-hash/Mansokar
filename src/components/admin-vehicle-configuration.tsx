@@ -20,10 +20,12 @@ export function VehicleConfigurationEditor({
   initial,
   models,
   generations,
+  fixedModel = false,
 }: {
   initial: Record<string, any>;
   models: Model[];
   generations: Generation[];
+  fixedModel?: boolean;
 }) {
   const [value, setValue] = useState(initial);
   const [brand, setBrand] = useState(
@@ -77,95 +79,104 @@ export function VehicleConfigurationEditor({
   const matchingModels = models.filter((m) => m.brand === brand);
   return (
     <section className="panel stack">
-      <h2>Exact vehicle configuration</h2>
+      <h2>{initial.engine ? "Edit year & engine" : "Add year & engine"}</h2>
       <p className="muted">
-        Save the brand/model first, then its generation and year range. Create
-        one exact configuration per model year. Leave optional details blank
-        when unknown; this does not confirm any product fitment.
+        Enter one year and its engine. If the same year has a different engine,
+        add it separately. Extra details are optional.
       </p>
       <ApiForm
         action="admin-vehicle"
-        label="Save vehicle configuration"
+        label="Save car"
         extra={{ json: JSON.stringify(value) }}
       >
-        {input("id", "Configuration identifier", false, true)}
-        <label>
-          Vehicle brand
-          <select
-            value={brand}
-            onChange={(e) => {
-              setBrand(e.target.value);
-              setValue({
-                ...value,
-                model_id:
-                  models.find((m) => m.brand === e.target.value)?.id ?? "",
-                generation_id: null,
-              });
-            }}
-          >
-            {targetBrands.map((b) => (
-              <option key={b.slug} value={b.slug}>
-                {b.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Vehicle model
-          <select
-            required
-            value={value.model_id ?? ""}
-            onChange={(e) =>
-              setValue({
-                ...value,
-                model_id: e.target.value,
-                generation_id: null,
-              })
-            }
-          >
-            <option value="">Choose a model</option>
-            {matchingModels.map((m) => (
-              <option key={m.id} value={m.id}>
-                {m.name.en}
-              </option>
-            ))}
-          </select>
-        </label>
-        {!matchingModels.length && <p>Create a model for this brand first.</p>}
-        <label>
-          Generation / chassis code
-          <select
-            value={value.generation_id ?? ""}
-            onChange={(e) => set("generation_id", e.target.value || null)}
-          >
-            <option value="">Not supplied</option>
-            {generations
-              .filter((g) => g.model_id === value.model_id)
-              .map((g) => (
-                <option key={g.id} value={g.id}>
-                  {g.name} · {g.year_start}–{g.year_end ?? "ongoing"}
-                </option>
-              ))}
-          </select>
-        </label>
-        {input("year", "Exact model year", true, true)}
-        {input(
-          "engine",
-          "Engine description (e.g. 1.4 petrol turbo)",
-          false,
-          true,
+        {!fixedModel && input("id", "Configuration identifier", false, true)}
+        {!fixedModel && (
+          <>
+            <label>
+              Vehicle brand
+              <select
+                value={brand}
+                onChange={(e) => {
+                  setBrand(e.target.value);
+                  setValue({
+                    ...value,
+                    model_id:
+                      models.find((m) => m.brand === e.target.value)?.id ?? "",
+                    generation_id: null,
+                  });
+                }}
+              >
+                {targetBrands.map((b) => (
+                  <option key={b.slug} value={b.slug}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Vehicle model
+              <select
+                required
+                value={value.model_id ?? ""}
+                onChange={(e) =>
+                  setValue({
+                    ...value,
+                    model_id: e.target.value,
+                    generation_id: null,
+                  })
+                }
+              >
+                <option value="">Choose a model</option>
+                {matchingModels.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.name.en}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {!matchingModels.length && (
+              <p>Create a model for this brand first.</p>
+            )}
+          </>
         )}
-        {input(
-          "engine_capacity",
-          "Engine capacity · cc (1400 = 1.4 litres)",
-          true,
-        )}
-        {select("fuel_type", "Fuel / powertrain", fuelTypes)}
-        {select("forced_induction", "Turbo / forced induction", inductionTypes)}
-        {input("engine_code", "Engine code (optional)")}
-        {select("transmission", "Transmission", transmissionTypes)}
-        {input("body", "Body style (sedan, hatchback, SUV…)")}
-        {input("trim", "Trim / equipment version (when relevant)")}
+        {input("year", "Year", true, true)}
+        {input("engine", "Engine (for example: 1.4 petrol turbo)", false, true)}
+        <details>
+          <summary>More details (optional)</summary>
+          <div className="stack">
+            <label>
+              Generation / chassis code
+              <select
+                value={value.generation_id ?? ""}
+                onChange={(e) => set("generation_id", e.target.value || null)}
+              >
+                <option value="">Not supplied</option>
+                {generations
+                  .filter((g) => g.model_id === value.model_id)
+                  .map((g) => (
+                    <option key={g.id} value={g.id}>
+                      {g.name} · {g.year_start}–{g.year_end ?? "ongoing"}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            {input(
+              "engine_capacity",
+              "Engine capacity · cc (1400 = 1.4 litres)",
+              true,
+            )}
+            {select("fuel_type", "Fuel / powertrain", fuelTypes)}
+            {select(
+              "forced_induction",
+              "Turbo / forced induction",
+              inductionTypes,
+            )}
+            {input("engine_code", "Engine code (optional)")}
+            {select("transmission", "Transmission", transmissionTypes)}
+            {input("body", "Body style (sedan, hatchback, SUV…)")}
+            {input("trim", "Trim / equipment version (when relevant)")}
+          </div>
+        </details>
       </ApiForm>
     </section>
   );
