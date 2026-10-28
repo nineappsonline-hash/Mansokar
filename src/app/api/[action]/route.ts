@@ -124,6 +124,7 @@ export async function POST(
           password: z.string().min(8).max(128),
           mode: z.enum(["login", "signup"]),
           locale: z.enum(["ar", "en"]),
+          destination: z.enum(["account", "admin"]).default("account"),
         })
         .parse(b);
       const auth = await authClient();
@@ -156,7 +157,12 @@ export async function POST(
             ? "Check your email to verify your account. / تحقق من بريدك."
             : "Signed in / تم الدخول",
         ...(input.mode === "login"
-          ? { redirect: `/${input.locale}/account` }
+          ? {
+              redirect:
+                input.destination === "admin"
+                  ? "/admin"
+                  : `/${input.locale}/account`,
+            }
           : {}),
       });
     }

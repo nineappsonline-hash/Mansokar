@@ -87,6 +87,7 @@ export default async function Admin({
           locale="en"
           configured={configured()}
           allowSignup={false}
+          destination="admin"
         />
       </main>
     );

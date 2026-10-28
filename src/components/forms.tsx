@@ -116,10 +116,12 @@ export function AuthForm({
   locale,
   configured,
   allowSignup = true,
+  destination = "account",
 }: {
   locale: Locale;
   configured: boolean;
   allowSignup?: boolean;
+  destination?: "account" | "admin";
 }) {
   return (
     <div className="panel narrow">
@@ -134,7 +136,7 @@ export function AuthForm({
       <ApiForm
         action="auth"
         label={locale === "ar" ? "دخول" : "Sign in"}
-        extra={{ locale }}
+        extra={{ locale, destination }}
       >
         <label>
           {locale === "ar" ? "البريد الإلكتروني" : "Email"}
