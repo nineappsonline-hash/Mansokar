@@ -115,6 +115,7 @@ export async function generateMetadata({
       ? ((await catalog({ slug: path[1] }))[0] ?? null)
       : null;
   let productMeta = rawProductMeta ? publicProduct(rawProductMeta) : null;
+  let yearKeywords: string[] = [];
   if (rawProductMeta && filters.make && filters.model) {
     const { models, brands } = await vehicleCatalog();
     const context = carContext(
@@ -137,6 +138,20 @@ export async function generateMetadata({
         context,
         matching?.products.some((p) => p.id === rawProductMeta.id),
       );
+      const application = readApplications(rawProductMeta.specs).find(
+        (a) => a.model_id === context.modelId,
+      );
+      if (
+        application &&
+        (!context.year || application.years.includes(context.year))
+      ) {
+        yearKeywords = context.year
+          ? [context.name[locale === "ar" ? "ar" : "en"]]
+          : application.years.map(
+              (year) =>
+                `${context.name[locale === "ar" ? "ar" : "en"]} ${year}`,
+            );
+      }
     }
   }
   const productCopy = productMeta
@@ -286,6 +301,14 @@ export async function generateMetadata({
   };
   const settings = await storefrontSettings();
   return {
+    keywords: productMeta
+      ? [
+          productMeta.name[l],
+          productMeta.manufacturer,
+          productMeta.partNumber,
+          ...yearKeywords,
+        ]
+      : undefined,
     description:
       productCopy?.description ??
       (slug === "installments"

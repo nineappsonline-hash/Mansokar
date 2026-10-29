@@ -10,6 +10,7 @@ import {
 import { demoProducts } from "../src/lib/catalog";
 import { validateImport } from "../src/lib/importer";
 import { exportItemWorkbook, itemColumns } from "../src/lib/item-workbook";
+import { planImportVehicles } from "../src/lib/import-vehicles";
 import { prepareItemRows } from "../src/lib/prepare-item-import";
 
 test("modern Excel template has isolated examples and repeated rows create one multi-car item", async () => {
@@ -47,7 +48,10 @@ test("modern Excel template has isolated examples and repeated rows create one m
   const prepared = prepareItemRows(parsed, models, []);
   assert.equal(validateImport(prepared).valid, true);
   assert.match(prepared[0].sku, /^MS-/);
-  assert.equal(prepared[0].specs["car_years:opel-astra"], "2020,2021,2022");
+  assert.equal(
+    prepared[0].specs["car_years:opel-astra"],
+    "2015,2016,2017,2018,2019,2020",
+  );
   assert.equal(prepared[0].specs["car_years:chevrolet-cruze"], "2021,2023");
   assert.equal(prepared[0].specs.warranty_months, "12");
   assert.equal(prepared[0].cost, 50000);
@@ -206,4 +210,51 @@ test("Excel prices use EGP, preserve decimals and reject fractional piasters", a
     parseSpreadsheet(invalid.buffer as ArrayBuffer, "products.xlsx"),
     /two decimal places/,
   );
+});
+
+test("import creates missing makes/models in a side-effect-free plan, reuses names, and rejects ambiguous ranges", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const sheet = workbook.worksheets[0];
+  const example = workbook.getWorksheet("Examples — copy to Products")!;
+  sheet.addRow((example.getRow(2).values as unknown[]).slice(1));
+  const set = (field: string, value: string | number) => {
+    sheet.getRow(2).getCell(itemColumns.indexOf(field as any) + 1).value =
+      value;
+  };
+  set("car_make", "New Make");
+  set("car_model", "New Model");
+  const parse = async () => {
+    const bytes = new Uint8Array(await workbook.xlsx.writeBuffer());
+    return parseSpreadsheet(bytes.buffer as ArrayBuffer, "items.xlsx");
+  };
+  const rows = await parse();
+  const models: any[] = [],
+    brands: any[] = [];
+  const plan = planImportVehicles(rows, models, brands);
+  assert.equal(models.length, 0);
+  assert.equal(brands.length, 0);
+  assert.equal(plan.additions.length, 1);
+  assert.equal(plan.additions[0].brand, "new-make");
+  const item = prepareItemRows(plan.rows, plan.models, [])[0];
+  assert.equal(
+    item.specs[`car_years:${plan.additions[0].id}`],
+    "2015,2016,2017,2018,2019,2020",
+  );
+  assert.match(item.description.en, /New Model 2015/);
+  assert.match(item.description.en, /New Model 2020/);
+  assert.equal(
+    planImportVehicles(rows, plan.models, [
+      { slug: "new-make", name: "New Make" },
+    ]).additions.length,
+    0,
+  );
+  set("start_year", 2020);
+  set("end_year", 2015);
+  await assert.rejects(parse(), /year/i);
+  set("start_year", 2015);
+  set("end_year", 2020);
+  set("years", "2022");
+  await assert.rejects(parse(), /leave years blank/);
 });

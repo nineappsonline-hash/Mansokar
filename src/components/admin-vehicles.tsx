@@ -9,7 +9,6 @@ import {
   CalendarDays,
   Search,
 } from "lucide-react";
-import { targetBrands } from "@/lib/vehicle-coverage";
 import { ApiForm } from "./forms";
 import { VehicleConfigurationEditor } from "./admin-vehicle-configuration";
 import styles from "./admin-vehicles.module.css";
@@ -29,11 +28,15 @@ type Generation = {
 };
 export function AdminVehicles({
   models,
+  brands,
+  modelYears,
   configs,
   generations,
   initialId,
 }: {
   models: Model[];
+  brands: { slug: string; name: string; ar?: string }[];
+  modelYears: { model_id: string; year: number }[];
   configs: Record<string, any>[];
   generations: Generation[];
   initialId?: string;
@@ -83,7 +86,7 @@ export function AdminVehicles({
           </div>
         </div>
         <div className={styles.makes}>
-          {targetBrands.map((b) => (
+          {brands.map((b) => (
             <button
               key={b.slug}
               type="button"
@@ -112,7 +115,7 @@ export function AdminVehicles({
             <span>2</span>
             <div>
               <h2>Choose the model</h2>
-              <p>{targetBrands.find((b) => b.slug === brand)?.name} models</p>
+              <p>{brands.find((b) => b.slug === brand)?.name} models</p>
             </div>
           </div>
           <label className={styles.search}>
@@ -173,7 +176,7 @@ export function AdminVehicles({
               <h2>Years & engines</h2>
               <p>
                 {model
-                  ? `${targetBrands.find((b) => b.slug === brand)?.name} ${model.name.en}`
+                  ? `${brands.find((b) => b.slug === brand)?.name} ${model.name.en}`
                   : "Choose a model to see its cars."}
               </p>
             </div>
@@ -236,10 +239,26 @@ export function AdminVehicles({
                   fixedModel
                 />
               )}
+              {!!modelYears.filter((y) => y.model_id === model.id).length && (
+                <div className="panel">
+                  <h3>Registered model years</h3>
+                  <p>
+                    {modelYears
+                      .filter((y) => y.model_id === model.id)
+                      .map((y) => y.year)
+                      .sort((a, b) => a - b)
+                      .join(", ")}
+                  </p>
+                  <p>
+                    Imported and product year ranges are registered here. Engine
+                    configurations below are optional and added separately.
+                  </p>
+                </div>
+              )}
               {!years.length && !config && (
                 <div className={styles.empty}>
                   <CalendarDays size={34} />
-                  <h3>No years added yet</h3>
+                  <h3>No engine configurations added yet</h3>
                   <p>
                     Click “Add year & engine”. For example: 2021, 1.4 petrol
                     turbo. Add only the years and engines you have verified.

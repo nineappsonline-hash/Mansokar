@@ -70,6 +70,26 @@ export function publicProduct(
         en: `${p.name.en} · ${context.name.en}`,
       }
     : p.name;
+  // Only the current model's individual years may appear in public copy.
+  const modelYears =
+    matches && !context.year
+      ? readApplications(p.specs).find((a) => a.model_id === context.modelId)
+          ?.years || []
+      : [];
+  const compatibility = {
+    ar: modelYears.length
+      ? ` متوافق مع ${[...modelYears]
+          .sort((a, b) => a - b)
+          .map((y) => `${context!.name.ar} ${y}`)
+          .join("، ")}.`
+      : "",
+    en: modelYears.length
+      ? ` Compatible with ${[...modelYears]
+          .sort((a, b) => a - b)
+          .map((y) => `${context!.name.en} ${y}`)
+          .join(", ")}.`
+      : "",
+  };
   const description =
     p.demo && !matches
       ? {
@@ -77,8 +97,8 @@ export function publicProduct(
           en: "Fictional demonstration product. Specifications and prices are test data, not a real offering.",
         }
       : {
-          ar: `${name.ar} من ${p.manufacturer}. رقم القطعة ${p.partNumber}. راجع رقم القطعة وتكوين السيارة قبل الطلب.`,
-          en: `${name.en} by ${p.manufacturer}. Part number ${p.partNumber}. Check the part number and vehicle configuration before ordering.`,
+          ar: `${name.ar} من ${p.manufacturer}. رقم القطعة ${p.partNumber}. راجع رقم القطعة وتكوين السيارة قبل الطلب.${compatibility.ar}`,
+          en: `${name.en} by ${p.manufacturer}. Part number ${p.partNumber}. Check the part number and vehicle configuration before ordering.${compatibility.en}`,
         };
   return {
     id: p.id,

@@ -19,6 +19,7 @@ import {
 import { checkoutInput, productInput } from "@/lib/validation";
 import { automaticProduct } from "@/lib/product-automation";
 import { applicationSpecs } from "@/lib/product-applications";
+import { planImportVehicles } from "@/lib/import-vehicles";
 import { prepareItemRows } from "@/lib/prepare-item-import";
 import { validateImport } from "@/lib/importer";
 import { assertDemoAllowed, availablePayments } from "@/lib/payments";
@@ -614,18 +615,17 @@ export async function POST(
             applications?.some((a) => !models.some((m) => m.id === a.model_id))
           )
             throw Error("Unknown car model");
-          const applicationNames = applications?.map((a) => {
+          const applicationNames = applications?.flatMap((a) => {
             const m = models.find((m) => m.id === a.model_id)!;
             const brand = brands.find((b) => b.slug === m.brand);
-            const years = [...new Set(a.years)]
+            return [...new Set(a.years)]
               .sort((a, b) => a - b)
-              .join(", ");
-            return {
-              name: {
-                ar: `${brand?.ar || m.brand} ${m.name.ar} (${years})`,
-                en: `${brand?.name || m.brand} ${m.name.en} (${years})`,
-              },
-            };
+              .map((year) => ({
+                name: {
+                  ar: `${brand?.ar || m.brand} ${m.name.ar} ${year}`,
+                  en: `${brand?.name || m.brand} ${m.name.en} ${year}`,
+                },
+              }));
           });
           const selected = ids.map((id) => vehicles.find((v) => v.id === id));
           if (selected.some((v) => !v))
@@ -727,12 +727,17 @@ export async function POST(
       ) {
         let rows = typeof b.json === "string" ? JSON.parse(b.json) : b.rows;
         const modern = Array.isArray(rows) && rows.some((r) => r.spreadsheet);
+        let vehicleAdditions: ReturnType<
+          typeof planImportVehicles
+        >["additions"] = [];
         if (modern) {
-          const [{ models }, existing] = await Promise.all([
+          const [{ models, brands }, existing] = await Promise.all([
             vehicleCatalog(),
             allRows<any>("products"),
           ]);
-          rows = prepareItemRows(rows, models, existing);
+          const plan = planImportVehicles(rows, models, brands);
+          vehicleAdditions = plan.additions;
+          rows = prepareItemRows(plan.rows, plan.models, existing);
         }
         const result = validateImport(rows);
         if (!result.valid)
@@ -800,7 +805,7 @@ export async function POST(
         }
         if (action === "admin-import-preview")
           return NextResponse.json({
-            message: `Dry run: ${result.rows.length} valid rows. No changes saved.`,
+            message: `Dry run: ${result.rows.length} valid items; ${vehicleAdditions.length} new car models will be created. No changes saved.`,
           });
         if (modern) {
           const { error } = await db.from("manufacturers").upsert(
@@ -819,7 +824,11 @@ export async function POST(
           );
           if (category.error) throw category.error;
         }
-        const { error } = await commit(result.rows);
+        const { error } = await commit(
+          result.rows.map((row, i) =>
+            i === 0 ? { ...row, _vehicle_models: vehicleAdditions } : row,
+          ),
+        );
         if (error) throw error;
         details = { rows: result.rows.length };
       } else if (action === "admin-shipping") {
@@ -996,7 +1005,10 @@ export async function POST(
         const input = z
           .object({
             id: z.string().min(1).max(100),
-            brand: z.enum(["opel", "peugeot", "citroen", "mg", "chevrolet"]),
+            brand: z
+              .string()
+              .regex(/^[a-z0-9-]+$/)
+              .max(150),
             slug: z.string().regex(/^[a-z0-9-]+$/),
             name: z.object({ ar: z.string().min(1), en: z.string().min(1) }),
             image: z

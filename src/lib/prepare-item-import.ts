@@ -52,14 +52,16 @@ export function prepareItemRows(
       months: row.specs.warranty_months
         ? Number(row.specs.warranty_months)
         : null,
-      vehicles: applications.map((a) => {
+      vehicles: applications.flatMap((a) => {
         const m = models.find((m) => m.id === a.model_id)!;
-        return {
-          name: {
-            ar: `${m.name.ar} (${a.years.join(", ")})`,
-            en: `${m.brand} ${m.name.en} (${a.years.join(", ")})`,
-          },
-        };
+        return [...a.years]
+          .sort((a, b) => a - b)
+          .map((year) => ({
+            name: {
+              ar: `${m.brand} ${m.name.ar} ${year}`,
+              en: `${m.brand} ${m.name.en} ${year}`,
+            },
+          }));
       }),
     });
     return {

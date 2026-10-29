@@ -10,7 +10,8 @@ const base = process.env.BASE_URL || "http://localhost:3104",
   marker = randomUUID(),
   email = `excel-${marker}@example.invalid`,
   password = marker + "Aa1!",
-  maker = "QA Excel " + marker;
+  maker = "QA Excel " + marker,
+  newMake = "qa-make-" + marker;
 const db = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
   process.env.SUPABASE_SECRET_KEY,
@@ -59,8 +60,9 @@ try {
   const sheet = workbook.worksheets[0],
     headers = sheet.getRow(1).values.slice(1);
   for (const [make, model, years] of [
-    ["opel", "astra", "2020-2021"],
+    ["opel", "astra", ""],
     ["chevrolet", "cruze", "2022, 2023"],
+    [newMake, "QA New Model", "2018-2020"],
   ]) {
     const row = {
       item_key: marker,
@@ -77,6 +79,8 @@ try {
       orderable: "false",
       car_make: make,
       car_model: model,
+      start_year: make === "opel" ? 2015 : "",
+      end_year: make === "opel" ? 2020 : "",
       years,
       photos: JSON.stringify([
         { path: photoPath, alt: { ar: "صورة اختبار", en: "QA photo" } },
@@ -108,6 +112,11 @@ try {
     .select("name")
     .eq("name", maker);
   assert.equal(before.data.length, 0);
+  assert.equal(
+    (await db.from("vehicle_brands").select("slug").eq("slug", newMake)).data
+      .length,
+    0,
+  );
   const commit = await admin.request.post(base + "/api/admin-import", {
     headers: { Origin: base },
     data: { rows },
@@ -120,7 +129,32 @@ try {
     .single();
   if (stored.error) throw stored.error;
   product = stored.data;
-  assert.equal(product.specs["car_years:opel-astra"], "2020,2021");
+  assert.equal(
+    product.specs["car_years:opel-astra"],
+    "2015,2016,2017,2018,2019,2020",
+  );
+  const newModel = await db
+    .from("vehicle_models")
+    .select("id")
+    .eq("brand", newMake)
+    .single();
+  assert.ifError(newModel.error);
+  const registered = await db
+    .from("vehicle_model_years")
+    .select("year")
+    .eq("model_id", newModel.data.id)
+    .order("year");
+  assert.deepEqual(
+    registered.data.map((y) => y.year),
+    [2018, 2019, 2020],
+  );
+  await admin.goto(base + "/admin?module=vehicles");
+  await admin.getByRole("button", { name: newMake }).click();
+  await admin.getByRole("button", { name: /QA New Model/ }).click();
+  await admin
+    .getByRole("heading", { name: "Registered model years" })
+    .waitFor();
+  assert.match(await admin.locator("main").innerText(), /2018, 2019, 2020/);
   assert.equal(product.specs["car_years:chevrolet-cruze"], "2022,2023");
   assert.equal(product.specs.warranty_months, "12");
   const imageRows = await db
@@ -166,6 +200,26 @@ try {
     );
     assert.ok(!html.includes("car_years:"), "Application matrix leaked");
   }
+  const scopedUrl = new URL(page.url());
+  scopedUrl.search = new URLSearchParams({
+    make: "opel",
+    model: "astra",
+  }).toString();
+  await page.goto(scopedUrl.href);
+  const description = await page
+    .locator('meta[name="description"]')
+    .getAttribute("content");
+  const keywords = await page
+    .locator('meta[name="keywords"]')
+    .getAttribute("content");
+  for (let year = 2015; year <= 2020; year++) {
+    assert.ok(
+      description.includes(`Opel ASTRA ${year}`) ||
+        description.toLowerCase().includes(`opel astra ${year}`),
+    );
+    assert.ok(keywords.toLowerCase().includes(`opel astra ${year}`));
+  }
+  assert.ok(!description.toLowerCase().includes("cruze"));
   const api = await page.request.get(`${base}/api/products?ids=${product.id}`);
   const publicBody = await api.text();
   assert.ok(!publicBody.includes("car_years:"));
@@ -193,9 +247,9 @@ try {
   book.worksheets[0].eachRow((r, n) => {
     if (n > 1 && r.getCell(2).value === product.sku) values.push(r.values);
   });
-  assert.equal(values.length, 2);
+  assert.equal(values.length, 3);
   console.log(
-    "Excel examples, automatic fields, multi-car grouping, preview without writes, public car-scoped cards/pages/metadata/API, direct database privacy and two-row export passed.",
+    "Excel examples, automatic fields, multi-car grouping, preview without writes, public car-scoped cards/pages/metadata/API, direct database privacy new make/model/year creation, registered admin years and three-row export passed.",
   );
 } finally {
   await browser?.close();
@@ -207,6 +261,8 @@ try {
     product = rows.data?.[0];
   }
   if (product) await db.from("products").delete().eq("id", product.id);
+  await db.from("vehicle_models").delete().eq("brand", newMake);
+  await db.from("vehicle_brands").delete().eq("slug", newMake);
   if (uploaded) await db.storage.from("catalog-images").remove([photoPath]);
   await db.from("manufacturers").delete().eq("name", maker);
   if (user) {

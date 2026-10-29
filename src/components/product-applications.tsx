@@ -42,8 +42,9 @@ export function ProductApplications({
     <div className="stack">
       <h2>Cars & years this part suits</h2>
       <p>
-        Select one or more models, then tick the years for each. You can combine
-        different makes and models in the same product.
+        Select one or more models, then enter a start and end year or tick
+        individual years. You can combine different makes and models in the same
+        product.
       </p>
       <fieldset className="stack">
         <legend>1. Find the car models</legend>
@@ -191,7 +192,7 @@ function YearPicker({
     <>
       <div className={styles.range}>
         <label>
-          From year
+          Start year
           <select value={from} onChange={(e) => setFrom(e.target.value)}>
             <option value="">Choose</option>
             {years.map((y) => (
@@ -200,7 +201,7 @@ function YearPicker({
           </select>
         </label>
         <label>
-          Through year
+          End year
           <select value={to} onChange={(e) => setTo(e.target.value)}>
             <option value="">Choose</option>
             {years.map((y) => (
@@ -222,6 +223,10 @@ function YearPicker({
           Add year range
         </button>
       </div>
+      <p>
+        Both years are included. A range of 2015–2020 selects 2015, 2016, 2017,
+        2018, 2019 and 2020 individually.
+      </p>
       <label>
         Find a year
         <input

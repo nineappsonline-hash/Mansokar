@@ -422,3 +422,25 @@ test("site identity provides stable entity IDs without unsupported merchant clai
   assert.ok(!JSON.stringify(data).includes("address"));
   assert.ok(!JSON.stringify(data).includes("aggregateRating"));
 });
+
+test("model-scoped public copy expands every range year without exposing other models", async () => {
+  const { publicProduct } = await import("../src/lib/public-product");
+  const item = publicProduct(
+    {
+      ...p,
+      specs: {
+        "car_years:opel-astra": "2015,2016,2017,2018,2019,2020",
+        "car_years:other": "2021",
+      },
+    },
+    {
+      modelId: "opel-astra",
+      make: "opel",
+      model: "astra",
+      name: { ar: "أوبل أسترا", en: "Opel Astra" },
+    },
+  );
+  for (let year = 2015; year <= 2020; year++)
+    assert.ok(item.description.en.includes(`Opel Astra ${year}`));
+  assert.ok(!JSON.stringify(item).includes("2021"));
+});

@@ -69,9 +69,10 @@ export function Importer() {
       <p className="muted">
         Download the Excel template and follow its Examples and Instructions
         sheets. Leave SKU blank for a new item and repeat the same item_key for
-        each car make/model and year range. Warranty is entered once in months.
-        Prices are in Egyptian pounds. SKU, URL, descriptions and SEO are
-        automatic. Exported SKUs update existing items. Photo references use
+        each car make/model. Enter start_year and end_year (both included);
+        missing cars are created on confirmed import. Warranty is entered once
+        in months. Prices are in Egyptian pounds. SKU, URL, descriptions and SEO
+        are automatic. Exported SKUs update existing items. Photo references use
         existing uploads; you can drag and drop new pictures after importing.
       </p>
       <a

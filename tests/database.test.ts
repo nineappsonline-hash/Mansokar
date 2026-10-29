@@ -93,9 +93,16 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
       "update public.products set specs=specs-'car_years:chevrolet-cruze' where id='demo-2'",
     );
 
+    await db.exec("insert into public.vehicle_brands values('bmw','BMW')");
     await assert.rejects(
-      db.exec("insert into public.vehicle_brands values('bmw','BMW')"),
+      db.exec(
+        "insert into public.vehicle_brands values('invalid make','Invalid')",
+      ),
     );
+    const registeredYears = await db.query<{ count: number }>(
+      "select count(*)::int count from public.vehicle_model_years where model_id='chevrolet-cruze' and year in (2020,2021,2022)",
+    );
+    assert.ok(registeredYears.rows[0].count >= 1);
     const tables = await db.query<{ relrowsecurity: boolean }>(
       "select relrowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r'",
     );
@@ -530,6 +537,78 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
     await db.query("select public.import_products($1::jsonb)", [
       JSON.stringify([updated]),
     ]);
+    const rangeItem = {
+      ...updated,
+      id: "range-import-item",
+      sku: "RANGE-IMPORT",
+      slug: "range-import",
+      specs: { "car_years:import-new-model": "2015,2016,2017,2018,2019,2020" },
+      _vehicle_models: [
+        {
+          id: "import-new-model",
+          brand: "new-make",
+          slug: "new-model",
+          name: { ar: "موديل جديد", en: "New model" },
+          make_name: "New make",
+        },
+      ],
+    };
+    await db.query("select public.import_products($1::jsonb)", [
+      JSON.stringify([rangeItem]),
+    ]);
+    assert.equal(
+      (
+        await db.query(
+          "select * from public.vehicle_model_years where model_id='import-new-model' order by year",
+        )
+      ).rows.length,
+      6,
+    );
+    assert.equal(
+      (
+        await db.query(
+          "select * from public.vehicle_configs where model_id='import-new-model'",
+        )
+      ).rows.length,
+      0,
+    );
+    await db.exec("set role anon");
+    await assert.rejects(
+      db.exec(
+        "insert into public.vehicle_model_years values('import-new-model',2021)",
+      ),
+    );
+    await db.exec("reset role");
+    await assert.rejects(
+      db.query("select public.import_products($1::jsonb)", [
+        JSON.stringify([
+          {
+            ...rangeItem,
+            sku: "BAD-RANGE",
+            id: "bad-range",
+            slug: "bad-range",
+            price: -1,
+            _vehicle_models: [
+              {
+                id: "bad-new-model",
+                brand: "bad-new-make",
+                slug: "bad-new-model",
+                name: { ar: "bad", en: "bad" },
+                make_name: "Bad",
+              },
+            ],
+          },
+        ]),
+      ]),
+    );
+    assert.equal(
+      (
+        await db.query(
+          "select * from public.vehicle_brands where slug='bad-new-make'",
+        )
+      ).rows.length,
+      0,
+    );
     const imported = (
       await db.query<{ cost: number; warranty: { en: string } }>(
         "select cost,warranty from public.products where id='demo-1'",

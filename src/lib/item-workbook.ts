@@ -19,6 +19,8 @@ export const itemColumns = [
   "orderable",
   "car_make",
   "car_model",
+  "start_year",
+  "end_year",
   "years",
   "vehicle_config_ids",
   "photos",
@@ -70,7 +72,24 @@ export async function exportItemWorkbook(
         orderable: String(p.orderable),
         car_make: m?.brand || "",
         car_model: m?.slug || "",
-        years: a.years.join(", "),
+        start_year:
+          a.years.length &&
+          Math.max(...a.years) - Math.min(...a.years) + 1 ===
+            new Set(a.years).size
+            ? Math.min(...a.years)
+            : "",
+        end_year:
+          a.years.length &&
+          Math.max(...a.years) - Math.min(...a.years) + 1 ===
+            new Set(a.years).size
+            ? Math.max(...a.years)
+            : "",
+        years:
+          a.years.length &&
+          Math.max(...a.years) - Math.min(...a.years) + 1 ===
+            new Set(a.years).size
+            ? ""
+            : a.years.join(", "),
         vehicle_config_ids: i === 0 ? (p.fitments || []).join(", ") : "",
         photos: JSON.stringify(p.images || []),
         extra_data: JSON.stringify({
@@ -112,7 +131,9 @@ export async function exportItemWorkbook(
       orderable: "false",
       car_make: make,
       car_model: model,
-      years,
+      start_year: make === "opel" ? 2015 : "",
+      end_year: make === "opel" ? 2020 : "",
+      years: make === "opel" ? "" : years,
     };
     examples.addRow(itemColumns.map((k) => row[k] ?? ""));
   }
@@ -141,7 +162,7 @@ export async function exportItemWorkbook(
     ],
     [
       "Cars",
-      "Repeat the same item_key/SKU and item details on another row for each make/model. Use comma-separated years or ranges (2020-2022, 2024). Car models sheet provides exact codes.",
+      "Repeat the same item_key/SKU and item details on another row for each make/model. Enter start_year and end_year (2015 and 2020 includes every year). For non-contiguous years use years instead (2021, 2023); do not mix both. Missing makes/models are created on confirmed import. Use existing codes or names to avoid duplicates.",
     ],
     [
       "Prices",
@@ -314,16 +335,33 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
     const entry = groups.get(key);
     if (entry && JSON.stringify(entry._common) !== JSON.stringify(common))
       throw Error(`Row ${n}: repeated item has conflicting details: ${key}`);
+    if (
+      (v.start_year || v.end_year) &&
+      (!v.start_year || !v.end_year || v.years)
+    )
+      throw Error(
+        `Row ${n}: fill both start_year and end_year, and leave years blank`,
+      );
+    if (
+      v.start_year &&
+      (!/^\d{4}$/.test(v.start_year) || !/^\d{4}$/.test(v.end_year))
+    )
+      throw Error(`Row ${n}: start_year and end_year must be four-digit years`);
     const app =
-      v.car_make || v.car_model || v.years
+      v.car_make || v.car_model || v.years || v.start_year || v.end_year
         ? {
             make: v.car_make,
             model: v.car_model,
-            years: parseYears(v.years, n),
+            years: parseYears(
+              v.start_year ? `${v.start_year}-${v.end_year}` : v.years,
+              n,
+            ),
           }
         : null;
     if (app && (!app.make || !app.model || !app.years.length))
-      throw Error(`Row ${n}: fill car_make, car_model and years together`);
+      throw Error(
+        `Row ${n}: fill car_make, car_model and start_year/end_year (or years) together`,
+      );
     const ids = v.vehicle_config_ids
       ? v.vehicle_config_ids
           .split(",")

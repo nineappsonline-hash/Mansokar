@@ -611,13 +611,18 @@ export default async function Admin({
       </div>
     );
   } else if (module === "vehicles") {
-    const [models, configs, generations] = await Promise.all([
-      allRows<any>("vehicle_models"),
-      allRows<any>("vehicle_configs"),
-      allRows<any>("vehicle_generations"),
-    ]);
+    const [models, configs, generations, modelYears, { brands }] =
+      await Promise.all([
+        allRows<any>("vehicle_models"),
+        allRows<any>("vehicle_configs"),
+        allRows<any>("vehicle_generations"),
+        allRows<any>("vehicle_model_years"),
+        vehicleCatalog(),
+      ]);
     content = (
       <AdminVehicles
+        brands={brands}
+        modelYears={modelYears}
         models={models}
         configs={configs}
         generations={generations}

@@ -62,6 +62,7 @@ export async function allRows<T = Record<string, unknown>>(
           cms_pages: "slug",
           manufacturers: "name",
           vehicle_brands: "slug",
+          vehicle_model_years: "model_id",
           site_settings: "key",
           coupons: "code",
           profiles: "user_id",
@@ -73,6 +74,7 @@ export async function allRows<T = Record<string, unknown>>(
       );
     if (table === "product_relations")
       query = query.order("related_id").order("kind");
+    if (table === "vehicle_model_years") query = query.order("year");
     if (table === "product_fitments") query = query.order("vehicle_config_id");
     query = query.range(offset, offset + 499);
     for (const [key, value] of Object.entries(filters))
@@ -212,19 +214,24 @@ export async function vehicleCatalog() {
         })),
       ),
     };
-  const [modelRows, configs] = await Promise.all([
+  const [modelRows, configs, brandRows] = await Promise.all([
     allRows<any>("vehicle_models"),
     allRows<any>("vehicle_configs", "*,vehicle_generations(name)"),
+    allRows<any>("vehicle_brands"),
   ]);
+  const catalogBrands = brandRows.map((b) => ({
+    ...b,
+    ar: baseBrands.find((base) => base.slug === b.slug)?.ar || b.name,
+  }));
   return {
     models: modelRows,
-    brands: baseBrands.map((b) => ({
+    brands: catalogBrands.map((b) => ({
       ...b,
       models: modelRows.filter((m) => m.brand === b.slug).map((m) => m.slug),
     })),
     vehicles: (configs ?? []).map((c) => {
       const m = modelRows.find((m) => m.id === c.model_id);
-      const b = baseBrands.find((b) => b.slug === m?.brand);
+      const b = catalogBrands.find((b) => b.slug === m?.brand);
       return {
         id: c.id,
         brand: b?.slug ?? "",
