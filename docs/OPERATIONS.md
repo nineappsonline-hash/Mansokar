@@ -64,6 +64,8 @@ Both governorate migrations have been applied to the linked database. The shippi
 
 ## Storefront design
 
+Catalog filters now offer car make, dependent model and model year instead of category and minimum/maximum price. Search, item brand, type and sorting remain. The `search_products_by_car` service-only function matches both merchant-entered model/year applications and verified engine fitments, with server-side totals and pagination; it excludes private costs. Broad car filters supersede a previously saved engine choice for that listing, and reset clears both selectors and results. The catalog-car-filters migration is applied to the linked database.
+
 The customer-facing shell uses `src/components/storefront.module.css` for its graphite, ivory and muted-gold design. The module is scoped to storefront pages; admin styles remain independent. It covers the homepage hero, five-brand grid, product cards, product details, forms, guides, footer and mobile layouts. Reveal wrappers render immediately so content remains visible with reduced-motion preferences. Existing branding and slideshow uploads still take precedence over default artwork. `scripts/storefront-design-check.mjs` checks Arabic/English desktop and mobile pages, brand image loading, product actions, horizontal overflow and homepage color contrast, and captures screenshots in `docs/screenshots/premium-*`.
 
 ## Sitemap and SEO diagnostics

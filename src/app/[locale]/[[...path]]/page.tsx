@@ -1,4 +1,6 @@
 import { SiteMap } from "@/components/site-map";
+import { CatalogCarFilters } from "@/components/catalog-car-filters";
+import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
 import { searchPages } from "@/lib/seo-pages";
 import { ContactForm } from "@/components/contact-form";
@@ -33,7 +35,7 @@ import {
 } from "lucide-react";
 import {
   normalize,
-  parseMinor,
+  demoFits,
   money,
   fitmentLabel,
   type Locale,
@@ -102,6 +104,9 @@ export async function generateMetadata({
         "max",
         "sort",
         "page",
+        "make",
+        "model",
+        "year",
       ].includes(k),
     );
   const productMeta =
@@ -337,8 +342,10 @@ export default async function Page({ params, searchParams }: Props) {
   const categories = await categoryCatalog();
   const selectedId =
     q.vehicle ??
-    (await cookies()).get("vehicle")?.value ??
-    (await memberActiveVehicle());
+    (["make", "model", "year"].some((key) => Object.hasOwn(q, key))
+      ? undefined
+      : ((await cookies()).get("vehicle")?.value ??
+        (await memberActiveVehicle())));
   const vehicle = vehicles.find((v) => v.id === selectedId);
   const isCatalog =
     route === "catalog" || route === "offers" || path[0] === "categories";
@@ -346,12 +353,13 @@ export default async function Page({ params, searchParams }: Props) {
     configured() && isCatalog
       ? await searchCatalog({
           query: q.q,
+          make: q.make,
+          model: q.model,
+          year: q.year ? Number(q.year) || 0 : undefined,
           vehicle: vehicle?.id,
-          category: path[0] === "categories" ? path[1] : q.category,
+          category: path[0] === "categories" ? path[1] : undefined,
           manufacturer: q.manufacturer,
           type: q.type,
-          min: parseMinor(q.min),
-          max: parseMinor(q.max),
           offers: route === "offers",
           sort: q.sort,
           page: Number(q.page),
@@ -837,18 +845,32 @@ export default async function Page({ params, searchParams }: Props) {
   ) {
     if (path[0] === "categories" && !categories.some((c) => c.slug === path[1]))
       notFound();
-    const category = path[0] === "categories" ? path[1] : q.category;
+    const category = path[0] === "categories" ? path[1] : undefined;
     const currentCategory =
       path[0] === "categories"
         ? categories.find((c) => c.slug === category)
         : undefined;
-    const minPrice = parseMinor(q.min),
-      maxPrice = parseMinor(q.max);
     let filtered = products.filter(
       (p) =>
         (!category || Boolean(serverResults) || p.category === category) &&
-        (minPrice === undefined || (p.sale ?? p.price) >= minPrice) &&
-        (maxPrice === undefined || (p.sale ?? p.price) <= maxPrice) &&
+        (Boolean(serverResults) ||
+          (!q.make && !q.model && !q.year) ||
+          readApplications(p.specs).some((a) => {
+            const m = vehicleModels.find((m) => m.id === a.model_id);
+            return (
+              m &&
+              (!q.make || m.brand === q.make) &&
+              (!q.model || m.slug === q.model) &&
+              (!q.year || a.years.includes(Number(q.year)))
+            );
+          }) ||
+          vehicles.some(
+            (v) =>
+              (!q.make || v.brand === q.make) &&
+              (!q.model || v.model === q.model) &&
+              (!q.year || v.year === Number(q.year)) &&
+              demoFits(p.id, v.id),
+          )) &&
         (!q.manufacturer || p.manufacturer === q.manufacturer) &&
         (!q.type || p.type === q.type) &&
         (!q.q ||
@@ -936,24 +958,17 @@ export default async function Page({ params, searchParams }: Props) {
           </>
         )}
         <form className="catalog-filters panel">
-          <label>
-            {locale === "ar" ? "أقل سعر (جنيه)" : "Minimum EGP"}
-            <input
-              name="min"
-              inputMode="decimal"
-              pattern="[0-9]+([.][0-9]{1,2})?"
-              defaultValue={q.min}
-            />
-          </label>
-          <label>
-            {locale === "ar" ? "أعلى سعر (جنيه)" : "Maximum EGP"}
-            <input
-              name="max"
-              inputMode="decimal"
-              pattern="[0-9]+([.][0-9]{1,2})?"
-              defaultValue={q.max}
-            />
-          </label>
+          <CatalogCarFilters
+            key={`${q.make ?? vehicle?.brand ?? ""}/${q.model ?? vehicle?.model ?? ""}/${q.year ?? vehicle?.year ?? ""}`}
+            locale={locale}
+            brands={brands}
+            models={vehicleModels}
+            initial={{
+              make: q.make ?? vehicle?.brand,
+              model: q.model ?? vehicle?.model,
+              year: q.year ?? (vehicle ? String(vehicle.year) : undefined),
+            }}
+          />
           <label className="search-label">
             <Search size={18} />
             <input
@@ -963,17 +978,6 @@ export default async function Page({ params, searchParams }: Props) {
               placeholder={w.search}
               maxLength={100}
             />
-          </label>
-          <label>
-            {w.category}
-            <select name="category" defaultValue={category}>
-              <option value="">{w.all}</option>
-              {categories.map((c) => (
-                <option key={c.slug} value={c.slug}>
-                  {c.name[locale]}
-                </option>
-              ))}
-            </select>
           </label>
           <label>
             {w.manufacturer}
@@ -1009,17 +1013,31 @@ export default async function Page({ params, searchParams }: Props) {
               </option>
             </select>
           </label>
-          {vehicle && <input type="hidden" name="vehicle" value={vehicle.id} />}
           <button className="button">
             <SlidersHorizontal size={18} />
             {locale === "ar" ? "تطبيق" : "Apply"}
           </button>
+          <Link href={`/${locale}/${route}?make=`} className="text-link">
+            {locale === "ar" ? "مسح الفلاتر" : "Reset filters"}
+          </Link>
         </form>
         <div className="results-heading">
           <p>
             {serverResults?.total ?? filtered.length}{" "}
             {locale === "ar" ? "نتيجة" : "results"} ·{" "}
-            {vehicle ? vehicle.name[locale] : w.none}
+            {vehicle
+              ? vehicle.name[locale]
+              : [
+                  brands.find((b) => b.slug === q.make)?.[
+                    locale === "ar" ? "ar" : "name"
+                  ],
+                  vehicleModels.find(
+                    (m) => m.brand === q.make && m.slug === q.model,
+                  )?.name[locale],
+                  q.year,
+                ]
+                  .filter(Boolean)
+                  .join(" · ") || w.none}
           </p>
           <Link href={`/${locale}/compare`}>{w.compare} ↗</Link>
         </div>

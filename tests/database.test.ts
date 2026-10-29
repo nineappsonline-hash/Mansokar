@@ -63,6 +63,35 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
       "select public.search_products(p_vehicle=>'opel-astra-2021-1') as result",
     );
     assert.equal(mismatch.rows[0].result.total, 0);
+    await db.exec(
+      `update public.products set specs=specs||'{"car_years:chevrolet-cruze":"2020,2021"}'::jsonb where id='demo-2'`,
+    );
+    const byCar = await db.query<{
+      result: { total: number; products: { id: string; cost?: number }[] };
+    }>(
+      "select public.search_products_by_car(p_make=>'chevrolet',p_model=>'cruze',p_year=>2020) as result",
+    );
+    assert.equal(byCar.rows[0].result.total, 1);
+    assert.equal(byCar.rows[0].result.products[0].id, "demo-2");
+    assert.equal(byCar.rows[0].result.products[0].cost, undefined);
+    const wrongYear = await db.query<{ result: { total: number } }>(
+      "select public.search_products_by_car(p_make=>'chevrolet',p_model=>'cruze',p_year=>2024) as result",
+    );
+    assert.equal(wrongYear.rows[0].result.total, 0);
+    const wrongMake = await db.query<{ result: { total: number } }>(
+      "select public.search_products_by_car(p_make=>'opel',p_model=>'cruze',p_year=>2020) as result",
+    );
+    assert.equal(wrongMake.rows[0].result.total, 0);
+    const exactCar = await db.query<{
+      result: { total: number; products: { id: string }[] };
+    }>(
+      "select public.search_products_by_car(p_make=>'opel',p_model=>'astra',p_year=>2021,p_size=>1) as result",
+    );
+    assert.equal(exactCar.rows[0].result.total, 2);
+    assert.equal(exactCar.rows[0].result.products.length, 1);
+    await db.exec(
+      "update public.products set specs=specs-'car_years:chevrolet-cruze' where id='demo-2'",
+    );
 
     await assert.rejects(
       db.exec("insert into public.vehicle_brands values('bmw','BMW')"),

@@ -325,6 +325,9 @@ export async function siteMedia(
   return result;
 }
 export async function searchCatalog(filters: {
+  make?: string;
+  model?: string;
+  year?: number;
   query?: string;
   vehicle?: string;
   category?: string;
@@ -337,19 +340,32 @@ export async function searchCatalog(filters: {
   page?: number;
   size?: number;
 }): Promise<{ total: number; products: Product[] }> {
-  const { data, error } = await service().rpc("search_products", {
-    p_query: filters.query?.slice(0, 100) || "",
-    p_vehicle: filters.vehicle || null,
-    p_category: filters.category || null,
-    p_manufacturer: filters.manufacturer || null,
-    p_type: filters.type || null,
-    p_min: filters.min ?? null,
-    p_max: filters.max ?? null,
-    p_offers: filters.offers ?? false,
-    p_sort: filters.sort || "",
-    p_page: Math.max(1, Math.min(10000, Math.floor(filters.page || 1))),
-    p_size: filters.size ?? 12,
-  });
+  const carFilter = Boolean(
+    filters.make || filters.model || filters.year !== undefined,
+  );
+  const { data, error } = await service().rpc(
+    carFilter ? "search_products_by_car" : "search_products",
+    {
+      ...(carFilter
+        ? {
+            p_make: filters.make || null,
+            p_model: filters.model || null,
+            p_year: filters.year ?? null,
+          }
+        : {}),
+      p_query: filters.query?.slice(0, 100) || "",
+      p_vehicle: filters.vehicle || null,
+      p_category: filters.category || null,
+      p_manufacturer: filters.manufacturer || null,
+      p_type: filters.type || null,
+      p_min: filters.min ?? null,
+      p_max: filters.max ?? null,
+      p_offers: filters.offers ?? false,
+      p_sort: filters.sort || "",
+      p_page: Math.max(1, Math.min(10000, Math.floor(filters.page || 1))),
+      p_size: filters.size ?? 12,
+    },
+  );
   if (error) throw error;
   return data;
 }
