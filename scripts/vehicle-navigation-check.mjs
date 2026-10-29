@@ -46,6 +46,70 @@ try {
           sitemap.includes(`/${locale}/brands/${brand.slug}/${model.slug}<`),
         );
       }
+      if (saved.length) {
+        const model = saved[0];
+        await page
+          .locator(
+            `.model-card[href="/${locale}/brands/${brand.slug}/${model.slug}"]`,
+          )
+          .click();
+        await page.locator(".model-product-filters").waitFor();
+        assert.equal(
+          await page.locator('select[name="make"]').inputValue(),
+          brand.slug,
+        );
+        assert.equal(
+          await page.locator('select[name="model"]').inputValue(),
+          model.slug,
+        );
+        assert.ok(
+          (await page.getByRole("heading", { level: 1 }).innerText())
+            .toLowerCase()
+            .includes(model.name[locale].toLowerCase()),
+        );
+        assert.ok(
+          !(await page.locator("main").innerText()).includes(
+            "VEHICLE CONFIGURATION",
+          ),
+        );
+        await page.waitForFunction((expected) => {
+          const link = document.head.querySelector('link[rel="canonical"]');
+          return link && new URL(link.href).pathname === expected;
+        }, `/${locale}/brands/${brand.slug}/${model.slug}`);
+        assert.equal(
+          new URL(
+            await page
+              .locator('head link[rel="canonical"]')
+              .getAttribute("href"),
+          ).pathname,
+          `/${locale}/brands/${brand.slug}/${model.slug}`,
+        );
+        const cards = page.locator(".product-card");
+        if (await cards.count())
+          assert.ok(
+            (await cards.first().innerText())
+              .toLowerCase()
+              .includes(model.name[locale].toLowerCase()),
+          );
+        // Existing direct links must also open products after a hard reload.
+        await page.reload();
+        await page.locator(".model-product-filters").waitFor();
+        if (brand.slug === "opel") {
+          await page.locator(".model-product-filters > summary").click();
+          await page.locator('select[name="year"]').selectOption("2015");
+          await page.locator(".catalog-filters button").click();
+          await page.waitForURL(`**/${locale}/catalog?**`);
+          assert.equal(
+            new URL(page.url()).searchParams.get("make"),
+            brand.slug,
+          );
+          assert.equal(
+            new URL(page.url()).searchParams.get("model"),
+            model.slug,
+          );
+          assert.equal(new URL(page.url()).searchParams.get("year"), "2015");
+        }
+      }
       const removed = (targets[brand.slug] || []).filter(
         (slug) => !saved.some((m) => m.slug === slug),
       );
@@ -58,7 +122,7 @@ try {
       }
     }
   console.log(
-    `Arabic/English model cards match saved records for ${brands.length} makes; removed model URLs return not-found and stay out of the sitemap.`,
+    `Arabic/English model cards match saved records for ${brands.length} makes; model clicks and old links open filtered products directly, with optional year filtering; removed model URLs return not-found and stay out of the sitemap.`,
   );
 } finally {
   await browser.close();

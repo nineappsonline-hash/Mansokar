@@ -1030,3 +1030,25 @@
     font-size: 26px;
   }
 }
+
+.store :global(.model-product-filters) {
+  margin-block: 24px;
+  background: #fff;
+  border: 1px solid #dedfd9;
+  border-radius: 8px;
+}
+.store :global(.model-product-filters > summary) {
+  padding: 14px 18px;
+  color: #263d46;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.store :global(.model-product-filters[open] > summary) {
+  border-bottom: 1px solid #dedfd9;
+}
+.store :global(.model-product-filters .catalog-filters) {
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}

@@ -66,7 +66,6 @@ import { t, statusLabel } from "@/lib/i18n";
 import { availablePayments } from "@/lib/payments";
 import { Shell } from "@/components/shell";
 import {
-  SelectVehicle,
   ProductActions,
   Cart,
   Compare,
@@ -379,7 +378,7 @@ export default async function Page({ params, searchParams }: Props) {
   if (raw !== "ar" && raw !== "en") notFound();
   const locale = raw as Locale,
     w = t(locale),
-    q = await searchParams,
+    q = { ...(await searchParams) },
     route = path.join("/");
   const {
     brands: storedBrands,
@@ -387,6 +386,18 @@ export default async function Page({ params, searchParams }: Props) {
     models: vehicleModels,
   } = await vehicleCatalog();
   const brands = coveredBrands(storedBrands);
+  const modelListing = path[0] === "brands" && path.length === 3;
+  const listingBrand = modelListing
+    ? brands.find((b) => b.slug === path[1])
+    : undefined;
+  const listingModel = modelListing
+    ? vehicleModels.find((m) => m.brand === path[1] && m.slug === path[2])
+    : undefined;
+  if (modelListing) {
+    if (!listingBrand || !listingModel) notFound();
+    q.make = listingBrand.slug;
+    q.model = listingModel.slug;
+  }
   const settings = await storefrontSettings();
   const mediaSlots = [
     "hero",
@@ -407,7 +418,10 @@ export default async function Page({ params, searchParams }: Props) {
         (await memberActiveVehicle())));
   const vehicle = vehicles.find((v) => v.id === selectedId);
   const isCatalog =
-    route === "catalog" || route === "offers" || path[0] === "categories";
+    modelListing ||
+    route === "catalog" ||
+    route === "offers" ||
+    path[0] === "categories";
   const serverResults =
     configured() && isCatalog
       ? await searchCatalog({
@@ -714,7 +728,7 @@ export default async function Page({ params, searchParams }: Props) {
         </section>
       </>
     );
-  } else if (path[0] === "brands" && path.length <= 3) {
+  } else if (path[0] === "brands" && path.length <= 2) {
     const brand = brands.find((b) => b.slug === path[1]);
     if (!brand) notFound();
     if (path.length === 2) {
@@ -804,127 +818,8 @@ export default async function Page({ params, searchParams }: Props) {
           </div>
         </div>
       );
-    } else {
-      const model = path[2];
-      if (!brand.models.includes(model)) notFound();
-      const info = targetModel(brand.slug, model);
-      const modelName =
-        vehicleModels.find((m) => m.brand === brand.slug && m.slug === model)
-          ?.name[locale] ??
-        info?.name[locale] ??
-        model.toUpperCase();
-      const modelVehicles = vehicles.filter(
-        (v) => v.brand === brand.slug && v.model === model,
-      );
-      content = (
-        <div className="shell section">
-          <Breadcrumb
-            locale={locale}
-            items={[
-              { label: brand.name, href: `/${locale}/brands/${brand.slug}` },
-              {
-                label: model.toUpperCase(),
-                href: `/${locale}/brands/${brand.slug}/${model}`,
-              },
-            ]}
-          />
-          <div className="two-col">
-            <div>
-              <span className="eyebrow">VEHICLE CONFIGURATION</span>
-              <h1>
-                {locale === "ar"
-                  ? `قطع غيار ${brand.ar} ${modelName} في مصر`
-                  : `${brand.name} ${modelName} spare parts in Egypt`}
-              </h1>
-              <Link
-                className="button"
-                href={`/${locale}/catalog?make=${brand.slug}&model=${model}`}
-              >
-                {locale === "ar"
-                  ? `تصفح قطع ${brand.ar} ${modelName}`
-                  : `Browse ${brand.name} ${modelName} parts`}
-              </Link>
-              {info && <p className="lead">{info.note[locale]}</p>}
-              <p className="lead">{w.config}</p>
-              <p className="muted">
-                {locale === "ar"
-                  ? "اختيار المحرك ضروري للتحقق من التوافق."
-                  : "An exact engine configuration is required for fitment verification."}
-              </p>
-              <div className="model-art">
-                <CarFront size={180} strokeWidth={0.5} />
-              </div>
-            </div>
-            {modelVehicles.length ? (
-              <SelectVehicle locale={locale} vehicles={modelVehicles} />
-            ) : (
-              <div className="panel stack">
-                <h2>
-                  {locale === "ar"
-                    ? "تكوين سيارتك مش موجود؟"
-                    : "Your configuration is missing?"}
-                </h2>
-                <p>
-                  {locale === "ar"
-                    ? "بيانات السنة والمحرك لهذا الموديل غير متاحة حاليًا في الاختيار. ابعت بيانات السيارة ورقم القطعة لمراجعتها قبل الطلب."
-                    : "Year and engine configurations for this model are not currently available in the selector. Send your vehicle details and part number for review before ordering."}
-                </p>
-                <Link
-                  className="button secondary"
-                  href={`/${locale}/request-part`}
-                >
-                  {locale === "ar" ? "استفسر عن قطعة" : "Request a part"}
-                </Link>
-              </div>
-            )}
-          </div>
-          <section className="section stack">
-            <h2>
-              {locale === "ar"
-                ? "قبل ما تشتري قطعة الغيار"
-                : "Before buying a replacement part"}
-            </h2>
-            <p>
-              {locale === "ar"
-                ? `راجع رقم القطعة وماركتها وبلد المنشأ الموثق قبل شراء قطع ${brand.ar} ${modelName}. بعد اختيار التكوين، اعتمد على رسالة التوافق لكل منتج، وراجع السعر بالجنيه والشحن وشروط الاسترجاع.`
-                : `Check the part number, item brand and documented country of origin when buying ${brand.name} ${modelName} parts. After selecting a configuration, read each product's fitment result and review the EGP price, shipping and returns.`}
-            </p>
-            <h3>
-              {locale === "ar"
-                ? "هل أقدر أشتري بالتقسيط؟"
-                : "Can I buy in installments?"}
-            </h3>
-            <p>
-              {locale === "ar"
-                ? "الكروت والتقسيط غير متاحين حاليًا في المتجر. دليل التقسيط يوضح الفرق بين تقسيط البنك وشركات التمويل وما يجب مراجعته في العرض."
-                : "Cards and installments are not currently available at this store. The guide explains bank versus finance-company plans and what to check in an offer."}
-            </p>
-            <Link href={`/${locale}/installments`}>
-              {locale === "ar"
-                ? "دليل الكروت والتقسيط"
-                : "Cards and installments guide"}{" "}
-              ↗
-            </Link>
-            {buyingGuides.map((g) => (
-              <Link key={g.slug} href={`/${locale}/guides/${g.slug}`}>
-                {g.title[locale]} ↗
-              </Link>
-            ))}
-            <Link href={`/${locale}/brands/${brand.slug}`}>
-              {locale === "ar"
-                ? `موديلات ${brand.ar} الأخرى`
-                : `Other ${brand.name} models`}{" "}
-              ↗
-            </Link>
-          </section>
-        </div>
-      );
     }
-  } else if (
-    route === "catalog" ||
-    route === "offers" ||
-    path[0] === "categories"
-  ) {
+  } else if (isCatalog) {
     if (path[0] === "categories" && !categories.some((c) => c.slug === path[1]))
       notFound();
     const category = path[0] === "categories" ? path[1] : undefined;
@@ -979,36 +874,51 @@ export default async function Page({ params, searchParams }: Props) {
         <Breadcrumb
           locale={locale}
           items={
-            currentCategory
+            listingBrand && listingModel
               ? [
-                  ...(currentCategory.parent_slug
-                    ? [
-                        {
-                          label:
-                            categories.find(
-                              (c) => c.slug === currentCategory.parent_slug,
-                            )?.name[locale] ?? currentCategory.parent_slug,
-                          href: `/${locale}/categories/${currentCategory.parent_slug}`,
-                        },
-                      ]
-                    : []),
                   {
-                    label: currentCategory.name[locale],
-                    href: `/${locale}/categories/${currentCategory.slug}`,
+                    label: listingBrand[locale === "ar" ? "ar" : "name"],
+                    href: `/${locale}/brands/${listingBrand.slug}`,
                   },
-                ]
-              : [
                   {
-                    label: route === "offers" ? w.offers : w.catalog,
+                    label: listingModel.name[locale],
                     href: `/${locale}/${route}`,
                   },
                 ]
+              : currentCategory
+                ? [
+                    ...(currentCategory.parent_slug
+                      ? [
+                          {
+                            label:
+                              categories.find(
+                                (c) => c.slug === currentCategory.parent_slug,
+                              )?.name[locale] ?? currentCategory.parent_slug,
+                            href: `/${locale}/categories/${currentCategory.parent_slug}`,
+                          },
+                        ]
+                      : []),
+                    {
+                      label: currentCategory.name[locale],
+                      href: `/${locale}/categories/${currentCategory.slug}`,
+                    },
+                  ]
+                : [
+                    {
+                      label: route === "offers" ? w.offers : w.catalog,
+                      href: `/${locale}/${route}`,
+                    },
+                  ]
           }
         />
         <span className="eyebrow">PRECISION / SELECTION</span>
         <h1>
-          {currentCategory?.name[locale] ??
-            (route === "offers" ? w.offers : w.catalog)}
+          {listingBrand && listingModel
+            ? locale === "ar"
+              ? `قطع غيار ${listingBrand.ar} ${listingModel.name.ar}`
+              : `${listingBrand.name} ${listingModel.name.en} parts`
+            : (currentCategory?.name[locale] ??
+              (route === "offers" ? w.offers : w.catalog))}
         </h1>
         {currentCategory && (
           <>
@@ -1039,70 +949,86 @@ export default async function Page({ params, searchParams }: Props) {
             </nav>
           </>
         )}
-        <form className="catalog-filters panel">
-          <CatalogCarFilters
-            key={`${q.make ?? vehicle?.brand ?? ""}/${q.model ?? vehicle?.model ?? ""}/${q.year ?? vehicle?.year ?? ""}`}
-            locale={locale}
-            brands={brands}
-            models={vehicleModels}
-            initial={{
-              make: q.make ?? vehicle?.brand,
-              model: q.model ?? vehicle?.model,
-              year: q.year ?? (vehicle ? String(vehicle.year) : undefined),
-            }}
-          />
-          <label className="search-label">
-            <Search size={18} />
-            <input
-              name="q"
-              aria-label={w.search}
-              defaultValue={q.q}
-              placeholder={w.search}
-              maxLength={100}
+        <details
+          open={!modelListing}
+          className={modelListing ? "model-product-filters" : undefined}
+        >
+          <summary hidden={!modelListing}>
+            {locale === "ar"
+              ? "بحث وتصفية المنتجات"
+              : "Search & filter products"}
+          </summary>
+          <form
+            className="catalog-filters panel"
+            action={modelListing ? `/${locale}/catalog` : undefined}
+          >
+            <CatalogCarFilters
+              key={`${q.make ?? vehicle?.brand ?? ""}/${q.model ?? vehicle?.model ?? ""}/${q.year ?? vehicle?.year ?? ""}`}
+              locale={locale}
+              brands={brands}
+              models={vehicleModels}
+              initial={{
+                make: q.make ?? vehicle?.brand,
+                model: q.model ?? vehicle?.model,
+                year: q.year ?? (vehicle ? String(vehicle.year) : undefined),
+              }}
             />
-          </label>
-          <label>
-            {w.manufacturer}
-            <select name="manufacturer" defaultValue={q.manufacturer}>
-              <option value="">{w.all}</option>
-              {[...new Set(products.map((p) => p.manufacturer))].map((m) => (
-                <option key={m}>{m}</option>
-              ))}
-            </select>
-          </label>
-          <label>
-            {locale === "ar" ? "النوع" : "Type"}
-            <select name="type" defaultValue={q.type}>
-              <option value="">{w.all}</option>
-              <option value="oem">Original</option>
-              <option value="aftermarket">After Market</option>
-            </select>
-          </label>
-          <label>
-            {locale === "ar" ? "الترتيب" : "Sort"}
-            <select name="sort" defaultValue={q.sort}>
-              <option value="">
-                {locale === "ar" ? "الصلة" : "Relevance"}
-              </option>
-              <option value="newest">
-                {locale === "ar" ? "الأحدث" : "Newest"}
-              </option>
-              <option value="price-asc">
-                {locale === "ar" ? "السعر من الأقل" : "Price: low to high"}
-              </option>
-              <option value="price-desc">
-                {locale === "ar" ? "السعر من الأعلى" : "Price: high to low"}
-              </option>
-            </select>
-          </label>
-          <button className="button">
-            <SlidersHorizontal size={18} />
-            {locale === "ar" ? "تطبيق" : "Apply"}
-          </button>
-          <Link href={`/${locale}/${route}?make=`} className="text-link">
-            {locale === "ar" ? "مسح الفلاتر" : "Reset filters"}
-          </Link>
-        </form>
+            <label className="search-label">
+              <Search size={18} />
+              <input
+                name="q"
+                aria-label={w.search}
+                defaultValue={q.q}
+                placeholder={w.search}
+                maxLength={100}
+              />
+            </label>
+            <label>
+              {w.manufacturer}
+              <select name="manufacturer" defaultValue={q.manufacturer}>
+                <option value="">{w.all}</option>
+                {[...new Set(products.map((p) => p.manufacturer))].map((m) => (
+                  <option key={m}>{m}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              {locale === "ar" ? "النوع" : "Type"}
+              <select name="type" defaultValue={q.type}>
+                <option value="">{w.all}</option>
+                <option value="oem">Original</option>
+                <option value="aftermarket">After Market</option>
+              </select>
+            </label>
+            <label>
+              {locale === "ar" ? "الترتيب" : "Sort"}
+              <select name="sort" defaultValue={q.sort}>
+                <option value="">
+                  {locale === "ar" ? "الصلة" : "Relevance"}
+                </option>
+                <option value="newest">
+                  {locale === "ar" ? "الأحدث" : "Newest"}
+                </option>
+                <option value="price-asc">
+                  {locale === "ar" ? "السعر من الأقل" : "Price: low to high"}
+                </option>
+                <option value="price-desc">
+                  {locale === "ar" ? "السعر من الأعلى" : "Price: high to low"}
+                </option>
+              </select>
+            </label>
+            <button className="button">
+              <SlidersHorizontal size={18} />
+              {locale === "ar" ? "تطبيق" : "Apply"}
+            </button>
+            <Link
+              href={`/${locale}/${modelListing ? "catalog" : route}?make=`}
+              className="text-link"
+            >
+              {locale === "ar" ? "مسح الفلاتر" : "Reset filters"}
+            </Link>
+          </form>
+        </details>
         <div className="results-heading">
           <p>
             {serverResults?.total ?? filtered.length}{" "}
