@@ -124,11 +124,7 @@ export async function SpecialOffers({
                   <div className="offer-details">
                     <span className="eyebrow muted">
                       {product.manufacturer} ·{" "}
-                      {product.type === "oem"
-                        ? "OEM"
-                        : locale === "ar"
-                          ? "بديل"
-                          : "Aftermarket"}
+                      {product.type === "oem" ? "Original" : "After Market"}
                     </span>
                     <h3>
                       <Link href={`/${locale}/products/${product.slug}`}>

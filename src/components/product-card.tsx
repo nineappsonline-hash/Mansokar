@@ -73,7 +73,7 @@ export async function ProductCard({
       <div className="product-info">
         <span className="eyebrow muted">
           {p.manufacturer} /{" "}
-          {p.type === "oem" ? "OEM" : locale === "ar" ? "بديل" : "Aftermarket"}
+          {p.type === "oem" ? "Original" : "After Market"}
         </span>
         <h3>
           <Link href={`/${locale}/products/${p.slug}`}>{p.name[locale]}</Link>

@@ -454,7 +454,8 @@ export function Compare({
           <article className="panel stack" key={p.id}>
             <h2>{p.name[locale]}</h2>
             <p>
-              {p.manufacturer} · {p.type}
+              {p.manufacturer} ·{" "}
+              {p.type === "oem" ? "Original" : "After Market"}
             </p>
             <p className="price">{money(p.sale ?? p.price, locale)}</p>
             <p>{fitments[p.id]}</p>

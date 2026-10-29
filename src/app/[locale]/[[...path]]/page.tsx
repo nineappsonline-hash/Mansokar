@@ -988,8 +988,8 @@ export default async function Page({ params, searchParams }: Props) {
             {locale === "ar" ? "النوع" : "Type"}
             <select name="type" defaultValue={q.type}>
               <option value="">{w.all}</option>
-              <option value="oem">OEM</option>
-              <option value="aftermarket">Aftermarket</option>
+              <option value="oem">Original</option>
+              <option value="aftermarket">After Market</option>
             </select>
           </label>
           <label>
@@ -1249,7 +1249,7 @@ export default async function Page({ params, searchParams }: Props) {
             <h1>{p.name[locale]}</h1>
             <div className="badges">
               <span>{p.manufacturer}</span>
-              <span>{p.type.toUpperCase()}</span>
+              <span>{p.type === "oem" ? "Original" : "After Market"}</span>
               {p.demo && <span>{w.demoProduct}</span>}
             </div>
             <CopyPart value={p.partNumber} locale={locale} />

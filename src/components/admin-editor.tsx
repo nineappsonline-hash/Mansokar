@@ -479,7 +479,7 @@ export function ProductEditor({
             onChange={(e) => setValue({ ...value, type: e.target.value })}
           >
             <option value="oem">OEM</option>
-            <option value="aftermarket">Aftermarket</option>
+            <option value="aftermarket">After Market</option>
           </select>
         </label>
         <label>

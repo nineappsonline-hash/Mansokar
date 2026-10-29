@@ -81,8 +81,8 @@ export const buyingGuides = [
       },
       {
         heading: text(
-          "إزاي أقارن الأصلي والبديل؟",
-          "How should I compare genuine and aftermarket parts?",
+          "إزاي أقارن الأصلي والـ After Market؟",
+          "How should I compare Original and After Market parts?",
         ),
         body: text(
           "قارن وصف المنتج والمصدر ورقم القطعة والمواصفات والتوافق والضمان المكتوب. كلمة OEM أو أصلي وحدها لا تكفي لإثبات المصدر أو الجودة. اطلب معلومات واضحة، ولا تعتبر بلد الصنع وحده ضمانًا للجودة أو التوافق.",
@@ -139,7 +139,7 @@ export const buyingGuides = [
       {
         heading: text("تأكد من التوافق الأول", "Confirm fitment first"),
         body: text(
-          "السعر المناسب مش مفيد لو القطعة غير متوافقة. راجع السنة والجيل والمحرك ورقم القطعة قبل الدفع. لو البيانات ناقصة، اطلب مراجعة القطعة بدل اختيار منتج بديل لمجرد إن سعره أقل.",
+          "السعر المناسب مش مفيد لو القطعة غير متوافقة. راجع السنة والجيل والمحرك ورقم القطعة قبل الدفع. لو البيانات ناقصة، اطلب مراجعة القطعة بدل اختيار قطعة أخرى لمجرد إن سعرها أقل.",
           "A low price is not useful if the part does not fit. Check year, generation, engine and part number before paying. If details are missing, request a review rather than choose a replacement solely because it costs less.",
         ),
       },

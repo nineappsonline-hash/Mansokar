@@ -116,8 +116,8 @@ export const demoProducts: Product[] = Array.from({ length: 8 }, (_, i) => ({
       "طقم تيل فرامل",
       "طقم صيانة الإشعال",
       "فلتر تبريد",
-      "بديل فلتر الزيت",
-      "بديل تيل الفرامل",
+      "فلتر زيت After Market",
+      "تيل فرامل After Market",
       "طقم بوجيهات",
       "فلتر مقصورة",
     ][i],
@@ -157,7 +157,8 @@ export function money(value: number, locale: Locale) {
   return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {
     style: "currency",
     currency: "EGP",
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
   }).format(value / 100);
 }
 export function fitmentLabel(
