@@ -1,0 +1,114 @@
+.screen {
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(
+    ellipse at 50% 35%,
+    #20323b 0,
+    #111e25 48%,
+    #0c151b 100%
+  );
+  color: #f1eee6;
+}
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border: 1px solid #d1ae731a;
+  border-radius: 3px;
+  pointer-events: none;
+}
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  width: min(100%, 440px);
+  text-align: center;
+  padding: 48px 20px;
+}
+.logo {
+  width: clamp(220px, 55vw, 300px);
+  height: 100px;
+}
+.name {
+  font-family: "MOPC Arabic", Tajawal, sans-serif;
+  font-size: 38px;
+  line-height: 1.6;
+  font-weight: 900;
+  margin-top: 8px;
+}
+.indicator {
+  width: 112px;
+  height: 2px;
+  margin: 32px 0 28px;
+  background: #d1ae732b;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.indicator span {
+  position: absolute;
+  width: 45%;
+  height: 100%;
+  background: linear-gradient(90deg, #d1ae7300, #d1ae73, #ff4a18);
+  animation: travel 1.6s ease-in-out infinite;
+}
+.copy p {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 500;
+}
+.detail {
+  color: #9faeb4;
+  font-size: 14px;
+  line-height: 1.8;
+}
+.signature {
+  position: absolute;
+  bottom: 40px;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  color: #91a2aa70;
+}
+.ar {
+  display: block;
+}
+.en {
+  display: none;
+}
+:global(html[lang="en"]) .ar {
+  display: none;
+}
+:global(html[lang="en"]) .en {
+  display: block;
+}
+@keyframes travel {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(330%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .indicator span {
+    animation: none;
+    width: 40%;
+    left: 30%;
+  }
+}
+@media (max-width: 480px) {
+  .screen::before {
+    inset: 14px;
+  }
+  .name {
+    font-size: 32px;
+  }
+  .signature {
+    bottom: 28px;
+  }
+}

@@ -8,18 +8,18 @@ export async function generateMetadata(): Promise<Metadata> {
     (await headers()).get("x-mansokar-locale") === "en" ? "en" : "ar";
   const settings = await storefrontSettings();
   const name =
-    settings.storeName?.[locale] ?? (locale === "ar" ? "موبك" : "MOPC");
+    settings.storeName?.[locale] ?? (locale === "ar" ? "موبِك" : "MOPC");
   return {
     metadataBase: new URL(
       process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
     ),
     openGraph: {
       siteName: name,
-      images: [{ url: "/images/mopc/logo.png", alt: "MOPC · موبك" }],
+      images: [{ url: "/images/mopc/logo.png", alt: "MOPC · موبِك" }],
     },
     title: {
       default:
-        settings.storeName?.[locale] ?? (locale === "ar" ? "موبك" : "MOPC"),
+        settings.storeName?.[locale] ?? (locale === "ar" ? "موبِك" : "MOPC"),
       template: `%s | ${name}`,
     },
     ...(process.env.GOOGLE_SITE_VERIFICATION
@@ -52,7 +52,7 @@ export default async function RootLayout({
               siteIdentity(
                 process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
                 settings.storeName?.[locale] ||
-                  (locale === "ar" ? "موبك" : "MOPC"),
+                  (locale === "ar" ? "موبِك" : "MOPC"),
               ),
             ).replace(/</g, "\\u003c"),
           }}

@@ -262,14 +262,14 @@ export const storefrontSettings = cache(
     heroImage?: string;
     contact?: { ar: string; en: string };
   }> => {
-    if (!configured()) return { storeName: { ar: "موبك", en: "MOPC" } };
+    if (!configured()) return { storeName: { ar: "موبِك", en: "MOPC" } };
     const { data, error } = await service()
       .from("site_settings")
       .select("value")
       .eq("key", "storefront")
       .maybeSingle();
     if (error) throw error;
-    return { storeName: { ar: "موبك", en: "MOPC" }, ...data?.value };
+    return { storeName: { ar: "موبِك", en: "MOPC" }, ...data?.value };
   },
 );
 export async function productImages(productId: string) {

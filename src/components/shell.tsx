@@ -1,4 +1,5 @@
 import { siteMedia, storefrontSettings } from "@/lib/db";
+import { BrandLogo } from "./brand-logo";
 import { Analytics } from "./analytics";
 import Link from "next/link";
 import {
@@ -52,24 +53,18 @@ export async function Shell({
             className="logo"
             aria-label={
               (settings.storeName?.[locale] ??
-                (locale === "ar" ? "موبك" : "MOPC")) +
+                (locale === "ar" ? "موبِك" : "MOPC")) +
               (locale === "ar" ? " الرئيسية" : " home")
             }
           >
-            <img
+            <BrandLogo
               className="store-logo-image"
               src={media.logo?.url || "/images/mopc/logo-dark.png"}
-              alt={
-                locale === "ar"
-                  ? "موبك — قطع غيار السيارات"
-                  : "MOPC Spare Parts"
-              }
-              width={180}
-              height={60}
+              alt={locale === "ar" ? "موبِك — قطع غيار السيارات" : "MOPC"}
             />
             {locale === "ar" && (
               <span className="store-name-ar" lang="ar">
-                موبك
+                موبِك
               </span>
             )}
           </Link>
@@ -153,20 +148,14 @@ export async function Shell({
         <div className="shell footer-grid">
           <div>
             <Link className="logo" href={`/${locale}`}>
-              <img
+              <BrandLogo
                 className="store-logo-image"
                 src={media.logo?.url || "/images/mopc/logo-dark.png"}
-                alt={
-                  locale === "ar"
-                    ? "موبك — قطع غيار السيارات"
-                    : "MOPC Spare Parts"
-                }
-                width={210}
-                height={70}
+                alt={locale === "ar" ? "موبِك — قطع غيار السيارات" : "MOPC"}
               />
               {locale === "ar" && (
                 <span className="store-name-ar" lang="ar">
-                  موبك
+                  موبِك
                 </span>
               )}
             </Link>
@@ -175,7 +164,7 @@ export async function Shell({
               <p className="prose">{settings.contact[locale]}</p>
             )}
             <p className="muted">
-              {locale === "ar" ? "موبك" : "MOPC"} ·{" "}
+              {locale === "ar" ? "موبِك" : "MOPC"} ·{" "}
               {locale === "ar"
                 ? "متجر تجريبي في مصر"
                 : "Demo automotive store in Egypt"}
@@ -241,7 +230,7 @@ export async function Shell({
         </div>
         <div className="shell footer-bottom">
           <span>
-            © {new Date().getFullYear()} {locale === "ar" ? "موبك" : "MOPC"}
+            © {new Date().getFullYear()} {locale === "ar" ? "موبِك" : "MOPC"}
           </span>
           <span>OPEL　/　MG　/　CHEVROLET　/　PEUGEOT　/　CITROËN</span>
         </div>

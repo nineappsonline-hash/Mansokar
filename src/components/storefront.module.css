@@ -1015,13 +1015,6 @@
   }
 }
 
-@font-face {
-  font-family: "MOPC Arabic";
-  src: url("/fonts/cairo.ttf") format("truetype");
-  font-weight: 200 1000;
-  font-style: normal;
-  font-display: swap;
-}
 .store :global(.header .logo .store-name-ar) {
   font-family: "MOPC Arabic", Tajawal, sans-serif;
   font-size: 32px;

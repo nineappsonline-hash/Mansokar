@@ -31,6 +31,7 @@ import {
   ChevronRight,
   ShieldCheck,
 } from "lucide-react";
+import { BrandLogo } from "./brand-logo";
 import { ApiForm } from "./forms";
 import styles from "./admin-workspace.module.css";
 const navigation: { title: string; items: [string, string, LucideIcon][] }[] = [
@@ -91,13 +92,7 @@ export function AdminSignIn({ children }: { children: React.ReactNode }) {
       <div className={styles.signInIntro}>
         <Link className={styles.brand} href="/en">
           <span>
-            <img
-              className={styles.brandLogo}
-              src="/images/mopc/logo-dark.png"
-              alt="MOPC · موبك"
-              width={174}
-              height={58}
-            />
+            <BrandLogo className={styles.brandLogo} />
             <small>STORE MANAGEMENT</small>
           </span>
         </Link>
@@ -153,13 +148,7 @@ export function AdminWorkspace({
       <aside className={`${styles.sidebar} ${open ? styles.open : ""}`}>
         <Link className={styles.brand} href="/admin">
           <span>
-            <img
-              className={styles.brandLogo}
-              src="/images/mopc/logo-dark.png"
-              alt="MOPC · موبك"
-              width={174}
-              height={58}
-            />
+            <BrandLogo className={styles.brandLogo} />
             <small>STORE MANAGEMENT</small>
           </span>
         </Link>
