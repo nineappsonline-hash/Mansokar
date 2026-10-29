@@ -5,6 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { demoProducts, demoFits, type Product } from "./catalog";
 import { publicProductId } from "./public-product";
+import { isRemoteImageUrl } from "./image-links";
 export function configured() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -276,12 +277,12 @@ export async function productImages(productId: string) {
   if (!configured()) return [];
   const { data, error } = await service()
     .from("product_images")
-    .select("id,alt,position")
+    .select("id,path,alt,position")
     .eq("product_id", productId)
     .order("position");
   if (error) throw error;
   return (data ?? []).map((row) => ({
-    url: `/product-media/${row.id}`,
+    url: isRemoteImageUrl(row.path) ? row.path : `/product-media/${row.id}`,
     alt: row.alt as { ar: string; en: string },
   }));
 }

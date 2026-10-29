@@ -106,8 +106,8 @@ export function Importer() {
         (both included); missing cars are created on confirmed import. Warranty
         is entered once in months. Prices are in Egyptian pounds. SKU, URL,
         descriptions and SEO are automatic. Exported SKUs update existing items.
-        Photo references use existing uploads; you can drag and drop new
-        pictures after importing.
+        Photos may use existing upload references or https image links; you can
+        also drag and drop new pictures after importing.
       </p>
       <a
         className="button secondary"

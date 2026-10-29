@@ -1,8 +1,9 @@
 import ExcelJS from "exceljs";
+import { spreadsheetEgp } from "./spreadsheet-money";
 import { csvCell } from "./importer";
 import type { Product, Vehicle } from "./catalog";
 import { emptyImportMessage } from "./import-feedback";
-import { parseItemSheet } from "./item-workbook";
+import { parseItemSheet, spreadsheetCellText } from "./item-workbook";
 export const columns = [
   "sku",
   "slug",
@@ -273,28 +274,38 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
   sheet.eachRow((row, n) => {
     if (n === 1) return;
     const values: Record<string, string> = {};
+    const raw: Record<string, ExcelJS.CellValue> = {};
     header.forEach((key, i) => {
       const value = row.getCell(i + 1).value;
-      if (typeof value === "object" && value !== null)
-        throw Error(`Row ${n}: formulas and rich cells are not supported`);
-      values[key] = String(value ?? "");
+      raw[key] = value;
+      values[key] = spreadsheetCellText(value, n);
     });
     if (Object.values(values).every((value) => !value.trim())) return;
+    const amount = (field: string) =>
+      typeof raw[field] === "number"
+        ? String(Math.round((raw[field] as number) * 100) / 100)
+        : values[field];
     rows.push({
       sku: values.sku,
       slug: values.slug,
-      name: { ar: values.name_ar, en: values.name_en },
-      description: { ar: values.description_ar, en: values.description_en },
+      name: {
+        ar: values.name_ar,
+        en: values.name_en || values.name_ar,
+      },
+      description: {
+        ar: values.description_ar,
+        en: values.description_en || values.description_ar,
+      },
       manufacturer: values.manufacturer,
       category: values.category,
       family: values.family,
       type: values.type,
-      price: parseEgp(values.price, n, "price"),
-      sale: values.sale === "" ? null : parseEgp(values.sale, n, "sale"),
+      price: parseEgp(amount("price"), n, "price"),
+      sale: values.sale === "" ? null : parseEgp(amount("sale"), n, "sale"),
       partNumber: values.partNumber,
       demo: values.demo === "true",
       orderable: values.orderable === "true",
-      status: values.status,
+      status: values.status.toLowerCase(),
       specs: {
         ...JSON.parse(values.specs || "{}"),
         ...Object.fromEntries(
@@ -321,7 +332,10 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
           .map((k) => [k, JSON.parse(values[k])]),
       ),
       ...(values.cost !== undefined
-        ? { cost: values.cost === "" ? null : parseEgp(values.cost, n, "cost") }
+        ? {
+            cost:
+              values.cost === "" ? null : parseEgp(amount("cost"), n, "cost"),
+          }
         : {}),
       ...(values.vehicle_config_id
         ? { fitments: [values.vehicle_config_id] }
@@ -347,14 +361,7 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
 }
 
 function parseEgp(value: string, row: number, field: string) {
-  if (!/^\d+(?:\.\d{1,2})?$/.test(value?.trim() ?? ""))
-    throw Error(
-      `Row ${row}: ${field} must be an EGP amount with at most two decimal places`,
-    );
-  const amount = Math.round(Number(value) * 100);
-  if (!Number.isSafeInteger(amount))
-    throw Error(`Row ${row}: ${field} is too large`);
-  return amount;
+  return spreadsheetEgp(value, row, field)!;
 }
 
 function validateZip(data: Buffer) {

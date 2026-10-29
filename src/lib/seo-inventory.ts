@@ -1,4 +1,5 @@
 import type { Product, Text } from "./catalog";
+import { isRemoteImageUrl } from "./image-links";
 export type SearchPage = {
   path: string;
   title: Text;
@@ -20,7 +21,7 @@ export function collectSearchPages(input: {
   cms: { slug: string; title: Text; published: boolean }[];
   guides: { slug: string; title: Text }[];
   products: Product[];
-  productImages?: { id: string; product_id: string }[];
+  productImages?: { id: string; product_id: string; path: string }[];
 }): SearchPage[] {
   const pages: SearchPage[] = [
     { path: "", title: { ar: "الرئيسية", en: "Home" }, kind: "main" },
@@ -97,7 +98,11 @@ export function collectSearchPages(input: {
         title: p.name,
         images: input.productImages
           ?.filter((image) => image.product_id === p.id)
-          .map((image) => `/product-media/${image.id}`),
+          .map((image) =>
+            isRemoteImageUrl(image.path)
+              ? image.path
+              : `/product-media/${image.id}`,
+          ),
         kind: "product" as const,
       })),
   ];

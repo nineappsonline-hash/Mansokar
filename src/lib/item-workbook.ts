@@ -1,4 +1,5 @@
 import ExcelJS from "exceljs";
+import { spreadsheetEgp } from "./spreadsheet-money";
 import { randomUUID } from "node:crypto";
 import type { Product, Vehicle } from "./catalog";
 import { readApplications } from "./product-applications";
@@ -166,7 +167,7 @@ export async function exportItemWorkbook(
     ],
     [
       "Prices",
-      "Enter Egyptian pounds: 750 means EGP 750. sale_price is normal selling price; discount_price is optional and must be lower. cost_price is private.",
+      "Enter Egyptian pounds: 750 means EGP 750. Formats like 1,250, EGP 1250 and ١٬٢٥٠ are accepted. Leave cost_price blank if unknown. sale_price is normal selling price; discount_price is optional and must be lower. cost_price is private.",
     ],
     [
       "warranty_months",
@@ -179,7 +180,7 @@ export async function exportItemWorkbook(
     ],
     [
       "Photos",
-      "Optional JSON array of {path,alt:{ar,en}}. Use existing uploaded catalog image paths only, from Uploaded photos. Upload new photos by drag/drop after import. Remote URLs and embedded Excel pictures are not imported.",
+      "Optional JSON array of {path,alt:{ar,en}}, uploaded image paths from Uploaded photos, or https image links (one per line). Links use the product name as the image description if none is supplied. Embedded Excel pictures are not imported. You can also upload photos by drag/drop after import.",
     ],
     [
       "vehicle_config_ids",
@@ -242,6 +243,89 @@ export async function exportItemWorkbook(
       s.getColumn(itemColumns.indexOf(key as any) + 1).numFmt = "0";
   return book.xlsx.writeBuffer();
 }
+export function spreadsheetCellText(
+  value: ExcelJS.CellValue,
+  row: number,
+): string {
+  if (value == null) return "";
+  if (
+    typeof value === "string" ||
+    typeof value === "number" ||
+    typeof value === "boolean"
+  )
+    return String(value);
+  const cell = value as Record<string, any>;
+  if (Array.isArray(cell.richText))
+    return cell.richText.map((part: any) => part?.text ?? "").join("");
+  if ("formula" in cell || "sharedFormula" in cell)
+    throw Error(`Row ${row}: formulas are unsupported`);
+  if (typeof cell.text === "string") return cell.text;
+  if (cell.error)
+    throw Error(`Row ${row}: cell contains Excel error ${cell.error}`);
+  throw Error(`Row ${row}: unsupported cell content`);
+}
+function optionalJson(
+  value: string,
+  row: number,
+  field: string,
+  prefix: string,
+) {
+  if (!value || !value.startsWith(prefix)) return undefined;
+  try {
+    return JSON.parse(value);
+  } catch {
+    throw Error(`Row ${row}: ${field} must be valid JSON`);
+  }
+}
+function photoAlt(value: unknown, fallback: { ar: string; en: string }) {
+  const alt = (value ?? {}) as { ar?: unknown; en?: unknown };
+  const ar = typeof alt.ar === "string" ? alt.ar.trim() : "";
+  const en = typeof alt.en === "string" ? alt.en.trim() : "";
+  return {
+    ar: ar || en || fallback.ar,
+    en: en || ar || fallback.en,
+  };
+}
+function parsePhotos(
+  value: string,
+  row: number,
+  fallbackAlt: { ar: string; en: string },
+) {
+  if (!value) return undefined;
+  let entries: unknown[];
+  if (value.startsWith("[")) {
+    let parsed: unknown;
+    try {
+      parsed = JSON.parse(value);
+    } catch {
+      throw Error(`Row ${row}: photos must be valid JSON`);
+    }
+    if (!Array.isArray(parsed))
+      throw Error(`Row ${row}: photos must be a JSON array`);
+    entries = parsed;
+  } else entries = value.split(/\r?\n/).map((line) => line.trim());
+  entries = entries.filter(
+    (entry) => typeof entry !== "string" || entry.trim(),
+  );
+  if (!entries.length) return undefined;
+  return entries.map((entry) => {
+    if (typeof entry === "string")
+      return { path: entry.trim(), alt: fallbackAlt };
+    if (
+      !entry ||
+      typeof entry !== "object" ||
+      typeof (entry as { path?: unknown }).path !== "string" ||
+      !(entry as { path: string }).path.trim()
+    )
+      throw Error(
+        `Row ${row}: photos must contain uploaded paths or https image links`,
+      );
+    return {
+      path: (entry as { path: string }).path.trim(),
+      alt: photoAlt((entry as { alt?: unknown }).alt, fallbackAlt),
+    };
+  });
+}
 export function parseYears(text: string, row: number) {
   const result = new Set<number>();
   for (const part of text
@@ -272,11 +356,11 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
   sheet.eachRow((row, n) => {
     if (n === 1) return;
     const v: Record<string, string> = {};
+    const raw: Record<string, ExcelJS.CellValue> = {};
     headers.forEach((h, i) => {
       const cell = row.getCell(i + 1).value;
-      if (cell !== null && typeof cell === "object")
-        throw Error(`Row ${n}: formulas and rich cells are unsupported`);
-      v[h] = String(cell ?? "").trim();
+      raw[h] = cell;
+      v[h] = spreadsheetCellText(cell, n).trim();
     });
     if (Object.values(v).every((x) => !x)) return;
     const normalizeIdentity = (text: string) =>
@@ -300,13 +384,12 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
             ].map(normalizeIdentity),
           )}`;
     const amount = (field: string, optional = false) => {
-      if (!v[field] && optional) return null;
-      if (!/^\d+(?:\.\d{1,2})?$/.test(v[field] || ""))
-        throw Error(`Row ${n}: ${field} must be an EGP amount`);
-      const result = Math.round(Number(v[field]) * 100);
-      if (!Number.isSafeInteger(result))
-        throw Error(`Row ${n}: amount too large`);
-      return result;
+      const value = raw[field];
+      const text =
+        typeof value === "number"
+          ? String(Math.round(value * 100) / 100)
+          : v[field] || "";
+      return spreadsheetEgp(text, n, field, optional);
     };
     const type = v.type?.toLowerCase().replace(/\s/g, "") || "aftermarket";
     if (!["original", "oem", "aftermarket"].includes(type))
@@ -317,21 +400,23 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
       (!Number.isInteger(months) || months < 1 || months > 600)
     )
       throw Error(`Row ${n}: warranty_months must be 1–600`);
-    const extra = JSON.parse(v.extra_data || "{}");
+    const extra = optionalJson(v.extra_data, n, "extra_data", "{") ?? {};
+    const name = { ar: v.name_ar, en: v.name_en || v.name_ar };
+    const photos = parsePhotos(v.photos, n, name);
     const spec = {
       ...extra.specs,
       country_of_origin: v.country_of_origin || "",
       warranty_months: months === null ? "" : String(months),
     };
     const common = {
-      name: { ar: v.name_ar, en: v.name_en },
+      name,
       manufacturer: v.item_brand,
       price: amount("sale_price"),
       cost: amount("cost_price", true),
       sale: amount("discount_price", true),
       partNumber: v.part_number,
       type: type === "aftermarket" ? "aftermarket" : "oem",
-      status: v.status || "draft",
+      status: (v.status || "draft").toLowerCase(),
       orderable:
         v.orderable === "" || v.orderable === undefined
           ? true
@@ -345,7 +430,7 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
               ar: `ضمان المورد ${months} شهر حسب شروط المنتج.`,
               en: `${months}-month supplier warranty subject to product terms.`,
             },
-      ...(v.photos ? { images: JSON.parse(v.photos) } : {}),
+      ...(photos ? { images: photos } : {}),
     };
     const entry = groups.get(key);
     if (entry && JSON.stringify(entry._common) !== JSON.stringify(common))
@@ -400,7 +485,7 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
         slug: extra.slug || "",
         family: extra.family || sku,
         category: extra.category || "spare-parts",
-        description: extra.description || { ar: v.name_ar, en: v.name_en },
+        description: extra.description || name,
         spreadsheet: true,
         applications_input: app ? [app] : [],
         fitments: ids,

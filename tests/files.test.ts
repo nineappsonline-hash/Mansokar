@@ -178,7 +178,7 @@ test("blank Excel templates include car reference and country column", async () 
   assert.ok(workbook.getWorksheet("Instructions"));
 });
 
-test("Excel prices use EGP, preserve decimals and reject fractional piasters", async () => {
+test("Excel prices use EGP, round numeric precision to piasters and reject fractional text", async () => {
   const { default: ExcelJS } = await import("exceljs");
   const { columns } = await import("../src/lib/spreadsheets");
   const product = {
@@ -204,7 +204,14 @@ test("Excel prices use EGP, preserve decimals and reject fractional piasters", a
   assert.equal(rows[0].price, 30099);
   assert.equal(rows[0].sale, 15025);
   assert.equal(rows[0].cost, 12550);
-  cell("cost").value = 1.001;
+  cell("cost").value = 125.5555;
+  const rounded = new Uint8Array(await workbook.xlsx.writeBuffer());
+  assert.equal(
+    (await parseSpreadsheet(rounded.buffer as ArrayBuffer, "products.xlsx"))[0]
+      .cost,
+    12556,
+  );
+  cell("cost").value = "1.001";
   const invalid = new Uint8Array(await workbook.xlsx.writeBuffer());
   await assert.rejects(
     parseSpreadsheet(invalid.buffer as ArrayBuffer, "products.xlsx"),
@@ -406,4 +413,180 @@ test("new Excel items need no SKU or key and automatically group car rows withou
   assert.equal(rows.length, 1);
   assert.ok(rows[0].sku);
   assert.ok(rows[0].item_key);
+});
+
+test("spreadsheet prices accept Egyptian formats and reject malformed or non-EGP values", async () => {
+  const { spreadsheetEgp } = await import("../src/lib/spreadsheet-money");
+  for (const value of [
+    "1250",
+    "1,250",
+    "١٬٢٥٠",
+    "۱۲۵۰",
+    "EGP 1,250",
+    "1,250 ج.م",
+    "جنيه مصري ١٢٥٠",
+    "1 250",
+    "1\u00a0250",
+    "١٬٢٥٠٫٠٠",
+    "1.250,00",
+  ])
+    assert.equal(spreadsheetEgp(value, 2, "cost_price"), 125000, value);
+  for (const value of [
+    "1250.50",
+    "1,250.50",
+    "١٬٢٥٠٫٥٠",
+    "1250,50",
+    "1250.50 EGP",
+  ])
+    assert.equal(spreadsheetEgp(value, 2, "cost_price"), 125050, value);
+  assert.equal(spreadsheetEgp("", 2, "cost_price", true), null);
+  assert.equal(spreadsheetEgp("0", 2, "cost_price", true), 0);
+  for (const value of [
+    "-1250",
+    "USD 1250",
+    "12,34,56",
+    "1 2",
+    "1.001",
+    "1e3",
+    "EGP",
+    "",
+    "500abc",
+  ])
+    assert.throws(
+      () => spreadsheetEgp(value, 2, "cost_price"),
+      /Row 2: cost_price.*two decimal places/,
+      value,
+    );
+  assert.equal(
+    spreadsheetEgp("90071992547409.91", 2, "price"),
+    Number.MAX_SAFE_INTEGER,
+  );
+  assert.throws(
+    () => spreadsheetEgp("90071992547409.92", 2, "price"),
+    /too large/,
+  );
+});
+
+test("modern Excel imports cost and selling prices with separators, Arabic digits and currency labels", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const sheet = workbook.worksheets[0];
+  sheet.addRow(
+    (
+      workbook.getWorksheet("Examples — copy to Products")!.getRow(2)
+        .values as unknown[]
+    ).slice(1),
+  );
+  const set = (key: string, value: string) => {
+    sheet.getRow(2).getCell(itemColumns.indexOf(key as any) + 1).value = value;
+  };
+  set("cost_price", "١٬٢٥٠ ج.م");
+  set("sale_price", "EGP 2,000");
+  set("discount_price", "1,750.50");
+  const buffer = new Uint8Array(await workbook.xlsx.writeBuffer());
+  const [item] = await parseSpreadsheet(
+    buffer.buffer as ArrayBuffer,
+    "products.xlsx",
+  );
+  assert.equal(item.cost, 125000);
+  assert.equal(item.price, 200000);
+  assert.equal(item.sale, 175050);
+});
+
+test("modern Excel imports rich Arabic names, uppercase status, numeric price precision and https photo links", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const sheet = workbook.worksheets[0];
+  sheet.addRow(
+    (
+      workbook.getWorksheet("Examples — copy to Products")!.getRow(2)
+        .values as unknown[]
+    ).slice(1),
+  );
+  const set = (key: string, value: unknown) => {
+    sheet.getRow(2).getCell(itemColumns.indexOf(key as any) + 1).value =
+      value as any;
+  };
+  set("name_ar", {
+    richText: [{ text: "حساس حرارة " }, { text: "مياه ترموستات" }],
+  });
+  set("name_en", "");
+  set("cost_price", 992.433070866142);
+  set("sale_price", 1260.39);
+  set("status", "Published");
+  set("photos", "https://example.invalid/photo.webp");
+  set("extra_data", "1.4 CC");
+  const buffer = new Uint8Array(await workbook.xlsx.writeBuffer());
+  const [item] = await parseSpreadsheet(
+    buffer.buffer as ArrayBuffer,
+    "products.xlsx",
+  );
+  assert.deepEqual(item.name, {
+    ar: "حساس حرارة مياه ترموستات",
+    en: "حساس حرارة مياه ترموستات",
+  });
+  assert.equal(item.cost, 99243);
+  assert.equal(item.price, 126039);
+  assert.equal(item.status, "published");
+  assert.deepEqual(item.images, [
+    {
+      path: "https://example.invalid/photo.webp",
+      alt: {
+        ar: "حساس حرارة مياه ترموستات",
+        en: "حساس حرارة مياه ترموستات",
+      },
+    },
+  ]);
+  item.slug = "rich-name-item";
+  assert.equal(validateImport([item]).valid, true);
+});
+
+test("modern Excel photos accept uploaded image references, JSON arrays and multiple https links", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const sheet = workbook.worksheets[0];
+  sheet.addRow(
+    (
+      workbook.getWorksheet("Examples — copy to Products")!.getRow(2)
+        .values as unknown[]
+    ).slice(1),
+  );
+  const set = (value: string) => {
+    sheet.getRow(2).getCell(itemColumns.indexOf("photos") + 1).value = value;
+  };
+  const parse = async () => {
+    const buffer = new Uint8Array(await workbook.xlsx.writeBuffer());
+    return (
+      await parseSpreadsheet(buffer.buffer as ArrayBuffer, "products.xlsx")
+    )[0];
+  };
+  set("00000000-0000-4000-8000-000000000201.jpg");
+  assert.deepEqual((await parse()).images, [
+    {
+      path: "00000000-0000-4000-8000-000000000201.jpg",
+      alt: { ar: "فلتر زيت — مثال فقط", en: "Oil filter — example only" },
+    },
+  ]);
+  set(
+    JSON.stringify([
+      {
+        path: "https://images.example.com/filter.webp",
+        alt: { ar: "فلتر", en: "Filter" },
+      },
+    ]),
+  );
+  assert.deepEqual((await parse()).images, [
+    {
+      path: "https://images.example.com/filter.webp",
+      alt: { ar: "فلتر", en: "Filter" },
+    },
+  ]);
+  set("https://images.example.com/a.webp\nhttps://images.example.com/b.webp");
+  assert.deepEqual(
+    (await parse()).images?.map((image: { path: string }) => image.path),
+    ["https://images.example.com/a.webp", "https://images.example.com/b.webp"],
+  );
 });

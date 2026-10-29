@@ -17,6 +17,7 @@ import {
   allRows,
 } from "@/lib/db";
 import { checkoutInput, productInput } from "@/lib/validation";
+import { isProductImagePath, isRemoteImageUrl } from "@/lib/image-links";
 import { automaticProduct } from "@/lib/product-automation";
 import { applicationSpecs } from "@/lib/product-applications";
 import { planImportVehicles } from "@/lib/import-vehicles";
@@ -803,13 +804,13 @@ export async function POST(
             { status: 422 },
           );
         for (const row of result.rows) {
-          if (row.images?.length) {
+          const uploaded = row.images
+            ?.map((i) => i.path)
+            .filter((path) => !isRemoteImageUrl(path));
+          if (uploaded?.length) {
             const { data, error } = await db.storage
               .from("catalog-images")
-              .createSignedUrls(
-                row.images.map((i) => i.path),
-                60,
-              );
+              .createSignedUrls(uploaded, 60);
             if (error || data.some((i) => i.error))
               throw Error(
                 "One or more photo paths are unavailable. Upload photos first.",
@@ -887,7 +888,13 @@ export async function POST(
             images: z
               .array(
                 z.object({
-                  path: z.string().regex(/^[a-f0-9-]+\.jpg$/),
+                  path: z
+                    .string()
+                    .max(2000)
+                    .refine(
+                      isProductImagePath,
+                      "Use an uploaded image path or an https image link",
+                    ),
                   alt: z.object({
                     ar: z.string().min(1).max(500),
                     en: z.string().min(1).max(500),

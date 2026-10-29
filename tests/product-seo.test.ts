@@ -143,20 +143,34 @@ test("stable product media URLs are included in product schema and sitemap entri
     guides: [],
     products: [p],
     productImages: [
-      { id: "11111111-1111-4111-8111-111111111111", product_id: p.id },
+      {
+        id: "11111111-1111-4111-8111-111111111111",
+        product_id: p.id,
+        path: "11111111-1111-4111-8111-111111111111.jpg",
+      },
+      {
+        id: "22222222-2222-4222-8222-222222222222",
+        product_id: p.id,
+        path: "https://images.example.com/part.webp",
+      },
     ],
   });
   const productPage = pages.find((page) => page.kind === "product")!;
   assert.deepEqual(productPage.images, [
     "/product-media/11111111-1111-4111-8111-111111111111",
+    "https://images.example.com/part.webp",
   ]);
   const entries = sitemapEntries([productPage], "https://example.com/path");
   assert.deepEqual(entries[0].images, [
     "https://example.com/product-media/11111111-1111-4111-8111-111111111111",
+    "https://images.example.com/part.webp",
   ]);
-  const data = productStructuredData(p, "en", "https://example.com", [
-    productPage.images![0],
-  ])!;
+  const data = productStructuredData(
+    p,
+    "en",
+    "https://example.com",
+    productPage.images!,
+  )!;
   assert.deepEqual(data.image, entries[0].images);
 });
 

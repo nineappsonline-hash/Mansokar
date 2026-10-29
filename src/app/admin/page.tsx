@@ -29,6 +29,7 @@ import {
   RelationsEditor,
 } from "@/components/admin-editor";
 import { money } from "@/lib/catalog";
+import { isRemoteImageUrl } from "@/lib/image-links";
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administration",
@@ -126,6 +127,7 @@ export default async function Admin({
     if (imageError) throw imageError;
     const initialImages = await Promise.all(
       (images ?? []).map(async (image) => {
+        if (isRemoteImageUrl(image.path)) return { ...image, url: image.path };
         const { data, error } = await db.storage
           .from("catalog-images")
           .createSignedUrl(image.path, 600);

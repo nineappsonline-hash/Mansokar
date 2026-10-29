@@ -26,9 +26,9 @@ export const searchPages = cache(async () => {
       ? allRows<any>("cms_pages", "slug,title,published", { published: true })
       : Promise.resolve([]),
     configured()
-      ? allRows<{ id: string; product_id: string }>(
+      ? allRows<{ id: string; product_id: string; path: string }>(
           "product_images",
-          "id,product_id",
+          "id,product_id,path",
         )
       : Promise.resolve([]),
   ]);

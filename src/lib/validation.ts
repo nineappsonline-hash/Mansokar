@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isProductImagePath } from "./image-links";
 export const localized = z.object({
   ar: z.string().min(1).max(5000),
   en: z.string().min(1).max(5000),
@@ -59,7 +60,13 @@ export const productInput = z
     images: z
       .array(
         z.object({
-          path: z.string().regex(/^[a-f0-9-]+\.jpg$/),
+          path: z
+            .string()
+            .max(2000)
+            .refine(
+              isProductImagePath,
+              "Use an uploaded image path or an https image link",
+            ),
           alt: localized,
         }),
       )
