@@ -72,11 +72,17 @@ export async function ProductCard({
       </Link>
       <div className="product-info">
         <span className="eyebrow muted">
-          {p.manufacturer} /{" "}
-          {p.type === "oem" ? "Original" : "After Market"}
+          {p.manufacturer} / {p.type === "oem" ? "Original" : "After Market"}
         </span>
         <h3>
-          <Link href={`/${locale}/products/${p.slug}`}>{p.name[locale]}</Link>
+          <Link
+            className="card-navigation-link"
+            data-analytics="select_item"
+            data-productid={p.id}
+            href={`/${locale}/products/${p.slug}`}
+          >
+            {p.name[locale]}
+          </Link>
         </h3>
         <span className="small muted" dir="ltr">
           {p.partNumber}

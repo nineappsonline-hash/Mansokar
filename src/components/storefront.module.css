@@ -427,6 +427,28 @@
   color: #28353e;
   overflow: hidden;
 }
+.store :global(.product-card),
+.store :global(.offer-card) {
+  position: relative;
+  isolation: isolate;
+}
+.store :global(.card-navigation-link::after) {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+  border-radius: inherit;
+}
+.store :global(.product-card > .product-art),
+.store :global(.offer-card > .offer-media),
+.store :global(.product-card .purchase-controls),
+.store :global(.offer-card .purchase-controls),
+.store :global(.product-card .product-details-link),
+.store :global(.offer-card .product-details-link) {
+  position: relative;
+  z-index: 2;
+}
 .store :global(.product-card:hover),
 .store :global(.offer-card:hover) {
   transform: translateY(-3px);

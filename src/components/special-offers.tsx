@@ -127,7 +127,12 @@ export async function SpecialOffers({
                       {product.type === "oem" ? "Original" : "After Market"}
                     </span>
                     <h3>
-                      <Link href={`/${locale}/products/${product.slug}`}>
+                      <Link
+                        className="card-navigation-link"
+                        data-analytics="select_item"
+                        data-productid={product.id}
+                        href={`/${locale}/products/${product.slug}`}
+                      >
                         {product.name[locale]}
                       </Link>
                     </h3>
