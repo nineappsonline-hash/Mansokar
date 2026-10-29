@@ -372,3 +372,38 @@ test("legacy Excel also ignores whitespace and styled empty rows after products"
   assert.equal(rows.length, 1);
   assert.equal(rows[0].sku, demoProducts[0].sku);
 });
+
+test("new Excel items need no SKU or key and automatically group car rows without merging different parts", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const products = workbook.getWorksheet("Products")!;
+  const examples = workbook.getWorksheet("Examples — copy to Products")!;
+  for (let n = 2; n <= 3; n++)
+    products.addRow((examples.getRow(n).values as unknown[]).slice(1));
+  const parse = async () => {
+    const bytes = new Uint8Array(await workbook.xlsx.writeBuffer());
+    return parseSpreadsheet(bytes.buffer as ArrayBuffer, "items.xlsx");
+  };
+  let rows = await parse();
+  assert.equal(rows.length, 1);
+  assert.match(rows[0].sku, /^MS-/);
+  assert.equal(rows[0].item_key, rows[0].sku);
+  assert.equal(rows[0].applications_input.length, 2);
+  products.getRow(3).getCell(itemColumns.indexOf("part_number") + 1).value =
+    "OTHER-PART";
+  rows = await parse();
+  assert.equal(rows.length, 2);
+  assert.notEqual(rows[0].sku, rows[1].sku);
+  products.getRow(3).getCell(itemColumns.indexOf("part_number") + 1).value =
+    "EXAMPLE-123";
+  products.getRow(3).getCell(itemColumns.indexOf("item_key") + 1).value =
+    "SEPARATE-ITEM";
+  assert.equal((await parse()).length, 2);
+  products.getRow(3).getCell(itemColumns.indexOf("item_key") + 1).value = "";
+  products.spliceColumns(1, 2);
+  rows = await parse();
+  assert.equal(rows.length, 1);
+  assert.ok(rows[0].sku);
+  assert.ok(rows[0].item_key);
+});

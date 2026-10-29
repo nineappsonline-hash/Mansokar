@@ -116,7 +116,7 @@ export async function exportItemWorkbook(
     ["chevrolet", "cruze", "2021, 2023"],
   ]) {
     const row: Record<string, string | number> = {
-      item_key: "EXAMPLE-FILTER-01",
+      item_key: "",
       sku: "",
       name_ar: "فلتر زيت — مثال فقط",
       name_en: "Oil filter — example only",
@@ -146,7 +146,7 @@ export async function exportItemWorkbook(
     ],
     [
       "item_key",
-      "For a new item, use the SAME item_key on every car row, for example FILTER-01. Use a different key for a different item.",
+      "Leave blank for new products: the system generates the key and SKU. Rows with the same part names, item brand, part number and type are combined automatically across cars. Optional: use different item_keys to keep otherwise identical items separate.",
     ],
     [
       "sku",
@@ -162,7 +162,7 @@ export async function exportItemWorkbook(
     ],
     [
       "Cars",
-      "Repeat the same item_key/SKU and item details on another row for each make/model. Enter start_year and end_year (2015 and 2020 includes every year). For non-contiguous years use years instead (2021, 2023); do not mix both. Missing makes/models are created on confirmed import. Use existing codes or names to avoid duplicates.",
+      "Repeat the same part names, item brand, part number, type and item details on another row for each make/model. Leave item_key and SKU blank for new items; existing exported SKUs update items. Enter start_year and end_year (2015 and 2020 includes every year). For non-contiguous years use years instead (2021, 2023); do not mix both. Missing makes/models are created on confirmed import. Use existing codes or names to avoid duplicates.",
     ],
     [
       "Prices",
@@ -279,11 +279,26 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
       v[h] = String(cell ?? "").trim();
     });
     if (Object.values(v).every((x) => !x)) return;
-    const key = v.sku || v.item_key;
-    if (!key)
-      throw Error(
-        `Row ${n}: enter item_key for a new item or SKU for an update`,
-      );
+    const normalizeIdentity = (text: string) =>
+      text.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();
+    // Car applications never form part of item identity. Blank identifiers are
+    // grouped by the same part name, manufacturer, part number and item type.
+    const key = v.sku
+      ? `sku:${v.sku}`
+      : v.item_key
+        ? `key:${v.item_key}`
+        : `auto:${JSON.stringify(
+            [
+              v.name_ar,
+              v.name_en,
+              v.item_brand,
+              v.part_number,
+              (v.type || "aftermarket")
+                .toLowerCase()
+                .replace(/\s/g, "")
+                .replace(/^oem$/, "original"),
+            ].map(normalizeIdentity),
+          )}`;
     const amount = (field: string, optional = false) => {
       if (!v[field] && optional) return null;
       if (!/^\d+(?:\.\d{1,2})?$/.test(v[field] || ""))
@@ -334,7 +349,9 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
     };
     const entry = groups.get(key);
     if (entry && JSON.stringify(entry._common) !== JSON.stringify(common))
-      throw Error(`Row ${n}: repeated item has conflicting details: ${key}`);
+      throw Error(
+        `Row ${n}: repeated item has conflicting details: ${v.sku || v.item_key || v.part_number || v.name_en}`,
+      );
     if (
       (v.start_year || v.end_year) &&
       (!v.start_year || !v.end_year || v.years)
@@ -379,6 +396,7 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
         ...extra,
         ...common,
         sku,
+        item_key: v.item_key || sku,
         slug: extra.slug || "",
         family: extra.family || sku,
         category: extra.category || "spare-parts",

@@ -65,7 +65,7 @@ try {
     [newMake, "QA New Model", "2018-2020"],
   ]) {
     const row = {
-      item_key: marker,
+      item_key: "",
       name_ar: "فلتر اختبار خصوصية",
       name_en: "Privacy filter " + marker,
       item_brand: maker,

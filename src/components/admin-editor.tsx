@@ -100,12 +100,14 @@ export function Importer() {
       <p className="muted">
         Download the Excel template and follow its Examples and Instructions
         sheets. Fill the Products worksheet; rows in Examples are not imported.
-        Leave SKU blank for a new item and repeat the same item_key for each car
-        make/model. Enter start_year and end_year (both included); missing cars
-        are created on confirmed import. Warranty is entered once in months.
-        Prices are in Egyptian pounds. SKU, URL, descriptions and SEO are
-        automatic. Exported SKUs update existing items. Photo references use
-        existing uploads; you can drag and drop new pictures after importing.
+        Leave both SKU and item_key blank for new products; both are automatic.
+        For multiple cars, repeat the same part names, item brand, part number,
+        type and item details on each car row. Enter start_year and end_year
+        (both included); missing cars are created on confirmed import. Warranty
+        is entered once in months. Prices are in Egyptian pounds. SKU, URL,
+        descriptions and SEO are automatic. Exported SKUs update existing items.
+        Photo references use existing uploads; you can drag and drop new
+        pictures after importing.
       </p>
       <a
         className="button secondary"
