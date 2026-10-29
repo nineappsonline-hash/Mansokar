@@ -251,3 +251,62 @@
     gap: 18px;
   }
 }
+.context {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.deleteControl {
+  flex: 0 0 auto;
+}
+.deleteButton {
+  color: #b42318;
+  font-size: 12px;
+  border: 1px solid #f0cfca;
+  border-radius: 6px;
+  padding: 7px 10px;
+  background: #fff7f5;
+}
+.confirm {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 90;
+  width: 360px;
+  max-width: calc(100vw - 32px);
+  padding: 22px;
+  background: white;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  box-shadow: 0 15px 90px #10182855;
+}
+.confirm > div {
+  display: flex;
+  gap: 10px;
+}
+.confirm button {
+  border: 1px solid #d8dee7;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #344054;
+  font-size: 12px;
+}
+.confirm button:first-child {
+  background: #b42318;
+  color: white;
+  border-color: #b42318;
+}
+.confirm p[role="alert"] {
+  color: #b42318;
+  margin-top: 14px;
+}
+@media (max-width: 500px) {
+  .context {
+    display: block;
+  }
+  .deleteControl {
+    margin-top: 12px;
+  }
+}

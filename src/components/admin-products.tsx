@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Package,
   Search,
@@ -11,6 +12,7 @@ import {
   FileSpreadsheet,
 } from "lucide-react";
 import type { Vehicle } from "@/lib/catalog";
+import { readApplications } from "@/lib/product-applications";
 import { ApiForm } from "./forms";
 import { ProductEditorTab } from "./product-editor-context";
 import styles from "./admin-products.module.css";
@@ -35,12 +37,14 @@ export function AdminProducts({
     name: { ar: string; en: string };
     manufacturer: string;
     status: string;
+    specs?: Record<string, string>;
   }[];
   images: Record<string, { url: string; count: number }>;
   fitments: { product_id: string; vehicle_config_id: string }[];
   vehicles: Vehicle[];
   carBrands: { slug: string; name: string; ar?: string }[];
   carModels: {
+    id: string;
     brand: string;
     slug: string;
     name: { ar: string; en: string };
@@ -79,25 +83,67 @@ export function AdminProducts({
     }
     return map;
   }, [fitments]);
+  const modelById = useMemo(
+    () => new Map(carModels.map((model) => [model.id, model])),
+    [carModels],
+  );
+  const applicationsByProduct = useMemo(() => {
+    const map = new Map<string, ReturnType<typeof readApplications>>();
+    for (const product of products)
+      map.set(product.id, readApplications(product.specs ?? {}));
+    return map;
+  }, [products]);
+  const applicationCarsByProduct = useMemo(() => {
+    const map = new Map<
+      string,
+      { brand: string; model: string; year: number }[]
+    >();
+    for (const [productId, applications] of applicationsByProduct) {
+      const cars: { brand: string; model: string; year: number }[] = [];
+      for (const application of applications) {
+        const model = modelById.get(application.model_id);
+        if (!model) continue;
+        for (const year of application.years)
+          cars.push({ brand: model.brand, model: model.slug, year });
+      }
+      map.set(productId, cars);
+    }
+    return map;
+  }, [applicationsByProduct, modelById]);
+  const applicationCars = useMemo(
+    () => [...applicationCarsByProduct.values()].flat(),
+    [applicationCarsByProduct],
+  );
   const fittedVehicles = useMemo(() => {
     const fitted = new Set(
       fitments.map((fitment) => fitment.vehicle_config_id),
     );
     return vehicles.filter((vehicle) => fitted.has(vehicle.id));
   }, [fitments, vehicles]);
+  const filterVehicles = useMemo(
+    () => [
+      ...fittedVehicles.map(({ brand, model, year }) => ({
+        brand,
+        model,
+        year,
+      })),
+      ...applicationCars,
+    ],
+    [applicationCars, fittedVehicles],
+  );
   const makes = useMemo(
     () =>
-      [...new Set(fittedVehicles.map((vehicle) => vehicle.brand))].sort(
+      [...new Set(filterVehicles.map((vehicle) => vehicle.brand))].sort(
         (a, b) => makeName(a).localeCompare(makeName(b)),
       ),
-    [carBrands, fittedVehicles],
+    [carBrands, filterVehicles],
   );
   const models = useMemo(
     () =>
       carMake
         ? [
             ...new Set(
-              fittedVehicles
+              filterVehicles
                 .filter((vehicle) => vehicle.brand === carMake)
                 .map((vehicle) => vehicle.model),
             ),
@@ -105,14 +151,14 @@ export function AdminProducts({
             modelName(carMake, a).localeCompare(modelName(carMake, b)),
           )
         : [],
-    [carMake, carModels, fittedVehicles],
+    [carMake, carModels, filterVehicles],
   );
   const years = useMemo(
     () =>
       carModel
         ? [
             ...new Set(
-              fittedVehicles
+              filterVehicles
                 .filter(
                   (vehicle) =>
                     vehicle.brand === carMake && vehicle.model === carModel,
@@ -121,7 +167,7 @@ export function AdminProducts({
             ),
           ].sort((a, b) => b - a)
         : [],
-    [carMake, carModel, fittedVehicles],
+    [carMake, carModel, filterVehicles],
   );
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -137,23 +183,29 @@ export function AdminProducts({
       if (photoFilter === "without" && pictureCount) return false;
       if (statusFilter !== "all" && p.status !== statusFilter) return false;
       if (carMake || carModel || carYear) {
-        const fitted = fitmentsByProduct.get(p.id) ?? [];
-        if (
-          !fitted.some((id) => {
-            const vehicle = vehicleById.get(id);
-            return Boolean(
-              vehicle &&
-              (!carMake || vehicle.brand === carMake) &&
-              (!carModel || vehicle.model === carModel) &&
-              (!carYear || String(vehicle.year) === carYear),
-            );
-          })
-        )
-          return false;
+        const matchesVehicle = (vehicle: {
+          brand: string;
+          model: string;
+          year: number;
+        }) =>
+          Boolean(
+            (!carMake || vehicle.brand === carMake) &&
+            (!carModel || vehicle.model === carModel) &&
+            (!carYear || String(vehicle.year) === carYear),
+          );
+        const exactFit = (fitmentsByProduct.get(p.id) ?? []).some((id) => {
+          const vehicle = vehicleById.get(id);
+          return Boolean(vehicle && matchesVehicle(vehicle));
+        });
+        const modelYearFit = (applicationCarsByProduct.get(p.id) ?? []).some(
+          matchesVehicle,
+        );
+        if (!exactFit && !modelYearFit) return false;
       }
       return true;
     });
   }, [
+    applicationCarsByProduct,
     carMake,
     carModel,
     carYear,
@@ -407,6 +459,12 @@ export function AdminProducts({
                     : "Start with the part details and cars it fits. Save once, then add its photos."}
                 </p>
               </div>
+              {selected && (
+                <DeleteProduct
+                  id={selected.id}
+                  label={`${selected.name.en} (${selected.sku})`}
+                />
+              )}
             </div>
             <nav
               className={styles.productTabs}
@@ -518,6 +576,74 @@ export function AdminProducts({
         </div>
       </div>
       <div hidden={view !== "excel"}>{excel}</div>
+    </div>
+  );
+}
+
+function DeleteProduct({ id, label }: { id: string; label: string }) {
+  const [confirm, setConfirm] = useState(false),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  const router = useRouter();
+  return (
+    <div className={styles.deleteControl}>
+      {!confirm ? (
+        <button
+          type="button"
+          className={styles.deleteButton}
+          onClick={() => {
+            setConfirm(true);
+            setError("");
+          }}
+        >
+          Delete product
+        </button>
+      ) : (
+        <div
+          className={styles.confirm}
+          role="group"
+          aria-label={`Confirm deletion of ${label}`}
+        >
+          <p>Delete {label}? This cannot be undone.</p>
+          <div>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  const response = await fetch("/api/admin-delete-product", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id }),
+                  });
+                  const result = await response.json();
+                  if (!response.ok) throw Error(result.error);
+                  router.push("/admin?module=products");
+                  router.refresh();
+                } catch (e) {
+                  setError(e instanceof Error ? e.message : "Unable to delete");
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              {busy ? "Deleting…" : "Confirm delete"}
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => {
+                setConfirm(false);
+                setError("");
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+          {error && <p role="alert">{error}</p>}
+        </div>
+      )}
     </div>
   );
 }

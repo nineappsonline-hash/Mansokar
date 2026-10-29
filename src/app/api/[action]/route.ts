@@ -1003,6 +1003,60 @@ export async function POST(
             { status: 404 },
           );
         details = input;
+      } else if (action === "admin-delete-product") {
+        const input = z.object({ id: z.string().min(1).max(100) }).parse(b);
+        const { count, error: orderError } = await db
+          .from("order_items")
+          .select("id", { count: "exact", head: true })
+          .eq("product_id", input.id);
+        if (orderError) throw orderError;
+        if (count)
+          return NextResponse.json(
+            {
+              error:
+                "This product appears in existing orders and cannot be deleted. Set it to draft instead.",
+            },
+            { status: 409 },
+          );
+        const { data: imageRows, error: imageError } = await db
+          .from("product_images")
+          .select("path")
+          .eq("product_id", input.id);
+        if (imageError) throw imageError;
+        const { error: analyticsError } = await db
+          .from("analytics_events")
+          .update({ product_id: null })
+          .eq("product_id", input.id);
+        if (analyticsError) throw analyticsError;
+        const { data: removed, error: deleteError } = await db
+          .from("products")
+          .delete()
+          .eq("id", input.id)
+          .select("id,sku");
+        if (deleteError?.code === "23503")
+          return NextResponse.json(
+            {
+              error:
+                "This product is linked to saved records and cannot be deleted. Remove those links first.",
+            },
+            { status: 409 },
+          );
+        if (deleteError) throw deleteError;
+        if (!removed?.length)
+          return NextResponse.json(
+            { error: "This product no longer exists. Refresh the page." },
+            { status: 404 },
+          );
+        const paths = (imageRows ?? [])
+          .map((image) => image.path)
+          .filter(isProductImagePath);
+        if (paths.length) await db.storage.from("catalog-images").remove(paths);
+        await db.from("admin_audit_logs").insert({
+          user_id: admin.id,
+          action,
+          details: { record: removed[0].id, sku: removed[0].sku },
+        });
+        details = { id: removed[0].id, sku: removed[0].sku };
       } else if (action === "admin-vehicle") {
         const input = vehicleInput.parse(JSON.parse(b.json));
         const { error } = await commit(input);
