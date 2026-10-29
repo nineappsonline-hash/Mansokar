@@ -1,3 +1,4 @@
+import { ModelYearCards } from "@/components/model-year-cards";
 import { SiteMap } from "@/components/site-map";
 import { publicProduct, carContext } from "@/lib/public-product";
 import { CatalogCarFilters } from "@/components/catalog-car-filters";
@@ -45,6 +46,7 @@ import {
 } from "@/lib/catalog";
 import {
   deliveryAreas,
+  allRows,
   siteMedia,
   heroSlideshow,
   catalog,
@@ -735,6 +737,13 @@ export default async function Page({ params, searchParams }: Props) {
       const models = brand.models.filter(
         (m) => !q.q || normalize(m).includes(normalize(q.q)),
       );
+      const modelYears = configured()
+        ? await allRows<{ model_id: string; year: number }>(
+            "vehicle_model_years",
+            "model_id,year,vehicle_models!inner(brand)",
+            { "vehicle_models.brand": brand.slug },
+          )
+        : [];
       content = (
         <div className="shell section">
           <Breadcrumb
@@ -753,8 +762,8 @@ export default async function Page({ params, searchParams }: Props) {
           </h1>
           <p className="lead">
             {locale === "ar"
-              ? "اختار موديل سيارتك، ثم راجع سنة الصنع والمحرك ورقم القطعة. الأسعار بالجنيه المصري والتوافق يتأكد فقط عند وجود مطابقة صريحة."
-              : "Choose your model, then check year, engine and part number. Prices are in EGP; compatibility is confirmed only by an explicit match."}
+              ? "اضغط على موديل سيارتك واختار السنة لعرض قطع الغيار المناسبة."
+              : "Click your model, then choose the year to see matching spare parts."}
           </p>
           <form className="search-form">
             <input
@@ -766,56 +775,34 @@ export default async function Page({ params, searchParams }: Props) {
               <Search size={18} />
             </button>
           </form>
-          <div className="model-grid">
-            {models.map((model, i) => (
-              <Reveal key={model} delay={(i % 3) * 0.08}>
-                <Link
-                  className="model-card panel"
-                  href={`/${locale}/brands/${brand.slug}/${model}`}
-                >
-                  <div className="model-art model-photo">
-                    {(branding[`model-${brand.slug}-${model}`]?.url ??
-                    vehicleModels.find(
-                      (m) => m.brand === brand.slug && m.slug === model,
-                    )?.image ??
-                    modelPhoto(`${brand.slug}-${model}`)) ? (
-                      <Image
-                        src={
-                          (branding[`model-${brand.slug}-${model}`]?.url ??
-                            vehicleModels.find(
-                              (m) => m.brand === brand.slug && m.slug === model,
-                            )?.image ??
-                            modelPhoto(`${brand.slug}-${model}`))!
-                        }
-                        alt={`${brand.name} ${model.toUpperCase()} · model illustration`}
-                        fill
-                        sizes="(max-width:760px) 50vw, 33vw"
-                      />
-                    ) : (
-                      <>
-                        <CarFront size={100} strokeWidth={0.6} />
-                        <span>MODEL PHOTO PENDING</span>
-                      </>
-                    )}
-                  </div>
-                  <h2>
-                    {locale === "ar" ? brand.ar : brand.name}{" "}
-                    {vehicleModels.find(
-                      (m) => m.brand === brand.slug && m.slug === model,
-                    )?.name[locale] ??
-                      targetModel(brand.slug, model)?.name[locale] ??
-                      model.toUpperCase()}
-                  </h2>
-                  <span>
-                    {locale === "ar"
-                      ? "اختر السنة والمحرك"
-                      : "Select year & engine"}{" "}
-                    ↗
-                  </span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+          <ModelYearCards
+            locale={locale}
+            brand={brand}
+            models={models.map((slug) => {
+              const model = vehicleModels.find(
+                (m) => m.brand === brand.slug && m.slug === slug,
+              );
+              return {
+                slug,
+                name: model?.name ??
+                  targetModel(brand.slug, slug)?.name ?? { ar: slug, en: slug },
+                photo:
+                  branding[`model-${brand.slug}-${slug}`]?.url ??
+                  model?.image ??
+                  modelPhoto(`${brand.slug}-${slug}`),
+                years: [
+                  ...new Set([
+                    ...modelYears
+                      .filter((y) => y.model_id === model?.id)
+                      .map((y) => y.year),
+                    ...vehicles
+                      .filter((v) => v.brand === brand.slug && v.model === slug)
+                      .map((v) => v.year),
+                  ]),
+                ],
+              };
+            })}
+          />
         </div>
       );
     }

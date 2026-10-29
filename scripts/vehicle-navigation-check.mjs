@@ -33,9 +33,7 @@ try {
       await page.goto(`${base}/${locale}/brands/${brand.slug}`);
       const links = await page
         .locator(".model-card")
-        .evaluateAll((nodes) =>
-          nodes.map((n) => new URL(n.href).pathname.split("/").at(-1)),
-        );
+        .evaluateAll((nodes) => nodes.map((n) => n.dataset.model));
       assert.deepEqual(
         [...links].sort(),
         saved.map((m) => m.slug).sort(),
@@ -48,11 +46,43 @@ try {
       }
       if (saved.length) {
         const model = saved[0];
-        await page
-          .locator(
-            `.model-card[href="/${locale}/brands/${brand.slug}/${model.slug}"]`,
-          )
-          .click();
+        const card = page.locator(`.model-card[data-model="${model.slug}"]`);
+        const before = page.url();
+        await card.getByRole("button").click();
+        assert.equal(
+          page.url(),
+          before,
+          "Opening the model must not navigate away",
+        );
+        assert.equal(
+          await card.getByRole("button").getAttribute("aria-expanded"),
+          "true",
+        );
+        if (saved.length > 1) {
+          const other = page.locator(
+            `.model-card[data-model="${saved[1].slug}"]`,
+          );
+          await other.getByRole("button").click();
+          assert.equal(
+            await card.getByRole("button").getAttribute("aria-expanded"),
+            "false",
+          );
+          assert.equal(
+            await other.getByRole("button").getAttribute("aria-expanded"),
+            "true",
+          );
+          await card.getByRole("button").click();
+          assert.equal(
+            await other.getByRole("button").getAttribute("aria-expanded"),
+            "false",
+          );
+        }
+        const yearLink = card.locator("[data-model-year]").first();
+        const selectedYear = (await yearLink.count())
+          ? await yearLink.getAttribute("data-model-year")
+          : null;
+        if (selectedYear) await yearLink.click();
+        else await card.locator("[data-model-browse]").click();
         await page.locator(".model-product-filters").waitFor();
         assert.equal(
           await page.locator('select[name="make"]').inputValue(),
@@ -62,6 +92,11 @@ try {
           await page.locator('select[name="model"]').inputValue(),
           model.slug,
         );
+        if (selectedYear)
+          assert.equal(
+            await page.locator('select[name="year"]').inputValue(),
+            selectedYear,
+          );
         assert.ok(
           (await page.getByRole("heading", { level: 1 }).innerText())
             .toLowerCase()
@@ -122,7 +157,7 @@ try {
       }
     }
   console.log(
-    `Arabic/English model cards match saved records for ${brands.length} makes; model clicks and old links open filtered products directly, with optional year filtering; removed model URLs return not-found and stay out of the sitemap.`,
+    `Arabic/English model cards match saved records for ${brands.length} makes; model cards expand in place and year selection opens filtered products, with old model links still supported; removed model URLs return not-found and stay out of the sitemap.`,
   );
 } finally {
   await browser.close();
