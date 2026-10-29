@@ -62,6 +62,10 @@ Both governorate migrations have been applied to the linked database. The shippi
 
 `scripts/shipping-check.mjs` verifies governorate coverage and independent EGP rate saves/reloads using future-dated disposable rates that are never offered to shoppers. Run it only with `CONFIRM_LIVE_QA=mansokar` and the server environment.
 
+## Storefront design
+
+The customer-facing shell uses `src/components/storefront.module.css` for its graphite, ivory and muted-gold design. The module is scoped to storefront pages; admin styles remain independent. It covers the homepage hero, five-brand grid, product cards, product details, forms, guides, footer and mobile layouts. Reveal wrappers render immediately so content remains visible with reduced-motion preferences. Existing branding and slideshow uploads still take precedence over default artwork. `scripts/storefront-design-check.mjs` checks Arabic/English desktop and mobile pages, brand image loading, product actions, horizontal overflow and homepage color contrast, and captures screenshots in `docs/screenshots/premium-*`.
+
 ## Sitemap and SEO diagnostics
 
 `/sitemap.xml` now runs at request time and shares its inventory with `/ar/site-map` and `/en/site-map`. It remains available for review while launch indexing is disabled. Demo/draft products and unpublished CMS policies are excluded. Only supported public CMS routes are included. The XML lists both locales with absolute canonical URLs and language alternates; the HTML map provides crawlable links, with product pagination.

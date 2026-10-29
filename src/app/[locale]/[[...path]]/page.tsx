@@ -430,12 +430,12 @@ export default async function Page({ params, searchParams }: Props) {
                     ) : (
                       <>
                         <span>
-                          {locale === "ar" ? "كل قطعة.." : "Every part."}
+                          {locale === "ar" ? "اختيار أدق." : "A better fit."}
                         </span>
                         <span className="brush-highlight">
                           {locale === "ar"
-                            ? "تكمل رحلتك"
-                            : "Drives your journey."}
+                            ? "لرحلة أفضل."
+                            : "For the road ahead."}
                         </span>
                       </>
                     )}
@@ -452,13 +452,21 @@ export default async function Page({ params, searchParams }: Props) {
                 <Reveal delay={0.26}>
                   <SearchBox locale={locale} />
                 </Reveal>
-                <a className="text-link" href="#brands">
-                  {w.explore}
-                  <span>↓</span>
-                </a>
+                <div className="hero-actions">
+                  <Link className="hero-browse" href={`/${locale}/catalog`}>
+                    {locale === "ar"
+                      ? "اكتشف قطع الغيار"
+                      : "Explore the collection"}
+                    <ArrowUpRight size={17} />
+                  </Link>
+                  <a className="text-link" href="#brands">
+                    {w.explore}
+                    <span>↓</span>
+                  </a>
+                </div>
               </div>
               <div className="hero-caption">
-                01 / THE ROAD AHEAD <span>EST. FOR EVERY JOURNEY</span>
+                MANSOKAR <span>PARTS FOR YOUR JOURNEY</span>
               </div>
             </section>
           </HeroSlideshow>
@@ -472,7 +480,9 @@ export default async function Page({ params, searchParams }: Props) {
             <Reveal>
               <div className="section-heading">
                 <div>
-                  <span className="eyebrow">FIND YOUR DRIVE</span>
+                  <span className="eyebrow">
+                    {locale === "ar" ? "ابدأ بسيارتك" : "START WITH YOUR CAR"}
+                  </span>
                   <h2>{w.brands}</h2>
                 </div>
                 <p>{w.brandIntro}</p>

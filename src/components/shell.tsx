@@ -13,6 +13,7 @@ import {
 import { Language, VehicleSync, CartSync, ClearVehicle } from "./controls";
 import type { Locale, Vehicle } from "@/lib/catalog";
 import { t } from "@/lib/i18n";
+import styles from "./storefront.module.css";
 export async function Shell({
   locale,
   vehicle,
@@ -31,7 +32,7 @@ export async function Shell({
   ]);
   return (
     <div
-      className={home ? "storefront-home" : undefined}
+      className={`${styles.store}${home ? " storefront-home" : ""}`}
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
     >
@@ -199,7 +200,14 @@ export async function Shell({
                       installments: "الكروت والتقسيط",
                       credits: "مصادر الصور",
                     }[x]
-                  : x}
+                  : {
+                      about: "About us",
+                      contact: "Contact us",
+                      faq: "FAQs",
+                      "site-map": "Site map",
+                      installments: "Cards & installments",
+                      credits: "Image credits",
+                    }[x]}
               </Link>
             ))}
           </div>

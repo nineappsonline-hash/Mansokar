@@ -23,7 +23,7 @@ export const words = {
     intro:
       "A considered selection for Opel, Peugeot, Citroën and MG. Start with your car. Find the part that belongs.",
     explore: "Choose your car",
-    brands: "Four brands. One destination.",
+    brands: "Your car. Your next chapter.",
     brandIntro: "Your car is the starting point. Precision is the destination.",
     popular: "Built for your next chapter.",
     demo: "DEMO STORE · Fictional products and fitment · No live online payments",
@@ -83,7 +83,7 @@ export const words = {
     intro:
       "اختيارات مدروسة لأوبل وبيجو وستروين وإم جي. ابدأ بسيارتك، واعثر على قطعتها المناسبة.",
     explore: "اختر سيارتك",
-    brands: "أربع علامات. وجهة واحدة.",
+    brands: "ابدأ بسيارتك. واختر بثقة.",
     brandIntro: "سيارتك نقطة البداية. والدقة هي وجهتنا.",
     popular: "جاهزة لفصل جديد من رحلتك.",
     demo: "متجر تجريبي · منتجات وتوافق خياليان للاختبار · الدفع الإلكتروني غير متاح",
