@@ -7,7 +7,6 @@ import {
   ArrowUpRight,
   CarFront,
   Menu,
-  Cog,
   Search,
 } from "lucide-react";
 import { Language, VehicleSync, CartSync, ClearVehicle } from "./controls";
@@ -52,28 +51,27 @@ export async function Shell({
             href={`/${locale}`}
             className="logo"
             aria-label={
-              (settings.storeName?.[locale] ?? "Mansokar") +
+              (settings.storeName?.[locale] ??
+                (locale === "ar" ? "موبك" : "MOPC")) +
               (locale === "ar" ? " الرئيسية" : " home")
             }
           >
-            {media.logo ? (
-              <img
-                src={media.logo.url}
-                alt={media.logo.alt[locale]}
-                style={{ maxWidth: 64, maxHeight: 54, objectFit: "contain" }}
-              />
-            ) : (
-              <span className="logo-icon">
-                <Cog size={43} strokeWidth={2.7} />
-                <span className="logo-speedlines" />
+            <img
+              className="store-logo-image"
+              src={media.logo?.url || "/images/mopc/logo-dark.png"}
+              alt={
+                locale === "ar"
+                  ? "موبك — قطع غيار السيارات"
+                  : "MOPC Spare Parts"
+              }
+              width={180}
+              height={60}
+            />
+            {locale === "ar" && (
+              <span className="store-name-ar" lang="ar">
+                موبك
               </span>
             )}
-            {settings.storeName?.[locale] ?? (
-              <>
-                Drive<span>Parts</span>
-              </>
-            )}
-            <small>MANSOKAR</small>
           </Link>
           <nav
             className="desktop-nav"
@@ -155,10 +153,21 @@ export async function Shell({
         <div className="shell footer-grid">
           <div>
             <Link className="logo" href={`/${locale}`}>
-              {settings.storeName?.[locale] ?? (
-                <>
-                  Drive<span>Parts</span>
-                </>
+              <img
+                className="store-logo-image"
+                src={media.logo?.url || "/images/mopc/logo-dark.png"}
+                alt={
+                  locale === "ar"
+                    ? "موبك — قطع غيار السيارات"
+                    : "MOPC Spare Parts"
+                }
+                width={210}
+                height={70}
+              />
+              {locale === "ar" && (
+                <span className="store-name-ar" lang="ar">
+                  موبك
+                </span>
               )}
             </Link>
             <p>{w.footer}</p>
@@ -166,7 +175,7 @@ export async function Shell({
               <p className="prose">{settings.contact[locale]}</p>
             )}
             <p className="muted">
-              Mansokar ·{" "}
+              {locale === "ar" ? "موبك" : "MOPC"} ·{" "}
               {locale === "ar"
                 ? "متجر تجريبي في مصر"
                 : "Demo automotive store in Egypt"}
@@ -231,7 +240,9 @@ export async function Shell({
           </div>
         </div>
         <div className="shell footer-bottom">
-          <span>© {new Date().getFullYear()} Mansokar</span>
+          <span>
+            © {new Date().getFullYear()} {locale === "ar" ? "موبك" : "MOPC"}
+          </span>
           <span>OPEL　/　MG　/　CHEVROLET　/　PEUGEOT　/　CITROËN</span>
         </div>
       </footer>

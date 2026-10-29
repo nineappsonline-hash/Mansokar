@@ -324,9 +324,7 @@ export async function generateMetadata({
       (slug
         ? (routeTitles[slug] ?? slug.split("/").at(-1)?.replaceAll("-", " "))
         : (settings.storeName?.[l] ??
-          (l === "ar"
-            ? "درايف بارتس · لكل رحلة"
-            : "DriveParts · The road ahead"))),
+          (l === "ar" ? "موبك · لكل رحلة" : "MOPC · The road ahead"))),
     ...(productMeta && productCopy
       ? {
           openGraph: {
@@ -546,7 +544,8 @@ export default async function Page({ params, searchParams }: Props) {
                 </div>
               </div>
               <div className="hero-caption">
-                MANSOKAR <span>PARTS FOR YOUR JOURNEY</span>
+                {locale === "ar" ? "موبك" : "MOPC"}{" "}
+                <span>PARTS FOR YOUR JOURNEY</span>
               </div>
             </section>
           </HeroSlideshow>
@@ -1946,11 +1945,13 @@ export default async function Page({ params, searchParams }: Props) {
               },
             ]}
           />
-          <span className="eyebrow">MANSOKAR / INFORMATION</span>
+          <span className="eyebrow">
+            {locale === "ar" ? "موبك / معلومات" : "MOPC / INFORMATION"}
+          </span>
           <h1>
             {cms?.title[locale] ??
               {
-                about: locale === "ar" ? "من نحن" : "About Mansokar",
+                about: locale === "ar" ? "من نحن" : "About MOPC",
                 contact: locale === "ar" ? "تواصل معنا" : "Contact",
                 faq:
                   locale === "ar"

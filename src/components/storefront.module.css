@@ -982,3 +982,35 @@
     animation: none !important;
   }
 }
+
+.store :global(.logo) {
+  gap: 12px;
+  flex-shrink: 0;
+}
+.store :global(.store-logo-image) {
+  width: 180px;
+  height: 60px;
+  object-fit: contain;
+  display: block;
+}
+.store :global(.logo .store-name-ar) {
+  color: #f1eee6;
+  font-size: 25px;
+  letter-spacing: 0;
+}
+.store :global(.footer .store-logo-image) {
+  width: 210px;
+  height: 70px;
+}
+@media (max-width: 600px) {
+  .store :global(.store-logo-image) {
+    width: 126px;
+    height: 42px;
+  }
+  .store :global(.logo .store-name-ar) {
+    font-size: 20px;
+  }
+  .store :global(.logo) {
+    gap: 7px;
+  }
+}

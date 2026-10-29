@@ -90,11 +90,15 @@ export function AdminSignIn({ children }: { children: React.ReactNode }) {
     >
       <div className={styles.signInIntro}>
         <Link className={styles.brand} href="/en">
-          <span className={styles.brandMark}>
-            M<span>↗</span>
-          </span>
           <span>
-            MANSOKAR<small>STORE MANAGEMENT</small>
+            <img
+              className={styles.brandLogo}
+              src="/images/mopc/logo-dark.png"
+              alt="MOPC · موبك"
+              width={174}
+              height={58}
+            />
+            <small>STORE MANAGEMENT</small>
           </span>
         </Link>
         <div>
@@ -107,8 +111,8 @@ export function AdminSignIn({ children }: { children: React.ReactNode }) {
             <span>One place.</span>
           </h1>
           <p>
-            Manage your catalog, orders and customer experience from your
-            Mansokar workspace.
+            Manage your catalog, orders and customer experience from your MOPC
+            workspace.
           </p>
         </div>
         <small>Built for the road ahead.</small>
@@ -148,11 +152,15 @@ export function AdminWorkspace({
       )}
       <aside className={`${styles.sidebar} ${open ? styles.open : ""}`}>
         <Link className={styles.brand} href="/admin">
-          <span className={styles.brandMark}>
-            M<span>↗</span>
-          </span>
           <span>
-            MANSOKAR<small>STORE MANAGEMENT</small>
+            <img
+              className={styles.brandLogo}
+              src="/images/mopc/logo-dark.png"
+              alt="MOPC · موبك"
+              width={174}
+              height={58}
+            />
+            <small>STORE MANAGEMENT</small>
           </span>
         </Link>
         <div className={styles.navSearch}>
@@ -271,7 +279,7 @@ export function AdminWorkspace({
           )}
           <div className={styles.module}>{children}</div>
           <footer className={styles.footer}>
-            <span>Mansokar · Store administration</span>
+            <span>MOPC · Store administration</span>
             <span>
               <ShieldCheck size={13} /> Secure administrator access
             </span>

@@ -748,3 +748,10 @@
     transition: none;
   }
 }
+
+.brandLogo {
+  display: block;
+  width: 174px;
+  height: 58px;
+  object-fit: contain;
+}

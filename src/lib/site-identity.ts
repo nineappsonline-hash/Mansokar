@@ -7,6 +7,8 @@ export function siteIdentity(base: string, name: string) {
         "@type": "Organization",
         "@id": `${origin}/#organization`,
         name,
+        alternateName: name === "موبك" ? "MOPC" : "موبك",
+        logo: `${origin}/images/mopc/logo-light.png`,
         url: origin,
       },
       {
