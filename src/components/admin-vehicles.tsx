@@ -9,6 +9,8 @@ import {
   CalendarDays,
   Search,
 } from "lucide-react";
+import { VehiclePhotoUpload } from "./vehicle-photo-upload";
+import { modelPhoto } from "@/lib/visuals";
 import { ApiForm } from "./forms";
 import { VehicleConfigurationEditor } from "./admin-vehicle-configuration";
 import styles from "./admin-vehicles.module.css";
@@ -28,12 +30,14 @@ type Generation = {
 };
 export function AdminVehicles({
   models,
+  media,
   brands,
   modelYears,
   configs,
   generations,
   initialId,
 }: {
+  media: Record<string, { url: string; alt: { ar: string; en: string } }>;
   models: Model[];
   brands: { slug: string; name: string; ar?: string }[];
   modelYears: { model_id: string; year: number }[];
@@ -109,6 +113,23 @@ export function AdminVehicles({
             </button>
           ))}
         </div>
+        {selectedBrand && (
+          <VehiclePhotoUpload
+            key={`brand-${brand}`}
+            slot={`brand-${brand}-photo`}
+            title="Car make photo"
+            name={{
+              en: selectedBrand.name,
+              ar: selectedBrand.ar || selectedBrand.name,
+            }}
+            initial={media[`brand-${brand}-photo`]}
+            fallback={
+              ["opel", "mg", "chevrolet", "peugeot", "citroen"].includes(brand)
+                ? `/images/cinematic/${brand}-v2.webp`
+                : undefined
+            }
+          />
+        )}
       </section>
       <div className={styles.columns}>
         <section className="panel stack">
@@ -232,6 +253,19 @@ export function AdminVehicles({
                   }}
                 />
               </div>
+              <VehiclePhotoUpload
+                key={`model-${model.id}`}
+                slot={`model-${model.brand}-${model.slug}`}
+                title="Car model photo"
+                name={{
+                  en: `${selectedBrand?.name || model.brand} ${model.name.en}`,
+                  ar: `${selectedBrand?.ar || model.brand} ${model.name.ar}`,
+                }}
+                initial={media[`model-${model.brand}-${model.slug}`]}
+                fallback={
+                  model.image || modelPhoto(`${model.brand}-${model.slug}`)
+                }
+              />
               {editingModel && (
                 <ModelForm key={model.id} brand={brand} initial={model} />
               )}

@@ -19,6 +19,7 @@ import {
   configured,
   allRows,
   vehicleCatalog,
+  siteMedia,
 } from "@/lib/db";
 import { AuthForm, ApiForm } from "@/components/forms";
 import {
@@ -677,8 +678,13 @@ export default async function Admin({
         allRows<any>("vehicle_model_years"),
         vehicleCatalog(),
       ]);
+    const media = await siteMedia([
+      ...brands.map((b) => `brand-${b.slug}-photo`),
+      ...models.map((m) => `model-${m.brand}-${m.slug}`),
+    ]);
     content = (
       <AdminVehicles
+        media={media}
         brands={brands}
         modelYears={modelYears}
         models={models}

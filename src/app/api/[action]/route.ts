@@ -484,7 +484,7 @@ export async function POST(
             slot: z
               .string()
               .regex(
-                /^(hero|logo|brand-(opel|peugeot|citroen|mg|chevrolet)-(photo|logo)|model-[a-z0-9-]+|campaign-[a-f0-9-]+)$/,
+                /^(hero|logo|brand-[a-z0-9-]+-(photo|logo)|model-[a-z0-9-]+|campaign-[a-f0-9-]+)$/,
               ),
             path: z
               .string()
