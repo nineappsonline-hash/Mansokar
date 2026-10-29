@@ -1014,3 +1014,26 @@
     gap: 7px;
   }
 }
+
+@font-face {
+  font-family: "MOPC Arabic";
+  src: url("/fonts/cairo.ttf") format("truetype");
+  font-weight: 200 1000;
+  font-style: normal;
+  font-display: swap;
+}
+.store :global(.header .logo .store-name-ar) {
+  font-family: "MOPC Arabic", Tajawal, sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  font-synthesis: none;
+  line-height: 1.4;
+  direction: rtl;
+  white-space: nowrap;
+  letter-spacing: 0;
+}
+@media (max-width: 600px) {
+  .store :global(.header .logo .store-name-ar) {
+    font-size: 26px;
+  }
+}
