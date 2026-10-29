@@ -57,6 +57,7 @@ export function AdminVehicles({
     configs.find((c) => c.id === initialId) ?? null,
   );
   const model = models.find((m) => m.id === modelId);
+  const selectedBrand = brands.find((b) => b.slug === brand);
   const matching = models.filter(
     (m) =>
       m.brand === brand &&
@@ -115,7 +116,11 @@ export function AdminVehicles({
             <span>2</span>
             <div>
               <h2>Choose the model</h2>
-              <p>{brands.find((b) => b.slug === brand)?.name} models</p>
+              <p>
+                {selectedBrand?.ar && selectedBrand.ar !== selectedBrand.name
+                  ? `${selectedBrand.name} — ${selectedBrand.ar} models`
+                  : `${selectedBrand?.name ?? brand} models`}
+              </p>
             </div>
           </div>
           <label className={styles.search}>

@@ -18,7 +18,7 @@ export function ProductApplications({
   exactIds,
   onExactChange,
 }: {
-  brands: { slug: string; name: string }[];
+  brands: { slug: string; name: string; ar?: string }[];
   models: Model[];
   vehicles: Vehicle[];
   applications: ProductApplication[];
@@ -38,6 +38,21 @@ export function ProductApplications({
         a.model_id === id ? { ...a, years: [...new Set(next)] } : a,
       ),
     );
+  const makeLabel = (slug: string) => {
+    const brand = brands.find((b) => b.slug === slug);
+    if (!brand) return slug;
+    return brand.ar && brand.ar !== brand.name
+      ? `${brand.name} — ${brand.ar}`
+      : brand.name;
+  };
+  const modelLabel = (model: Model) => {
+    const brand = brands.find((b) => b.slug === model.brand);
+    const en = [brand?.name, model.name.en].filter(Boolean).join(" ");
+    const ar = [brand?.ar || brand?.name, model.name.ar]
+      .filter(Boolean)
+      .join(" ");
+    return ar && ar !== en ? `${en} — ${ar}` : en;
+  };
   return (
     <div className="stack">
       <h2>Cars & years this part suits</h2>
@@ -62,7 +77,7 @@ export function ProductApplications({
                 )
               }
             >
-              {b.name}
+              {makeLabel(b.slug)}
             </button>
           ))}
         </div>
@@ -96,7 +111,7 @@ export function ProductApplications({
                     )
                   }
                 />
-                {brands.find((b) => b.slug === m.brand)?.name} {m.name.en}
+                {modelLabel(m)}
               </label>
             ))}
         </div>
@@ -109,10 +124,7 @@ export function ProductApplications({
         const model = models.find((m) => m.id === a.model_id);
         return (
           <fieldset className="stack" key={a.model_id}>
-            <legend>
-              {brands.find((b) => b.slug === model?.brand)?.name}{" "}
-              {model?.name.en ?? a.model_id}
-            </legend>
+            <legend>{model ? modelLabel(model) : a.model_id}</legend>
             <YearPicker
               years={years}
               selected={a.years}

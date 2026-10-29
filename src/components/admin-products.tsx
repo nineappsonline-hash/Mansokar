@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   Package,
@@ -10,11 +10,17 @@ import {
   Tags,
   FileSpreadsheet,
 } from "lucide-react";
+import type { Vehicle } from "@/lib/catalog";
 import { ApiForm } from "./forms";
 import { ProductEditorTab } from "./product-editor-context";
 import styles from "./admin-products.module.css";
 export function AdminProducts({
   products,
+  images,
+  fitments,
+  vehicles,
+  carBrands,
+  carModels,
   selectedId,
   manufacturers,
   initialView = "products",
@@ -27,7 +33,17 @@ export function AdminProducts({
     id: string;
     sku: string;
     name: { ar: string; en: string };
+    manufacturer: string;
     status: string;
+  }[];
+  images: Record<string, { url: string; count: number }>;
+  fitments: { product_id: string; vehicle_config_id: string }[];
+  vehicles: Vehicle[];
+  carBrands: { slug: string; name: string; ar?: string }[];
+  carModels: {
+    brand: string;
+    slug: string;
+    name: { ar: string; en: string };
   }[];
   selectedId?: string;
   manufacturers: string[];
@@ -40,13 +56,158 @@ export function AdminProducts({
   const [view, setView] = useState(initialView),
     [tab, setTab] = useState(initialTab),
     [query, setQuery] = useState(""),
-    [brandQuery, setBrandQuery] = useState("");
+    [brandQuery, setBrandQuery] = useState(""),
+    [carMake, setCarMake] = useState(""),
+    [carModel, setCarModel] = useState(""),
+    [carYear, setCarYear] = useState(""),
+    [itemBrand, setItemBrand] = useState(""),
+    [photoFilter, setPhotoFilter] = useState("all"),
+    [statusFilter, setStatusFilter] = useState("all");
+  useEffect(() => setView(initialView), [initialView]);
+  useEffect(() => setTab(initialTab), [initialTab]);
   const selected = products.find((p) => p.id === selectedId);
-  const filtered = products.filter((p) =>
-    `${p.sku} ${p.name.en} ${p.name.ar}`
-      .toLowerCase()
-      .includes(query.toLowerCase()),
+  const vehicleById = useMemo(
+    () => new Map(vehicles.map((vehicle) => [vehicle.id, vehicle])),
+    [vehicles],
   );
+  const fitmentsByProduct = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const fitment of fitments) {
+      const current = map.get(fitment.product_id) ?? [];
+      current.push(fitment.vehicle_config_id);
+      map.set(fitment.product_id, current);
+    }
+    return map;
+  }, [fitments]);
+  const fittedVehicles = useMemo(() => {
+    const fitted = new Set(
+      fitments.map((fitment) => fitment.vehicle_config_id),
+    );
+    return vehicles.filter((vehicle) => fitted.has(vehicle.id));
+  }, [fitments, vehicles]);
+  const makes = useMemo(
+    () =>
+      [...new Set(fittedVehicles.map((vehicle) => vehicle.brand))].sort(
+        (a, b) => makeName(a).localeCompare(makeName(b)),
+      ),
+    [carBrands, fittedVehicles],
+  );
+  const models = useMemo(
+    () =>
+      carMake
+        ? [
+            ...new Set(
+              fittedVehicles
+                .filter((vehicle) => vehicle.brand === carMake)
+                .map((vehicle) => vehicle.model),
+            ),
+          ].sort((a, b) =>
+            modelName(carMake, a).localeCompare(modelName(carMake, b)),
+          )
+        : [],
+    [carMake, carModels, fittedVehicles],
+  );
+  const years = useMemo(
+    () =>
+      carModel
+        ? [
+            ...new Set(
+              fittedVehicles
+                .filter(
+                  (vehicle) =>
+                    vehicle.brand === carMake && vehicle.model === carModel,
+                )
+                .map((vehicle) => vehicle.year),
+            ),
+          ].sort((a, b) => b - a)
+        : [],
+    [carMake, carModel, fittedVehicles],
+  );
+  const filtered = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    return products.filter((p) => {
+      if (
+        needle &&
+        !`${p.sku} ${p.name.en} ${p.name.ar}`.toLowerCase().includes(needle)
+      )
+        return false;
+      if (itemBrand && p.manufacturer !== itemBrand) return false;
+      const pictureCount = images[p.id]?.count ?? 0;
+      if (photoFilter === "with" && !pictureCount) return false;
+      if (photoFilter === "without" && pictureCount) return false;
+      if (statusFilter !== "all" && p.status !== statusFilter) return false;
+      if (carMake || carModel || carYear) {
+        const fitted = fitmentsByProduct.get(p.id) ?? [];
+        if (
+          !fitted.some((id) => {
+            const vehicle = vehicleById.get(id);
+            return Boolean(
+              vehicle &&
+              (!carMake || vehicle.brand === carMake) &&
+              (!carModel || vehicle.model === carModel) &&
+              (!carYear || String(vehicle.year) === carYear),
+            );
+          })
+        )
+          return false;
+      }
+      return true;
+    });
+  }, [
+    carMake,
+    carModel,
+    carYear,
+    fitmentsByProduct,
+    images,
+    itemBrand,
+    photoFilter,
+    products,
+    query,
+    statusFilter,
+    vehicleById,
+  ]);
+  const hasFilters = Boolean(
+    carMake ||
+    carModel ||
+    carYear ||
+    itemBrand ||
+    photoFilter !== "all" ||
+    statusFilter !== "all",
+  );
+  function makeName(slug: string) {
+    return carBrands.find((brand) => brand.slug === slug)?.name || slug;
+  }
+  function modelName(make: string, slug: string) {
+    return (
+      carModels.find((model) => model.brand === make && model.slug === slug)
+        ?.name.en || slug
+    );
+  }
+  function makeLabel(slug: string) {
+    const brand = carBrands.find((brand) => brand.slug === slug);
+    if (!brand) return slug;
+    return brand.ar && brand.ar !== brand.name
+      ? `${brand.name} — ${brand.ar}`
+      : brand.name;
+  }
+  function modelLabel(make: string, slug: string) {
+    const model = carModels.find(
+      (model) => model.brand === make && model.slug === slug,
+    );
+    if (!model) return slug;
+    return model.name.ar && model.name.ar !== model.name.en
+      ? `${model.name.en} — ${model.name.ar}`
+      : model.name.en;
+  }
+  function changeMake(value: string) {
+    setCarMake(value);
+    setCarModel("");
+    setCarYear("");
+  }
+  function changeModel(value: string) {
+    setCarModel(value);
+    setCarYear("");
+  }
   return (
     <div className="stack">
       <nav className={styles.tabs} aria-label="Product workspace">
@@ -79,7 +240,12 @@ export function AdminProducts({
         <div className={styles.layout}>
           <section className="panel stack">
             <div className={styles.listHeading}>
-              <h2>Your products</h2>
+              <h2>
+                Your products
+                <span className={styles.count}>
+                  {filtered.length}/{products.length}
+                </span>
+              </h2>
               <Link
                 href="/admin?module=products"
                 aria-label="Create a new product"
@@ -96,38 +262,138 @@ export function AdminProducts({
                 onChange={(e) => setQuery(e.target.value)}
               />
             </label>
+            <div className={styles.filters}>
+              <select
+                aria-label="Filter by car make"
+                value={carMake}
+                onChange={(e) => changeMake(e.target.value)}
+              >
+                <option value="">All car makes</option>
+                {makes.map((make) => (
+                  <option key={make} value={make}>
+                    {makeLabel(make)}
+                  </option>
+                ))}
+              </select>
+              <select
+                aria-label="Filter by car model"
+                value={carModel}
+                disabled={!carMake}
+                onChange={(e) => changeModel(e.target.value)}
+              >
+                <option value="">All car models</option>
+                {models.map((model) => (
+                  <option key={model} value={model}>
+                    {modelLabel(carMake, model)}
+                  </option>
+                ))}
+              </select>
+              <select
+                aria-label="Filter by car year"
+                value={carYear}
+                disabled={!carModel}
+                onChange={(e) => setCarYear(e.target.value)}
+              >
+                <option value="">All years</option>
+                {years.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+              <select
+                aria-label="Filter by item brand"
+                value={itemBrand}
+                onChange={(e) => setItemBrand(e.target.value)}
+              >
+                <option value="">All brands</option>
+                {manufacturers.map((manufacturer) => (
+                  <option key={manufacturer} value={manufacturer}>
+                    {manufacturer}
+                  </option>
+                ))}
+              </select>
+              <select
+                aria-label="Filter by photos"
+                value={photoFilter}
+                onChange={(e) => setPhotoFilter(e.target.value)}
+              >
+                <option value="all">All photos</option>
+                <option value="with">With photos</option>
+                <option value="without">Without photos</option>
+              </select>
+              <select
+                aria-label="Filter by status"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="all">All statuses</option>
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+              </select>
+            </div>
+            {hasFilters && (
+              <button
+                type="button"
+                className={styles.clearFilters}
+                onClick={() => {
+                  setCarMake("");
+                  setCarModel("");
+                  setCarYear("");
+                  setItemBrand("");
+                  setPhotoFilter("all");
+                  setStatusFilter("all");
+                }}
+              >
+                Clear filters
+              </button>
+            )}
             <Link className="button secondary" href="/admin?module=products">
               <Plus size={15} /> New product
             </Link>
             <div className={styles.products}>
-              {filtered.map((p) => (
-                <Link
-                  key={p.id}
-                  href={`/admin?module=products&id=${encodeURIComponent(p.id)}&tab=${tab}`}
-                  aria-current={selectedId === p.id ? "page" : undefined}
-                >
-                  <strong>{p.name.en}</strong>
-                  <small lang="ar" dir="rtl">
-                    {p.name.ar}
-                  </small>
-                  <span>
-                    <span>{p.sku}</span>
-                    <span
-                      className={
-                        p.status === "published"
-                          ? styles.published
-                          : styles.draft
-                      }
-                    >
-                      {p.status}
+              {filtered.map((p) => {
+                const picture = images[p.id];
+                return (
+                  <Link
+                    key={p.id}
+                    href={`/admin?module=products&id=${encodeURIComponent(p.id)}&tab=${tab}`}
+                    aria-current={selectedId === p.id ? "page" : undefined}
+                  >
+                    <span className={styles.thumb}>
+                      {picture?.url ? (
+                        <img src={picture.url} alt="" loading="lazy" />
+                      ) : (
+                        <Image size={20} aria-hidden="true" />
+                      )}
                     </span>
-                  </span>
-                </Link>
-              ))}
+                    <span className={styles.productInfo}>
+                      <strong>{p.name.en}</strong>
+                      <small lang="ar" dir="rtl">
+                        {p.name.ar}
+                      </small>
+                      <span className={styles.productMeta}>
+                        <span>{p.sku}</span>
+                        <span
+                          className={
+                            p.status === "published"
+                              ? styles.published
+                              : styles.draft
+                          }
+                        >
+                          {p.status}
+                        </span>
+                      </span>
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
             {!filtered.length && (
               <p>
-                No products found. Try another name or create a new product.
+                {hasFilters || query
+                  ? "No products match these filters."
+                  : "No products yet. Create a new product to get started."}
               </p>
             )}
           </section>

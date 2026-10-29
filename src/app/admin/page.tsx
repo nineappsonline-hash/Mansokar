@@ -109,24 +109,27 @@ export default async function Admin({
       </div>
     );
   } else if (module === "products") {
-    const [products, manufacturers, fitments, { vehicles, brands, models }] =
-      await Promise.all([
-        allRows<any>("products"),
-        allRows<any>("manufacturers"),
-        allRows<any>("product_fitments"),
-        vehicleCatalog(),
-      ]);
+    const [
+      products,
+      manufacturers,
+      fitments,
+      productImages,
+      { vehicles, brands, models },
+    ] = await Promise.all([
+      allRows<any>("products"),
+      allRows<any>("manufacturers"),
+      allRows<any>("product_fitments"),
+      allRows<any>("product_images", "id,product_id,path,alt,position"),
+      vehicleCatalog(),
+    ]);
     const selected = products.find((p) => p.id === id);
-    const { data: images, error: imageError } = selected
-      ? await db
-          .from("product_images")
-          .select("path,alt,position")
-          .eq("product_id", selected.id)
-          .order("position")
-      : { data: [], error: null };
-    if (imageError) throw imageError;
+    const images = selected
+      ? productImages
+          .filter((image) => image.product_id === selected.id)
+          .sort((a, b) => a.position - b.position)
+      : [];
     const initialImages = await Promise.all(
-      (images ?? []).map(async (image) => {
+      images.map(async (image) => {
         if (isRemoteImageUrl(image.path)) return { ...image, url: image.path };
         const { data, error } = await db.storage
           .from("catalog-images")
@@ -135,10 +138,63 @@ export default async function Admin({
         return { ...image, url: data.signedUrl };
       }),
     );
+    const firstImage = new Map<string, any>();
+    const photoCounts = new Map<string, number>();
+    for (const image of [...productImages].sort(
+      (a, b) => a.position - b.position,
+    )) {
+      photoCounts.set(
+        image.product_id,
+        (photoCounts.get(image.product_id) ?? 0) + 1,
+      );
+      if (!firstImage.has(image.product_id))
+        firstImage.set(image.product_id, image);
+    }
+    const productById = new Map(
+      products.map((product) => [product.id, product]),
+    );
+    const signedPaths = [
+      ...new Set(
+        [...firstImage.entries()]
+          .filter(([productId, image]) => {
+            const product = productById.get(productId);
+            return (
+              !isRemoteImageUrl(image.path) &&
+              !(product?.status === "published" && !product.demo)
+            );
+          })
+          .map(([, image]) => image.path as string),
+      ),
+    ];
+    const signedUrls = new Map<string, string>();
+    for (let offset = 0; offset < signedPaths.length; offset += 100) {
+      const { data, error } = await db.storage
+        .from("catalog-images")
+        .createSignedUrls(signedPaths.slice(offset, offset + 100), 600);
+      if (error) break;
+      for (const image of data ?? [])
+        if (image.path && image.signedUrl && !image.error)
+          signedUrls.set(image.path, image.signedUrl);
+    }
+    const productPictures = Object.fromEntries(
+      [...firstImage.entries()].map(([productId, image]) => {
+        const product = productById.get(productId);
+        const url = isRemoteImageUrl(image.path)
+          ? image.path
+          : product?.status === "published" && !product.demo
+            ? `/product-media/${image.id}`
+            : signedUrls.get(image.path) || "";
+        return [productId, { url, count: photoCounts.get(productId) ?? 0 }];
+      }),
+    );
     content = (
       <AdminProducts
-        key={`${id || "new"}-${view || "products"}-${tab || "details"}`}
         products={products}
+        images={productPictures}
+        fitments={fitments}
+        vehicles={vehicles}
+        carBrands={brands}
+        carModels={models}
         manufacturers={manufacturers.map((m) => m.name)}
         selectedId={selected?.id}
         initialView={view === "brands" || view === "excel" ? view : "products"}

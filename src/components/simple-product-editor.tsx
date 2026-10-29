@@ -21,7 +21,7 @@ export function SimpleProductEditor({
   manufacturers: string[];
   vehicles: Vehicle[];
   selected: string[];
-  brands: { slug: string; name: string }[];
+  brands: { slug: string; name: string; ar?: string }[];
   models: { id: string; brand: string; slug: string; name: { en: string } }[];
 }) {
   const [value, setValue] = useState<any>(
