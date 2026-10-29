@@ -456,9 +456,13 @@
   box-shadow: 0 12px 32px #24302c0a;
 }
 .store :global(.product-art) {
-  background: #eeefe9;
+  background: #fff;
+  padding: 0;
   border-bottom: 1px solid #e8e8e0;
   color: #8b805e;
+}
+.store:global(.storefront-home) :global(.product-card > .product-art) {
+  background: #fff;
 }
 .store :global(.product-art::before),
 .store :global(.product-art::after) {
@@ -571,10 +575,35 @@
 }
 .store :global(.offer-image-placeholder) {
   color: #8c968d;
-  background: #edeee8;
+  background: #fff;
 }
 .store :global(.offer-media) {
-  background: #edf0e9;
+  background: #fff;
+  padding: 0;
+}
+.store :global(.product-art > img),
+.store :global(.offer-media > img) {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  filter: none;
+}
+.store :global(.product-card .product-art > img),
+.store :global(.offer-media > img) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: none;
+}
+.store :global(.product-card:hover .product-art > img),
+.store :global(.product-card:focus-within .product-art > img),
+.store :global(.product-art:hover > img),
+.store :global(.offer-card:hover .offer-media > img),
+.store :global(.offer-card:focus-within .offer-media > img),
+.store :global(.offer-media:hover > img) {
+  transform: none;
 }
 .store :global(.offer-copy),
 .store :global(.offer-content) {
@@ -700,7 +729,7 @@
 .store :global(.product-art.large) {
   border: 1px solid #dfe1d7;
   border-radius: 12px;
-  background: #eeefe8;
+  background: #fff;
 }
 .store :global(.purchase-panel) {
   background: white;
