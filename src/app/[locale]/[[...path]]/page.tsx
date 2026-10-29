@@ -1,4 +1,5 @@
 import { SiteMap } from "@/components/site-map";
+import { publicProduct, carContext } from "@/lib/public-product";
 import { CatalogCarFilters } from "@/components/catalog-car-filters";
 import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
@@ -109,10 +110,35 @@ export async function generateMetadata({
         "year",
       ].includes(k),
     );
-  const productMeta =
+  const rawProductMeta =
     path[0] === "products" && path.length === 2
       ? ((await catalog({ slug: path[1] }))[0] ?? null)
       : null;
+  let productMeta = rawProductMeta ? publicProduct(rawProductMeta) : null;
+  if (rawProductMeta && filters.make && filters.model) {
+    const { models, brands } = await vehicleCatalog();
+    const context = carContext(
+      { make: filters.make, model: filters.model, year: filters.year },
+      models,
+      brands,
+    );
+    if (context) {
+      const matching = configured()
+        ? await searchCatalog({
+            query: rawProductMeta.partNumber,
+            make: context.make,
+            model: context.model,
+            year: context.year,
+            size: 48,
+          })
+        : null;
+      productMeta = publicProduct(
+        rawProductMeta,
+        context,
+        matching?.products.some((p) => p.id === rawProductMeta.id),
+      );
+    }
+  }
   const productCopy = productMeta
     ? productSearchCopy(productMeta, locale === "ar" ? "ar" : "en")
     : null;
@@ -297,10 +323,22 @@ export async function generateMetadata({
         }
       : {}),
     alternates: {
-      canonical: slug ? `/${locale}/${slug}` : `/${locale}`,
+      canonical: productMeta
+        ? `/${locale}/products/${productMeta.slug}`
+        : slug
+          ? `/${locale}/${slug}`
+          : `/${locale}`,
       languages: {
-        ar: slug ? `/ar/${slug}` : "/ar",
-        en: slug ? `/en/${slug}` : "/en",
+        ar: productMeta
+          ? `/ar/products/${productMeta.slug}`
+          : slug
+            ? `/ar/${slug}`
+            : "/ar",
+        en: productMeta
+          ? `/en/products/${productMeta.slug}`
+          : slug
+            ? `/en/${slug}`
+            : "/en",
       },
     },
     robots: {
@@ -396,6 +434,15 @@ export default async function Page({ params, searchParams }: Props) {
     products.map((p) => p.id),
     vehicle?.id,
   );
+  const browsingContext = carContext(
+    {
+      make: q.make ?? vehicle?.brand,
+      model: q.model ?? vehicle?.model,
+      year: q.year ?? vehicle?.year,
+    },
+    vehicleModels,
+    brands,
+  );
   const cards = (items: Product[]) => (
     <div className="product-grid">
       {items.map((p, i) => (
@@ -405,6 +452,8 @@ export default async function Page({ params, searchParams }: Props) {
             locale={locale}
             vehicle={vehicle}
             confirmed={flags[p.id]}
+            context={browsingContext}
+            contextMatched={Boolean(serverResults && q.make && q.model)}
           />
         </Reveal>
       ))}
@@ -762,6 +811,14 @@ export default async function Page({ params, searchParams }: Props) {
                   ? `قطع غيار ${brand.ar} ${modelName} في مصر`
                   : `${brand.name} ${modelName} spare parts in Egypt`}
               </h1>
+              <Link
+                className="button"
+                href={`/${locale}/catalog?make=${brand.slug}&model=${model}`}
+              >
+                {locale === "ar"
+                  ? `تصفح قطع ${brand.ar} ${modelName}`
+                  : `Browse ${brand.name} ${modelName} parts`}
+              </Link>
               {info && <p className="lead">{info.note[locale]}</p>}
               <p className="lead">{w.config}</p>
               <p className="muted">
@@ -1081,8 +1138,23 @@ export default async function Page({ params, searchParams }: Props) {
       </div>
     );
   } else if (path[0] === "products" && path.length === 2) {
-    const p = products.find((p) => p.slug === path[1]);
-    if (!p) notFound();
+    const raw = primary[0];
+    if (!raw) notFound();
+    const matching =
+      browsingContext && q.make && q.model && configured()
+        ? await searchCatalog({
+            query: raw.partNumber,
+            make: browsingContext.make,
+            model: browsingContext.model,
+            year: browsingContext.year,
+            size: 48,
+          })
+        : null;
+    const p = publicProduct(
+      raw,
+      browsingContext,
+      Boolean(flags[raw.id] || matching?.products.some((p) => p.id === raw.id)),
+    );
     const confirmed = flags[p.id];
     let media: {
       url: string;

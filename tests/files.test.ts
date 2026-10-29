@@ -9,6 +9,67 @@ import {
 } from "../src/lib/spreadsheets";
 import { demoProducts } from "../src/lib/catalog";
 import { validateImport } from "../src/lib/importer";
+import { exportItemWorkbook, itemColumns } from "../src/lib/item-workbook";
+import { prepareItemRows } from "../src/lib/prepare-item-import";
+
+test("modern Excel template has isolated examples and repeated rows create one multi-car item", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const models = [
+    {
+      id: "opel-astra",
+      brand: "opel",
+      slug: "astra",
+      name: { ar: "أسترا", en: "Astra" },
+    },
+    {
+      id: "chevrolet-cruze",
+      brand: "chevrolet",
+      slug: "cruze",
+      name: { ar: "كروز", en: "Cruze" },
+    },
+  ];
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], models));
+  assert.equal(workbook.worksheets[0].rowCount, 1);
+  assert.ok(
+    workbook.getWorksheet("Examples — copy to Products")!.rowCount >= 3,
+  );
+  const examples = workbook.getWorksheet("Examples — copy to Products")!,
+    products = workbook.worksheets[0];
+  for (let n = 2; n <= 3; n++)
+    products.addRow((examples.getRow(n).values as unknown[]).slice(1));
+  const bytes = new Uint8Array(await workbook.xlsx.writeBuffer());
+  const parsed = await parseSpreadsheet(
+    bytes.buffer as ArrayBuffer,
+    "template.xlsx",
+  );
+  assert.equal(parsed.length, 1);
+  const prepared = prepareItemRows(parsed, models, []);
+  assert.equal(validateImport(prepared).valid, true);
+  assert.match(prepared[0].sku, /^MS-/);
+  assert.equal(prepared[0].specs["car_years:opel-astra"], "2020,2021,2022");
+  assert.equal(prepared[0].specs["car_years:chevrolet-cruze"], "2021,2023");
+  assert.equal(prepared[0].specs.warranty_months, "12");
+  assert.equal(prepared[0].cost, 50000);
+  const exported = new Uint8Array(
+    await exportItemWorkbook(prepared, [], models),
+  );
+  const roundtrip = prepareItemRows(
+    await parseSpreadsheet(exported.buffer as ArrayBuffer, "items.xlsx"),
+    models,
+    prepared,
+  );
+  assert.equal(roundtrip[0].sku, prepared[0].sku);
+  assert.equal(roundtrip[0].slug, prepared[0].slug);
+  assert.equal(roundtrip[0].specs["car_years:chevrolet-cruze"], "2021,2023");
+  assert.equal(roundtrip[0].warranty.en, prepared[0].warranty.en);
+  products.getRow(3).getCell(itemColumns.indexOf("sale_price") + 1).value = 999;
+  const conflicting = new Uint8Array(await workbook.xlsx.writeBuffer());
+  await assert.rejects(
+    parseSpreadsheet(conflicting.buffer as ArrayBuffer, "items.xlsx"),
+    /conflicting/,
+  );
+});
 test("raster sanitization rejects SVG, spoofed content and oversize payloads", async () => {
   await assert.rejects(
     sanitizeImage(Buffer.from('<svg onload="alert(1)"></svg>')),

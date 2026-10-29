@@ -102,6 +102,10 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
     assert.ok(tables.rows.every((t) => t.relrowsecurity));
     await db.exec("set role anon");
     await assert.rejects(db.query("select cost from public.products"));
+    await assert.rejects(db.query("select specs from public.products"));
+    await assert.rejects(
+      db.query("select description,seo from public.products"),
+    );
     assert.ok(
       (await db.query("select sku from public.products")).rows.length > 0,
     );

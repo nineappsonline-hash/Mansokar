@@ -67,12 +67,12 @@ export function Importer() {
     <div className="panel stack">
       <h2>Import and export products with Excel</h2>
       <p className="muted">
-        Download your products, edit them in Excel, then upload and validate
-        before saving. Match products by SKU. Include names, item brand
-        (manufacturer), country_of_origin, cost and selling price. Prices are in
-        Egyptian pounds (EGP): enter 100 for EGP 100, or 125.50 for EGP 125.50.
-        The Vehicles sheet lists compatible car IDs; repeat a product row for
-        each car it suits.
+        Download the Excel template and follow its Examples and Instructions
+        sheets. Leave SKU blank for a new item and repeat the same item_key for
+        each car make/model and year range. Warranty is entered once in months.
+        Prices are in Egyptian pounds. SKU, URL, descriptions and SEO are
+        automatic. Exported SKUs update existing items. Photo references use
+        existing uploads; you can drag and drop new pictures after importing.
       </p>
       <a
         className="button secondary"
@@ -84,7 +84,7 @@ export function Importer() {
         Export XLSX ↗
       </a>
       <a className="text-link" href="/api/admin-export">
-        Download current catalog / CSV template ↗
+        Legacy CSV export ↗
       </a>
       <label>
         CSV / XLSX (max 1 MB)

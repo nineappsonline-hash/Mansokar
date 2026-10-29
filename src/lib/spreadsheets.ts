@@ -1,6 +1,7 @@
 import ExcelJS from "exceljs";
 import { csvCell } from "./importer";
 import type { Product, Vehicle } from "./catalog";
+import { parseItemSheet } from "./item-workbook";
 export const columns = [
   "sku",
   "slug",
@@ -214,6 +215,7 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
   if (!sheet || sheet.rowCount > 1001)
     throw Error("Spreadsheet must contain 1–1000 product rows");
   const header = (sheet.getRow(1).values as unknown[]).slice(1).map(String);
+  if (header.includes("item_brand")) return parseItemSheet(sheet);
   const required = columns.filter(
     (c) =>
       ![

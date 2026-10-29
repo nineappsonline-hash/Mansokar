@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { configured, searchCatalog, categoryCatalog } from "@/lib/db";
 import { demoProducts, demoFits, normalize } from "@/lib/catalog";
 import { enforceRate } from "@/lib/rate-limit";
+import { publicProduct } from "@/lib/public-product";
 export async function GET(request: Request) {
   const query = (new URL(request.url).searchParams.get("q") ?? "").slice(
     0,
@@ -42,12 +43,14 @@ export async function GET(request: Request) {
     .map((c) => ({ slug: c.slug, name: c.name }));
   return Response.json(
     {
-      products: products.map((p) => ({
-        id: p.id,
-        slug: p.slug,
-        name: p.name,
-        partNumber: p.partNumber,
-      })),
+      products: products
+        .map((p) => publicProduct(p))
+        .map((p) => ({
+          id: p.id,
+          slug: p.slug,
+          name: p.name,
+          partNumber: p.partNumber,
+        })),
       categories,
     },
     { headers: { "Cache-Control": "private, no-store" } },

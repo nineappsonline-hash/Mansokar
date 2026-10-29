@@ -4,6 +4,7 @@ import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { demoProducts, demoFits, type Product } from "./catalog";
+import { publicProductId } from "./public-product";
 export function configured() {
   return Boolean(
     process.env.NEXT_PUBLIC_SUPABASE_URL &&
@@ -97,7 +98,9 @@ export async function catalog(
       .filter(
         (p) =>
           (!options.ids || options.ids.includes(p.id)) &&
-          (!options.slug || p.slug === options.slug) &&
+          (!options.slug ||
+            p.slug === options.slug ||
+            p.id === publicProductId(options.slug)) &&
           (!options.family || p.family === options.family),
       )
       .slice(0, options.limit ?? Infinity);
@@ -113,7 +116,10 @@ export async function catalog(
     if (!options.ids.length) return [];
     query = query.in("id", options.ids.slice(0, 40));
   }
-  if (options.slug) query = query.eq("slug", options.slug);
+  if (options.slug) {
+    const id = publicProductId(options.slug);
+    query = id ? query.eq("id", id) : query.eq("slug", options.slug);
+  }
   if (options.family) query = query.eq("family", options.family);
   const { data, error } = await query
     .order("created_at", { ascending: false })

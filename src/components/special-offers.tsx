@@ -12,6 +12,7 @@ import { partArt } from "@/lib/visuals";
 import { t } from "@/lib/i18n";
 import { productImages } from "@/lib/db";
 import { Reveal } from "./motion-primitives";
+import { publicProduct } from "@/lib/public-product";
 
 export async function SpecialOffers({
   products,
@@ -36,7 +37,8 @@ export async function SpecialOffers({
         p.sale < p.price &&
         (!vehicle || fitments[p.id]),
     )
-    .slice(0, 4);
+    .slice(0, 4)
+    .map((p) => publicProduct(p));
   const offerCards = await Promise.all(
     offers.map(async (product) => {
       let media;

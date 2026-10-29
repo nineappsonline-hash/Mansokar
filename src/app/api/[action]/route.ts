@@ -14,10 +14,12 @@ import {
   requireAdmin,
   service,
   vehicleCatalog,
+  allRows,
 } from "@/lib/db";
 import { checkoutInput, productInput } from "@/lib/validation";
 import { automaticProduct } from "@/lib/product-automation";
 import { applicationSpecs } from "@/lib/product-applications";
+import { prepareItemRows } from "@/lib/prepare-item-import";
 import { validateImport } from "@/lib/importer";
 import { assertDemoAllowed, availablePayments } from "@/lib/payments";
 
@@ -723,7 +725,15 @@ export async function POST(
         action === "admin-import-preview" ||
         action === "admin-import"
       ) {
-        const rows = typeof b.json === "string" ? JSON.parse(b.json) : b.rows;
+        let rows = typeof b.json === "string" ? JSON.parse(b.json) : b.rows;
+        const modern = Array.isArray(rows) && rows.some((r) => r.spreadsheet);
+        if (modern) {
+          const [{ models }, existing] = await Promise.all([
+            vehicleCatalog(),
+            allRows<any>("products"),
+          ]);
+          rows = prepareItemRows(rows, models, existing);
+        }
         const result = validateImport(rows);
         if (!result.valid)
           return NextResponse.json(
@@ -738,13 +748,16 @@ export async function POST(
           ]);
         const relationErrors: unknown[] = [];
         result.rows.forEach((row, index) => {
-          if (!makers?.some((m) => m.name === row.manufacturer))
+          if (!modern && !makers?.some((m) => m.name === row.manufacturer))
             relationErrors.push({
               row: index + 1,
               field: "manufacturer",
               message: "Unknown manufacturer",
             });
-          if (!categories?.some((c) => c.slug === row.category))
+          if (
+            !categories?.some((c) => c.slug === row.category) &&
+            !(modern && row.category === "spare-parts")
+          )
             relationErrors.push({
               row: index + 1,
               field: "category",
@@ -771,10 +784,41 @@ export async function POST(
             { error: JSON.stringify(relationErrors), errors: relationErrors },
             { status: 422 },
           );
+        for (const row of result.rows) {
+          if (row.images?.length) {
+            const { data, error } = await db.storage
+              .from("catalog-images")
+              .createSignedUrls(
+                row.images.map((i) => i.path),
+                60,
+              );
+            if (error || data.some((i) => i.error))
+              throw Error(
+                "One or more photo paths are unavailable. Upload photos first.",
+              );
+          }
+        }
         if (action === "admin-import-preview")
           return NextResponse.json({
             message: `Dry run: ${result.rows.length} valid rows. No changes saved.`,
           });
+        if (modern) {
+          const { error } = await db.from("manufacturers").upsert(
+            [...new Set(result.rows.map((r) => r.manufacturer))].map(
+              (name) => ({ name }),
+            ),
+            { onConflict: "name", ignoreDuplicates: true },
+          );
+          if (error) throw error;
+          const category = await db.from("categories").upsert(
+            {
+              slug: "spare-parts",
+              name: { ar: "قطع غيار", en: "Spare parts" },
+            },
+            { onConflict: "slug", ignoreDuplicates: true },
+          );
+          if (category.error) throw category.error;
+        }
         const { error } = await commit(result.rows);
         if (error) throw error;
         details = { rows: result.rows.length };

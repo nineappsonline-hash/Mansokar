@@ -10,6 +10,7 @@ import {
 import { buyingGuides } from "./buying-guides";
 import { coveredBrands, targetModel } from "./vehicle-coverage";
 import { collectSearchPages } from "./seo-inventory";
+import { publicProduct } from "./public-product";
 export const searchPages = cache(async () => {
   const [
     { brands: storedBrands, models },
@@ -44,7 +45,7 @@ export const searchPages = cache(async () => {
     brands,
     modelNames,
     categories,
-    products,
+    products: products.map((p) => publicProduct(p)),
     productImages,
     cms,
     guides: buyingGuides,

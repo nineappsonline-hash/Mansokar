@@ -16,7 +16,7 @@ export function automaticProduct(input: {
     ar: `${input.name.ar} من ماركة ${input.manufacturer}${vehicle.ar ? ` لسيارات ${vehicle.ar}` : ""}. رقم القطعة ${input.partNumber}. متاح للطلب في مصر؛ راجع رقم القطعة وتكوين السيارة قبل الشراء.`,
     en: `${input.name.en} by ${input.manufacturer}${vehicle.en ? ` for ${vehicle.en}` : ""}. Part number ${input.partNumber}. Order in Egypt; check the part number and vehicle configuration before purchase.`,
   };
-  const stem = `${input.name.en} ${input.manufacturer} ${vehicle.en}`
+  const stem = `${input.name.en} ${input.manufacturer}`
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()

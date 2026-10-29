@@ -56,6 +56,15 @@ export const productInput = z
         "Duplicate fitment configuration",
       )
       .optional(),
+    images: z
+      .array(
+        z.object({
+          path: z.string().regex(/^[a-f0-9-]+\.jpg$/),
+          alt: localized,
+        }),
+      )
+      .max(10)
+      .optional(),
     cost: z.number().int().min(0).nullable().optional(),
     warranty: localized.nullable().optional(),
     editorial: z

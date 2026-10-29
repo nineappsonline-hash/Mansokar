@@ -16,6 +16,32 @@ const p = {
   specs: { country_of_origin: "Germany" },
 };
 
+test("public product projection exposes one car context and no other-car metadata or private fields", async () => {
+  const { publicProduct } = await import("../src/lib/public-product");
+  const raw = {
+    ...p,
+    description: { ar: "أسترا وكروز", en: "Astra and Cruze" },
+    seo: { title: { ar: "أسترا وكروز", en: "Astra and Cruze" } },
+    specs: {
+      "car_years:opel-astra": "2020",
+      "car_years:chevrolet-cruze": "2021",
+      country_of_origin: "Germany",
+    },
+  };
+  const scoped = publicProduct(raw, {
+    modelId: "opel-astra",
+    make: "opel",
+    model: "astra",
+    year: 2020,
+    name: { ar: "أوبل أسترا 2020", en: "Opel Astra 2020" },
+  });
+  assert.match(scoped.name.en, /Opel Astra 2020/);
+  assert.ok(!JSON.stringify(scoped).includes("Cruze"));
+  assert.ok(!JSON.stringify(scoped).includes("car_years"));
+  assert.ok(!JSON.stringify(scoped).includes('"cost"'));
+  assert.ok(!JSON.stringify(publicProduct(raw)).includes("Astra and Cruze"));
+});
+
 test("multiple model-year selections preserve independent years and unrelated product specifications", async () => {
   const { readApplications, applicationSpecs } =
     await import("../src/lib/product-applications");
@@ -48,7 +74,7 @@ test("automatic product content uses selected vehicle facts and preserves existi
     sku: "MS-1234567890ABCDEF",
   };
   const result = automaticProduct(input);
-  assert.match(result.slug, /oil-filter-bosch-opel-astra-2021/);
+  assert.match(result.slug, /oil-filter-bosch/);
   assert.match(result.description.ar, /أوبل أسترا 2021/);
   assert.match(result.description.en, /Bosch.*Opel Astra 2021/);
   assert.match(result.warranty!.en, /12-month/);

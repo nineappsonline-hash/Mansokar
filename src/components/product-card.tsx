@@ -11,17 +11,32 @@ import {
 } from "@/lib/catalog";
 import { PurchaseButtons } from "./purchase-buttons";
 import { t } from "@/lib/i18n";
+import {
+  publicProduct,
+  productContextHref,
+  type CarContext,
+} from "@/lib/public-product";
 export async function ProductCard({
-  product: p,
+  product: raw,
   locale,
   vehicle,
   confirmed,
+  context,
+  contextMatched = false,
 }: {
   product: Product;
   locale: Locale;
   vehicle?: Vehicle;
   confirmed?: boolean;
+  context?: CarContext;
+  contextMatched?: boolean;
 }) {
+  const p = publicProduct(raw, context, contextMatched || confirmed);
+  const href = productContextHref(
+    locale,
+    p.slug,
+    context && p.name.en !== raw.name.en ? context : undefined,
+  );
   let media;
   try {
     media = (await productImages(p.id))?.[0] ?? undefined;
@@ -32,7 +47,7 @@ export async function ProductCard({
   return (
     <article className="product-card" aria-label={p.name[locale]}>
       <Link
-        href={`/${locale}/products/${p.slug}`}
+        href={href}
         className="product-art"
         data-analytics="select_item"
         data-productid={p.id}
@@ -79,7 +94,7 @@ export async function ProductCard({
             className="card-navigation-link"
             data-analytics="select_item"
             data-productid={p.id}
-            href={`/${locale}/products/${p.slug}`}
+            href={href}
           >
             {p.name[locale]}
           </Link>
@@ -98,10 +113,7 @@ export async function ProductCard({
           product={{ id: p.id, name: p.name, orderable: p.orderable }}
           locale={locale}
         />
-        <Link
-          className="product-details-link"
-          href={`/${locale}/products/${p.slug}`}
-        >
+        <Link className="product-details-link" href={href}>
           {w.view}
           <ArrowUpRight size={17} aria-hidden="true" />
         </Link>

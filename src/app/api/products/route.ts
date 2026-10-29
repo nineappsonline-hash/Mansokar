@@ -2,6 +2,7 @@ import { enforceRate } from "@/lib/rate-limit";
 import { cookies } from "next/headers";
 import { catalog, fitmentFlags, vehicleCatalog } from "@/lib/db";
 import { fitmentLabel, type Locale } from "@/lib/catalog";
+import { publicProduct, carContext } from "@/lib/public-product";
 export async function GET(request: Request) {
   try {
     await enforceRate(request, "products", 90);
@@ -15,12 +16,28 @@ export async function GET(request: Request) {
   const locale: Locale = params.get("locale") === "ar" ? "ar" : "en";
   const products = await catalog({ ids });
   const id = (await cookies()).get("vehicle")?.value;
-  const { vehicles } = await vehicleCatalog();
+  const { vehicles, models, brands } = await vehicleCatalog();
   const vehicle = vehicles.find((v) => v.id === id);
   const flags = await fitmentFlags(ids, vehicle?.id);
   return Response.json(
     {
-      products,
+      products: products.map((p) =>
+        publicProduct(
+          p,
+          vehicle
+            ? carContext(
+                {
+                  make: vehicle.brand,
+                  model: vehicle.model,
+                  year: vehicle.year,
+                },
+                models,
+                brands,
+              )
+            : undefined,
+          flags[p.id],
+        ),
+      ),
       fitments: Object.fromEntries(
         products.map((p) => [
           p.id,
