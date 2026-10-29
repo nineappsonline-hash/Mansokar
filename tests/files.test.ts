@@ -304,3 +304,71 @@ test("Products is selected by name after worksheet reordering and year columns s
     [2015, 2016, 2017, 2018, 2019, 2020],
   );
 });
+
+test("formatted blank rows and gaps do not count against the Excel import limit", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const products = workbook.getWorksheet("Products")!;
+  products.getRow(2005).values = workbook
+    .getWorksheet("Examples — copy to Products")!
+    .getRow(2).values;
+  products.getRow(10000).getCell(1).fill = {
+    type: "pattern",
+    pattern: "solid",
+    fgColor: { argb: "FFF0F0F0" },
+  };
+  products.getRow(8000).getCell(1).value = "   ";
+  const buffer = new Uint8Array(await workbook.xlsx.writeBuffer());
+  const rows = await parseSpreadsheet(
+    buffer.buffer as ArrayBuffer,
+    "items.xlsx",
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].applications_input[0].make, "opel");
+  products.getRow(2005).getCell(itemColumns.indexOf("sale_price") + 1).value =
+    "invalid";
+  const invalid = new Uint8Array(await workbook.xlsx.writeBuffer());
+  await assert.rejects(
+    parseSpreadsheet(invalid.buffer as ArrayBuffer, "items.xlsx"),
+    /Row 2005/,
+  );
+});
+
+test("the Excel limit accepts 1000 populated rows and rejects 1001 even for one grouped item", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const products = workbook.getWorksheet("Products")!;
+  const example = workbook
+    .getWorksheet("Examples — copy to Products")!
+    .getRow(2).values;
+  for (let n = 0; n < 1000; n++) products.getRow(n + 2000).values = example;
+  const bytes = async () => new Uint8Array(await workbook.xlsx.writeBuffer());
+  let buffer = await bytes();
+  assert.equal(
+    (await parseSpreadsheet(buffer.buffer as ArrayBuffer, "items.xlsx")).length,
+    1,
+  );
+  products.getRow(9000).values = example;
+  buffer = await bytes();
+  await assert.rejects(
+    parseSpreadsheet(buffer.buffer as ArrayBuffer, "items.xlsx"),
+    /more than 1,000 populated product rows/,
+  );
+});
+
+test("legacy Excel also ignores whitespace and styled empty rows after products", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportXlsx([demoProducts[0]]));
+  workbook.worksheets[0].getRow(5000).getCell(1).value = "   ";
+  workbook.worksheets[0].getRow(10000).getCell(1).font = { bold: true };
+  const buffer = new Uint8Array(await workbook.xlsx.writeBuffer());
+  const rows = await parseSpreadsheet(
+    buffer.buffer as ArrayBuffer,
+    "legacy.xlsx",
+  );
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].sku, demoProducts[0].sku);
+});

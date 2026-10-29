@@ -226,9 +226,26 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
         ),
     );
   if (!sheet) throw Error(emptyImportMessage);
-  if (sheet.rowCount > 1001)
-    throw Error("Spreadsheet must contain 1–1000 product rows");
-  const header = (sheet.getRow(1).values as unknown[]).slice(1).map(String);
+  const header = (sheet.getRow(1).values as unknown[])
+    .slice(1)
+    .map((value) => String(value ?? "").trim());
+  // Excel's used range includes styled empty rows and gaps between entries.
+  // Apply the limit to populated import rows, not the last worksheet row number.
+  let populatedRows = 0;
+  sheet.eachRow((row, n) => {
+    if (n === 1) return;
+    if (
+      header.some(
+        (key, i) => key && String(row.getCell(i + 1).value ?? "").trim(),
+      )
+    ) {
+      populatedRows++;
+      if (populatedRows > 1000)
+        throw Error(
+          "This file contains more than 1,000 populated product rows. Split it into smaller files with up to 1,000 rows each. Empty rows are ignored.",
+        );
+    }
+  });
   if (header.includes("item_brand")) {
     const rows = parseItemSheet(sheet);
     if (!rows.length) throw Error(emptyImportMessage);
@@ -262,6 +279,7 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
         throw Error(`Row ${n}: formulas and rich cells are not supported`);
       values[key] = String(value ?? "");
     });
+    if (Object.values(values).every((value) => !value.trim())) return;
     rows.push({
       sku: values.sku,
       slug: values.slug,
