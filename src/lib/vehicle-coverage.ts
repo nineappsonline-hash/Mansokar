@@ -174,26 +174,15 @@ export const targetBrands: TargetBrand[] = [
   },
 ];
 
-// Navigation coverage never creates vehicle configurations or product fitments.
+// Saved records are authoritative. Editorial targets may provide copy for an
+// existing model, but must never recreate a deleted make or model in navigation.
 export function coveredBrands(
   existing: { slug: string; name: string; ar: string; models: string[] }[],
 ) {
-  return [
-    ...existing.map((b) => ({
-      ...b,
-      models: [
-        ...new Set([
-          ...b.models,
-          ...(targetBrands
-            .find((t) => t.slug === b.slug)
-            ?.models.map((m) => m.slug) ?? []),
-        ]),
-      ],
-    })),
-    ...targetBrands
-      .filter((t) => !existing.some((b) => b.slug === t.slug))
-      .map((t) => ({ ...t, models: t.models.map((m) => m.slug) })),
-  ];
+  return existing.map((brand) => ({
+    ...brand,
+    models: [...new Set(brand.models)],
+  }));
 }
 export function targetModel(brand: string, model: string) {
   return targetBrands

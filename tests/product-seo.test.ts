@@ -188,23 +188,45 @@ test("visible answers reflect the SKU and current payment limitations in both la
   }
 });
 
-test("target model coverage preserves existing navigation without inventing fitment data", async () => {
+test("deleted makes and models stay absent from navigation and SEO inventory for every make", async () => {
   const { coveredBrands, targetBrands } =
     await import("../src/lib/vehicle-coverage");
-  const existing = [
-    { slug: "opel", name: "Opel", ar: "أوبل", models: ["astra", "corsa"] },
-  ];
+  const { collectSearchPages } = await import("../src/lib/seo-inventory");
+  const existing = targetBrands.map((b) => ({
+    slug: b.slug,
+    name: b.name,
+    ar: b.ar,
+    models: [`saved-${b.slug}`],
+  }));
   const before = JSON.stringify(existing);
   const covered = coveredBrands(existing);
+  assert.deepEqual(covered, existing);
   assert.equal(JSON.stringify(existing), before);
-  assert.equal(targetBrands.flatMap((b) => b.models).length, 16);
-  assert.equal(covered.length, 5);
-  assert.ok(covered.find((b) => b.slug === "opel")!.models.includes("corsa"));
-  assert.ok(
-    covered.find((b) => b.slug === "chevrolet")!.models.includes("captiva"),
-  );
+  assert.deepEqual(coveredBrands([]), []);
+  const pages = collectSearchPages({
+    brands: covered,
+    modelNames: [],
+    categories: [],
+    cms: [],
+    guides: [],
+    products: [],
+  });
+  for (const brand of targetBrands) {
+    assert.ok(
+      pages.some((p) => p.path === `/brands/${brand.slug}/saved-${brand.slug}`),
+    );
+    for (const removed of brand.models) {
+      assert.ok(
+        !covered
+          .find((b) => b.slug === brand.slug)!
+          .models.includes(removed.slug),
+      );
+      assert.ok(
+        !pages.some((p) => p.path === `/brands/${brand.slug}/${removed.slug}`),
+      );
+    }
+  }
   assert.deepEqual(coveredBrands(covered), covered);
-  assert.ok(!JSON.stringify(covered).includes("vehicle_config_id"));
 });
 
 test("buying guides have complete Arabic and English answers and unique routes", async () => {

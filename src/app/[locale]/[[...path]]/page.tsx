@@ -202,7 +202,7 @@ export async function generateMetadata({
     const brands = coveredBrands(storedBrands);
     const brand = brands.find((b) => b.slug === path[1]);
     const model = models.find((m) => m.brand === path[1] && m.slug === path[2]);
-    if (brand) {
+    if (brand && (!path[2] || model)) {
       const target = targetModel(brand.slug, path[2]);
       const nameAr =
         brand.ar +
@@ -786,7 +786,10 @@ export default async function Page({ params, searchParams }: Props) {
                   </div>
                   <h2>
                     {locale === "ar" ? brand.ar : brand.name}{" "}
-                    {targetModel(brand.slug, model)?.name[locale] ??
+                    {vehicleModels.find(
+                      (m) => m.brand === brand.slug && m.slug === model,
+                    )?.name[locale] ??
+                      targetModel(brand.slug, model)?.name[locale] ??
                       model.toUpperCase()}
                   </h2>
                   <span>
