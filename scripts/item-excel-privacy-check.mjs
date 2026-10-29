@@ -88,6 +88,46 @@ try {
     };
     sheet.addRow(headers.map((h) => row[h] ?? ""));
   }
+  await admin.goto(base + "/admin?module=products");
+  await admin.getByRole("button", { name: "Excel import & export" }).click();
+  const input = admin.getByLabel("CSV / XLSX (max 1 MB)");
+  const payload = (buffer) => ({
+    name: "items.xlsx",
+    mimeType:
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    buffer,
+  });
+  await input.setInputFiles(payload(await template.body()));
+  await admin.getByRole("button", { name: "Check file", exact: true }).click();
+  await admin.getByText(/No product rows found/).waitFor();
+  assert.ok(
+    await admin
+      .getByRole("button", { name: "Import checked products" })
+      .isDisabled(),
+  );
+  await input.setInputFiles(
+    payload(Buffer.from(await workbook.xlsx.writeBuffer())),
+  );
+  await admin.getByRole("button", { name: "Check file", exact: true }).click();
+  await admin.getByText(/Dry run: 1 valid items/).waitFor();
+  assert.ok(
+    await admin
+      .getByRole("button", { name: "Import checked products" })
+      .isEnabled(),
+  );
+  await input.setInputFiles(payload(await template.body()));
+  assert.ok(
+    await admin
+      .getByRole("button", { name: "Import checked products" })
+      .isDisabled(),
+  );
+  await admin.getByRole("button", { name: "Check file", exact: true }).click();
+  await admin.getByText(/No product rows found/).waitFor();
+  assert.ok(
+    await admin
+      .getByRole("button", { name: "Import checked products" })
+      .isDisabled(),
+  );
   const upload = await admin.request.post(base + "/api/admin-file", {
     headers: { Origin: base },
     multipart: {
@@ -249,7 +289,7 @@ try {
   });
   assert.equal(values.length, 3);
   console.log(
-    "Excel examples, automatic fields, multi-car grouping, preview without writes, public car-scoped cards/pages/metadata/API, direct database privacy new make/model/year creation, registered admin years and three-row export passed.",
+    "Check file UI (blank, valid, stale-data rejection), Excel examples, automatic fields, multi-car grouping, preview without writes, public car-scoped cards/pages/metadata/API, direct database privacy new make/model/year creation, registered admin years and three-row export passed.",
   );
 } finally {
   await browser?.close();

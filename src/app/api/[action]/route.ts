@@ -21,6 +21,7 @@ import { automaticProduct } from "@/lib/product-automation";
 import { applicationSpecs } from "@/lib/product-applications";
 import { planImportVehicles } from "@/lib/import-vehicles";
 import { prepareItemRows } from "@/lib/prepare-item-import";
+import { importFeedback } from "@/lib/import-feedback";
 import { validateImport } from "@/lib/importer";
 import { assertDemoAllowed, availablePayments } from "@/lib/payments";
 
@@ -742,7 +743,10 @@ export async function POST(
         const result = validateImport(rows);
         if (!result.valid)
           return NextResponse.json(
-            { error: JSON.stringify(result.errors), errors: result.errors },
+            {
+              error: importFeedback({ errors: result.errors }),
+              errors: result.errors,
+            },
             { status: 422 },
           );
         const [{ data: makers }, { data: categories }, { data: catalogRows }] =
@@ -786,7 +790,16 @@ export async function POST(
         });
         if (relationErrors.length)
           return NextResponse.json(
-            { error: JSON.stringify(relationErrors), errors: relationErrors },
+            {
+              error: importFeedback({
+                errors: relationErrors as {
+                  row: number;
+                  field: string;
+                  message: string;
+                }[],
+              }),
+              errors: relationErrors,
+            },
             { status: 422 },
           );
         for (const row of result.rows) {

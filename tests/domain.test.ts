@@ -88,3 +88,18 @@ test("public API errors identify localized fields and do not expose database int
   );
   assert.match(apiError(Error("Invalid or expired coupon"), "ar"), /كود الخصم/);
 });
+
+test("empty imports have actionable file feedback and validation issues are readable", async () => {
+  const { importFeedback } = await import("../src/lib/import-feedback");
+  const result = validateImport([]);
+  assert.equal(result.valid, false);
+  assert.equal(result.errors[0].row, null);
+  assert.match(result.errors[0].message, /No product rows found/);
+  assert.ok(!importFeedback(result).includes('"row"'));
+  assert.equal(
+    importFeedback({
+      errors: [{ row: 2, field: "sale_price", message: "Enter a price" }],
+    }),
+    "Item 2 · sale_price: Enter a price",
+  );
+});

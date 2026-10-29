@@ -1,3 +1,4 @@
+import { emptyImportMessage } from "./import-feedback";
 import { importRows } from "./validation";
 export function validateImport(rows: unknown) {
   const result = importRows.safeParse(rows);
@@ -7,9 +8,12 @@ export function validateImport(rows: unknown) {
         valid: false as const,
         rows: [],
         errors: result.error.issues.map((i) => ({
-          row: Number(i.path[0]) + 1,
-          field: i.path.slice(1).join("."),
-          message: i.message,
+          row: typeof i.path[0] === "number" ? i.path[0] + 1 : null,
+          field: i.path.length ? i.path.slice(1).join(".") : "file",
+          message:
+            Array.isArray(rows) && !rows.length
+              ? emptyImportMessage
+              : i.message,
         })),
       };
 }

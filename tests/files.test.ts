@@ -258,3 +258,49 @@ test("import creates missing makes/models in a side-effect-free plan, reuses nam
   set("years", "2022");
   await assert.rejects(parse(), /leave years blank/);
 });
+
+test("empty templates report how to fill Products and never import reference examples", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const bytes = async () => {
+    const buffer = new Uint8Array(await workbook.xlsx.writeBuffer());
+    return buffer.buffer as ArrayBuffer;
+  };
+  await assert.rejects(
+    parseSpreadsheet(await bytes(), "items.xlsx"),
+    /No product rows found.*Products.*Examples/,
+  );
+  workbook.removeWorksheet("Products");
+  await assert.rejects(
+    parseSpreadsheet(await bytes(), "items.xlsx"),
+    /No product rows found/,
+  );
+});
+
+test("Products is selected by name after worksheet reordering and year columns stay visible", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], []));
+  const products = workbook.getWorksheet("Products")!;
+  const examples = workbook.getWorksheet("Examples — copy to Products")!;
+  products.addRow((examples.getRow(2).values as unknown[]).slice(1));
+  (products as unknown as { orderNo: number }).orderNo = 99;
+  assert.notEqual(workbook.worksheets[0].name, "Products");
+  assert.equal(
+    products.getColumn(itemColumns.indexOf("extra_data") + 1).hidden,
+    true,
+  );
+  for (const key of ["start_year", "end_year", "years"])
+    assert.ok(!products.getColumn(itemColumns.indexOf(key as any) + 1).hidden);
+  const buffer = new Uint8Array(await workbook.xlsx.writeBuffer());
+  const rows = await parseSpreadsheet(
+    buffer.buffer as ArrayBuffer,
+    "items.xlsx",
+  );
+  assert.equal(rows.length, 1);
+  assert.deepEqual(
+    rows[0].applications_input[0].years,
+    [2015, 2016, 2017, 2018, 2019, 2020],
+  );
+});

@@ -235,8 +235,8 @@ export async function exportItemWorkbook(
     };
   }
   guide.getColumn(2).width = 115;
-  sheet.getColumn("T").hidden = true;
-  examples.getColumn("T").hidden = true;
+  sheet.getColumn(itemColumns.indexOf("extra_data") + 1).hidden = true;
+  examples.getColumn(itemColumns.indexOf("extra_data") + 1).hidden = true;
   for (const s of [sheet, examples])
     for (const key of ["cost_price", "sale_price", "discount_price"])
       s.getColumn(itemColumns.indexOf(key as any) + 1).numFmt = "0";

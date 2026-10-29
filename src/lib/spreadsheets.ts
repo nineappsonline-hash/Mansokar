@@ -1,6 +1,7 @@
 import ExcelJS from "exceljs";
 import { csvCell } from "./importer";
 import type { Product, Vehicle } from "./catalog";
+import { emptyImportMessage } from "./import-feedback";
 import { parseItemSheet } from "./item-workbook";
 export const columns = [
   "sku",
@@ -211,11 +212,28 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
     const { Readable } = await import("node:stream");
     await workbook.csv.read(Readable.from([Buffer.from(buffer)]));
   } else throw Error("Use a CSV or XLSX template");
-  const sheet = workbook.worksheets[0];
-  if (!sheet || sheet.rowCount > 1001)
+  const reference =
+    /^(examples(?:\s|$)|instructions$|car models$|vehicles$|uploaded photos$)/i;
+  const sheet =
+    workbook.worksheets.find(
+      (s) => s.name.trim().toLowerCase() === "products",
+    ) ||
+    workbook.worksheets.find(
+      (s) =>
+        !reference.test(s.name.trim()) &&
+        (s.getRow(1).values as unknown[]).some(
+          (v) => String(v).trim() === "name_en",
+        ),
+    );
+  if (!sheet) throw Error(emptyImportMessage);
+  if (sheet.rowCount > 1001)
     throw Error("Spreadsheet must contain 1–1000 product rows");
   const header = (sheet.getRow(1).values as unknown[]).slice(1).map(String);
-  if (header.includes("item_brand")) return parseItemSheet(sheet);
+  if (header.includes("item_brand")) {
+    const rows = parseItemSheet(sheet);
+    if (!rows.length) throw Error(emptyImportMessage);
+    return rows;
+  }
   const required = columns.filter(
     (c) =>
       ![
@@ -306,6 +324,7 @@ export async function parseSpreadsheet(buffer: ArrayBuffer, filename: string) {
       ];
     } else grouped.set(key, row);
   }
+  if (!grouped.size) throw Error(emptyImportMessage);
   return [...grouped.values()];
 }
 

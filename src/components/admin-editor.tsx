@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { emptyImportMessage, importFeedback } from "@/lib/import-feedback";
 import { ApiForm } from "./forms";
 import uploadStyles from "./product-upload.module.css";
 export function JsonEditor({
@@ -35,6 +36,7 @@ export function JsonEditor({
 }
 export function Importer() {
   const [json, setJson] = useState("[]");
+  const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [validated, setValidated] = useState(false);
@@ -44,21 +46,50 @@ export function Importer() {
   };
   async function submit(commit: boolean) {
     setBusy(true);
+    setMessage(
+      commit
+        ? "Importing checked products…"
+        : "Reading and checking your file…",
+    );
+    if (!commit) setValidated(false);
     try {
+      let checkedJson = json;
+      if (!commit && file) {
+        if (file.size > 1_000_000) throw Error("Maximum file size is 1 MB");
+        const upload = new FormData();
+        upload.append("file", file);
+        const parsed = await fetch("/api/admin-file", {
+          method: "POST",
+          body: upload,
+        });
+        const result = await parsed.json();
+        if (!parsed.ok) throw Error(importFeedback(result));
+        checkedJson = JSON.stringify(result.rows, null, 2);
+        setJson(checkedJson);
+      }
+      const rows = JSON.parse(checkedJson);
+      if (!Array.isArray(rows) || !rows.length) throw Error(emptyImportMessage);
       const response = await fetch(
         "/api/admin-import" + (commit ? "" : "-preview"),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ json }),
+          body: JSON.stringify({ json: checkedJson }),
         },
       );
       const data = await response.json();
-      if (!response.ok) throw Error(data.error);
+      if (!response.ok) throw Error(importFeedback(data));
       setMessage(data.message);
       setValidated(!commit);
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Import failed");
+      setValidated(false);
+      setMessage(
+        error instanceof SyntaxError
+          ? "The product data could not be read. Select your Excel file again, or correct the advanced JSON data."
+          : error instanceof Error
+            ? error.message
+            : "Import failed",
+      );
     } finally {
       setBusy(false);
     }
@@ -68,11 +99,12 @@ export function Importer() {
       <h2>Import and export products with Excel</h2>
       <p className="muted">
         Download the Excel template and follow its Examples and Instructions
-        sheets. Leave SKU blank for a new item and repeat the same item_key for
-        each car make/model. Enter start_year and end_year (both included);
-        missing cars are created on confirmed import. Warranty is entered once
-        in months. Prices are in Egyptian pounds. SKU, URL, descriptions and SEO
-        are automatic. Exported SKUs update existing items. Photo references use
+        sheets. Fill the Products worksheet; rows in Examples are not imported.
+        Leave SKU blank for a new item and repeat the same item_key for each car
+        make/model. Enter start_year and end_year (both included); missing cars
+        are created on confirmed import. Warranty is entered once in months.
+        Prices are in Egyptian pounds. SKU, URL, descriptions and SEO are
+        automatic. Exported SKUs update existing items. Photo references use
         existing uploads; you can drag and drop new pictures after importing.
       </p>
       <a
@@ -92,33 +124,16 @@ export function Importer() {
         <input
           type="file"
           accept=".csv,.xlsx"
-          onChange={async (e) => {
-            const file = e.target.files?.[0];
-            if (!file) return;
-            setValidated(false);
-            setBusy(true);
-            try {
-              if (file.size > 1_000_000)
-                throw Error("Maximum file size is 1 MB");
-              const data = new FormData();
-              data.append("file", file);
-              const response = await fetch("/api/admin-file", {
-                method: "POST",
-                body: data,
-              });
-              const result = await response.json();
-              if (!response.ok) throw Error(result.error);
-              update(JSON.stringify(result.rows, null, 2));
-              setMessage(
-                "File parsed. Run dry-run validation before committing.",
-              );
-            } catch (error) {
-              setMessage(
-                error instanceof Error ? error.message : "Invalid file",
-              );
-            } finally {
-              setBusy(false);
-            }
+          disabled={busy}
+          onChange={(e) => {
+            const selected = e.target.files?.[0] || null;
+            setFile(selected);
+            update("[]");
+            setMessage(
+              selected
+                ? `${selected.name} selected. Click Check file to read and validate its products.`
+                : "",
+            );
           }}
         />
       </label>
@@ -130,17 +145,22 @@ export function Importer() {
             className="code-editor"
             rows={16}
             value={json}
-            onChange={(e) => update(e.target.value)}
+            disabled={busy}
+            onChange={(e) => {
+              setFile(null);
+              update(e.target.value);
+              setMessage("Product data changed. Click Check file again.");
+            }}
           />
         </label>
       </details>
       <div className="admin-nav">
         <button
           className="button secondary"
-          disabled={busy}
+          disabled={busy || (!file && json.trim() === "[]")}
           onClick={() => submit(false)}
         >
-          Check file
+          {busy && !validated ? "Checking…" : "Check file"}
         </button>
         <button
           className="button"
@@ -150,7 +170,7 @@ export function Importer() {
           Import checked products
         </button>
       </div>
-      <p role="status" className="prose">
+      <p role="status" className="prose" style={{ whiteSpace: "pre-wrap" }}>
         {message}
       </p>
     </div>
