@@ -1,4 +1,5 @@
 import type { Product, Text } from "./catalog";
+import { countryOfOrigin } from "./product-specifications";
 import { readApplications } from "./product-applications";
 export type CarContext = {
   modelId: string;
@@ -117,11 +118,14 @@ export function publicProduct(
     demo: p.demo,
     orderable: p.orderable,
     status: p.status,
-    specs: Object.fromEntries(
-      Object.entries(p.specs || {}).filter(
-        ([key]) => !key.startsWith("car_years:"),
+    specs: {
+      ...Object.fromEntries(
+        Object.entries(p.specs || {}).filter(
+          ([key]) => !key.startsWith("car_years:"),
+        ),
       ),
-    ),
+      country_of_origin: countryOfOrigin(p.specs?.country_of_origin),
+    },
     warranty: p.warranty,
     policy_refs: p.policy_refs,
     condition: p.condition,

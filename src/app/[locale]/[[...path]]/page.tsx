@@ -1,3 +1,5 @@
+import { ProductText } from "@/components/product-text";
+import { productSpecifications } from "@/lib/product-specifications";
 import { ModelYearCards } from "@/components/model-year-cards";
 import { SiteMap } from "@/components/site-map";
 import { publicProduct, carContext } from "@/lib/public-product";
@@ -1193,7 +1195,9 @@ export default async function Page({ params, searchParams }: Props) {
                   ? "التفاصيل تصنع الفرق."
                   : "The difference is in the details."}
               </h2>
-              <p className="lead">{p.description[locale]}</p>
+              <p className="lead">
+                <ProductText text={p.description[locale]} locale={locale} />
+              </p>
               {policies.map((page) => (
                 <details className="accordion" key={page.slug}>
                   <summary>{page.title[locale]}</summary>
@@ -1204,37 +1208,16 @@ export default async function Page({ params, searchParams }: Props) {
                 <p className="lead">{p.editorial.why[locale]}</p>
               )}
               <div className="spec-grid">
-                {Object.entries(p.specs)
-                  .filter(
-                    ([key, value]) =>
-                      value &&
-                      !key.startsWith("car_years:") &&
-                      (!key.startsWith("fitment_notes_") ||
-                        key === `fitment_notes_${locale}`),
-                  )
-                  .map(([key, value]) => (
+                {productSpecifications(p, locale).map(
+                  ({ key, label, value }) => (
                     <div key={key}>
-                      <span className="muted small">
-                        {(
-                          {
-                            country_of_origin:
-                              locale === "ar"
-                                ? "بلد المنشأ"
-                                : "Country of origin",
-                            fitting_position:
-                              locale === "ar"
-                                ? "مكان التركيب"
-                                : "Fitting position",
-                            [`fitment_notes_${locale}`]:
-                              locale === "ar"
-                                ? "قيود التوافق"
-                                : "Compatibility restrictions",
-                          } as Record<string, string>
-                        )[key] ?? key}
-                      </span>
-                      <p>{value}</p>
+                      <span className="muted small">{label}</span>
+                      <p>
+                        <bdi dir="auto">{value}</bdi>
+                      </p>
                     </div>
-                  ))}
+                  ),
+                )}
               </div>
               {p.editorial?.installation && (
                 <details className="accordion">
@@ -1258,15 +1241,24 @@ export default async function Page({ params, searchParams }: Props) {
                     ? "تتحدد رسوم التوصيل حسب المنطقة. راجع السياسات المنشورة وشروط ضمان المنتج قبل الطلب."
                     : "Delivery fees depend on your area. Review the published policies and product warranty terms before ordering."}
                 </p>
-                <Link href={`/${locale}/policies/returns`}>
-                  {locale === "ar" ? "سياسة الاسترجاع" : "Return policy"}
-                </Link>
-                <Link href={`/${locale}/policies/shipping`}>
-                  {locale === "ar" ? "سياسة الشحن" : "Shipping policy"}
-                </Link>
-                <Link href={`/${locale}/policies/warranty`}>
-                  {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
-                </Link>
+                <nav
+                  className="product-policy-links"
+                  aria-label={
+                    locale === "ar"
+                      ? "سياسات الشحن والاسترجاع والضمان"
+                      : "Shipping, returns and warranty policies"
+                  }
+                >
+                  <Link href={`/${locale}/policies/returns`}>
+                    {locale === "ar" ? "سياسة الاسترجاع" : "Return policy"}
+                  </Link>
+                  <Link href={`/${locale}/policies/shipping`}>
+                    {locale === "ar" ? "سياسة الشحن" : "Shipping policy"}
+                  </Link>
+                  <Link href={`/${locale}/policies/warranty`}>
+                    {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
+                  </Link>
+                </nav>
               </details>
             </div>
           </div>

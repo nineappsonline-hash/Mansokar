@@ -8,6 +8,10 @@ type RevealProps = {
   delay?: number;
   /** Rise distance in px. */
   y?: number;
+  /** Entrance blur in px. Set to 0 for large sections where blur is costly. */
+  blur?: number;
+  /** Slight scale-up as the element settles into place. */
+  scale?: number;
   as?: "div" | "section" | "article" | "li";
   className?: string;
   style?: HTMLAttributes<HTMLElement>["style"];
@@ -23,6 +27,8 @@ export function Reveal({
   children,
   delay = 0,
   y = 24,
+  blur = 5,
+  scale = 0.988,
   as = "div",
   className,
   style,
@@ -49,10 +55,20 @@ export function Reveal({
       style={style}
       id={id}
       data-motion-reveal
-      initial={{ opacity: 0, transform: `translateY(${y}px)` }}
-      whileInView={{ opacity: 1, transform: "translateY(0px)" }}
+      initial={{
+        opacity: 0,
+        y,
+        scale,
+        filter: `blur(${blur}px)`,
+      }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "0px 0px -8% 0px" }}
-      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: 0.72,
+        delay,
+        ease: [0.22, 1, 0.36, 1],
+        opacity: { duration: 0.55, delay },
+      }}
     >
       {children}
     </M>

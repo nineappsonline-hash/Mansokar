@@ -480,3 +480,50 @@ test("model-scoped public copy expands every range year without exposing other m
     assert.ok(item.description.en.includes(`Opel Astra ${year}`));
   assert.ok(!JSON.stringify(item).includes("2021"));
 });
+
+test("customer specs label warranty months and never present a part type as a country", async () => {
+  const { countryOfOrigin, productSpecifications } =
+    await import("../src/lib/product-specifications");
+  const { publicProduct } = await import("../src/lib/public-product");
+  for (const value of [
+    "أصلي",
+    "Original",
+    "OEM",
+    "After Market",
+    "Genuine Parts",
+    "غير محدد",
+  ])
+    assert.equal(countryOfOrigin(value), "");
+  assert.equal(countryOfOrigin("Germany"), "Germany");
+  const item = {
+    ...p,
+    specs: {
+      country_of_origin: "أصلي",
+      warranty_months: "6",
+      "car_years:hidden": "2020",
+    },
+  };
+  const ar = productSpecifications(item, "ar"),
+    en = productSpecifications(item, "en");
+  assert.deepEqual(
+    ar.find((r) => r.key === "warranty_months"),
+    { key: "warranty_months", label: "مدة الضمان", value: "٦ أشهر" },
+  );
+  assert.equal(en.find((r) => r.key === "warranty_months")!.value, "6 months");
+  assert.equal(
+    ar.find((r) => r.key === "country_of_origin")!.value,
+    "غير محدد",
+  );
+  assert.ok(!JSON.stringify(ar).includes("car_years"));
+  assert.equal(publicProduct(item).specs.country_of_origin, "");
+  assert.ok(
+    !JSON.stringify(
+      productStructuredData(item, "ar", "https://example.test", []),
+    ).includes('"additionalProperty"'),
+  );
+  assert.ok(
+    !productAnswers(item, "ar").some((a) =>
+      a.answer.includes("بلد المنشأ: أصلي"),
+    ),
+  );
+});

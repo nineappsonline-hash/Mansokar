@@ -1,3 +1,4 @@
+import { countryOfOrigin } from "./product-specifications";
 import { money, type Locale, type Product } from "./catalog";
 
 export function productSearchCopy(p: Product, locale: Locale) {
@@ -36,13 +37,13 @@ export function productStructuredData(
     ...(images.length
       ? { image: images.map((src) => new URL(src, base).href) }
       : {}),
-    ...(p.specs.country_of_origin
+    ...(countryOfOrigin(p.specs.country_of_origin)
       ? {
           additionalProperty: [
             {
               "@type": "PropertyValue",
               name: "Country of origin",
-              value: p.specs.country_of_origin,
+              value: countryOfOrigin(p.specs.country_of_origin),
             },
           ],
         }
@@ -91,8 +92,8 @@ export function productAnswers(p: Product, locale: Locale) {
         ? "ماركة القطعة وبلد المنشأ إيه؟"
         : "What are the item brand and country of origin?",
       answer: ar
-        ? `ماركة القطعة: ${p.manufacturer}. بلد المنشأ: ${p.specs.country_of_origin || "غير محدد؛ اطلب تأكيده قبل الشراء"}. بلد الماركة لا يحدد بلد تصنيع القطعة.`
-        : `Item brand: ${p.manufacturer}. Country of origin: ${p.specs.country_of_origin || "not specified; request confirmation before buying"}. Brand nationality does not determine where the item was manufactured.`,
+        ? `ماركة القطعة: ${p.manufacturer}. بلد المنشأ: ${countryOfOrigin(p.specs.country_of_origin) || "غير محدد؛ اطلب تأكيده قبل الشراء"}. بلد الماركة لا يحدد بلد تصنيع القطعة.`
+        : `Item brand: ${p.manufacturer}. Country of origin: ${countryOfOrigin(p.specs.country_of_origin) || "not specified; request confirmation before buying"}. Brand nationality does not determine where the item was manufactured.`,
     },
     {
       question: ar

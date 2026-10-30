@@ -12,10 +12,6 @@
   font-size: 16px;
   line-height: 1.75;
 }
-.store [data-motion-reveal] {
-  opacity: 1 !important;
-  transform: none !important;
-}
 .store :global(.hero-actions) {
   display: flex;
   align-items: center;
@@ -431,6 +427,34 @@
 .store :global(.offer-card) {
   position: relative;
   isolation: isolate;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.store :global(.product-card::after),
+.store :global(.offer-card::after) {
+  content: "";
+  position: absolute;
+  top: 0;
+  inset-inline: 16px;
+  height: 2px;
+  z-index: 3;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, #c8a45c, transparent);
+  opacity: 0;
+  transform: scaleX(0.55);
+  transition:
+    opacity 0.4s ease,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+.store :global(.product-card:hover::after),
+.store :global(.product-card:focus-within::after),
+.store :global(.offer-card:hover::after),
+.store :global(.offer-card:focus-within::after) {
+  opacity: 0.9;
+  transform: scaleX(1);
 }
 .store :global(.card-navigation-link::after) {
   content: "";
@@ -450,10 +474,14 @@
   z-index: 2;
 }
 .store :global(.product-card:hover),
-.store :global(.offer-card:hover) {
-  transform: translateY(-3px);
-  border-color: #c9ba9e;
-  box-shadow: 0 12px 32px #24302c0a;
+.store :global(.product-card:focus-within),
+.store :global(.offer-card:hover),
+.store :global(.offer-card:focus-within) {
+  transform: translateY(-6px);
+  border-color: #c9b184;
+  box-shadow:
+    0 26px 54px -22px #3b2f1a33,
+    0 2px 8px #3b2f1a0f;
 }
 .store :global(.product-art) {
   background: #fff;
@@ -571,7 +599,20 @@
   color: #606d70;
 }
 .store :global(.text-link) {
-  color: #806030;
+  color: #82612c;
+}
+.store :global(.text-link svg),
+.store :global(.product-details-link svg),
+.store :global(.brand-card-arrow svg) {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.store :global(.text-link:hover svg),
+.store :global(.text-link:focus-visible svg),
+.store :global(.product-details-link:hover svg),
+.store :global(.product-details-link:focus-visible svg),
+.store :global(.cinematic-brand:hover .brand-card-arrow svg),
+.store :global(.cinematic-brand:focus-visible .brand-card-arrow svg) {
+  transform: translate(3px, -3px);
 }
 .store :global(.offer-image-placeholder) {
   color: #8c968d;
@@ -596,6 +637,7 @@
   height: 100%;
   object-fit: cover;
   transform: none;
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .store :global(.product-card:hover .product-art > img),
 .store :global(.product-card:focus-within .product-art > img),
@@ -603,7 +645,7 @@
 .store :global(.offer-card:hover .offer-media > img),
 .store :global(.offer-card:focus-within .offer-media > img),
 .store :global(.offer-media:hover > img) {
-  transform: none;
+  transform: scale(1.045);
 }
 .store :global(.offer-copy),
 .store :global(.offer-content) {
@@ -1080,4 +1122,61 @@
   margin: 0;
   border: 0;
   box-shadow: none;
+}
+
+.store :global(.product-policy-links) {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-block: 12px;
+}
+.store :global(.product-policy-links a) {
+  display: inline-flex;
+  padding: 9px 14px;
+  background: #fff;
+  border: 1px solid #dedfd5;
+  border-radius: 6px;
+  color: #806030;
+  line-height: 1.6;
+}
+.store :global(.product-policy-links a:hover) {
+  border-color: #b38c49;
+  background: #f6f1e8;
+}
+.store :global(.spec-grid p) {
+  line-height: 1.7;
+  font-weight: 600;
+}
+.store :global(.product-questions) {
+  margin-top: 32px;
+  padding: clamp(22px, 4vw, 40px);
+}
+.store :global(.product-questions h2) {
+  font-size: clamp(24px, 3vw, 34px);
+  margin-bottom: 12px;
+}
+.store :global(.product-questions dl) {
+  gap: 0;
+  margin: 0;
+}
+.store :global(.product-questions dl > div) {
+  border-top: 1px solid #e6e5de;
+  padding-block: 20px;
+}
+.store :global(.product-questions dl > div:first-child) {
+  border-top: 0;
+  padding-top: 4px;
+}
+.store :global(.product-questions h3) {
+  font-size: 19px;
+  line-height: 1.7;
+  margin: 0 0 9px;
+}
+.store :global(.product-questions dd) {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.9;
+  color: #53636b;
+  unicode-bidi: plaintext;
+  overflow-wrap: anywhere;
 }
