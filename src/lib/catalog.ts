@@ -166,17 +166,16 @@ export function fitmentLabel(
   confirmed: boolean,
   locale: Locale,
 ) {
-  return !vehicle
-    ? locale === "ar"
-      ? "اختر سيارتك للتحقق من التوافق"
-      : "Choose your car to check compatibility"
-    : confirmed
-      ? locale === "ar"
-        ? `متوافق مع ${vehicle.name.ar}`
-        : `Compatible with your ${vehicle.name.en}`
-      : locale === "ar"
-        ? `لم يتم تأكيد التوافق مع ${vehicle.name.ar}`
-        : `Compatibility not confirmed for ${vehicle.name.en}`;
+  if (!vehicle) {
+    if (locale === "ar") return ""; 
+    return ""; 
+  }
+  if (confirmed) {
+    if (locale === "ar") return `متوافق مع ${vehicle.name.ar}`; 
+    return `Compatible with your ${vehicle.name.en}`; 
+  }
+  if (locale === "ar") return `لم يتم تأكيد التوافق مع ${vehicle.name.ar}`; 
+  return `Compatibility not confirmed for ${vehicle.name.en}`; 
 }
 export function priceCart(
   items: { product: Product; qty: number }[],
