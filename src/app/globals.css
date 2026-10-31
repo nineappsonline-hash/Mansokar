@@ -1369,7 +1369,7 @@ img {
   border: 1px solid #c9b184;
   border-radius: 8px;
   padding: 12px;
-  background: #f6f0e2;
+  background: #fff;
   position: relative;
 }
 .shipping-estimate::before {
@@ -1380,17 +1380,6 @@ img {
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
-}
-.shipping-estimate-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  background: #fff;
-  border: 1px solid #c9b184;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #5a4a2c;
 }
 .shipping-estimate-header h3 {
   font-size: 14px;
@@ -1416,9 +1405,6 @@ img {
   font-weight: 700;
   color: #5a4a2c;
   white-space: nowrap;
-}
-.shipping-estimate-label-icon {
-  color: #c9b184;
 }
 .shipping-estimate-select {
   flex: 1;

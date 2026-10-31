@@ -2,7 +2,7 @@
 import { governorates, shippingLabel, type ShippingArea } from "@/lib/shipping";
 import { useState } from "react";
 import { money, type Locale } from "@/lib/catalog";
-import { Truck, MapPin, ChevronRight } from "lucide-react";
+import { Truck, ChevronRight } from "lucide-react";
 
 function governorateFor(area: ShippingArea, locale: Locale) {
   return governorates.find(
@@ -71,7 +71,6 @@ export function ShippingEstimate({
       {areas.length ? (
         <>
           <label className="shipping-estimate-label">
-            <MapPin size={16} strokeWidth={2} className="shipping-estimate-label-icon" />
             <select
               value={governorate}
               onChange={(e) => setGovernorate(e.target.value)}
