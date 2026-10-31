@@ -14,6 +14,7 @@ import { BuyingGuide } from "@/components/buying-guide";
 import { ProductAnswers } from "@/components/product-answers";
 import { InstallmentsGuide } from "@/components/installments-guide";
 import { productSearchCopy, productStructuredData } from "@/lib/product-seo";
+import { builtInPolicy } from "@/lib/policy-content";
 import { HeroSlideshow } from "@/components/hero-slideshow";
 import { Campaigns } from "@/components/campaigns";
 import { ShippingEstimate } from "@/components/shipping-estimate";
@@ -251,6 +252,12 @@ export async function generateMetadata({
         ar: "تصفح روابط صفحات الماركات والموديلات وقطع الغيار والأدلة المنشورة بالعربية والإنجليزية.",
         en: "Browse direct links to vehicle brands, models, spare parts and published buying guides in Arabic and English.",
       },
+    };
+  const policyMeta = builtInPolicy(path[1]);
+  if (!pageMeta && path[0] === "policies" && path.length === 2 && policyMeta)
+    pageMeta = {
+      title: policyMeta.title,
+      description: policyMeta.description,
     };
   if (!pageMeta && slug === "faq")
     pageMeta = {
@@ -1937,6 +1944,8 @@ export default async function Page({ params, searchParams }: Props) {
       path[0] === "guides" && path.length === 2
         ? buyingGuides.find((g) => g.slug === path[1])
         : undefined;
+    const policyPage =
+      cms ?? (path[0] === "policies" ? builtInPolicy(path[1]) : undefined);
     if (path[0] === "guides" && path.length > 1 && !cms && !builtInGuide)
       notFound();
     const guidePages =
@@ -1962,7 +1971,8 @@ export default async function Page({ params, searchParams }: Props) {
                 ? [{ label: w.guides, href: `/${locale}/guides` }]
                 : []),
               {
-                label: cms?.title[locale] ?? route.replaceAll("/", " / "),
+                label:
+                  policyPage?.title[locale] ?? route.replaceAll("/", " / "),
                 href: `/${locale}/${route}`,
               },
             ]}
@@ -1971,7 +1981,7 @@ export default async function Page({ params, searchParams }: Props) {
             {locale === "ar" ? "موبِك / معلومات" : "MOPC / INFORMATION"}
           </span>
           <h1>
-            {cms?.title[locale] ??
+            {policyPage?.title[locale] ??
               {
                 about: locale === "ar" ? "من نحن" : "About MOPC",
                 contact: locale === "ar" ? "تواصل معنا" : "Contact",
@@ -2022,7 +2032,7 @@ export default async function Page({ params, searchParams }: Props) {
           )}
           {path[0] === "policies" &&
             ["shipping", "returns", "warranty"].includes(path[1]) &&
-            cms && (
+            policyPage && (
               <Link
                 className="button secondary"
                 href={`/${locale}/contact#callback`}
@@ -2033,9 +2043,9 @@ export default async function Page({ params, searchParams }: Props) {
                 ↗
               </Link>
             )}
-          {cms ? (
+          {policyPage ? (
             <div className="stack">
-              {cms.body[locale]
+              {policyPage.body[locale]
                 .split(/\n\s*\n/)
                 .map((paragraph: string, index: number) => (
                   <p className="prose" key={index}>
