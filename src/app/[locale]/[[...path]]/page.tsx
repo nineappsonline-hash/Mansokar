@@ -1334,7 +1334,7 @@ export default async function Page({ params, searchParams }: Props) {
                   ? "منتج تجريبي خيالي للاختبار."
                   : "Fictional demonstration product for testing."
                 : locale === "ar"
-                  ? "يؤكد التاجر إمكانية تنفيذ الطلب."
+                  ? ""
                   : "Fulfillment is confirmed by the merchant."}
             </p>
           </aside>
