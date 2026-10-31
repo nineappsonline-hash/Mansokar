@@ -537,8 +537,8 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: linear-gradient(135deg, #f3c440 0%, #c7941d 100%);
-  color: #1a1002;
+  background: linear-gradient(135deg, #ffe77a 0%, #f5c947 55%, #c8921f 100%);
+  color: #3a2403;
   font-weight: 800;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -553,25 +553,25 @@
   animation: originalBadgePulse 2.6s ease-in-out infinite;
 }
 .store :global(.original-badge svg) {
-  color: #3a2406;
+  color: #5a3a07;
   stroke-width: 2.6;
-  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
 }
 .store :global(.original-badge span) {
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 @keyframes originalBadgePulse {
   0%, 100% {
     box-shadow:
-      0 0 0 2px #fff6,
-      0 0 16px 4px rgba(215, 160, 32, 0.75),
-      0 4px 11px rgba(0, 0, 0, 0.25);
+      0 0 0 2px #fff8,
+      0 0 16px 4px rgba(245, 200, 70, 0.8),
+      0 4px 11px rgba(0, 0, 0, 0.2);
   }
   50% {
     box-shadow:
-      0 0 0 3px #fff9,
-      0 0 24px 7px rgba(215, 160, 32, 0.95),
-      0 4px 11px rgba(0, 0, 0, 0.25);
+      0 0 0 3px #fffbe6,
+      0 0 26px 8px rgba(245, 200, 70, 0.98),
+      0 4px 11px rgba(0, 0, 0, 0.2);
   }
 }
 .store :global(.original-badge:hover) {
