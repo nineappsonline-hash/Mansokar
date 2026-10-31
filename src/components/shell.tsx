@@ -71,22 +71,12 @@ export async function Shell({
             className="desktop-nav"
             aria-label={locale === "ar" ? "التنقل الرئيسي" : "Main navigation"}
           >
-            {home && (
-              <Link className="nav-active" href={`/${locale}`}>
-                {locale === "ar" ? "الرئيسية" : "Home"}
-              </Link>
-            )}
-            <Link href={`/${locale}/catalog`}>
-              {home ? (locale === "ar" ? "المنتجات" : "Products") : w.catalog}
+            <Link className={home ? "nav-active" : ""} href={`/${locale}`}>
+              {locale === "ar" ? "الرئيسية" : "Home"}
             </Link>
+            <Link href={`/${locale}/catalog`}>{w.catalog}</Link>
             <Link href={`/${locale}/offers`}>{w.offers}</Link>
-            <Link href={`/${locale}/guides`}>
-              {home
-                ? locale === "ar"
-                  ? "مقالات ونصائح"
-                  : "Guides & advice"
-                : w.guides}
-            </Link>
+            <Link href={`/${locale}/guides`}>{w.guides}</Link>
           </nav>
           <div className="header-tools">
             {home && (
