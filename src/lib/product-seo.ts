@@ -100,8 +100,8 @@ export function productAnswers(p: Product, locale: Locale) {
         ? "هل أقدر أشتري القطعة بالتقسيط أو بالكريدت كارد؟"
         : "Can I buy this part in installments or with a credit card?",
       answer: ar
-        ? "الدفع بالكروت والتقسيط غير متاحين حاليًا في المتجر. راجع دليل التقسيط لمعرفة الفرق بين تقسيط البنك وشركات التمويل، والبيانات المطلوب مراجعتها قبل الشراء."
-        : "Card payments and installments are not currently available at this store. Read the installment guide for the difference between bank and finance-company plans and what to check before buying.",
+        ? "في المتجر طرق دفع متعددة: الدفع عند الاستلام، وInstapay، والمحفظة الإلكترونية، وبطاقات الائتمان والخصم. كمان فيه تقسيط عبر Valu وSuhoola وContact وKlivvr وAman. راجع دليل التقسيط لمعرفة الفرق بين تقسيط البنك وشركات التمويل، والبيانات المطلوب مراجعتها قبل الشراء."
+        : "In the store you can pay by cash on delivery, Instapay, e-wallet, credit and debit cards. There are also installments through Valu, Suhoola, Contact, Klivvr and Aman. Read the installment guide for the difference between bank and finance-company plans and what to check before buying.",
     },
   ];
 }
