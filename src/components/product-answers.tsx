@@ -34,18 +34,6 @@ export function ProductAnswers({
           </div>
         ))}
       </dl>
-      <Link className="text-link" href={`/${locale}/installments`}>
-        {locale === "ar"
-          ? "دليل الكروت والتقسيط في مصر"
-          : "Credit cards and installments in Egypt"}{" "}
-        ↗
-      </Link>
-      <Link className="text-link" href={`/${locale}/request-part`}>
-        {locale === "ar"
-          ? "اطلب مساعدة في تحديد القطعة"
-          : "Request help identifying your part"}{" "}
-        ↗
-      </Link>
     </section>
   );
 }
