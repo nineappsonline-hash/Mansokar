@@ -516,54 +516,62 @@
   color: #77684e;
 }
 .store :global(.product-brand) {
-  color: #14252b;
-  font-weight: 900;
+  color: #17232b;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 .store :global(.product-origin) {
-  border-color: #ddd7ca;
-  color: #6f6049;
+  border-color: #c9b184;
+  background: #f6f0e2;
+  color: #5a4a2c;
   font-weight: 700;
+  padding-block: 3px;
+  padding-inline: 7px;
+  border-radius: 4px;
 }
 .store :global(.original-badge) {
+  position: absolute;
+  top: 12px;
+  inset-inline-start: 12px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  position: absolute;
-  top: 10px;
-  inset-inline-start: 10px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  background: #14252b;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  background: linear-gradient(135deg, #d4a24e 0%, #b8801f 100%);
+  color: #241506;
+  font-weight: 800;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  border: 1px solid #c8a45c;
+  font-size: 10px;
+  line-height: 1;
+  padding: 7px 11px 7px 10px;
+  border-radius: 999px;
   box-shadow:
-    0 0 12px #c8a45c55,
-    0 0 24px #c8a45c33,
-    inset 0 0 6px #c8a45c44;
-  z-index: 4;
-  animation: originalBadgeGlow 2.6s ease-in-out infinite alternate;
+    0 0 0 2px #fff8,
+    0 0 14px 3px rgba(203, 142, 44, 0.65),
+    0 4px 10px rgba(0, 0, 0, 0.25);
+  animation: originalBadgePulse 2.6s ease-in-out infinite;
 }
 .store :global(.original-badge svg) {
-  color: #d9b76f;
-  filter: drop-shadow(0 0 2px #c8a45c);
+  color: #3a2406;
+  stroke-width: 2.6;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
 }
-@keyframes originalBadgeGlow {
-  from {
+@keyframes originalBadgePulse {
+  0%, 100% {
     box-shadow:
-      0 0 12px #c8a45c55,
-      0 0 24px #c8a45c33,
-      inset 0 0 6px #c8a45c44;
+      0 0 0 2px #fff5,
+      0 0 14px 3px rgba(203, 142, 44, 0.65),
+      0 4px 10px rgba(0, 0, 0, 0.25);
   }
-  to {
+  50% {
     box-shadow:
-      0 0 20px #c8a45c77,
-      0 0 36px #c8a45c55,
-      inset 0 0 6px #c8a45c66;
+      0 0 0 3px #fff9,
+      0 0 22px 6px rgba(203, 142, 44, 0.9),
+      0 4px 10px rgba(0, 0, 0, 0.25);
   }
+}
+.store :global(.original-badge:hover) {
+  animation-duration: 0.15s;
 }
 .store :global(.product-info .small) {
   font-size: 12px;
