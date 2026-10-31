@@ -1410,6 +1410,7 @@ img {
 }
 .shipping-estimate-select-wrap {
   position: relative;
+  width: 100%;
 }
 .shipping-estimate-select-wrap::after {
   content: "";
@@ -1425,6 +1426,7 @@ img {
   pointer-events: none;
 }
 .shipping-estimate-select {
+  width: 100%;
   flex: 1;
   padding: 10px 34px 10px 14px;
   border: 1px solid #c9b184;
@@ -1549,6 +1551,28 @@ img {
   cursor: pointer;
   font-weight: 700;
   color: #5a4a2c;
+}
+.product-policy-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.product-policy-links a {
+  display: block;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fff;
+  color: #5a4a2c;
+  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid #c9b184;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+.product-policy-links a:hover {
+  background: #fff5e6;
+  border-color: #b99e6b;
 }
 .prose {
   white-space: pre-wrap;
