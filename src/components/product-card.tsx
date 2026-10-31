@@ -132,7 +132,15 @@ export async function ProductCard({
         <PurchaseButtons
           product={{ id: p.id, name: p.name, orderable: p.orderable }}
           locale={locale}
-          vehicle={vehicle}
+          vehicle={
+            vehicle
+              ? {
+                  make: vehicle.brand,
+                  model: vehicle.model,
+                  year: vehicle.year,
+                }
+              : undefined
+          }
         />
         <Link className="product-details-link" href={href}>
           {w.view}

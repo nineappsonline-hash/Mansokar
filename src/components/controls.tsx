@@ -104,7 +104,7 @@ export function ProductActions({
 }: {
   product: Product;
   locale: Locale;
-  vehicle?: { make?: string; model?: string; year?: number };
+  vehicle?: Vehicle;
 }) {
   const router = useRouter();
   const [buying, setBuying] = useState(false);
@@ -138,7 +138,18 @@ export function ProductActions({
         data-productid={product.id}
         onClick={() => {
           try {
-            addCartItem(product.id, qty, false, vehicle);
+            addCartItem(
+              product.id,
+              qty,
+              false,
+              vehicle
+                ? {
+                    make: vehicle.brand,
+                    model: vehicle.model,
+                    year: vehicle.year,
+                  }
+                : undefined,
+            );
             setAdded(true);
           } catch {
             setMessage(t(locale).cartStorageError);
@@ -158,7 +169,18 @@ export function ProductActions({
         disabled={!product.orderable || buying}
         onClick={() => {
           try {
-            addCartItem(product.id, qty, true, vehicle);
+            addCartItem(
+              product.id,
+              qty,
+              true,
+              vehicle
+                ? {
+                    make: vehicle.brand,
+                    model: vehicle.model,
+                    year: vehicle.year,
+                  }
+                : undefined,
+            );
             setBuying(true);
             router.push(`/${locale}/checkout`);
           } catch {
