@@ -9,10 +9,12 @@ export function PurchaseButtons({
   product,
   locale,
   quantity = 1,
+  vehicle,
 }: {
   product: Pick<Product, "id" | "name" | "orderable">;
   locale: Locale;
   quantity?: number;
+  vehicle?: { make?: string; model?: string; year?: number };
 }) {
   const router = useRouter();
   const [added, setAdded] = useState(false);
@@ -23,7 +25,7 @@ export function PurchaseButtons({
     if (!product.orderable || buying) return;
     try {
       setError("");
-      addCartItem(product.id, quantity, buyNow);
+      addCartItem(product.id, quantity, buyNow, vehicle);
       if (buyNow) {
         setBuying(true);
         router.push(`/${locale}/checkout`);

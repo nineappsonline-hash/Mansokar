@@ -12,11 +12,18 @@ import {
   GitCompareArrows,
   X,
   Copy,
+  Package,
 } from "lucide-react";
 import type { Locale, Product, Vehicle } from "@/lib/catalog";
 import { money } from "@/lib/catalog";
 import { t } from "@/lib/i18n";
-type CartLine = { id: string; qty: number };
+type CartLine = {
+  id: string;
+  qty: number;
+  make?: string;
+  model?: string;
+  year?: number;
+};
 function read<T>(key: string, fallback: T): T {
   try {
     return JSON.parse(localStorage.getItem(key) || "null") ?? fallback;
@@ -93,9 +100,11 @@ export function SelectVehicle({
 export function ProductActions({
   product,
   locale,
+  vehicle,
 }: {
   product: Product;
   locale: Locale;
+  vehicle?: { make?: string; model?: string; year?: number };
 }) {
   const router = useRouter();
   const [buying, setBuying] = useState(false);
@@ -129,7 +138,7 @@ export function ProductActions({
         data-productid={product.id}
         onClick={() => {
           try {
-            addCartItem(product.id, qty);
+            addCartItem(product.id, qty, false, vehicle);
             setAdded(true);
           } catch {
             setMessage(t(locale).cartStorageError);
@@ -149,7 +158,7 @@ export function ProductActions({
         disabled={!product.orderable || buying}
         onClick={() => {
           try {
-            addCartItem(product.id, qty, true);
+            addCartItem(product.id, qty, true, vehicle);
             setBuying(true);
             router.push(`/${locale}/checkout`);
           } catch {
@@ -281,7 +290,20 @@ export function Cart({
             const p = products.find((p) => p.id === line.id);
             return (
               <article className="cart-row panel" key={line.id}>
-                <div>
+                <div className="cart-row-image">
+                  {p ? (
+                    <img
+                      src={partArt(p.category)}
+                      alt={p.name[locale]}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="cart-image-placeholder">
+                      <Package size={40} aria-hidden="true" />
+                    </div>
+                  )}
+                </div>
+                <div className="cart-row-info">
                   <a href={p ? `/${locale}/products/${p.slug}` : undefined}>
                     {p?.name[locale] ??
                       (loading
@@ -292,6 +314,11 @@ export function Cart({
                           ? "المنتج غير متاح — يرجى حذفه"
                           : "Product unavailable — please remove it")}
                   </a>
+                  {line.make && (
+                    <span className="cart-vehicle">
+                      {line.make} {line.model} {line.year}
+                    </span>
+                  )}
                   <p className="muted">
                     {p && money(p.sale ?? p.price, locale)}
                   </p>
