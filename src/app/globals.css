@@ -599,6 +599,82 @@ img {
 .product-info {
   padding-top: 18px;
 }
+.product-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin-bottom: 8px;
+}
+.product-brand {
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  color: var(--light);
+}
+.product-origin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding-inline-start: 10px;
+  border-inline-start: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.4;
+  color: var(--muted);
+}
+.product-origin svg {
+  flex-shrink: 0;
+  color: var(--amber);
+}
+.original-badge {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid #fff1bd;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fff0b8, #f6a800 55%, #ffd36b);
+  color: #201605;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  box-shadow:
+    0 0 0 1px #f6a80099,
+    0 0 24px #f6a800cc,
+    0 8px 24px #000a;
+  animation: original-badge-glow 2.2s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+.original-badge svg {
+  flex-shrink: 0;
+}
+.offer-media > .original-badge {
+  top: 22px;
+  inset-inline-end: 22px;
+}
+@keyframes original-badge-glow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px #f6a80099,
+      0 0 20px #f6a800cc,
+      0 6px 20px #000a;
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px #f6a800b3,
+      0 0 28px #f6a800e6,
+      0 8px 26px #000a;
+  }
+}
 .product-info .eyebrow {
   font-size: 12px;
   margin-bottom: 8px;
@@ -3628,7 +3704,10 @@ table {
 }
 .storefront-home .desktop-nav > a,
 .storefront-home .header-tools > a {
-  transition: color 250ms ease, opacity 250ms ease, transform 250ms ease;
+  transition:
+    color 250ms ease,
+    opacity 250ms ease,
+    transform 250ms ease;
 }
 .storefront-home .desktop-nav > a:hover,
 .storefront-home .header-tools > a:hover {
@@ -3649,24 +3728,39 @@ table {
   animation: premium-road-drift 14s ease-in-out infinite alternate;
 }
 @keyframes premium-road-drift {
-  from { transform: scale(1); }
-  to { transform: scale(1.055); }
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.055);
+  }
 }
 .storefront-home .hero-content > .text-link span {
   display: inline-block;
   animation: premium-scroll-cue 2.4s ease-in-out infinite;
 }
 @keyframes premium-scroll-cue {
-  0%, 100% { transform: translateY(0); opacity: .72; }
-  50% { transform: translateY(5px); opacity: 1; }
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translateY(5px);
+    opacity: 1;
+  }
 }
 .storefront-home .hero-search {
   border: 1px solid #ffffff78;
-  box-shadow: 0 20px 60px #0007, 0 0 0 1px #ffffff18 inset;
+  box-shadow:
+    0 20px 60px #0007,
+    0 0 0 1px #ffffff18 inset;
 }
 .storefront-home .hero-search:focus-within {
   border-color: #ffc657;
-  box-shadow: 0 24px 65px #0009, 0 0 0 4px #f6a80038;
+  box-shadow:
+    0 24px 65px #0009,
+    0 0 0 4px #f6a80038;
 }
 .storefront-home .brand-deck {
   isolation: isolate;
@@ -3676,7 +3770,9 @@ table {
 }
 .cinematic-brand {
   position: relative;
-  box-shadow: 0 25px 60px -26px #000e, 0 0 0 1px #ffffff12 inset;
+  box-shadow:
+    0 25px 60px -26px #000e,
+    0 0 0 1px #ffffff12 inset;
 }
 .cinematic-brand::after {
   content: "";
@@ -3688,7 +3784,9 @@ table {
   background: linear-gradient(90deg, transparent, #ffffff21 50%, transparent);
   opacity: 0;
   pointer-events: none;
-  transition: left 700ms cubic-bezier(.22, 1, .36, 1), opacity 350ms;
+  transition:
+    left 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 350ms;
 }
 .cinematic-brand:hover::after,
 .cinematic-brand:focus-visible::after {
@@ -3697,7 +3795,7 @@ table {
 }
 .cinematic-brand .brand-identity {
   z-index: 1;
-  transition: transform 450ms cubic-bezier(.22, 1, .36, 1);
+  transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .cinematic-brand:hover .brand-identity,
 .cinematic-brand:focus-visible .brand-identity {
@@ -3727,7 +3825,9 @@ table {
   border: 1px solid #ffffff18;
   border-radius: 12px;
   background: linear-gradient(135deg, #ffffff0b, #ffffff03);
-  transition: border-color 300ms ease, background 300ms ease;
+  transition:
+    border-color 300ms ease,
+    background 300ms ease;
 }
 .storefront-home .trust-grid > div:hover {
   border-color: #f6a80065;
@@ -3750,7 +3850,7 @@ table {
 .process > h2,
 .home-faq h2 {
   font-weight: 700;
-  letter-spacing: -.025em;
+  letter-spacing: -0.025em;
   text-wrap: balance;
 }
 .home-featured,
@@ -3767,7 +3867,9 @@ table {
 .campaign-section .panel {
   background: linear-gradient(155deg, #262a31 0%, #1b1e24 42%, #17191f 100%);
   border-color: #ffffff27;
-  box-shadow: 0 16px 45px -25px #000e, 0 1px 0 #ffffff0b inset;
+  box-shadow:
+    0 16px 45px -25px #000e,
+    0 1px 0 #ffffff0b inset;
 }
 .storefront-home .product-card {
   position: relative;
@@ -3796,7 +3898,9 @@ table {
 .storefront-home .offer-card:hover,
 .storefront-home .offer-card:focus-within {
   border-color: #f6a8008c;
-  box-shadow: 0 26px 60px -24px #000f, 0 0 0 1px #ffc65a25 inset;
+  box-shadow:
+    0 26px 60px -24px #000f,
+    0 0 0 1px #ffc65a25 inset;
 }
 .storefront-home .product-card > .product-art {
   background: radial-gradient(circle at 50% 38%, #4b4e535c, #1b1e25 70%);
@@ -3838,7 +3942,9 @@ table {
   background: linear-gradient(145deg, #24262d, #191b21 70%);
   box-shadow: 0 18px 40px -30px #000e;
   overflow: hidden;
-  transition: border-color 350ms ease, box-shadow 350ms ease;
+  transition:
+    border-color 350ms ease,
+    box-shadow 350ms ease;
 }
 .storefront-home .process .three-col > [data-motion-reveal]::before {
   content: "";
@@ -3848,7 +3954,7 @@ table {
   width: 30%;
   height: 2px;
   background: linear-gradient(90deg, #f6a800, transparent);
-  transition: width 500ms cubic-bezier(.22, 1, .36, 1);
+  transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .storefront-home .process .three-col > [data-motion-reveal]:hover {
   border-color: #f6a8006b;
@@ -3874,7 +3980,9 @@ table {
   padding: 18px 22px;
   margin-block: 10px;
   background: linear-gradient(125deg, #24262b, #191b20);
-  transition: border-color 300ms ease, background 300ms ease;
+  transition:
+    border-color 300ms ease,
+    background 300ms ease;
 }
 .storefront-home .home-faq .accordion:hover,
 .storefront-home .home-faq .accordion[open] {
@@ -3907,7 +4015,9 @@ table {
   overflow: hidden;
   border-color: #ffc65755;
   border-radius: 18px;
-  background: radial-gradient(circle at 10% 0%, #f6a80020, transparent 45%), linear-gradient(110deg, #292720, #181b21 75%);
+  background:
+    radial-gradient(circle at 10% 0%, #f6a80020, transparent 45%),
+    linear-gradient(110deg, #292720, #181b21 75%);
   box-shadow: 0 26px 60px -35px #000f;
 }
 .storefront-home .request-strip::before {
@@ -3919,25 +4029,51 @@ table {
   background: linear-gradient(90deg, transparent, #ffd37e9c, transparent);
 }
 .storefront-home .button:not(:disabled) {
-  transition: transform 250ms ease, box-shadow 250ms ease, background-color 250ms ease, border-color 250ms ease;
+  transition:
+    transform 250ms ease,
+    box-shadow 250ms ease,
+    background-color 250ms ease,
+    border-color 250ms ease;
 }
 .storefront-home .button:not(:disabled):hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 28px #0006;
 }
 @media (max-width: 760px) {
-  .storefront-home .trust-strip { padding-block: 18px; }
-  .storefront-home .trust-grid { gap: 10px; }
-  .storefront-home .trust-grid > div { min-height: 62px; padding: 12px 16px; }
-  .storefront-home .process { padding-top: 58px; }
-  .storefront-home .process .three-col { gap: 12px; }
-  .storefront-home .process .three-col > [data-motion-reveal] { min-height: 0; padding: 22px; }
-  .storefront-home .process .step { font-size: 42px; margin-bottom: 12px; }
-  .home-featured { margin-top: 12px; }
+  .storefront-home .trust-strip {
+    padding-block: 18px;
+  }
+  .storefront-home .trust-grid {
+    gap: 10px;
+  }
+  .storefront-home .trust-grid > div {
+    min-height: 62px;
+    padding: 12px 16px;
+  }
+  .storefront-home .process {
+    padding-top: 58px;
+  }
+  .storefront-home .process .three-col {
+    gap: 12px;
+  }
+  .storefront-home .process .three-col > [data-motion-reveal] {
+    min-height: 0;
+    padding: 22px;
+  }
+  .storefront-home .process .step {
+    font-size: 42px;
+    margin-bottom: 12px;
+  }
+  .home-featured {
+    margin-top: 12px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-slideshow-images > .hero-slide.is-active,
-  .storefront-home .hero-content > .text-link span { animation: none; }
+  .storefront-home .hero-content > .text-link span,
+  .original-badge {
+    animation: none;
+  }
   .cinematic-brand,
   .cinematic-brand::after,
   .cinematic-brand .brand-identity,
@@ -3946,5 +4082,7 @@ table {
   .storefront-home .button,
   .storefront-home .product-details-link svg,
   .storefront-home .text-link svg,
-  .storefront-home .process .three-col > [data-motion-reveal] { transition-duration: .01ms; }
+  .storefront-home .process .three-col > [data-motion-reveal] {
+    transition-duration: 0.01ms;
+  }
 }
