@@ -653,10 +653,12 @@ export default async function Page({ params, searchParams }: Props) {
               <div>
                 <span className="eyebrow">
                   {products.every((p) => p.demo)
-                    ? "THE PARTS EDIT / DEMO COLLECTION"
-                    : "THE PARTS EDIT"}
+                    ? "MOST PURCHASED / DEMO COLLECTION"
+                    : "MOST PURCHASED"}
                 </span>
-                <h2>{w.popular}</h2>
+                <h2>
+                  {locale === "ar" ? "الأكثر شراء" : "Most Purchased Items"}
+                </h2>
               </div>
               <Link className="text-link" href={`/${locale}/catalog`}>
                 {w.catalog}
