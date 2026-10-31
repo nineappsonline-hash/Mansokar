@@ -80,7 +80,7 @@ export function ShippingEstimate({
               onChange={(e) => setGovernorate(e.target.value)}
               className="shipping-estimate-select"
             >
-              <option value="">—</option>
+              <option value="">اختار المحافظة</option>
               {optionList.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}

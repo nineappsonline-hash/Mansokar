@@ -1366,9 +1366,9 @@ img {
   accent-color: var(--amber);
 }
 .shipping-estimate {
-  border: 1px solid #5a4a2c;
-  border-radius: 10px;
-  padding: 16px;
+  border: 1px solid #f6a800;
+  border-radius: 8px;
+  padding: 12px;
   background: #121318;
   position: relative;
 }
@@ -1384,60 +1384,60 @@ img {
 .shipping-estimate-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 .shipping-estimate-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: #2b261b;
-  border: 1px solid #c8a45c;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #1a1c22;
+  border: 1px solid #f6a800;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffe77a;
+  color: #f6a800;
 }
 .shipping-estimate-header h3 {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   margin: 0;
   color: #fff;
   letter-spacing: -0.01em;
 }
 .shipping-estimate-sub {
-  font-size: 12px;
+  font-size: 11px;
   color: #c4b9a6;
-  margin: 3px 0 0;
+  margin: 2px 0 0;
 }
 .shipping-estimate-label {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   width: 100%;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 .shipping-estimate-label-text {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #e9e4d9;
   white-space: nowrap;
 }
 .shipping-estimate-label-icon {
-  color: #c8a45c;
+  color: #f6a800;
 }
 .shipping-estimate-select {
   flex: 1;
-  padding: 9px 11px;
-  border: 1px solid #5a4a2c;
-  border-radius: 8px;
+  padding: 8px 10px;
+  border: 1px solid #f6a800;
+  border-radius: 7px;
   background: #1a1c22;
   color: #fff;
-  font-size: 13px;
+  font-size: 12px;
   outline: none;
 }
 .shipping-estimate-select:focus {
-  border-color: #f6a800;
+  border-color: #ffc247;
 }
 .shipping-estimate-results {
   list-style: none;
@@ -1445,50 +1445,50 @@ img {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 .shipping-estimate-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 12px;
+  padding: 8px 10px;
   background: #1a1c22;
-  border: 1px solid #5a4a2c;
-  border-radius: 8px;
+  border: 1px solid #f6a800;
+  border-radius: 7px;
 }
 .shipping-estimate-row:hover {
-  border-color: #c8a45c;
+  border-color: #ffc247;
   background: #1e2028;
 }
 .shipping-estimate-method {
   display: flex;
   align-items: center;
-  gap: 7px;
-  font-size: 13px;
+  gap: 6px;
+  font-size: 12px;
   font-weight: 700;
   color: #fff;
 }
 .shipping-estimate-method-icon {
-  color: #c8a45c;
+  color: #f6a800;
 }
 .shipping-estimate-cost-group {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
 }
 .shipping-estimate-cost {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
   color: #f6a800;
 }
 .shipping-estimate-arrow {
-  color: #8a7a5e;
+  color: #c8a45c;
 }
 .shipping-estimate-none {
-  font-size: 13px;
+  font-size: 12px;
   color: #c4b9a6;
   text-align: center;
-  padding: 14px 0;
+  padding: 10px 0;
 }
 .prose {
   white-space: pre-wrap;
