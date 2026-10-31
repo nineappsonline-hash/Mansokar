@@ -1366,12 +1366,11 @@ img {
   accent-color: var(--amber);
 }
 .shipping-estimate {
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 22px;
-  background: linear-gradient(180deg, var(--surface), rgba(25, 27, 33, 0.6));
+  border: 1px solid #5a4a2c;
+  border-radius: 10px;
+  padding: 16px;
+  background: #121318;
   position: relative;
-  overflow: hidden;
 }
 .shipping-estimate::before {
   content: "";
@@ -1379,66 +1378,66 @@ img {
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--amber), #c8a45c);
+  height: 2px;
+  background: linear-gradient(90deg, #c8a45c, #f6a800);
 }
 .shipping-estimate-header {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 20px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 .shipping-estimate-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: rgba(246, 168, 0, 0.1);
-  border: 1px solid rgba(246, 168, 0, 0.2);
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #2b261b;
+  border: 1px solid #c8a45c;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--amber);
+  color: #ffe77a;
 }
 .shipping-estimate-header h3 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   margin: 0;
-  color: var(--light);
+  color: #fff;
   letter-spacing: -0.01em;
 }
 .shipping-estimate-sub {
-  font-size: 13px;
-  color: var(--muted);
-  margin: 4px 0 0;
+  font-size: 12px;
+  color: #c4b9a6;
+  margin: 3px 0 0;
 }
 .shipping-estimate-label {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 .shipping-estimate-label-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--light);
+  font-size: 13px;
+  font-weight: 700;
+  color: #e9e4d9;
   white-space: nowrap;
 }
 .shipping-estimate-label-icon {
-  color: var(--amber);
+  color: #c8a45c;
 }
 .shipping-estimate-select {
   flex: 1;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
+  padding: 9px 11px;
+  border: 1px solid #5a4a2c;
   border-radius: 8px;
-  background: #121318;
-  color: var(--light);
-  font-size: 14px;
+  background: #1a1c22;
+  color: #fff;
+  font-size: 13px;
   outline: none;
 }
 .shipping-estimate-select:focus {
-  border-color: var(--amber);
+  border-color: #f6a800;
 }
 .shipping-estimate-results {
   list-style: none;
@@ -1446,51 +1445,50 @@ img {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 .shipping-estimate-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 14px;
-  background: #121318;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  transition: all 0.2s ease;
+  padding: 10px 12px;
+  background: #1a1c22;
+  border: 1px solid #5a4a2c;
+  border-radius: 8px;
 }
 .shipping-estimate-row:hover {
-  border-color: var(--amber);
-  background: rgba(246, 168, 0, 0.03);
+  border-color: #c8a45c;
+  background: #1e2028;
 }
 .shipping-estimate-method {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--light);
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
 }
 .shipping-estimate-method-icon {
-  color: var(--muted);
+  color: #c8a45c;
 }
 .shipping-estimate-cost-group {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
 }
 .shipping-estimate-cost {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 800;
-  color: var(--amber);
+  color: #f6a800;
 }
 .shipping-estimate-arrow {
-  color: var(--muted);
+  color: #8a7a5e;
 }
 .shipping-estimate-none {
-  font-size: 14px;
-  color: var(--muted);
+  font-size: 13px;
+  color: #c4b9a6;
   text-align: center;
-  padding: 20px 0;
+  padding: 14px 0;
 }
 .prose {
   white-space: pre-wrap;
