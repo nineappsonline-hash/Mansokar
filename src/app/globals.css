@@ -2223,12 +2223,12 @@ th {
   min-height: 23px;
 }
 .storefront-home .header {
-  position: absolute;
+  position: sticky;
   inset-inline: 0;
   top: 0;
-  background: transparent;
-  border: 0;
-  backdrop-filter: none;
+  background: #101116ee;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(20px);
 }
 .storefront-home .header-inner {
   direction: ltr;
@@ -3266,9 +3266,10 @@ textarea {
   min-height: 26px;
   color: #d8c4a1;
 }
-.storefront-home .header {
-  top: 0;
-}
+  .storefront-home .header {
+    position: sticky;
+    top: 0;
+  }
 .storefront-home .vehicle-bar {
   font-size: 13px;
   line-height: 1.6;
@@ -3401,6 +3402,7 @@ table {
     line-height: 1.4;
   }
   .storefront-home .header {
+    position: sticky;
     top: 0;
   }
   .storefront-home .vehicle-bar {
