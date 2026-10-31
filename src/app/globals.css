@@ -1366,10 +1366,10 @@ img {
   accent-color: var(--amber);
 }
 .shipping-estimate {
-  border: 1px solid #c9b184;
-  border-radius: 8px;
-  padding: 12px;
-  background: #fff;
+  border: none;
+  border-radius: 16px;
+  padding: 16px;
+  background: #f7f5f0;
   position: relative;
 }
 .shipping-estimate::before {
@@ -1529,6 +1529,22 @@ img {
 .shipping-estimate-row > * {
   flex: 1;
   min-width: 240px;
+  border: none;
+  border-radius: 16px;
+  background: #f7f5f0;
+  padding: 16px;
+}
+.shipping-estimate-row details {
+  border: none;
+  border-radius: 16px;
+  background: #f7f5f0;
+  padding: 16px;
+}
+.shipping-estimate-row details summary {
+  list-style: none;
+  cursor: pointer;
+  font-weight: 700;
+  color: #5a4a2c;
 }
 .prose {
   white-space: pre-wrap;
