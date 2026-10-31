@@ -5,6 +5,13 @@ import { useRouter } from "next/navigation";
 import type { Locale, Vehicle } from "@/lib/catalog";
 import { money } from "@/lib/catalog";
 import { t } from "@/lib/i18n";
+import {
+  InstallmentProviders,
+  INSTAPAY_URL,
+  WALLET_NUMBER,
+  isManualPayment,
+  type PaymentMethod,
+} from "@/lib/payments";
 export function ApiForm({
   action,
   children,
@@ -285,7 +292,7 @@ export function RequestForm({
 export function Checkout({
   locale,
   areas,
-  enabled,
+  methods,
   vehicle,
   addresses = [],
 }: {
@@ -298,12 +305,13 @@ export function Checkout({
   }[];
   locale: Locale;
   areas: ShippingArea[];
-  enabled: boolean;
+  methods: PaymentMethod[];
   vehicle?: string;
 }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [area, setArea] = useState("");
+  const [method, setMethod] = useState<PaymentMethod>(methods[0] ?? "cod");
   const [quote, setQuote] = useState<{
     items: {
       id: string;
@@ -330,7 +338,13 @@ export function Checkout({
         e.preventDefault();
         setBusy(true);
         try {
-          const fields = Object.fromEntries(new FormData(e.currentTarget));
+          const form = e.currentTarget;
+          const formData = new FormData(form);
+          const proof = formData.get("proof");
+          formData.delete("proof");
+          const fields = Object.fromEntries(formData);
+          if (!methods.length)
+            throw Error("No payment method has been enabled");
           if (!reviewed || !quote) {
             const response = await fetch("/api/checkout-quote", {
               method: "POST",
@@ -352,6 +366,30 @@ export function Checkout({
             );
             return;
           }
+          let imageToken: string | undefined;
+          if (isManualPayment(method)) {
+            if (!(proof instanceof File) || !proof.size)
+              throw Error(
+                locale === "ar"
+                  ? "يرجى رفع إثبات التحويل لإتمام الطلب."
+                  : "Please upload the transfer receipt to complete the order.",
+              );
+            const upload = new FormData();
+            upload.append("image", proof);
+            const uploadResponse = await fetch("/api/upload", {
+              method: "POST",
+              body: upload,
+            });
+            const uploadData = await uploadResponse.json();
+            if (!uploadResponse.ok) throw Error(uploadData.error);
+            imageToken = uploadData.token;
+            if (!imageToken)
+              throw Error(
+                locale === "ar"
+                  ? "تعذر حفظ إثبات التحويل. يرجى المحاولة مرة أخرى."
+                  : "Unable to save the transfer receipt. Please try again.",
+              );
+          }
           let key = sessionStorage.getItem("checkout-key");
           if (!key) {
             key = crypto.randomUUID();
@@ -362,6 +400,8 @@ export function Checkout({
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               ...fields,
+              method,
+              imageToken,
               vehicle,
               review_total: quote.total,
               items: JSON.parse(localStorage.getItem("cart") || "[]"),
@@ -374,7 +414,9 @@ export function Checkout({
           localStorage.setItem("cart", "[]");
           window.dispatchEvent(new Event("store-change"));
           sessionStorage.removeItem("checkout-key");
-          router.push(data.redirect);
+          if (/^https?:\/\//.test(data.redirect))
+            window.location.assign(data.redirect);
+          else router.push(data.redirect);
         } catch (error) {
           setQuote(null);
           setReviewed(false);
@@ -443,6 +485,17 @@ export function Checkout({
           />
         </label>
         <label>
+          {locale === "ar" ? "البريد الإلكتروني (اختياري)" : "Email (optional)"}
+          <input
+            name="email"
+            type="email"
+            maxLength={200}
+            dir="ltr"
+            autoComplete="email"
+            placeholder="name@example.com"
+          />
+        </label>
+        <label>
           {locale === "ar"
             ? "المحافظة وطريقة الشحن"
             : "Governorate & shipping method"}
@@ -495,17 +548,118 @@ export function Checkout({
       </div>
       <aside className="panel stack">
         <h2>{locale === "ar" ? "طريقة الدفع" : "Payment method"}</h2>
-        {enabled ? (
-          <label className="check">
-            <input
-              type="radio"
-              name="method"
-              value="cod"
-              required
-              defaultChecked
-            />
-            {locale === "ar" ? "الدفع عند الاستلام" : "Cash on delivery"}
-          </label>
+        {methods.length ? (
+          <div className="stack">
+            {methods.includes("card") && (
+              <label className="check">
+                <input
+                  type="radio"
+                  name="method"
+                  value="card"
+                  required
+                  checked={method === "card"}
+                  onChange={() => setMethod("card")}
+                />
+                <span>
+                  {locale === "ar"
+                    ? "بطاقة ائتمان أو تقسيط"
+                    : "Credit card or installments"}
+                  <small className="muted">
+                    {" "}
+                    · {InstallmentProviders.join(" · ")}
+                  </small>
+                </span>
+              </label>
+            )}
+            {methods.includes("instapay") && (
+              <div className="stack">
+                <label className="check">
+                  <input
+                    type="radio"
+                    name="method"
+                    value="instapay"
+                    required
+                    checked={method === "instapay"}
+                    onChange={() => setMethod("instapay")}
+                  />
+                  {locale === "ar" ? "إنستاباي" : "InstaPay"}
+                </label>
+                {method === "instapay" && (
+                  <div className="stack">
+                    <p className="muted">
+                      {locale === "ar"
+                        ? "حوّل المبلغ ثم ارفع صورة إثبات التحويل."
+                        : "Transfer the amount, then upload a receipt."}
+                    </p>
+                    <a href={INSTAPAY_URL} target="_blank" rel="noreferrer">
+                      {locale === "ar"
+                        ? "فتح رابط إنستاباي"
+                        : "Open InstaPay link"}
+                    </a>
+                    <label>
+                      {locale === "ar" ? "إثبات التحويل" : "Transfer receipt"}
+                      <input
+                        name="proof"
+                        type="file"
+                        accept="image/*"
+                        required
+                      />
+                    </label>
+                  </div>
+                )}
+              </div>
+            )}
+            {methods.includes("wallet") && (
+              <div className="stack">
+                <label className="check">
+                  <input
+                    type="radio"
+                    name="method"
+                    value="wallet"
+                    required
+                    checked={method === "wallet"}
+                    onChange={() => setMethod("wallet")}
+                  />
+                  {locale === "ar" ? "محفظة إلكترونية" : "E-wallet"}
+                </label>
+                {method === "wallet" && (
+                  <div className="stack">
+                    <p className="muted">
+                      {locale === "ar"
+                        ? "حوّل المبلغ إلى رقم المحفظة ثم ارفع صورة إثبات التحويل."
+                        : "Transfer the amount to the wallet number, then upload a receipt."}
+                    </p>
+                    <p>
+                      {locale === "ar" ? "رقم المحفظة" : "Wallet number"}:{" "}
+                      <strong dir="ltr">{WALLET_NUMBER}</strong>
+                    </p>
+                    <label>
+                      {locale === "ar" ? "إثبات التحويل" : "Transfer receipt"}
+                      <input
+                        name="proof"
+                        type="file"
+                        accept="image/*"
+                        required
+                      />
+                    </label>
+                  </div>
+                )}
+              </div>
+            )}
+            {methods.includes("cod") && (
+              <label className="check">
+                <input
+                  type="radio"
+                  name="method"
+                  value="cod"
+                  required
+                  checked={method === "cod"}
+                  onChange={() => setMethod("cod")}
+                />
+                {locale === "ar" ? "الدفع عند الاستلام" : "Cash on delivery"}
+              </label>
+            )}
+          </div>
         ) : (
           <p className="notice">
             {locale === "ar"
@@ -515,13 +669,8 @@ export function Checkout({
         )}
         <p className="muted">
           {locale === "ar"
-            ? "الدفع بالبطاقات وإنستاباي والمحافظ والتقسيط غير متاح لحين اعتماد مقدم الخدمة."
-            : "Cards, InstaPay, wallets and installments are unavailable pending approved provider integration."}
-        </p>
-        <p>
-          {locale === "ar"
-            ? "سيتم التحقق من الأسعار والتوصيل والخصم على الخادم. لن يتم خصم أي مبلغ إلكترونياً."
-            : "Prices, delivery and discounts are validated on the server. No online charge will be made."}
+            ? "يتم التحقق من الأسعار والتوصيل والخصم على الخادم. عند اختيار البطاقة أو التقسيط ستنتقل إلى صفحة دفع آمنة."
+            : "Prices, delivery and discounts are validated on the server. Choosing a card or installments takes you to a secure payment page."}
         </p>
         <label className="check">
           <input name="consent" type="checkbox" required value="yes" />
@@ -561,7 +710,7 @@ export function Checkout({
             </p>
           </section>
         )}
-        <button className="button" disabled={busy || !enabled || !area}>
+        <button className="button" disabled={busy || !methods.length || !area}>
           {busy
             ? "…"
             : reviewed

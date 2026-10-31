@@ -14,7 +14,7 @@ export const EASYKASH_PAYMENT_OPTIONS = [
 ];
 export const INSTAPAY_URL = "https://ipn.eg/S/jimmydodo/instapay/3Jvfcf";
 export const WALLET_NUMBER = "01023862436";
-export const INSTALLMENT_PROVIDERS = [
+export const InstallmentProviders = [
   "Valu",
   "Contact",
   "Suhoola",
