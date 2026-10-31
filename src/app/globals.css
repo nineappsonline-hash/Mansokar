@@ -1400,10 +1400,6 @@ img {
   margin-bottom: 6px;
   letter-spacing: -0.01em;
 }
-.cart-vehicle::before {
-  content: "🚗";
-  font-size: 14px;
-}
 .cart-row .muted {
   font-size: 16px;
   font-weight: 700;
@@ -1420,13 +1416,13 @@ img {
   color: var(--light);
 }
 .cart-row input {
-  width: 70px;
-  padding: 10px 12px;
+  width: 55px;
+  padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: #f7f5f0;
   color: var(--light);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   text-align: center;
   outline: none;
@@ -1476,7 +1472,7 @@ img {
     justify-content: space-between;
   }
   .cart-row input {
-    width: 80px;
+    width: 65px;
   }
   .cart-row button {
     width: 36px;
