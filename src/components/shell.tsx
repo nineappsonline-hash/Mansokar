@@ -45,7 +45,6 @@ export async function Shell({
       <a href="#main" className="skip">
         {locale === "ar" ? "انتقل للمحتوى" : "Skip to content"}
       </a>
-      <div className="demo-bar">{w.demo}</div>
       <header className="header">
         <div className="shell header-inner">
           <Link
