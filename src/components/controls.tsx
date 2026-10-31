@@ -1,6 +1,7 @@
 "use client";
 import { addCartItem } from "@/lib/cart";
 import { partArt } from "@/lib/visuals";
+import { productImages } from "@/lib/db";
 import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
@@ -234,6 +235,7 @@ export function Cart({
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [products, setProducts] = useState(initialProducts);
+  const [images, setImages] = useState<Record<string, string>>({});
   const [lines, setLines] = useState<CartLine[]>([]);
   useEffect(() => {
     const refresh = () => setLines(read("cart", []));
@@ -263,6 +265,20 @@ export function Cart({
       .then((data) => {
         setProducts(data.products);
         setLoading(false);
+        Promise.all(
+          data.products.map((p: Product) =>
+            productImages(p.id).then((imgs) => ({
+              id: p.id,
+              url: imgs[0]?.url ?? null,
+            })),
+          ),
+        ).then((results) => {
+          const map: Record<string, string> = {};
+          results.forEach((r) => {
+            if (r.url) map[r.id] = r.url;
+          });
+          setImages(map);
+        });
       })
       .catch((error) => {
         if (error.name !== "AbortError") {
@@ -293,7 +309,7 @@ export function Cart({
                 <div className="cart-row-image">
                   {p ? (
                     <img
-                      src={partArt(p.category)}
+                      src={images[p.id] ?? partArt(p.category)}
                       alt={p.name[locale]}
                       loading="lazy"
                     />
