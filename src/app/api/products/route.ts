@@ -1,6 +1,6 @@
 import { enforceRate } from "@/lib/rate-limit";
 import { cookies } from "next/headers";
-import { catalog, fitmentFlags, vehicleCatalog } from "@/lib/db";
+import { catalog, fitmentFlags, productImages, vehicleCatalog } from "@/lib/db";
 import { fitmentLabel, type Locale } from "@/lib/catalog";
 import { publicProduct, carContext } from "@/lib/public-product";
 export async function GET(request: Request) {
@@ -15,14 +15,21 @@ export async function GET(request: Request) {
     return Response.json({ error: "Invalid product IDs" }, { status: 400 });
   const locale: Locale = params.get("locale") === "ar" ? "ar" : "en";
   const products = await catalog({ ids });
+  const imageRows = await Promise.all(
+    ids.map((id) => productImages(id).then((imgs) => ({ id, imgs }))),
+  );
+  const imageMap = new Map<string, string>();
+  for (const { id, imgs } of imageRows) {
+    if (imgs[0]?.url) imageMap.set(id, imgs[0].url);
+  }
   const id = (await cookies()).get("vehicle")?.value;
   const { vehicles, models, brands } = await vehicleCatalog();
   const vehicle = vehicles.find((v) => v.id === id);
   const flags = await fitmentFlags(ids, vehicle?.id);
   return Response.json(
     {
-      products: products.map((p) =>
-        publicProduct(
+      products: products.map((p) => ({
+        ...publicProduct(
           p,
           vehicle
             ? carContext(
@@ -37,7 +44,8 @@ export async function GET(request: Request) {
             : undefined,
           flags[p.id],
         ),
-      ),
+        imageUrl: imageMap.get(p.id) ?? null,
+      })),
       fitments: Object.fromEntries(
         products.map((p) => [
           p.id,
