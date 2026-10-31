@@ -1112,14 +1112,17 @@ export default async function Page({ params, searchParams }: Props) {
                 v.year === browsingContext.year,
             )
           : undefined);
-      if (!v) {
+      if (v) {
+        return locale === "ar" ? `${v.name.ar}` : `${v.name.en}`;
+      }
+      if (browsingContext) {
         return locale === "ar"
-          ? "لم يتم اختيار سيارة"
-          : "No vehicle selected";
+          ? browsingContext.name.ar
+          : browsingContext.name.en;
       }
       return locale === "ar"
-        ? `${v.name.ar}`
-        : `${v.name.en}`;
+        ? "لم يتم اختيار سيارة"
+        : "No vehicle selected";
     }
 
     let media: {
