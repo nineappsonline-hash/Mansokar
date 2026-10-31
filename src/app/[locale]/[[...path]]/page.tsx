@@ -1212,19 +1212,17 @@ export default async function Page({ params, searchParams }: Props) {
                 category={p.category}
                 demo={p.demo}
               />
-              <p className="image-caption">
-                {(media.length ?? 0)
-                  ? locale === "ar"
-                    ? "صور المنتج المقدمة من التاجر"
-                    : "Merchant-supplied product images"
-                  : p.demo
+              {media.length === 0 && (
+                <p className="image-caption">
+                  {p.demo
                     ? locale === "ar"
                       ? "رسم توضيحي عام. لا يمثل صورة هذا المنتج."
                       : "Generic demo illustration. Does not depict this SKU."
                     : locale === "ar"
                       ? "صورة المنتج غير متاحة بعد."
                       : "Product photo is not available yet."}
-              </p>
+                </p>
+              )}
             </div>
             <ul className="product-assurances">
               <li>
