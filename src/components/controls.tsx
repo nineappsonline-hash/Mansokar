@@ -582,7 +582,11 @@ export function Gallery({
           locale === "ar" ? "صورة المنتج المكبرة" : "Enlarged product image"
         }
         className="lightbox"
+        onClick={(e) => {
+          if (e.target === dialog.current) dialog.current?.close();
+        }}
         onKeyDown={(e) => {
+          if (e.key === "Escape") dialog.current?.close();
           if (e.key === "ArrowRight") next(1);
           if (e.key === "ArrowLeft") next(-1);
         }}

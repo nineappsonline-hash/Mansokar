@@ -2,6 +2,7 @@
 import { governorates, shippingLabel, type ShippingArea } from "@/lib/shipping";
 import { useState } from "react";
 import { money, type Locale } from "@/lib/catalog";
+import { Truck, MapPin, ChevronRight } from "lucide-react";
 
 function governorateFor(area: ShippingArea, locale: Locale) {
   return governorates.find(
@@ -50,20 +51,34 @@ export function ShippingEstimate({
   });
 
   return (
-    <section className="panel stack">
-      <h3>
-        {locale === "ar" ? "تقدير التوصيل" : "Delivery estimate"}
-      </h3>
+    <section className="shipping-estimate">
+      <div className="shipping-estimate-header">
+        <div className="shipping-estimate-icon">
+          <Truck size={20} strokeWidth={2} />
+        </div>
+        <div>
+          <h3>
+            {locale === "ar" ? "تقدير التكلفة" : "Delivery estimate"}
+          </h3>
+          <p className="shipping-estimate-sub">
+            {locale === "ar"
+              ? "احسب تكلفة التوصيل حسب منطقتك"
+              : "Calculate delivery cost to your area"}
+          </p>
+        </div>
+      </div>
 
       {areas.length ? (
         <>
-          <label>
-            {locale === "ar"
-              ? "المحافظة"
-              : "Governorate"}
+          <label className="shipping-estimate-label">
+            <span className="shipping-estimate-label-text">
+              {locale === "ar" ? "المحافظة" : "Governorate"}
+            </span>
+            <MapPin size={16} strokeWidth={2} className="shipping-estimate-label-icon" />
             <select
               value={governorate}
               onChange={(e) => setGovernorate(e.target.value)}
+              className="shipping-estimate-select"
             >
               <option value="">—</option>
               {optionList.map((option) => (
@@ -75,31 +90,40 @@ export function ShippingEstimate({
           </label>
 
           {shown.length ? (
-            <ul
-              aria-live="polite"
-              className="shipping-estimate-results"
-            >
+            <ul className="shipping-estimate-results">
               <li className="shipping-estimate-row">
                 <span className="shipping-estimate-method">
+                  <Truck size={14} strokeWidth={2} className="shipping-estimate-method-icon" />
                   {locale === "ar" ? "الشحن العادي" : "Standard delivery"}
                 </span>
-                <b className="shipping-estimate-cost">
-                  {money(standard!.amount, locale)}
-                </b>
+                <div className="shipping-estimate-cost-group">
+                  <b className="shipping-estimate-cost">
+                    {money(standard!.amount, locale)}
+                  </b>
+                  <span className="shipping-estimate-arrow">
+                    <ChevronRight size={12} strokeWidth={2} />
+                  </span>
+                </div>
               </li>
               {express && (
                 <li className="shipping-estimate-row">
                   <span className="shipping-estimate-method">
+                    <Truck size={14} strokeWidth={2} className="shipping-estimate-method-icon" />
                     {locale === "ar" ? "الشحن السريع" : "Express delivery"}
                   </span>
-                  <b className="shipping-estimate-cost">
-                    {money(express.amount, locale)}
-                  </b>
+                  <div className="shipping-estimate-cost-group">
+                    <b className="shipping-estimate-cost">
+                      {money(express.amount, locale)}
+                    </b>
+                    <span className="shipping-estimate-arrow">
+                      <ChevronRight size={12} strokeWidth={2} />
+                    </span>
+                  </div>
                 </li>
               )}
             </ul>
           ) : (
-            <p>
+            <p className="shipping-estimate-none">
               {locale === "ar"
                 ? "لم يتم اعتماد مناطق التوصيل بعد."
                 : "Delivery coverage has not been approved yet."}
@@ -107,7 +131,7 @@ export function ShippingEstimate({
           )}
         </>
       ) : (
-        <p>
+        <p className="shipping-estimate-none">
           {locale === "ar"
             ? "لم يتم اعتماد مناطق التوصيل بعد."
             : "Delivery coverage has not been approved yet."}

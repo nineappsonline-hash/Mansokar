@@ -1328,6 +1328,7 @@ export default async function Page({ params, searchParams }: Props) {
                 {p.warranty && (
                   <p className="product-warranty-note">{p.warranty[locale]}</p>
                 )}
+                <ShippingEstimate locale={locale} areas={areas} />
                 <details className="accordion">
                   <summary>
                     {locale === "ar"
@@ -1429,7 +1430,6 @@ export default async function Page({ params, searchParams }: Props) {
           </aside>
         </div>
         <ProductAnswers product={p} locale={locale} />
-        <ShippingEstimate locale={locale} areas={areas} />
         {together.length > 0 && (
           <section className="section product-page-animate slide">
             <h2>
