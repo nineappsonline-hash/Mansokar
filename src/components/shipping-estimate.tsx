@@ -71,9 +71,6 @@ export function ShippingEstimate({
       {areas.length ? (
         <>
           <label className="shipping-estimate-label">
-            <span className="shipping-estimate-label-text">
-              {locale === "ar" ? "المحافظة" : "Governorate"}
-            </span>
             <MapPin size={16} strokeWidth={2} className="shipping-estimate-label-icon" />
             <select
               value={governorate}

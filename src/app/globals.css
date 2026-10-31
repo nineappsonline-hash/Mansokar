@@ -1369,7 +1369,7 @@ img {
   border: 1px solid #f6a800;
   border-radius: 8px;
   padding: 12px;
-  background: #f6a800;
+  background: linear-gradient(135deg, #f6a800 0%, #ffc247 100%);
   position: relative;
 }
 .shipping-estimate::before {
