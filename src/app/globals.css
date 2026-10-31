@@ -2225,7 +2225,7 @@ th {
 .storefront-home .header {
   position: absolute;
   inset-inline: 0;
-  top: 23px;
+  top: 0;
   background: transparent;
   border: 0;
   backdrop-filter: none;
@@ -3267,7 +3267,7 @@ textarea {
   color: #d8c4a1;
 }
 .storefront-home .header {
-  top: 26px;
+  top: 0;
 }
 .storefront-home .vehicle-bar {
   font-size: 13px;
@@ -3401,7 +3401,7 @@ table {
     line-height: 1.4;
   }
   .storefront-home .header {
-    top: 36px;
+    top: 0;
   }
   .storefront-home .vehicle-bar {
     font-size: 11px;
