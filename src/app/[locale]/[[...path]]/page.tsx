@@ -303,20 +303,6 @@ export async function generateMetadata({
     contact: l === "ar" ? "تواصل معنا" : "Contact",
     "track-order": l === "ar" ? "تتبع الطلب" : "Track your order",
   };
-  function vehicleForItem(
-    vehicle: Vehicle | undefined,
-    locale: Locale,
-  ): string {
-    if (!vehicle) {
-      return locale === "ar"
-        ? "لم يتم اختيار سيارة"
-        : "No vehicle selected";
-    }
-    return locale === "ar"
-      ? `${vehicle.name.ar}`
-      : `${vehicle.name.en}`;
-  }
-
   const settings = await storefrontSettings();
   return {
     keywords: productMeta
@@ -1111,6 +1097,21 @@ export default async function Page({ params, searchParams }: Props) {
       Boolean(flags[raw.id] || matching?.products.some((p) => p.id === raw.id)),
     );
     const confirmed = flags[p.id];
+
+    function vehicleForItem(
+      vehicle: Vehicle | undefined,
+      locale: Locale,
+    ): string {
+      if (!vehicle) {
+        return locale === "ar"
+          ? "لم يتم اختيار سيارة"
+          : "No vehicle selected";
+      }
+      return locale === "ar"
+        ? `${vehicle.name.ar}`
+        : `${vehicle.name.en}`;
+    }
+
     let media: {
       url: string;
       alt: { ar: string; en: string };
@@ -1297,7 +1298,7 @@ export default async function Page({ params, searchParams }: Props) {
                 <span className="status-dot" />
                 {w.fit}
               </span>
-              <p>vehicleForItem(vehicle, locale)</p>
+              <p>{vehicleForItem(vehicle, locale)}</p>
             </div>
             <ProductActions product={p} locale={locale} />
             <Link className="small muted" href={`/${locale}/checkout`}>
