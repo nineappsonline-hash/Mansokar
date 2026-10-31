@@ -78,6 +78,7 @@ import {
   MobileBuyBar,
 } from "@/components/controls";
 import { AuthForm, RequestForm, Checkout, ApiForm } from "@/components/forms";
+import { PaymentStatus } from "@/components/payment-status";
 export const dynamic = "force-dynamic";
 type Props = {
   params: Promise<{ locale: string; path?: string[] }>;
@@ -302,6 +303,20 @@ export async function generateMetadata({
     contact: l === "ar" ? "تواصل معنا" : "Contact",
     "track-order": l === "ar" ? "تتبع الطلب" : "Track your order",
   };
+  function vehicleForItem(
+    vehicle: Vehicle | undefined,
+    locale: Locale,
+  ): string {
+    if (!vehicle) {
+      return locale === "ar"
+        ? "لم يتم اختيار سيارة"
+        : "No vehicle selected";
+    }
+    return locale === "ar"
+      ? `${vehicle.name.ar}`
+      : `${vehicle.name.en}`;
+  }
+
   const settings = await storefrontSettings();
   return {
     keywords: productMeta
@@ -1282,15 +1297,7 @@ export default async function Page({ params, searchParams }: Props) {
                 <span className="status-dot" />
                 {w.fit}
               </span>
-              <p>{fitmentLabel(vehicle, confirmed, locale)}</p>
-              <Link href={`/${locale}#brands`}>
-                {vehicle
-                  ? locale === "ar"
-                    ? "تغيير السيارة"
-                    : "Change vehicle"
-                  : w.explore}{" "}
-                ↗
-              </Link>
+              <p>vehicleForItem(vehicle, locale)</p>
             </div>
             <ProductActions product={p} locale={locale} />
             <Link className="small muted" href={`/${locale}/checkout`}>
@@ -1412,7 +1419,7 @@ export default async function Page({ params, searchParams }: Props) {
           locale={locale}
           addresses={addresses}
           areas={areas}
-          enabled={availablePayments().includes("cod")}
+          methods={availablePayments()}
           vehicle={vehicle?.id}
         />
       </div>
@@ -1710,7 +1717,7 @@ export default async function Page({ params, searchParams }: Props) {
     const { data } = await service()
       .from("orders")
       .select(
-        "id,order_number,status,payment_status,total,subtotal,discount,shipping_amount,demo,carrier,tracking_number",
+        "id,order_number,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,demo,carrier,tracking_number",
       )
       .eq("public_token", path[2])
       .maybeSingle();
@@ -1742,10 +1749,13 @@ export default async function Page({ params, searchParams }: Props) {
           </p>
         )}
         {data.demo && <p className="notice">DEMO ORDER / طلب تجريبي</p>}
-        <p>
-          {statusLabel(data.status, locale)} ·{" "}
-          {statusLabel(data.payment_status, locale)}
-        </p>
+        <PaymentStatus
+          token={path[2]}
+          locale={locale}
+          initialStatus={data.status}
+          initialPaymentStatus={data.payment_status}
+          method={data.payment_method}
+        />
         <p className="price">{money(data.total, locale)}</p>
         <p>
           {locale === "ar"
