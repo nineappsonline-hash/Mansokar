@@ -36,6 +36,8 @@ import {
   Route,
   CarFront,
   SlidersHorizontal,
+  Truck,
+  RotateCcw,
 } from "lucide-react";
 import {
   normalize,
@@ -1155,6 +1157,10 @@ export default async function Page({ params, searchParams }: Props) {
         x.family === p.family &&
         x.manufacturer !== p.manufacturer,
     );
+    const savings =
+      p.sale !== null && p.sale < p.price
+        ? Math.round(((p.price - p.sale) / p.price) * 100)
+        : 0;
     content = (
       <div className="shell section product-detail">
         <MobileBuyBar product={p} locale={locale} />
@@ -1198,121 +1204,195 @@ export default async function Page({ params, searchParams }: Props) {
           ]}
         />
         <div className="product-layout">
-          <div className="product-page-animate">
-            <Gallery
-              locale={locale}
-              media={media}
-              category={p.category}
-              demo={p.demo}
-            />
-            <p className="image-caption">
-              {(media.length ?? 0)
-                ? locale === "ar"
-                  ? "صور المنتج المقدمة من التاجر"
-                  : "Merchant-supplied product images"
-                : p.demo
+          <div className="product-page-animate product-media-column">
+            <div className="product-gallery">
+              <Gallery
+                locale={locale}
+                media={media}
+                category={p.category}
+                demo={p.demo}
+              />
+              <p className="image-caption">
+                {(media.length ?? 0)
                   ? locale === "ar"
-                    ? "رسم توضيحي عام. لا يمثل صورة هذا المنتج."
-                    : "Generic demo illustration. Does not depict this SKU."
-                  : locale === "ar"
-                    ? "صورة المنتج غير متاحة بعد."
-                    : "Product photo is not available yet."}
-            </p>
-            <div className="editorial">
-              <span className="eyebrow">01 / THE DETAILS</span>
-              <h2>
-                {locale === "ar"
-                  ? "التفاصيل تصنع الفرق."
-                  : "The difference is in the details."}
-              </h2>
-              <p className="lead">
-                <ProductText text={p.description[locale]} locale={locale} />
+                    ? "صور المنتج المقدمة من التاجر"
+                    : "Merchant-supplied product images"
+                  : p.demo
+                    ? locale === "ar"
+                      ? "رسم توضيحي عام. لا يمثل صورة هذا المنتج."
+                      : "Generic demo illustration. Does not depict this SKU."
+                    : locale === "ar"
+                      ? "صورة المنتج غير متاحة بعد."
+                      : "Product photo is not available yet."}
               </p>
-              {policies.map((page) => (
-                <details className="accordion" key={page.slug}>
-                  <summary>{page.title[locale]}</summary>
-                  <p>{page.body[locale]}</p>
-                </details>
-              ))}
-              {p.editorial?.why && (
-                <p className="lead">{p.editorial.why[locale]}</p>
-              )}
-              <div className="spec-grid">
-                {productSpecifications(p, locale).map(
-                  ({ key, label, value }) => (
-                    <div key={key}>
-                      <span className="muted small">{label}</span>
-                      <p>
-                        <bdi dir="auto">{value}</bdi>
-                      </p>
-                    </div>
-                  ),
+            </div>
+            <ul className="product-assurances">
+              <li>
+                <ShieldCheck size={18} aria-hidden="true" />
+                <div>
+                  <strong>
+                    {locale === "ar" ? "أصلي أو بديل" : "OEM or aftermarket"}
+                  </strong>
+                  <span>
+                    {locale === "ar"
+                      ? "مصدره موثّق من التاجر"
+                      : "Merchant-supplied and documented"}
+                  </span>
+                </div>
+              </li>
+              <li>
+                <Truck size={18} aria-hidden="true" />
+                <div>
+                  <strong>
+                    {locale === "ar"
+                      ? "توصيل داخل مصر"
+                      : "Delivery across Egypt"}
+                  </strong>
+                  <span>
+                    {locale === "ar"
+                      ? "الرسوم حسب المحافظة"
+                      : "Fees by governorate"}
+                  </span>
+                </div>
+              </li>
+              <li>
+                <RotateCcw size={18} aria-hidden="true" />
+                <div>
+                  <strong>
+                    {locale === "ar" ? "سياسات واضحة" : "Clear policies"}
+                  </strong>
+                  <span>
+                    {locale === "ar"
+                      ? "الإرجاع والضمان منشوران"
+                      : "Returns and warranty published"}
+                  </span>
+                </div>
+              </li>
+            </ul>
+            <section className="product-story">
+              <header className="product-story-heading">
+                <span className="eyebrow">01 / THE DETAILS</span>
+                <h2>
+                  {locale === "ar"
+                    ? "التفاصيل تصنع الفرق."
+                    : "The difference is in the details."}
+                </h2>
+                <p className="lead">
+                  <ProductText text={p.description[locale]} locale={locale} />
+                </p>
+                {p.editorial?.why && (
+                  <p className="product-story-why">
+                    {p.editorial.why[locale]}
+                  </p>
                 )}
+              </header>
+              <div className="product-specs">
+                <h3 className="product-block-title">
+                  {locale === "ar" ? "المواصفات" : "Specifications"}
+                </h3>
+                <div className="spec-grid">
+                  {productSpecifications(p, locale).map(
+                    ({ key, label, value }) => (
+                      <div key={key}>
+                        <span className="muted small">{label}</span>
+                        <p>
+                          <bdi dir="auto">{value}</bdi>
+                        </p>
+                      </div>
+                    ),
+                  )}
+                </div>
               </div>
-              {p.editorial?.installation && (
+              <div className="product-faq">
+                {policies.map((page) => (
+                  <details className="accordion" key={page.slug}>
+                    <summary>{page.title[locale]}</summary>
+                    <p>{page.body[locale]}</p>
+                  </details>
+                ))}
+                {p.editorial?.installation && (
+                  <details className="accordion">
+                    <summary>
+                      {locale === "ar"
+                        ? "ملاحظات الشركة المصنعة"
+                        : "Manufacturer installation notes"}
+                    </summary>
+                    <p>{p.editorial.installation[locale]}</p>
+                  </details>
+                )}
+                {p.warranty && (
+                  <p className="product-warranty-note">{p.warranty[locale]}</p>
+                )}
                 <details className="accordion">
                   <summary>
                     {locale === "ar"
-                      ? "ملاحظات الشركة المصنعة"
-                      : "Manufacturer installation notes"}
+                      ? "الشحن والإرجاع والضمان"
+                      : "Shipping, returns & warranty"}
                   </summary>
-                  <p>{p.editorial.installation[locale]}</p>
+                  <p>
+                    {locale === "ar"
+                      ? "تتحدد رسوم التوصيل حسب المنطقة. راجع السياسات المنشورة وشروط ضمان المنتج قبل الطلب."
+                      : "Delivery fees depend on your area. Review the published policies and product warranty terms before ordering."}
+                  </p>
+                  <nav
+                    className="product-policy-links"
+                    aria-label={
+                      locale === "ar"
+                        ? "سياسات الشحن والاسترجاع والضمان"
+                        : "Shipping, returns and warranty policies"
+                    }
+                  >
+                    <Link href={`/${locale}/policies/returns`}>
+                      {locale === "ar" ? "سياسة الاسترجاع" : "Return policy"}
+                    </Link>
+                    <Link href={`/${locale}/policies/shipping`}>
+                      {locale === "ar" ? "سياسة الشحن" : "Shipping policy"}
+                    </Link>
+                    <Link href={`/${locale}/policies/warranty`}>
+                      {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
+                    </Link>
+                  </nav>
                 </details>
-              )}
-              {p.warranty && <p>{p.warranty[locale]}</p>}
-              <details className="accordion">
-                <summary>
-                  {locale === "ar"
-                    ? "الشحن والإرجاع والضمان"
-                    : "Shipping, returns & warranty"}
-                </summary>
-                <p>
-                  {locale === "ar"
-                    ? "تتحدد رسوم التوصيل حسب المنطقة. راجع السياسات المنشورة وشروط ضمان المنتج قبل الطلب."
-                    : "Delivery fees depend on your area. Review the published policies and product warranty terms before ordering."}
-                </p>
-                <nav
-                  className="product-policy-links"
-                  aria-label={
-                    locale === "ar"
-                      ? "سياسات الشحن والاسترجاع والضمان"
-                      : "Shipping, returns and warranty policies"
-                  }
-                >
-                  <Link href={`/${locale}/policies/returns`}>
-                    {locale === "ar" ? "سياسة الاسترجاع" : "Return policy"}
-                  </Link>
-                  <Link href={`/${locale}/policies/shipping`}>
-                    {locale === "ar" ? "سياسة الشحن" : "Shipping policy"}
-                  </Link>
-                  <Link href={`/${locale}/policies/warranty`}>
-                    {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
-                  </Link>
-                </nav>
-              </details>
-            </div>
+              </div>
+            </section>
           </div>
           <aside className="purchase-panel product-page-animate slide">
-            <span className="eyebrow">
-              {p.category.toUpperCase()} / {p.sku}
-            </span>
-            <h1>{p.name[locale]}</h1>
-            <div className="badges">
-              <span>{p.manufacturer}</span>
-              {p.type === "oem" && (
-                <OriginalBadge locale={locale} />
-              )}
-              {p.type !== "oem" && (
-                <span className="badge after-market">
-                  {locale === "ar" ? "بديل" : "After Market"}
-                </span>
-              )}
-              {p.demo && <span className="badge demo-badge">{w.demoProduct}</span>}
+            <div className="purchase-heading">
+              <span className="eyebrow">
+                {p.category.toUpperCase()} / {p.sku}
+              </span>
+              <h1>{p.name[locale]}</h1>
+              <div className="badges">
+                <span>{p.manufacturer}</span>
+                {p.type === "oem" && <OriginalBadge locale={locale} />}
+                {p.type !== "oem" && (
+                  <span className="badge after-market">
+                    {locale === "ar" ? "بديل" : "After Market"}
+                  </span>
+                )}
+                {p.demo && (
+                  <span className="badge demo-badge">{w.demoProduct}</span>
+                )}
+              </div>
             </div>
-            <CopyPart value={p.partNumber} locale={locale} />
+            <div className="part-row">
+              <span className="part-row-label">
+                {locale === "ar" ? "رقم القطعة" : "Part number"}
+              </span>
+              <CopyPart value={p.partNumber} locale={locale} />
+            </div>
             <div className="detail-price">
               <span className="price">{money(p.sale ?? p.price, locale)}</span>
-              {p.sale !== null && <del>{money(p.price, locale)}</del>}
+              {p.sale !== null && (
+                <div className="price-meta">
+                  <del>{money(p.price, locale)}</del>
+                  {savings > 0 && (
+                    <span className="price-saving">
+                      {locale === "ar" ? `وفّر ${savings}%` : `Save ${savings}%`}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
             <div className={`fit-card ${confirmed ? "confirmed" : ""}`}>
               <span className="eyebrow">
@@ -1321,22 +1401,26 @@ export default async function Page({ params, searchParams }: Props) {
               </span>
               <p>{vehicleForItem(vehicle, locale)}</p>
             </div>
-            <ProductActions product={p} locale={locale} />
-            <Link className="small muted" href={`/${locale}/checkout`}>
-              {locale === "ar"
-                ? "تحقق من منطقة التوصيل عند الطلب"
-                : "Check delivery area at checkout"}{" "}
-              ↗
-            </Link>
-            <p className="small muted">
-              {p.demo
-                ? locale === "ar"
-                  ? "منتج تجريبي خيالي للاختبار."
-                  : "Fictional demonstration product for testing."
-                : locale === "ar"
-                  ? ""
-                  : "Fulfillment is confirmed by the merchant."}
-            </p>
+            <div className="purchase-actions">
+              <ProductActions product={p} locale={locale} />
+            </div>
+            <div className="purchase-notes">
+              <Link className="small muted" href={`/${locale}/checkout`}>
+                {locale === "ar"
+                  ? "تحقق من منطقة التوصيل عند الطلب"
+                  : "Check delivery area at checkout"}{" "}
+                ↗
+              </Link>
+              <p className="small muted">
+                {p.demo
+                  ? locale === "ar"
+                    ? "منتج تجريبي خيالي للاختبار."
+                    : "Fictional demonstration product for testing."
+                  : locale === "ar"
+                    ? ""
+                    : "Fulfillment is confirmed by the merchant."}
+              </p>
+            </div>
           </aside>
         </div>
         <ProductAnswers product={p} locale={locale} />

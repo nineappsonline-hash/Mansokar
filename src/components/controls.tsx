@@ -103,24 +103,27 @@ export function ProductActions({
   const [added, setAdded] = useState(false);
   const [message, setMessage] = useState("");
   return (
-    <div className="stack">
-      <div className="quantity">
-        <button
-          aria-label={locale === "ar" ? "تقليل الكمية" : "Decrease quantity"}
-          onClick={() => setQty(Math.max(1, qty - 1))}
-        >
-          <Minus size={16} />
-        </button>
-        <output>{qty}</output>
-        <button
-          aria-label={locale === "ar" ? "زيادة الكمية" : "Increase quantity"}
-          onClick={() => setQty(Math.min(99, qty + 1))}
-        >
-          <Plus size={16} />
-        </button>
+    <div className="product-actions">
+      <div className="quantity-row">
+        <span className="quantity-label">{t(locale).quantity}</span>
+        <div className="quantity">
+          <button
+            aria-label={locale === "ar" ? "تقليل الكمية" : "Decrease quantity"}
+            onClick={() => setQty(Math.max(1, qty - 1))}
+          >
+            <Minus size={16} />
+          </button>
+          <output>{qty}</output>
+          <button
+            aria-label={locale === "ar" ? "زيادة الكمية" : "Increase quantity"}
+            onClick={() => setQty(Math.min(99, qty + 1))}
+          >
+            <Plus size={16} />
+          </button>
+        </div>
       </div>
       <button
-        className="button"
+        className="button product-add-to-cart"
         disabled={!product.orderable}
         data-analytics="add_to_cart"
         data-productid={product.id}
@@ -142,7 +145,7 @@ export function ProductActions({
       </button>
       <button
         type="button"
-        className="button secondary product-buy-now"
+        className="button product-buy-now"
         disabled={!product.orderable || buying}
         onClick={() => {
           try {
@@ -158,7 +161,8 @@ export function ProductActions({
         <ArrowUpRight size={18} aria-hidden="true" />
       </button>
       <button
-        className="button secondary"
+        type="button"
+        className="product-compare"
         onClick={() => {
           const list = read<{ id: string; family: string }[]>("compare", []);
           if (list.some((p) => p.family !== product.family)) {
@@ -177,10 +181,12 @@ export function ProductActions({
           );
         }}
       >
-        <GitCompareArrows size={18} />
+        <GitCompareArrows size={16} />
         {t(locale).compare}
       </button>
-      <p role="status">{message}</p>
+      <p className="product-actions-message" role="status">
+        {message}
+      </p>
     </div>
   );
 }
