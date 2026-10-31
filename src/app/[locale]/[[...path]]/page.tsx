@@ -2080,7 +2080,7 @@ export default async function Page({ params, searchParams }: Props) {
             ) : route === "guides" || route === "contact" ? null : route ===
             "about" ? (
             <p className="lead">
-              {w.intro} {w.demo}
+              {w.intro}
             </p>
           ) : route === "faq" ? (
             <StoreQuestions locale={locale} />
