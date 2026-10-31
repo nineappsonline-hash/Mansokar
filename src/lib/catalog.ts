@@ -153,8 +153,8 @@ export function normalize(value: string) {
     .toLowerCase()
     .replace(/[^\p{L}\p{N}]/gu, "");
 }
-export function money(value: number, locale: Locale) {
-  return new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en-EG", {
+export function money(value: number, _locale: Locale) {
+  return new Intl.NumberFormat("en-EG", {
     style: "currency",
     currency: "EGP",
     minimumFractionDigits: 0,
