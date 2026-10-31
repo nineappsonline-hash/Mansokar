@@ -86,9 +86,13 @@ export async function ProductCard({
             }).format((p.price - p.sale) / p.price)}
           </b>
         )}
-        {p.type === "oem" && <OriginalBadge locale={locale} />}
       </Link>
       <div className="product-info">
+        {p.type === "oem" && (
+          <div className="original-badge-wrap">
+            <OriginalBadge locale={locale} />
+          </div>
+        )}
         <div className="product-meta">
           <strong className="product-brand">{p.manufacturer}</strong>
           {origin && (
