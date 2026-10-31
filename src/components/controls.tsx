@@ -15,6 +15,7 @@ import {
   Package,
 } from "lucide-react";
 import type { Locale, Product, Vehicle } from "@/lib/catalog";
+import { CarContext } from "@/lib/public-product";
 import { money } from "@/lib/catalog";
 import { t } from "@/lib/i18n";
 type CartLine = {
@@ -101,10 +102,12 @@ export function ProductActions({
   product,
   locale,
   vehicle,
+  context,
 }: {
   product: Product;
   locale: Locale;
   vehicle?: Vehicle;
+  context?: CarContext;
 }) {
   const router = useRouter();
   const [buying, setBuying] = useState(false);
@@ -148,7 +151,13 @@ export function ProductActions({
                     model: vehicle.model,
                     year: vehicle.year,
                   }
-                : undefined,
+                : context
+                  ? {
+                      make: context.make,
+                      model: context.model,
+                      year: context.year,
+                    }
+                  : undefined,
             );
             setAdded(true);
           } catch {
@@ -179,7 +188,13 @@ export function ProductActions({
                     model: vehicle.model,
                     year: vehicle.year,
                   }
-                : undefined,
+                : context
+                  ? {
+                      make: context.make,
+                      model: context.model,
+                      year: context.year,
+                    }
+                  : undefined,
             );
             setBuying(true);
             router.push(`/${locale}/checkout`);

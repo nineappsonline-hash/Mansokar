@@ -1412,7 +1412,7 @@ export default async function Page({ params, searchParams }: Props) {
               <p>{vehicleForItem(vehicle, locale)}</p>
             </div>
             <div className="purchase-actions">
-              <ProductActions product={p} locale={locale} vehicle={vehicle} />
+              <ProductActions product={p} locale={locale} vehicle={vehicle} context={browsingContext} />
             </div>
             <div className="purchase-notes">
               <Link className="small muted" href={`/${locale}/checkout`}>

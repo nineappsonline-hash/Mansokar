@@ -139,7 +139,13 @@ export async function ProductCard({
                   model: vehicle.model,
                   year: vehicle.year,
                 }
-              : undefined
+              : context
+                ? {
+                    make: context.make,
+                    model: context.model,
+                    year: context.year,
+                  }
+                : undefined
           }
         />
         <Link className="product-details-link" href={href}>

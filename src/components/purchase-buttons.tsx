@@ -4,17 +4,20 @@ import { useRouter } from "next/navigation";
 import { ShoppingBag, Check, ArrowUpRight } from "lucide-react";
 import { addCartItem } from "@/lib/cart";
 import type { Locale, Product } from "@/lib/catalog";
+import { CarContext } from "@/lib/public-product";
 import { t } from "@/lib/i18n";
 export function PurchaseButtons({
   product,
   locale,
   quantity = 1,
   vehicle,
+  context,
 }: {
   product: Pick<Product, "id" | "name" | "orderable">;
   locale: Locale;
   quantity?: number;
   vehicle?: { make?: string; model?: string; year?: number };
+  context?: CarContext;
 }) {
   const router = useRouter();
   const [added, setAdded] = useState(false);
@@ -25,7 +28,8 @@ export function PurchaseButtons({
     if (!product.orderable || buying) return;
     try {
       setError("");
-      addCartItem(product.id, quantity, buyNow, vehicle);
+      const cartVehicle = vehicle ?? (context ? { make: context.make, model: context.model, year: context.year } : undefined);
+      addCartItem(product.id, quantity, buyNow, cartVehicle);
       if (buyNow) {
         setBuying(true);
         router.push(`/${locale}/checkout`);
