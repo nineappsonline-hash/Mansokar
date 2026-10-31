@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, Package } from "lucide-react";
+import { ArrowUpRight, Globe2, Package } from "lucide-react";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -16,6 +16,7 @@ import {
   productContextHref,
   type CarContext,
 } from "@/lib/public-product";
+import { OriginalBadge } from "./original-badge";
 export async function ProductCard({
   product: raw,
   locale,
@@ -32,6 +33,7 @@ export async function ProductCard({
   contextMatched?: boolean;
 }) {
   const p = publicProduct(raw, context, contextMatched || confirmed);
+  const origin = p.specs.country_of_origin;
   const href = productContextHref(
     locale,
     p.slug,
@@ -84,11 +86,23 @@ export async function ProductCard({
             }).format((p.price - p.sale) / p.price)}
           </b>
         )}
+        {p.type === "oem" && <OriginalBadge locale={locale} />}
       </Link>
       <div className="product-info">
-        <span className="eyebrow muted">
-          {p.manufacturer} / {p.type === "oem" ? "Original" : "After Market"}
-        </span>
+        <div className="product-meta">
+          <strong className="product-brand">{p.manufacturer}</strong>
+          {origin && (
+            <span className="product-origin" dir="auto">
+              <Globe2 size={14} aria-hidden="true" />
+              {origin}
+            </span>
+          )}
+        </div>
+        {p.type !== "oem" && (
+          <span className="eyebrow muted">
+            {locale === "ar" ? "بديل" : "After Market"}
+          </span>
+        )}
         <h3>
           <Link
             className="card-navigation-link"

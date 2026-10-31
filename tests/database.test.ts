@@ -24,7 +24,7 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
     );
     assert.equal(governorateRates.rows[0].count, 54);
     assert.equal(governorateRates.rows[0].governorates, 27);
-    assert.equal(governorateRates.rows[0].unconfigured, 54);
+    assert.equal(governorateRates.rows[0].unconfigured, 0);
     assert.equal(
       (
         await db.query<{ count: number }>(
@@ -33,9 +33,25 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
       ).rows[0].count,
       27,
     );
+    assert.equal(
+      (
+        await db.query<{ amount: number }>(
+          "select amount from public.shipping_areas where id='eg-cairo-standard'",
+        )
+      ).rows[0].amount,
+      9000,
+    );
+    assert.equal(
+      (
+        await db.query<{ amount: number }>(
+          "select amount from public.shipping_areas where id='eg-cairo-express'",
+        )
+      ).rows[0].amount,
+      15000,
+    );
     await assert.rejects(
       db.query(
-        "update public.shipping_areas set enabled=true where id='eg-cairo-express'",
+        "update public.shipping_areas set amount=null where id='eg-cairo-express'",
       ),
       /shipping_enabled_rate_required/,
     );
@@ -87,8 +103,9 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
     }>(
       "select public.search_products_by_car(p_make=>'opel',p_model=>'astra',p_year=>2021,p_size=>1) as result",
     );
-    assert.equal(exactCar.rows[0].result.total, 2);
+    assert.equal(exactCar.rows[0].result.total, 5);
     assert.equal(exactCar.rows[0].result.products.length, 1);
+    assert.equal(exactCar.rows[0].result.products[0].id, "demo-1");
     await db.exec(
       "update public.products set specs=specs-'car_years:chevrolet-cruze' where id='demo-2'",
     );
@@ -361,6 +378,9 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
       ],
     );
     assert.equal(standardQuote.rows[0].result.shipping, 12345);
+    await db.query(
+      "update public.shipping_areas set enabled=false where id='eg-cairo-express'",
+    );
     await assert.rejects(
       db.query(
         "select public.checkout_quote($1::jsonb,$2::jsonb,'eg-cairo-express',null,null,true)",

@@ -1,6 +1,6 @@
 import { PurchaseButtons } from "./purchase-buttons";
 import Link from "next/link";
-import { ArrowUpRight, Tag, Package, CarFront } from "lucide-react";
+import { ArrowUpRight, Globe2, Tag, Package, CarFront } from "lucide-react";
 import {
   fitmentLabel,
   money,
@@ -13,6 +13,7 @@ import { t } from "@/lib/i18n";
 import { productImages } from "@/lib/db";
 import { Reveal } from "./motion-primitives";
 import { publicProduct } from "@/lib/public-product";
+import { OriginalBadge } from "./original-badge";
 
 export async function SpecialOffers({
   products,
@@ -119,15 +120,30 @@ export async function SpecialOffers({
                     <span className="offer-percentage">
                       <bdi>−{percentage}</bdi>
                     </span>
+                    {product.type === "oem" && (
+                      <OriginalBadge locale={locale} />
+                    )}
                     {product.demo && (
                       <span className="offer-demo-label">{w.demoProduct}</span>
                     )}
                   </Link>
                   <div className="offer-details">
-                    <span className="eyebrow muted">
-                      {product.manufacturer} ·{" "}
-                      {product.type === "oem" ? "Original" : "After Market"}
-                    </span>
+                    <div className="product-meta">
+                      <strong className="product-brand">
+                        {product.manufacturer}
+                      </strong>
+                      {product.specs.country_of_origin && (
+                        <span className="product-origin" dir="auto">
+                          <Globe2 size={14} aria-hidden="true" />
+                          {product.specs.country_of_origin}
+                        </span>
+                      )}
+                    </div>
+                    {product.type !== "oem" && (
+                      <span className="eyebrow muted">
+                        {locale === "ar" ? "بديل" : "After Market"}
+                      </span>
+                    )}
                     <h3>
                       <Link
                         className="card-navigation-link"
