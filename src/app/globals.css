@@ -1008,6 +1008,27 @@ img {
     transform: translateX(0);
   }
 }
+@keyframes sectionRise {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes badgePop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 .product-page-animate {
   animation: productFadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -1078,6 +1099,82 @@ img {
   border-color: #c8a45c;
   color: #c8a45c;
 }
+.section.product-page-animate {
+  position: relative;
+  overflow: hidden;
+}
+.section.product-page-animate::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(200, 164, 92, 0.06), transparent 60%),
+    radial-gradient(circle at 80% 70%, rgba(39, 179, 125, 0.04), transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+.section.product-page-animate > * {
+  position: relative;
+  z-index: 1;
+}
+.section-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+  position: relative;
+}
+.section-heading .eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #c8a45c;
+  animation: sectionRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.section-heading h2 {
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: var(--light);
+  margin: 0;
+  animation: sectionRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.1s;
+}
+.section-heading a {
+  color: #c8a45c;
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 6px;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+.section-heading a:hover {
+  transform: translateX(6px);
+  color: #ffe77a;
+}
+.product-grid {
+  display: grid;
+  gap: 20px;
+}
+.product-grid .product-card,
+.product-grid .offer-card {
+  animation: sectionRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.product-grid .product-card:nth-child(1) { animation-delay: 0.05s; }
+.product-grid .product-card:nth-child(2) { animation-delay: 0.1s; }
+.product-grid .product-card:nth-child(3) { animation-delay: 0.15s; }
+.product-grid .product-card:nth-child(4) { animation-delay: 0.2s; }
+.product-grid .product-card:nth-child(5) { animation-delay: 0.25s; }
+.product-grid .product-card:nth-child(6) { animation-delay: 0.3s; }
+.purchase-panel .badge {
+  animation: badgePop 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.purchase-panel .badge:nth-child(2) { animation-delay: 0.2s; }
+.purchase-panel .badge:nth-child(3) { animation-delay: 0.3s; }
+.purchase-panel .badge:nth-child(4) { animation-delay: 0.4s; }
 .detail-price {
   display: flex;
   align-items: baseline;

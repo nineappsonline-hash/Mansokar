@@ -1342,7 +1342,7 @@ export default async function Page({ params, searchParams }: Props) {
         <ProductAnswers product={p} locale={locale} />
         <ShippingEstimate locale={locale} areas={areas} />
         {together.length > 0 && (
-          <section className="section">
+          <section className="section product-page-animate slide">
             <h2>
               {locale === "ar"
                 ? "قطع مكملة لسيارتك"
@@ -1363,7 +1363,7 @@ export default async function Page({ params, searchParams }: Props) {
             }
           </section>
         )}
-        <section className="section">
+        <section className="section product-page-animate slide" style={{ animationDelay: "0.4s" }}>
           <div className="section-heading">
             <div>
               <span className="eyebrow">
