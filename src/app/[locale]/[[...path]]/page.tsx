@@ -77,6 +77,7 @@ import {
   CopyPart,
   MobileBuyBar,
 } from "@/components/controls";
+import { OriginalBadge } from "@/components/original-badge";
 import { AuthForm, RequestForm, Checkout, ApiForm } from "@/components/forms";
 import { PaymentStatus } from "@/components/payment-status";
 export const dynamic = "force-dynamic";
@@ -1197,7 +1198,7 @@ export default async function Page({ params, searchParams }: Props) {
           ]}
         />
         <div className="product-layout">
-          <div>
+          <div className="product-page-animate">
             <Gallery
               locale={locale}
               media={media}
@@ -1291,15 +1292,24 @@ export default async function Page({ params, searchParams }: Props) {
               </details>
             </div>
           </div>
-          <aside className="purchase-panel">
+          <aside className="purchase-panel product-page-animate slide">
             <span className="eyebrow">
               {p.category.toUpperCase()} / {p.sku}
             </span>
             <h1>{p.name[locale]}</h1>
             <div className="badges">
               <span>{p.manufacturer}</span>
-              <span>{p.type === "oem" ? "Original" : "After Market"}</span>
-              {p.demo && <span>{w.demoProduct}</span>}
+              {p.type === "oem" && (
+                <div className="original-badge-wrap">
+                  <OriginalBadge locale={locale} />
+                </div>
+              )}
+              {p.type !== "oem" && (
+                <span className="badge after-market">
+                  {locale === "ar" ? "بديل" : "After Market"}
+                </span>
+              )}
+              {p.demo && <span className="badge demo-badge">{w.demoProduct}</span>}
             </div>
             <CopyPart value={p.partNumber} locale={locale} />
             <div className="detail-price">
