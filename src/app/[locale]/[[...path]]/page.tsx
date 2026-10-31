@@ -1300,9 +1300,7 @@ export default async function Page({ params, searchParams }: Props) {
             <div className="badges">
               <span>{p.manufacturer}</span>
               {p.type === "oem" && (
-                <div className="original-badge-wrap">
-                  <OriginalBadge locale={locale} />
-                </div>
+                <OriginalBadge locale={locale} />
               )}
               {p.type !== "oem" && (
                 <span className="badge after-market">

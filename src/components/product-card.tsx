@@ -88,11 +88,7 @@ export async function ProductCard({
         )}
       </Link>
       <div className="product-info">
-        {p.type === "oem" && (
-          <div className="original-badge-wrap">
-            <OriginalBadge locale={locale} />
-          </div>
-        )}
+        {p.type === "oem" && <OriginalBadge locale={locale} />}
         <div className="product-meta">
           <strong className="product-brand">{p.manufacturer}</strong>
           {origin && (
