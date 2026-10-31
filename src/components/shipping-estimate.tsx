@@ -71,18 +71,20 @@ export function ShippingEstimate({
       {areas.length ? (
         <>
           <label className="shipping-estimate-label">
-            <select
-              value={governorate}
-              onChange={(e) => setGovernorate(e.target.value)}
-              className="shipping-estimate-select"
-            >
-              <option value="">اختار المحافظة</option>
-              {optionList.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            <div className="shipping-estimate-select-wrap">
+              <select
+                value={governorate}
+                onChange={(e) => setGovernorate(e.target.value)}
+                className="shipping-estimate-select"
+              >
+                <option value="">اختار المحافظة</option>
+                {optionList.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </label>
 
           {shown.length ? (
