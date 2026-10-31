@@ -1367,6 +1367,8 @@ img {
 }
 .shipping-estimate {
   border: none;
+  outline: none;
+  box-shadow: none;
   border-radius: 16px;
   padding: 16px;
   background: #f7f5f0;
@@ -1536,6 +1538,8 @@ img {
 }
 .shipping-estimate-row details {
   border: none;
+  outline: none;
+  box-shadow: none;
   border-radius: 16px;
   background: #f7f5f0;
   padding: 16px;
