@@ -410,43 +410,68 @@
   margin-top: 0;
 }
 .store :global(.product-grid) {
-  gap: 22px;
+  gap: 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 }
 .store :global(.product-card),
 .store :global(.offer-card),
 .store :global(.model-card),
 .store :global(.campaign-section .panel) {
   background: #fff;
-  border: 1px solid #e3e4dd;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px #1b292b03;
-  color: #28353e;
+  border: 1px solid #e8e8e0;
+  border-radius: 14px;
+  box-shadow: 0 4px 20px #0000000a;
+  color: #26343d;
   overflow: hidden;
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s ease,
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .store :global(.product-card),
 .store :global(.offer-card) {
   position: relative;
   isolation: isolate;
-  transition:
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.35s ease,
-    box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.store :global(.product-card.product-card-animate) {
+  animation: productCardEntrance 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.store :global(.product-card:hover),
+.store :global(.product-card:focus-within),
+.store :global(.offer-card:hover),
+.store :global(.offer-card:focus-within) {
+  transform: translateY(-8px);
+  border-color: #c9b184;
+  box-shadow:
+    0 24px 48px -12px #1b292b1a,
+    0 8px 16px #00000008;
+}
+@keyframes productCardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .store :global(.product-card::after),
 .store :global(.offer-card::after) {
   content: "";
   position: absolute;
   top: 0;
-  inset-inline: 16px;
+  inset-inline: 20px;
   height: 2px;
   z-index: 3;
   border-radius: 2px;
   background: linear-gradient(90deg, transparent, #c8a45c, transparent);
   opacity: 0;
-  transform: scaleX(0.55);
+  transform: scaleX(0.5);
   transition:
     opacity 0.4s ease,
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
 .store :global(.product-card:hover::after),
@@ -473,16 +498,6 @@
   position: relative;
   z-index: 2;
 }
-.store :global(.product-card:hover),
-.store :global(.product-card:focus-within),
-.store :global(.offer-card:hover),
-.store :global(.offer-card:focus-within) {
-  transform: translateY(-6px);
-  border-color: #c9b184;
-  box-shadow:
-    0 26px 54px -22px #3b2f1a33,
-    0 2px 8px #3b2f1a0f;
-}
 .store :global(.product-art) {
   background: #fff;
   padding: 0;
@@ -500,39 +515,76 @@
   background: #d3b777;
   color: #1a272a;
 }
+.store :global(.product-card-image) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: none;
+  transition: transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.store :global(.product-card:hover .product-card-image),
+.store :global(.product-card:focus-within .product-card-image) {
+  transform: scale(1.06);
+}
 .store :global(.product-info) {
-  padding: 22px;
+  padding: 20px 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .store :global(.product-info h3) {
-  font-size: 20px;
-  line-height: 1.4;
-  font-weight: 500;
-  color: #26343d;
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 700;
+  color: #14252b;
+  margin: 0;
   min-height: 0;
+  transition: color 0.3s ease;
+}
+.store :global(.product-card:hover h3),
+.store :global(.product-card:focus-within h3) {
+  color: #8b805e;
 }
 .store :global(.product-info .eyebrow) {
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  color: #77684e;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8b805e;
+  font-weight: 700;
 }
 .store :global(.product-brand) {
-  color: #17232b;
-  font-weight: 700;
+  color: #14252b;
+  font-weight: 800;
+  font-size: 14px;
   letter-spacing: -0.01em;
 }
 .store :global(.product-origin) {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   border-color: #c9b184;
   background: #f6f0e2;
   color: #5a4a2c;
   font-weight: 700;
+  font-size: 12px;
   padding-block: 3px;
-  padding-inline: 7px;
-  border-radius: 4px;
+  padding-inline: 8px;
+  border-radius: 6px;
 }
-.original-badge-wrap {
-  margin-block-end: 10px;
+.store :global(.product-price) {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 6px;
+  color: #14252b;
+  font-weight: 800;
+  font-size: 20px;
 }
-
+.store :global(.product-price del) {
+  color: #8a8a8a;
+  font-size: 14px;
+  font-weight: 500;
+}
 .store :global(.original-badge) {
   display: inline-flex;
   align-items: center;

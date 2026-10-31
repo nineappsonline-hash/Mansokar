@@ -47,7 +47,7 @@ export async function ProductCard({
   }
   const w = t(locale);
   return (
-    <article className="product-card" aria-label={p.name[locale]}>
+    <article className="product-card product-card-animate" aria-label={p.name[locale]}>
       <Link
         href={href}
         className="product-art"
@@ -55,7 +55,12 @@ export async function ProductCard({
         data-productid={p.id}
       >
         {media ? (
-          <img src={media.url} alt={media.alt[locale]} loading="lazy" />
+          <img
+            src={media.url}
+            alt={media.alt[locale]}
+            loading="lazy"
+            className="product-card-image"
+          />
         ) : p.demo ? (
           <img
             src={partArt(p.category)}
@@ -65,6 +70,7 @@ export async function ProductCard({
                 : "Demo product illustration"
             }
             loading="lazy"
+            className="product-card-image"
           />
         ) : (
           <div className="offer-image-placeholder">
