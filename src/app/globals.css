@@ -1366,10 +1366,10 @@ img {
   accent-color: var(--amber);
 }
 .shipping-estimate {
-  border: 1px solid #f6a800;
+  border: 1px solid var(--amber);
   border-radius: 8px;
   padding: 12px;
-  background: #f6a800;
+  background: var(--amber);
   position: relative;
 }
 .shipping-estimate::before {
