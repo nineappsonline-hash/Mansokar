@@ -162,12 +162,6 @@ export async function Shell({
             {settings.contact?.[locale] && (
               <p className="prose">{settings.contact[locale]}</p>
             )}
-            <p className="muted">
-              {locale === "ar" ? "موبِك" : "MOPC"} ·{" "}
-              {locale === "ar"
-                ? "متجر تجريبي في مصر"
-                : "Demo automotive store in Egypt"}
-            </p>
           </div>
           <div>
             <h3>{w.catalog}</h3>
