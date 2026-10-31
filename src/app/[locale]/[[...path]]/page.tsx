@@ -2034,19 +2034,8 @@ export default async function Page({ params, searchParams }: Props) {
           )}
           {path[0] === "policies" &&
             ["shipping", "returns", "warranty"].includes(path[1]) &&
-            policyPage && (
-              <Link
-                className="button secondary"
-                href={`/${locale}/contact#callback`}
-              >
-                {locale === "ar"
-                  ? "اطلب تواصل بخصوص هذه السياسة"
-                  : "Request help with this policy"}{" "}
-                ↗
-              </Link>
-            )}
-          {policyPage ? (
-            <div className="stack">
+            policyPage ? (
+              <div className="stack">
               {policyPage.body[locale]
                 .split(/\n\s*\n/)
                 .map((paragraph: string, index: number) => (
