@@ -1520,6 +1520,16 @@ img {
   text-align: center;
   padding: 10px 0;
 }
+.shipping-estimate-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.shipping-estimate-row > * {
+  flex: 1;
+  min-width: 240px;
+}
 .prose {
   white-space: pre-wrap;
   font-size: 22px;

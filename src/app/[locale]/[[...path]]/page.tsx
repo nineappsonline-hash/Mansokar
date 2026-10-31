@@ -1328,37 +1328,39 @@ export default async function Page({ params, searchParams }: Props) {
                 {p.warranty && (
                   <p className="product-warranty-note">{p.warranty[locale]}</p>
                 )}
-                <ShippingEstimate locale={locale} areas={areas} />
-                <details className="accordion">
-                  <summary>
-                    {locale === "ar"
-                      ? "الشحن والإرجاع والضمان"
-                      : "Shipping, returns & warranty"}
-                  </summary>
-                  <p>
-                    {locale === "ar"
-                      ? "تتحدد رسوم التوصيل حسب المنطقة. راجع السياسات المنشورة وشروط ضمان المنتج قبل الطلب."
-                      : "Delivery fees depend on your area. Review the published policies and product warranty terms before ordering."}
-                  </p>
-                  <nav
-                    className="product-policy-links"
-                    aria-label={
-                      locale === "ar"
-                        ? "سياسات الشحن والاسترجاع والضمان"
-                        : "Shipping, returns and warranty policies"
-                    }
-                  >
-                    <Link href={`/${locale}/policies/returns`}>
-                      {locale === "ar" ? "سياسة الاسترجاع" : "Return policy"}
-                    </Link>
-                    <Link href={`/${locale}/policies/shipping`}>
-                      {locale === "ar" ? "سياسة الشحن" : "Shipping policy"}
-                    </Link>
-                    <Link href={`/${locale}/policies/warranty`}>
-                      {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
-                    </Link>
-                  </nav>
-                </details>
+                <div className="shipping-estimate-row">
+                  <ShippingEstimate locale={locale} areas={areas} />
+                  <details className="accordion">
+                    <summary>
+                      {locale === "ar"
+                        ? "الشحن والإرجاع والضمان"
+                        : "Shipping, returns & warranty"}
+                    </summary>
+                    <p>
+                      {locale === "ar"
+                        ? "تتحدد رسوم التوصيل حسب المنطقة. راجع السياسات المنشورة وشروط ضمان المنتج قبل الطلب."
+                        : "Delivery fees depend on your area. Review the published policies and product warranty terms before ordering."}
+                    </p>
+                    <nav
+                      className="product-policy-links"
+                      aria-label={
+                        locale === "ar"
+                          ? "سياسات الشحن والاسترجاع والضمان"
+                          : "Shipping, returns and warranty policies"
+                      }
+                    >
+                      <Link href={`/${locale}/policies/returns`}>
+                        {locale === "ar" ? "سياسة الاسترجاع" : "Return policy"}
+                      </Link>
+                      <Link href={`/${locale}/policies/shipping`}>
+                        {locale === "ar" ? "سياسة الشحن" : "Shipping policy"}
+                      </Link>
+                      <Link href={`/${locale}/policies/warranty`}>
+                        {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
+                      </Link>
+                    </nav>
+                  </details>
+                </div>
               </div>
             </section>
           </div>
