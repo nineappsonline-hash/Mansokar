@@ -1102,14 +1102,24 @@ export default async function Page({ params, searchParams }: Props) {
       vehicle: Vehicle | undefined,
       locale: Locale,
     ): string {
-      if (!vehicle) {
+      const v =
+        vehicle ??
+        (browsingContext
+          ? vehicles.find(
+              (v) =>
+                v.brand === browsingContext.make &&
+                v.model === browsingContext.model &&
+                v.year === browsingContext.year,
+            )
+          : undefined);
+      if (!v) {
         return locale === "ar"
           ? "لم يتم اختيار سيارة"
           : "No vehicle selected";
       }
       return locale === "ar"
-        ? `${vehicle.name.ar}`
-        : `${vehicle.name.en}`;
+        ? `${v.name.ar}`
+        : `${v.name.en}`;
     }
 
     let media: {
