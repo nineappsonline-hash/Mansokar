@@ -2035,16 +2035,47 @@ export default async function Page({ params, searchParams }: Props) {
           {path[0] === "policies" &&
             ["shipping", "returns", "warranty"].includes(path[1]) &&
             policyPage ? (
-              <div className="stack">
-              {policyPage.body[locale]
-                .split(/\n\s*\n/)
-                .map((paragraph: string, index: number) => (
-                  <p className="prose" key={index}>
-                    {paragraph}
+              <section className="policy-page">
+                <div className="policy-header">
+                  <span className="policy-eyebrow">
+                    {locale === "ar" ? "سياسة المتجر" : "Store Policy"}
+                  </span>
+                  <h1>{policyPage.title[locale]}</h1>
+                  <p className="policy-sub">
+                    {locale === "ar"
+                      ? "آخر تحديث: " + new Date().toLocaleDateString(locale)
+                      : "Last updated: " +
+                        new Date().toLocaleDateString(locale)}
                   </p>
-                ))}
-            </div>
-          ) : route === "guides" || route === "contact" ? null : route ===
+                </div>
+                <div className="policy-body">
+                  {policyPage.body[locale]
+                    .split(/\n\s*\n/)
+                    .map((paragraph: string, index: number) => {
+                      const trimmed = paragraph.trim();
+                      if (trimmed.startsWith("#")) {
+                        return (
+                          <h2 key={index} className="policy-section-title">
+                            {trimmed.replace(/^#\s*/, "")}
+                          </h2>
+                        );
+                      }
+                      if (trimmed.startsWith(">")) {
+                        return (
+                          <div key={index} className="policy-callout">
+                            <p>{trimmed.replace(/^>\s*/, "")}</p>
+                          </div>
+                        );
+                      }
+                      return (
+                        <p key={index} className="policy-text">
+                          {trimmed}
+                        </p>
+                      );
+                    })}
+                </div>
+              </section>
+            ) : route === "guides" || route === "contact" ? null : route ===
             "about" ? (
             <p className="lead">
               {w.intro} {w.demo}
