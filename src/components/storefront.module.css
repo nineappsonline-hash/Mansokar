@@ -516,8 +516,8 @@
   color: #77684e;
 }
 .store :global(.product-brand) {
-  color: #26343d;
-  font-weight: 700;
+  color: #14252b;
+  font-weight: 900;
 }
 .store :global(.product-origin) {
   border-color: #ddd7ca;
