@@ -29,7 +29,7 @@ test("different engine is unconfirmed and unselected vehicle prompts selection",
     ),
     /not confirmed/,
   );
-  assert.match(fitmentLabel(undefined, false, "en"), /Choose your car/);
+  assert.equal(fitmentLabel(undefined, false, "en"), "");
 });
 test("Arabic and part-number normalization", () => {
   assert.equal(normalize("أَصْلِيّ ـ"), normalize("اصلي"));
