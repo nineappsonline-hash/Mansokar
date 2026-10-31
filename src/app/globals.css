@@ -1366,20 +1366,14 @@ img {
   accent-color: var(--amber);
 }
 .shipping-estimate {
-  border: 1px solid var(--amber);
+  border: 1px solid #c9b184;
   border-radius: 8px;
   padding: 12px;
-  background: var(--amber);
+  background: #f6f0e2;
   position: relative;
 }
 .shipping-estimate::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, #c8a45c, #f6a800);
+  content: none;
 }
 .shipping-estimate-header {
   display: flex;
@@ -1391,23 +1385,23 @@ img {
   width: 28px;
   height: 28px;
   border-radius: 7px;
-  background: #1a1c22;
-  border: 1px solid #f6a800;
+  background: #fff;
+  border: 1px solid #c9b184;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #f6a800;
+  color: #5a4a2c;
 }
 .shipping-estimate-header h3 {
   font-size: 14px;
   font-weight: 700;
   margin: 0;
-  color: #15130d;
+  color: #5a4a2c;
   letter-spacing: -0.01em;
 }
 .shipping-estimate-sub {
   font-size: 11px;
-  color: #5c4a1a;
+  color: #8a7a5e;
   margin: 2px 0 0;
 }
 .shipping-estimate-label {
@@ -1420,24 +1414,24 @@ img {
 .shipping-estimate-label-text {
   font-size: 12px;
   font-weight: 700;
-  color: #15130d;
+  color: #5a4a2c;
   white-space: nowrap;
 }
 .shipping-estimate-label-icon {
-  color: #f6a800;
+  color: #c9b184;
 }
 .shipping-estimate-select {
   flex: 1;
   padding: 8px 10px;
-  border: 1px solid #f6a800;
+  border: 1px solid #c9b184;
   border-radius: 7px;
-  background: #1a1c22;
-  color: #fff;
+  background: #fff;
+  color: #5a4a2c;
   font-size: 12px;
   outline: none;
 }
 .shipping-estimate-select:focus {
-  border-color: #ffc247;
+  border-color: #c9b184;
 }
 .shipping-estimate-results {
   list-style: none;
@@ -1452,13 +1446,13 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 8px 10px;
-  background: #1a1c22;
-  border: 1px solid #f6a800;
+  background: #fff;
+  border: 1px solid #c9b184;
   border-radius: 7px;
 }
 .shipping-estimate-row:hover {
-  border-color: #ffc247;
-  background: #1e2028;
+  border-color: #c9b184;
+  background: #fff5e6;
 }
 .shipping-estimate-method {
   display: flex;
@@ -1466,10 +1460,10 @@ img {
   gap: 6px;
   font-size: 12px;
   font-weight: 700;
-  color: #fff;
+  color: #5a4a2c;
 }
 .shipping-estimate-method-icon {
-  color: #f6a800;
+  color: #c9b184;
 }
 .shipping-estimate-cost-group {
   display: flex;
@@ -1479,14 +1473,14 @@ img {
 .shipping-estimate-cost {
   font-size: 13px;
   font-weight: 800;
-  color: #f6a800;
+  color: #c9b184;
 }
 .shipping-estimate-arrow {
-  color: #c8a45c;
+  color: #8a7a5e;
 }
 .shipping-estimate-none {
   font-size: 12px;
-  color: #5c4a1a;
+  color: #8a7a5e;
   text-align: center;
   padding: 10px 0;
 }
