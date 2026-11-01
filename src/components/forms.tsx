@@ -12,6 +12,19 @@ import {
   isManualPayment,
   type PaymentMethod,
 } from "@/lib/payments";
+import {
+  CreditCard,
+  Phone,
+  Mail,
+  MapPin,
+  Truck,
+  Shield,
+  BadgeCheck,
+  Smartphone,
+  Package,
+  Barcode,
+  Lock,
+} from "lucide-react";
 export function ApiForm({
   action,
   children,
@@ -328,401 +341,593 @@ export function Checkout({
   const [reviewed, setReviewed] = useState(false);
   const router = useRouter();
   return (
-    <form
-      className="two-col"
-      onChange={() => {
-        setQuote(null);
-        setReviewed(false);
-      }}
-      onSubmit={async (e) => {
-        e.preventDefault();
-        setBusy(true);
-        try {
-          const form = e.currentTarget;
-          const formData = new FormData(form);
-          const proof = formData.get("proof");
-          formData.delete("proof");
-          const fields = Object.fromEntries(formData);
-          if (!methods.length)
-            throw Error("No payment method has been enabled");
-          if (!reviewed || !quote) {
-            const response = await fetch("/api/checkout-quote", {
+    <div className="checkout-page">
+      <div className="checkout-header">
+        <span className="checkout-eyebrow">
+          {locale === "ar" ? "إتمام الطلب" : "Checkout"}
+        </span>
+        <h1>
+          {locale === "ar" ? "إتمام طلبك" : "Complete your order"}
+        </h1>
+        <p>
+          {locale === "ar"
+            ? "أكمل بيانات التوصيل واختر طريقة الدفع لإتمام الطلب."
+            : "Fill in delivery details and choose a payment method to place your order."}
+        </p>
+      </div>
+
+      <div className="checkout-stepper">
+        <div className="checkout-step completed">
+          <div className="checkout-step-number">1</div>
+          <div className="checkout-step-label">
+            {locale === "ar" ? "التوصيل" : "Delivery"}
+          </div>
+        </div>
+        <div className="checkout-step active">
+          <div className="checkout-step-number">2</div>
+          <div className="checkout-step-label">
+            {locale === "ar" ? "الدفع" : "Payment"}
+          </div>
+        </div>
+        <div className="checkout-step">
+          <div className="checkout-step-number">3</div>
+          <div className="checkout-step-label">
+            {locale === "ar" ? "التأكيد" : "Confirm"}
+          </div>
+        </div>
+      </div>
+
+      <form
+        className="two-col"
+        onChange={() => {
+          setQuote(null);
+          setReviewed(false);
+        }}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          setBusy(true);
+          try {
+            const form = e.currentTarget;
+            const formData = new FormData(form);
+            const proof = formData.get("proof");
+            formData.delete("proof");
+            const fields = Object.fromEntries(formData);
+            if (!methods.length)
+              throw Error("No payment method has been enabled");
+            if (!reviewed || !quote) {
+              const response = await fetch("/api/checkout-quote", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  ...fields,
+                  locale,
+                  items: JSON.parse(localStorage.getItem("cart") || "[]"),
+                }),
+              });
+              const data = await response.json();
+              if (!response.ok) throw Error(data.error);
+              setQuote(data);
+              setReviewed(true);
+              setMessage(
+                locale === "ar"
+                  ? "راجع إجمالي الطلب ثم أكد الطلب."
+                  : "Review the totals, then confirm your order.",
+              );
+              return;
+            }
+            let imageToken: string | undefined;
+            if (isManualPayment(method)) {
+              if (!(proof instanceof File) || !proof.size)
+                throw Error(
+                  locale === "ar"
+                    ? "يرجى رفع إثبات التحويل لإتمام الطلب."
+                    : "Please upload the transfer receipt to complete the order.",
+                );
+              const upload = new FormData();
+              upload.append("image", proof);
+              const uploadResponse = await fetch("/api/upload", {
+                method: "POST",
+                body: upload,
+              });
+              const uploadData = await uploadResponse.json();
+              if (!uploadResponse.ok) throw Error(uploadData.error);
+              imageToken = uploadData.token;
+              if (!imageToken)
+                throw Error(
+                  locale === "ar"
+                    ? "تعذر حفظ إثبات التحويل. يرجى المحاولة مرة أخرى."
+                    : "Unable to save the transfer receipt. Please try again.",
+                );
+            }
+            let key = sessionStorage.getItem("checkout-key");
+            if (!key) {
+              key = crypto.randomUUID();
+              sessionStorage.setItem("checkout-key", key);
+            }
+            const response = await fetch("/api/checkout", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 ...fields,
-                locale,
+                method,
+                imageToken,
+                vehicle,
+                review_total: quote.total,
                 items: JSON.parse(localStorage.getItem("cart") || "[]"),
+                key,
+                locale,
               }),
             });
             const data = await response.json();
             if (!response.ok) throw Error(data.error);
-            setQuote(data);
-            setReviewed(true);
+            localStorage.setItem("cart", "[]");
+            window.dispatchEvent(new Event("store-change"));
+            sessionStorage.removeItem("checkout-key");
+            if (/^https?:\/\//.test(data.redirect))
+              window.location.assign(data.redirect);
+            else router.push(data.redirect);
+          } catch (error) {
+            setQuote(null);
+            setReviewed(false);
             setMessage(
-              locale === "ar"
-                ? "راجع إجمالي الطلب ثم أكد الطلب."
-                : "Review the totals, then confirm your order.",
+              error instanceof Error ? error.message : "Checkout failed",
             );
-            return;
+          } finally {
+            setBusy(false);
           }
-          let imageToken: string | undefined;
-          if (isManualPayment(method)) {
-            if (!(proof instanceof File) || !proof.size)
-              throw Error(
-                locale === "ar"
-                  ? "يرجى رفع إثبات التحويل لإتمام الطلب."
-                  : "Please upload the transfer receipt to complete the order.",
-              );
-            const upload = new FormData();
-            upload.append("image", proof);
-            const uploadResponse = await fetch("/api/upload", {
-              method: "POST",
-              body: upload,
-            });
-            const uploadData = await uploadResponse.json();
-            if (!uploadResponse.ok) throw Error(uploadData.error);
-            imageToken = uploadData.token;
-            if (!imageToken)
-              throw Error(
-                locale === "ar"
-                  ? "تعذر حفظ إثبات التحويل. يرجى المحاولة مرة أخرى."
-                  : "Unable to save the transfer receipt. Please try again.",
-              );
-          }
-          let key = sessionStorage.getItem("checkout-key");
-          if (!key) {
-            key = crypto.randomUUID();
-            sessionStorage.setItem("checkout-key", key);
-          }
-          const response = await fetch("/api/checkout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...fields,
-              method,
-              imageToken,
-              vehicle,
-              review_total: quote.total,
-              items: JSON.parse(localStorage.getItem("cart") || "[]"),
-              key,
-              locale,
-            }),
-          });
-          const data = await response.json();
-          if (!response.ok) throw Error(data.error);
-          localStorage.setItem("cart", "[]");
-          window.dispatchEvent(new Event("store-change"));
-          sessionStorage.removeItem("checkout-key");
-          if (/^https?:\/\//.test(data.redirect))
-            window.location.assign(data.redirect);
-          else router.push(data.redirect);
-        } catch (error) {
-          setQuote(null);
-          setReviewed(false);
-          setMessage(
-            error instanceof Error ? error.message : "Checkout failed",
-          );
-        } finally {
-          setBusy(false);
-        }
-      }}
-    >
-      <div className="panel stack">
-        <h2>{locale === "ar" ? "بيانات التوصيل" : "Delivery details"}</h2>
-        {addresses.length > 0 && (
-          <label>
-            {locale === "ar" ? "استخدام عنوان محفوظ" : "Use saved address"}
+        }}
+      >
+        <div className="checkout-panel">
+          <div className="checkout-panel-title">
+            <MapPin size={18} strokeWidth={2} />
+            {locale === "ar" ? "بيانات التوصيل" : "Delivery details"}
+          </div>
+          <div className="checkout-panel-sub">
+            {locale === "ar"
+              ? "أدخل عنوان التوصيل وتفاصيل الاتصال."
+              : "Enter your delivery address and contact information."}
+          </div>
+
+          {addresses.length > 0 && (
+            <div className="saved-addresses">
+              <label className="checkout-label">
+                <span>
+                  {locale === "ar" ? "استخدام عنوان محفوظ" : "Use saved address"}
+                </span>
+                <select
+                  defaultValue=""
+                  onChange={(e) => {
+                    const saved = addresses.find((a) => a.id === e.target.value);
+                    const form = e.currentTarget.form;
+                    if (!saved || !form) return;
+                    for (const [key, value] of Object.entries({
+                      name: saved.name,
+                      phone: saved.phone,
+                      address: saved.details,
+                    })) {
+                      const field = form.elements.namedItem(
+                        key,
+                      ) as HTMLInputElement;
+                      field.value = value;
+                    }
+                    if (saved.area_id) setArea(saved.area_id);
+                    setQuote(null);
+                    setReviewed(false);
+                  }}
+                >
+                  <option value="">—</option>
+                  {addresses.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.name} · {a.details}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                {addresses.map((addr) => (
+                  <label key={addr.id} className="saved-address-card">
+                    <input
+                      type="radio"
+                      name="saved-address"
+                      value={addr.id}
+                      readOnly
+                    />
+                    <div className="saved-address-info">
+                      <p className="saved-address-name">{addr.name}</p>
+                      <p className="saved-address-details">{addr.details}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <label className="checkout-label">
+            <span>{locale === "ar" ? "الاسم بالكامل" : "Full name"}</span>
+            <input
+              name="name"
+              required
+              minLength={2}
+              maxLength={100}
+              autoComplete="name"
+              className="checkout-input"
+            />
+          </label>
+          <label className="checkout-label">
+            <span>
+              <Phone size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
+              {locale === "ar" ? "رقم موبايل مصري" : "Egyptian mobile number"}
+            </span>
+            <input
+              name="phone"
+              required
+              pattern="01[0125][0-9]{8}"
+              dir="ltr"
+              autoComplete="tel"
+              placeholder="01xxxxxxxxx"
+              className="checkout-input"
+            />
+          </label>
+          <label className="checkout-label">
+            <span>
+              <Mail size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
+              {locale === "ar" ? "البريد الإلكتروني (اختياري)" : "Email (optional)"}
+            </span>
+            <input
+              name="email"
+              type="email"
+              maxLength={200}
+              dir="ltr"
+              autoComplete="email"
+              placeholder="name@example.com"
+              className="checkout-input"
+            />
+          </label>
+          <label className="checkout-label">
+            <span>
+              <MapPin size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
+              {locale === "ar" ? "المحافظة وطريقة الشحن" : "Governorate & shipping method"}
+            </span>
             <select
-              defaultValue=""
-              onChange={(e) => {
-                const saved = addresses.find((a) => a.id === e.target.value);
-                const form = e.currentTarget.form;
-                if (!saved || !form) return;
-                for (const [key, value] of Object.entries({
-                  name: saved.name,
-                  phone: saved.phone,
-                  address: saved.details,
-                })) {
-                  const field = form.elements.namedItem(
-                    key,
-                  ) as HTMLInputElement;
-                  field.value = value;
-                }
-                if (saved.area_id) setArea(saved.area_id);
-                setQuote(null);
-                setReviewed(false);
-              }}
+              name="area"
+              required
+              value={area}
+              onChange={(e) => setArea(e.target.value)}
+              className="checkout-select"
             >
               <option value="">—</option>
-              {addresses.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name} · {a.details}
+              {areas.map((a) => (
+                <option value={a.id} key={a.id}>
+                  {shippingLabel(a, locale)} · {money(a.amount, locale)}
                 </option>
               ))}
             </select>
           </label>
-        )}
-        <label>
-          {locale === "ar" ? "الاسم بالكامل" : "Full name"}
-          <input
-            name="name"
-            required
-            minLength={2}
-            maxLength={100}
-            autoComplete="name"
-          />
-        </label>
-        <label>
-          {locale === "ar" ? "رقم موبايل مصري" : "Egyptian mobile number"}
-          <input
-            name="phone"
-            required
-            pattern="01[0125][0-9]{8}"
-            dir="ltr"
-            autoComplete="tel"
-            placeholder="01xxxxxxxxx"
-          />
-        </label>
-        <label>
-          {locale === "ar" ? "البريد الإلكتروني (اختياري)" : "Email (optional)"}
-          <input
-            name="email"
-            type="email"
-            maxLength={200}
-            dir="ltr"
-            autoComplete="email"
-            placeholder="name@example.com"
-          />
-        </label>
-        <label>
-          {locale === "ar"
-            ? "المحافظة وطريقة الشحن"
-            : "Governorate & shipping method"}
-          <select
-            name="area"
-            required
-            value={area}
-            onChange={(e) => setArea(e.target.value)}
-          >
-            <option value="">—</option>
-            {areas.map((a) => (
-              <option value={a.id} key={a.id}>
-                {shippingLabel(a, locale)} · {money(a.amount, locale)}
-              </option>
-            ))}
-          </select>
-        </label>
-        {area && (
-          <p className="muted">
+          {area && (
+            <p className="muted" style={{ fontSize: "13px", marginTop: "4px" }}>
+              {locale === "ar"
+                ? "مدة التوصيل من تأكيد الطلب وتوافر المنتجات. أيام العمل لا تشمل الجمعة والعطلات الرسمية."
+                : "Delivery time runs from order confirmation and product availability. Business days exclude Fridays and public holidays."}
+            </p>
+          )}
+          {!areas.length && (
+            <p className="notice" style={{ marginBottom: "20px" }}>
+              {locale === "ar"
+                ? "لا توجد مناطق توصيل معتمدة. الطلب غير متاح."
+                : "No approved delivery areas. Checkout is unavailable."}
+            </p>
+          )}
+          <hr className="section-divider" />
+          <label className="checkout-label">
+            <span>
+              <Truck size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
+              {locale === "ar" ? "العنوان بالتفصيل" : "Detailed address"}
+            </span>
+            <textarea
+              name="address"
+              required
+              minLength={10}
+              maxLength={500}
+              autoComplete="street-address"
+              className="checkout-textarea"
+            />
+          </label>
+          <label className="checkout-label">
+            <span>
+              <Barcode size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
+              {locale === "ar" ? "ملاحظات التوصيل" : "Delivery notes"}
+            </span>
+            <textarea name="notes" maxLength={1000} className="checkout-textarea" />
+          </label>
+          <label className="checkout-label">
+            <span>
+              <Lock size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
+              {locale === "ar" ? "كود الخصم" : "Coupon code"}
+            </span>
+            <input
+              name="coupon"
+              maxLength={40}
+              className="checkout-input"
+              placeholder={locale === "ar" ? "أدخل الكود" : "Enter coupon code"}
+            />
+          </label>
+        </div>
+
+        <aside className="checkout-panel">
+          <div className="checkout-panel-title">
+            <CreditCard size={18} strokeWidth={2} />
+            {locale === "ar" ? "طريقة الدفع" : "Payment method"}
+          </div>
+          <div className="checkout-panel-sub">
             {locale === "ar"
-              ? "مدة التوصيل من تأكيد الطلب وتوافر المنتجات. أيام العمل لا تشمل الجمعة والعطلات الرسمية."
-              : "Delivery time runs from order confirmation and product availability. Business days exclude Fridays and public holidays."}
-          </p>
-        )}
-        {!areas.length && (
-          <p className="notice">
-            {locale === "ar"
-              ? "لا توجد مناطق توصيل معتمدة. الطلب غير متاح."
-              : "No approved delivery areas. Checkout is unavailable."}
-          </p>
-        )}
-        <label>
-          {locale === "ar" ? "العنوان بالتفصيل" : "Detailed address"}
-          <textarea
-            name="address"
-            required
-            minLength={10}
-            maxLength={500}
-            autoComplete="street-address"
-          />
-        </label>
-        <label>
-          {locale === "ar" ? "ملاحظات التوصيل" : "Delivery notes"}
-          <textarea name="notes" maxLength={1000} />
-        </label>
-        <label>
-          {locale === "ar" ? "كود الخصم" : "Coupon"}
-          <input name="coupon" maxLength={40} />
-        </label>
-      </div>
-      <aside className="panel stack">
-        <h2>{locale === "ar" ? "طريقة الدفع" : "Payment method"}</h2>
-        {methods.length ? (
-          <div className="stack">
-            {methods.includes("card") && (
-              <label className="check">
-                <input
-                  type="radio"
-                  name="method"
-                  value="card"
-                  required
-                  checked={method === "card"}
-                  onChange={() => setMethod("card")}
-                />
-                <span>
-                  {locale === "ar"
-                    ? "بطاقة ائتمان أو تقسيط"
-                    : "Credit card or installments"}
-                  <small className="muted">
-                    {" "}
-                    · {InstallmentProviders.join(" · ")}
-                  </small>
-                </span>
-              </label>
-            )}
-            {methods.includes("instapay") && (
-              <div className="stack">
-                <label className="check">
-                  <input
-                    type="radio"
-                    name="method"
-                    value="instapay"
-                    required
-                    checked={method === "instapay"}
-                    onChange={() => setMethod("instapay")}
-                  />
-                  {locale === "ar" ? "إنستاباي" : "InstaPay"}
-                </label>
-                {method === "instapay" && (
-                  <div className="stack">
-                    <p className="muted">
-                      {locale === "ar"
-                        ? "حوّل المبلغ ثم ارفع صورة إثبات التحويل."
-                        : "Transfer the amount, then upload a receipt."}
-                    </p>
-                    <a href={INSTAPAY_URL} target="_blank" rel="noreferrer">
-                      {locale === "ar"
-                        ? "فتح رابط إنستاباي"
-                        : "Open InstaPay link"}
-                    </a>
-                    <label>
-                      {locale === "ar" ? "إثبات التحويل" : "Transfer receipt"}
-                      <input
-                        name="proof"
-                        type="file"
-                        accept="image/*"
-                        required
-                      />
-                    </label>
-                  </div>
+              ? "اختر طريقة الدفع المناسبة لك."
+              : "Choose how you'd like to pay."}
+          </div>
+
+          <div className="payment-methods">
+            {methods.length ? (
+              <>
+                {methods.includes("card") && (
+                  <label className="payment-method-card">
+                    <input
+                      type="radio"
+                      name="method"
+                      value="card"
+                      required
+                      checked={method === "card"}
+                      onChange={() => setMethod("card")}
+                    />
+                    <div className="payment-method-icon">
+                      <CreditCard size={20} strokeWidth={2} />
+                    </div>
+                    <div className="payment-method-info">
+                      <p className="payment-method-title">
+                        {locale === "ar"
+                          ? "بطاقة ائتمان أو تقسيط"
+                          : "Credit card or installments"}
+                      </p>
+                      <p className="payment-method-sub">
+                        {locale === "ar"
+                          ? "دفع آمن عبر البطاقة أو أنظمة التقسيط"
+                          : "Secure card payment or installment plans"}
+                      </p>
+                      <p className="payment-method-details">
+                        {InstallmentProviders.join(" · ")}
+                      </p>
+                    </div>
+                  </label>
                 )}
-              </div>
-            )}
-            {methods.includes("wallet") && (
-              <div className="stack">
-                <label className="check">
-                  <input
-                    type="radio"
-                    name="method"
-                    value="wallet"
-                    required
-                    checked={method === "wallet"}
-                    onChange={() => setMethod("wallet")}
-                  />
-                  {locale === "ar" ? "محفظة إلكترونية" : "E-wallet"}
-                </label>
-                {method === "wallet" && (
-                  <div className="stack">
-                    <p className="muted">
-                      {locale === "ar"
-                        ? "حوّل المبلغ إلى رقم المحفظة ثم ارفع صورة إثبات التحويل."
-                        : "Transfer the amount to the wallet number, then upload a receipt."}
-                    </p>
-                    <p>
-                      {locale === "ar" ? "رقم المحفظة" : "Wallet number"}:{" "}
-                      <strong dir="ltr">{WALLET_NUMBER}</strong>
-                    </p>
-                    <label>
-                      {locale === "ar" ? "إثبات التحويل" : "Transfer receipt"}
-                      <input
-                        name="proof"
-                        type="file"
-                        accept="image/*"
-                        required
-                      />
-                    </label>
-                  </div>
+                {methods.includes("instapay") && (
+                  <label className="payment-method-card">
+                    <input
+                      type="radio"
+                      name="method"
+                      value="instapay"
+                      required
+                      checked={method === "instapay"}
+                      onChange={() => setMethod("instapay")}
+                    />
+                    <div className="payment-method-icon">
+                      <Smartphone size={20} strokeWidth={2} />
+                    </div>
+                    <div className="payment-method-info">
+                      <p className="payment-method-title">
+                        {locale === "ar" ? "إنستاباي" : "InstaPay"}
+                      </p>
+                      <p className="payment-method-sub">
+                        {locale === "ar"
+                          ? "حوّل المبلغ ثم ارفع صورة إثبات التحويل."
+                          : "Transfer the amount, then upload a receipt."}
+                      </p>
+                      {method === "instapay" && (
+                        <div className="payment-method-details">
+                          <a
+                            href={INSTAPAY_URL}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{ color: "var(--amber)", textDecoration: "underline", fontSize: "13px" }}
+                          >
+                            {locale === "ar"
+                              ? "فتح رابط إنستاباي"
+                              : "Open InstaPay link"}
+                          </a>
+                          <label style={{ display: "block", marginTop: "10px" }}>
+                            {locale === "ar" ? "إثبات التحويل" : "Transfer receipt"}
+                            <input
+                              name="proof"
+                              type="file"
+                              accept="image/*"
+                              required
+                            className="checkout-input"
+                          />
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </label>
                 )}
-              </div>
-            )}
-            {methods.includes("cod") && (
-              <label className="check">
-                <input
-                  type="radio"
-                  name="method"
-                  value="cod"
-                  required
-                  checked={method === "cod"}
-                  onChange={() => setMethod("cod")}
-                />
-                {locale === "ar" ? "الدفع عند الاستلام" : "Cash on delivery"}
-              </label>
+                {methods.includes("wallet") && (
+                  <label className="payment-method-card">
+                    <input
+                      type="radio"
+                      name="method"
+                      value="wallet"
+                      required
+                      checked={method === "wallet"}
+                      onChange={() => setMethod("wallet")}
+                    />
+                    <div className="payment-method-icon">
+                      <Mail size={20} strokeWidth={2} />
+                    </div>
+                    <div className="payment-method-info">
+                      <p className="payment-method-title">
+                        {locale === "ar" ? "محفظة إلكترونية" : "E-wallet"}
+                      </p>
+                      <p className="payment-method-sub">
+                        {locale === "ar"
+                          ? "حوّل المبلغ إلى رقم المحفظة ثم ارفع صورة إثبات التحويل."
+                          : "Transfer the amount to the wallet number, then upload a receipt."}
+                      </p>
+                      {method === "wallet" && (
+                        <div className="payment-method-details">
+                          <p>
+                            {locale === "ar" ? "رقم المحفظة" : "Wallet number"}:{" "}
+                            <strong dir="ltr">{WALLET_NUMBER}</strong>
+                          </p>
+                          <label style={{ display: "block", marginTop: "10px" }}>
+                            {locale === "ar" ? "إثبات التحويل" : "Transfer receipt"}
+                            <input
+                              name="proof"
+                              type="file"
+                              accept="image/*"
+                              required
+                            className="checkout-input"
+                          />
+                          </label>
+                        </div>
+                      )}
+                    </div>
+                  </label>
+                )}
+                {methods.includes("cod") && (
+                  <label className="payment-method-card">
+                    <input
+                      type="radio"
+                      name="method"
+                      value="cod"
+                      required
+                      checked={method === "cod"}
+                      onChange={() => setMethod("cod")}
+                    />
+                    <div className="payment-method-icon">
+                      <Truck size={20} strokeWidth={2} />
+                    </div>
+                    <div className="payment-method-info">
+                      <p className="payment-method-title">
+                        {locale === "ar" ? "الدفع عند الاستلام" : "Cash on delivery"}
+                      </p>
+                      <p className="payment-method-sub">
+                        {locale === "ar"
+                          ? "ادفع عند استلام الشحنة"
+                          : "Pay when you receive your order"}
+                      </p>
+                    </div>
+                  </label>
+                )}
+              </>
+            ) : (
+              <p className="notice">
+                {locale === "ar"
+                  ? "لم يتم تفعيل أي طريقة دفع."
+                  : "No payment method has been activated."}
+              </p>
             )}
           </div>
-        ) : (
-          <p className="notice">
-            {locale === "ar"
-              ? "لم يتم تفعيل أي طريقة دفع."
-              : "No payment method has been activated."}
-          </p>
-        )}
-        <p className="muted">
-          {locale === "ar"
-            ? "يتم التحقق من الأسعار والتوصيل والخصم على الخادم. عند اختيار البطاقة أو التقسيط ستنتقل إلى صفحة دفع آمنة."
-            : "Prices, delivery and discounts are validated on the server. Choosing a card or installments takes you to a secure payment page."}
-        </p>
-        <label className="check">
-          <input name="consent" type="checkbox" required value="yes" />
-          {locale === "ar"
-            ? "قرأت الشروط وسياسة الإرجاع"
-            : "I have read the terms and returns policy"}
-        </label>
-        <a href={`/${locale}/policies/returns`}>
-          {locale === "ar" ? "سياسة الإرجاع" : "Returns policy"}
-        </a>
-        {quote && (
-          <section aria-live="polite" className="stack">
-            <h2>{locale === "ar" ? "مراجعة الطلب" : "Order review"}</h2>
-            {quote.items.map((item) => (
-              <div key={item.id} className="cart-row">
-                <span>
-                  {item.name[locale]} × {item.quantity}
-                  <small> · {money(item.unit_price, locale)}</small>
-                </span>
-                <strong>{money(item.total, locale)}</strong>
+
+          <hr className="section-divider" />
+
+          <label className="checkout-label" style={{ marginBottom: "20px" }}>
+            <input
+              name="consent"
+              type="checkbox"
+              required
+              value="yes"
+            />
+            <span>
+              {locale === "ar"
+                ? "قرأت الشروط وسياسة الإرجاع"
+                : "I have read the terms and returns policy"}
+            </span>{" "}
+            <a
+              href={`/${locale}/policies/returns`}
+            >
+              {locale === "ar" ? "سياسة الإرجاع" : "Returns policy"}
+            </a>
+          </label>
+
+          {quote && (
+            <section className="order-summary" aria-live="polite">
+              <div className="order-summary-title">
+                <BadgeCheck size={18} strokeWidth={2} />
+                {locale === "ar" ? "مراجعة الطلب" : "Order review"}
               </div>
-            ))}
-            <p>
-              {t(locale).subtotal}: {money(quote.subtotal, locale)}
-            </p>
-            <p>
-              {locale === "ar" ? "الخصم" : "Discount"}: −
-              {money(quote.discount, locale)}
-            </p>
-            <p>
-              {locale === "ar" ? "التوصيل" : "Delivery"}:{" "}
-              {money(quote.shipping, locale)}
-            </p>
-            <p className="price">
-              {locale === "ar" ? "الإجمالي" : "Total"}:{" "}
-              {money(quote.total, locale)}
-            </p>
-          </section>
-        )}
-        <button className="button" disabled={busy || !methods.length || !area}>
-          {busy
-            ? "…"
-            : reviewed
-              ? locale === "ar"
-                ? "تأكيد الطلب"
-                : "Confirm order"
-              : locale === "ar"
-                ? "مراجعة الأسعار والتوصيل"
-                : "Review prices & delivery"}
-        </button>
-        <p role="alert">{message}</p>
-      </aside>
-    </form>
+              <div className="order-items">
+                {quote.items.map((item) => (
+                  <div key={item.id} className="order-item">
+                    <div className="order-item-image">
+                      {item.id ? (
+                        <img
+                          src={`/product-media/${item.id}`}
+                          alt={item.name[locale]}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <Package size={24} strokeWidth={2} />
+                      )}
+                    </div>
+                    <div className="order-item-info">
+                      <p className="order-item-name">{item.name[locale]}</p>
+                      <p className="order-item-meta">
+                        {locale === "ar" ? "الكمية" : "Qty"}:{" "}
+                            <span>{item.quantity}</span>
+                      </p>
+                    </div>
+                    <span className="order-item-price">
+                      {money(item.total, locale)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div className="order-breakdown">
+                <div className="order-line">
+                  <span className="label">{t(locale).subtotal}</span>
+                  <span>{money(quote.subtotal, locale)}</span>
+                </div>
+                <div className="order-line">
+                  <span className="label">{locale === "ar" ? "الخصم" : "Discount"}</span>
+                  <span>− {money(quote.discount, locale)}</span>
+                </div>
+                <div className="order-line">
+                  <span className="label">{locale === "ar" ? "التوصيل" : "Delivery"}</span>
+                  <span>{money(quote.shipping, locale)}</span>
+                </div>
+                <div className="order-line total">
+                  <span className="label">{locale === "ar" ? "الإجمالي" : "Total"}</span>
+                  <span>{money(quote.total, locale)}</span>
+                </div>
+              </div>
+              <div className="trust-badges">
+                <div className="trust-badge">
+                  <Shield size={16} strokeWidth={2} />
+                  <span>{locale === "ar" ? "دفع آمن" : "Secure payment"}</span>
+                </div>
+                <div className="trust-badge">
+                  <Lock size={16} strokeWidth={2} />
+                  <span>{locale === "ar" ? "بيانات محمية" : "Data protected"}</span>
+                </div>
+              </div>
+            </section>
+          )}
+
+          <button
+            className="checkout-button"
+            disabled={busy || !methods.length || !area}
+          >
+            {busy
+              ? "…"
+              : reviewed
+                ? locale === "ar"
+                  ? "تأكيد الطلب"
+                  : "Confirm order"
+                : locale === "ar"
+                  ? "مراجعة الأسعار والتوصيل"
+                  : "Review prices & delivery"}
+          </button>
+          {message && (
+            <p className={`checkout-message error`} role="alert">{message}</p>
+          )}
+        </aside>
+      </form>
+    </div>
   );
 }
