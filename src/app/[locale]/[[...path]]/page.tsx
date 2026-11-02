@@ -1528,8 +1528,7 @@ export default async function Page({ params, searchParams }: Props) {
         ).data ?? [])
       : [];
     content = (
-      <div className="shell section">
-        <h1>{w.checkout}</h1>
+      <div className="shell section checkout-shell">
         <Checkout
           locale={locale}
           addresses={addresses}

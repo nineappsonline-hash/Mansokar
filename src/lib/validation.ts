@@ -97,12 +97,17 @@ export const checkoutInput = z.object({
     .max(40),
   name: z.string().min(2).max(100),
   phone: z.string().regex(/^01[0125][0-9]{8}$/),
+  email: z.preprocess(
+    (value) => (value === "" ? undefined : value),
+    z.email().max(254).optional(),
+  ),
   address: z.string().min(10).max(500),
   area: z.string().min(1).max(100),
   coupon: z.string().max(40).optional(),
   vehicle: z.string().max(100).optional(),
   locale: z.enum(["ar", "en"]),
-  method: z.literal("cod"),
+  method: z.enum(["cod", "card", "instapay", "wallet", "installments"]),
+  imageToken: z.uuid().optional(),
   consent: z.literal("yes"),
 });
 export const importRows = z

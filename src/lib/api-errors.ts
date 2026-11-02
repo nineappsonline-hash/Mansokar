@@ -10,6 +10,42 @@ const messages: Record<string, { ar: string; en: string }> = {
     ar: "الدفع عند الاستلام غير متاح حالياً.",
     en: "Cash on delivery is currently unavailable.",
   },
+  "No payment method has been enabled": {
+    ar: "لم يتم تفعيل أي طريقة دفع.",
+    en: "No payment method has been enabled.",
+  },
+  "Payment method is not available": {
+    ar: "طريقة الدفع المختارة غير متاحة.",
+    en: "The selected payment method is unavailable.",
+  },
+  "Payment proof is required": {
+    ar: "يرجى رفع إثبات التحويل لإتمام الطلب.",
+    en: "Please upload the transfer receipt to complete the order.",
+  },
+  "Payment proof expired or already used": {
+    ar: "انتهت صلاحية إثبات التحويل. يرجى رفعه مرة أخرى.",
+    en: "The transfer receipt expired or was already used. Please upload it again.",
+  },
+  "Unable to save payment proof": {
+    ar: "تعذر حفظ إثبات التحويل. يرجى المحاولة مرة أخرى.",
+    en: "Unable to save the transfer receipt. Please try again.",
+  },
+  "Payment provider is not configured": {
+    ar: "بوابة الدفع غير مهيأة حالياً.",
+    en: "The payment provider is not configured.",
+  },
+  "Payment provider did not return a payment link": {
+    ar: "تعذر بدء عملية الدفع. يرجى المحاولة مرة أخرى.",
+    en: "Unable to start the payment. Please try again.",
+  },
+  "Payment provider returned an invalid response": {
+    ar: "تعذر الاتصال ببوابة الدفع. يرجى المحاولة مرة أخرى.",
+    en: "The payment provider returned an invalid response. Please try again.",
+  },
+  "Transfer already reviewed": {
+    ar: "تمت مراجعة التحويل بالفعل.",
+    en: "This transfer has already been reviewed.",
+  },
   "Delivery area is not configured": {
     ar: "التوصيل غير متاح للمنطقة المحددة.",
     en: "Delivery is unavailable for the selected area.",

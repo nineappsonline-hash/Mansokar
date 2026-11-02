@@ -54,11 +54,11 @@ Deploy the application containing `/ar/contact`, `/en/contact` and `/api/contact
 
 ## Governorate shipping rates
 
-**Admin → Shipping** lists all 27 Egyptian governorates. Select a governorate, enter separate normal and express rates in **EGP**, then enable each option you offer. Rates begin blank and disabled; zero is an explicit free-delivery rate, not an unset value. Existing custom/local delivery areas and prices are preserved under the expandable list.
+**Admin → Shipping** lists all 27 Egyptian governorates. The migration imports Zait Store's normal delivery rates and enables express delivery at 150 EGP for every governorate. Select a governorate to edit its separate normal and express rates in **EGP**. Zero is an explicit free-delivery rate, not an unset value. Existing custom/local delivery areas and prices are preserved under the expandable list.
 
 Normal delivery is **2–5 business days**; express delivery is **within 48 elapsed hours**, measured from order confirmation and product availability. Normal business days exclude Fridays and public holidays. Checkout and the product delivery estimator show the selected governorate, method, window and rate. The selected area's server-side rate is used by the checkout quote and order transaction and included in the order's shipping snapshot.
 
-Both governorate migrations have been applied to the linked database. The shipping policy draft has been updated with the confirmed windows. New governorate options remain unavailable to shoppers until their rate is set and they are enabled. The existing optional free-shipping threshold applies to all enabled methods, including express; its admin editor now accepts EGP.
+The governorate and Zait rate migrations must be applied to the linked database. Once applied, all normal and express options are priced and enabled. The existing optional free-shipping threshold applies to all enabled methods, including express; its admin editor accepts EGP.
 
 `scripts/shipping-check.mjs` verifies governorate coverage and independent EGP rate saves/reloads using future-dated disposable rates that are never offered to shoppers. Run it only with `CONFIRM_LIVE_QA=mansokar` and the server environment.
 

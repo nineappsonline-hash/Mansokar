@@ -34,8 +34,8 @@ export const storeQuestions = [
       "Are cards and installment companies available?",
     ),
     answer: t(
-      "الكروت والتقسيط غير متاحين حاليًا في المتجر. وجود اسم شركة في دليل التقسيط لا يعني قبول الدفع بها. اعتمد على طرق الدفع الفعالة التي تظهر عند إتمام الطلب.",
-      "Cards and installments are not currently available at this store. Mentioning a company in the installment guide does not mean it is accepted. Use the active payment methods shown at checkout.",
+      "يمكنك الدفع بالبطاقات البنكية أو عبر التقسيط من Valu وContact وSuhoola وKlivvr وAman عند إتمام الطلب، حسب توافر الخطة. كما يمكنك الدفع عبر إنستاباي أو المحفظة الإلكترونية برفع إثبات التحويل. طرق الدفع المتاحة تظهر دائمًا في صفحة إتمام الطلب.",
+      "You can pay by bank card or in installments with Valu, Contact, Suhoola, Klivvr and Aman at checkout, subject to plan availability. You can also pay via InstaPay or e-wallet by uploading a transfer receipt. Available payment methods always appear at checkout.",
     ),
   },
   {

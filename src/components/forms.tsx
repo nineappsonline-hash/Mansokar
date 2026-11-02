@@ -13,17 +13,23 @@ import {
   type PaymentMethod,
 } from "@/lib/payments";
 import {
+  ArrowRight,
+  Barcode,
   CreditCard,
-  Phone,
+  Headphones,
+  Lock,
   Mail,
   MapPin,
-  Truck,
-  Shield,
-  BadgeCheck,
-  Smartphone,
   Package,
-  Barcode,
-  Lock,
+  Phone,
+  ReceiptText,
+  RotateCcw,
+  ShieldCheck,
+  ShoppingBag,
+  Smartphone,
+  Ticket,
+  Truck,
+  Upload,
 } from "lucide-react";
 export function ApiForm({
   action,
@@ -322,6 +328,7 @@ export function Checkout({
   vehicle?: string;
 }) {
   const [message, setMessage] = useState("");
+  const [messageTone, setMessageTone] = useState<"error" | "success">("error");
   const [busy, setBusy] = useState(false);
   const [area, setArea] = useState("");
   const [method, setMethod] = useState<PaymentMethod>(methods[0] ?? "cod");
@@ -340,48 +347,75 @@ export function Checkout({
   } | null>(null);
   const [reviewed, setReviewed] = useState(false);
   const router = useRouter();
+  const step = reviewed ? 3 : area ? 2 : 1;
+  const steps = [
+    locale === "ar" ? "التوصيل" : "Delivery",
+    locale === "ar" ? "الدفع" : "Payment",
+    locale === "ar" ? "التأكيد" : "Confirm",
+  ];
   return (
     <div className="checkout-page">
-      <div className="checkout-header">
+      <header className="checkout-header">
         <span className="checkout-eyebrow">
-          {locale === "ar" ? "إتمام الطلب" : "Checkout"}
+          <Lock size={12} strokeWidth={2.4} />
+          {locale === "ar" ? "إتمام آمن" : "Secure checkout"}
         </span>
-        <h1>
-          {locale === "ar" ? "إتمام طلبك" : "Complete your order"}
-        </h1>
+        <h1>{locale === "ar" ? "إتمام طلبك" : "Complete your order"}</h1>
         <p>
           {locale === "ar"
             ? "أكمل بيانات التوصيل واختر طريقة الدفع لإتمام الطلب."
             : "Fill in delivery details and choose a payment method to place your order."}
         </p>
-      </div>
+        <div className="checkout-header-meta">
+          <span>
+            <ShieldCheck size={14} strokeWidth={1.9} />
+            {locale === "ar" ? "دفع آمن" : "Secure payment"}
+          </span>
+          <span>
+            <RotateCcw size={14} strokeWidth={1.9} />
+            {locale === "ar" ? "إرجاع سهل" : "Easy returns"}
+          </span>
+          <span>
+            <Headphones size={14} strokeWidth={1.9} />
+            {locale === "ar" ? "دعم الطلبات" : "Order support"}
+          </span>
+        </div>
+      </header>
 
-      <div className="checkout-stepper">
-        <div className="checkout-step completed">
-          <div className="checkout-step-number">1</div>
-          <div className="checkout-step-label">
-            {locale === "ar" ? "التوصيل" : "Delivery"}
-          </div>
-        </div>
-        <div className="checkout-step active">
-          <div className="checkout-step-number">2</div>
-          <div className="checkout-step-label">
-            {locale === "ar" ? "الدفع" : "Payment"}
-          </div>
-        </div>
-        <div className="checkout-step">
-          <div className="checkout-step-number">3</div>
-          <div className="checkout-step-label">
-            {locale === "ar" ? "التأكيد" : "Confirm"}
-          </div>
-        </div>
-      </div>
+      <ol
+        className="checkout-stepper"
+        data-step={step}
+        aria-label={
+          locale === "ar" ? "مراحل إتمام الطلب" : "Checkout progress"
+        }
+      >
+        {steps.map((label, index) => {
+          const number = index + 1;
+          const completed = number < step;
+          const active = number === step;
+          return (
+            <li
+              key={label}
+              className={`checkout-step${completed ? " completed" : ""}${active ? " active" : ""}`}
+              aria-current={active ? "step" : undefined}
+            >
+              <span className="checkout-step-number">
+                {completed ? "✓" : number}
+              </span>
+              <span className="checkout-step-label">{label}</span>
+            </li>
+          );
+        })}
+      </ol>
 
       <form
-        className="two-col"
-        onChange={() => {
-          setQuote(null);
-          setReviewed(false);
+        className="checkout-layout"
+        onChange={(e) => {
+          const target = e.target as unknown as { name?: string };
+          if (target.name === "area" || target.name === "coupon") {
+            setQuote(null);
+            setReviewed(false);
+          }
         }}
         onSubmit={async (e) => {
           e.preventDefault();
@@ -408,6 +442,7 @@ export function Checkout({
               if (!response.ok) throw Error(data.error);
               setQuote(data);
               setReviewed(true);
+              setMessageTone("success");
               setMessage(
                 locale === "ar"
                   ? "راجع إجمالي الطلب ثم أكد الطلب."
@@ -469,6 +504,7 @@ export function Checkout({
           } catch (error) {
             setQuote(null);
             setReviewed(false);
+            setMessageTone("error");
             setMessage(
               error instanceof Error ? error.message : "Checkout failed",
             );
@@ -477,455 +513,604 @@ export function Checkout({
           }
         }}
       >
-        <div className="checkout-panel">
-          <div className="checkout-panel-title">
-            <MapPin size={18} strokeWidth={2} />
-            {locale === "ar" ? "بيانات التوصيل" : "Delivery details"}
-          </div>
-          <div className="checkout-panel-sub">
-            {locale === "ar"
-              ? "أدخل عنوان التوصيل وتفاصيل الاتصال."
-              : "Enter your delivery address and contact information."}
-          </div>
+        <div className="checkout-main">
+          <section className="checkout-panel">
+            <div className="checkout-panel-head">
+              <span className="checkout-panel-icon">
+                <MapPin size={20} strokeWidth={1.8} />
+              </span>
+              <div>
+                <span className="checkout-panel-kicker">
+                  {locale === "ar" ? "الخطوة ١" : "Step 1"}
+                </span>
+                <h2 className="checkout-panel-title">
+                  {locale === "ar" ? "بيانات التوصيل" : "Delivery details"}
+                </h2>
+                <p className="checkout-panel-sub">
+                  {locale === "ar"
+                    ? "أدخل عنوان التوصيل وتفاصيل الاتصال."
+                    : "Enter your delivery address and contact information."}
+                </p>
+              </div>
+            </div>
 
-          {addresses.length > 0 && (
-            <div className="saved-addresses">
+            {addresses.length > 0 && (
+              <div className="checkout-saved">
+                <div className="checkout-saved-head">
+                  <span className="checkout-saved-label">
+                    {locale === "ar"
+                      ? "العناوين المحفوظة"
+                      : "Saved addresses"}
+                  </span>
+                  <span className="checkout-saved-hint">
+                    {locale === "ar" ? "اضغط لملء البيانات" : "Tap to autofill"}
+                  </span>
+                </div>
+                <div className="checkout-saved-grid">
+                  {addresses.map((addr) => (
+                    <button
+                      type="button"
+                      key={addr.id}
+                      className="saved-address-card"
+                      onClick={(e) => {
+                        const form = e.currentTarget.form;
+                        if (!form) return;
+                        for (const [key, value] of Object.entries({
+                          name: addr.name,
+                          phone: addr.phone,
+                          address: addr.details,
+                        })) {
+                          const field = form.elements.namedItem(
+                            key,
+                          ) as HTMLInputElement | null;
+                          if (field) field.value = value;
+                        }
+                        if (addr.area_id) setArea(addr.area_id);
+                        setQuote(null);
+                        setReviewed(false);
+                      }}
+                    >
+                      <span className="saved-address-icon">
+                        <MapPin size={16} strokeWidth={1.9} />
+                      </span>
+                      <span className="saved-address-info">
+                        <span className="saved-address-name">{addr.name}</span>
+                        <span className="saved-address-details">
+                          {addr.details}
+                        </span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="checkout-field-grid">
+              <label className="checkout-label">
+                <span>{locale === "ar" ? "الاسم بالكامل" : "Full name"}</span>
+                <input
+                  name="name"
+                  required
+                  minLength={2}
+                  maxLength={100}
+                  autoComplete="name"
+                  className="checkout-input"
+                />
+              </label>
               <label className="checkout-label">
                 <span>
-                  {locale === "ar" ? "استخدام عنوان محفوظ" : "Use saved address"}
+                  <Phone size={14} strokeWidth={1.9} />
+                  {locale === "ar"
+                    ? "رقم موبايل مصري"
+                    : "Egyptian mobile number"}
+                </span>
+                <input
+                  name="phone"
+                  required
+                  pattern="01[0125][0-9]{8}"
+                  dir="ltr"
+                  autoComplete="tel"
+                  placeholder="01xxxxxxxxx"
+                  className="checkout-input"
+                />
+              </label>
+              <label className="checkout-label checkout-field-full">
+                <span>
+                  <Mail size={14} strokeWidth={1.9} />
+                  {locale === "ar"
+                    ? "البريد الإلكتروني (اختياري)"
+                    : "Email (optional)"}
+                </span>
+                <input
+                  name="email"
+                  type="email"
+                  maxLength={200}
+                  dir="ltr"
+                  autoComplete="email"
+                  placeholder="name@example.com"
+                  className="checkout-input"
+                />
+              </label>
+              <label className="checkout-label checkout-field-full">
+                <span>
+                  <MapPin size={14} strokeWidth={1.9} />
+                  {locale === "ar"
+                    ? "المحافظة وطريقة الشحن"
+                    : "Governorate & shipping method"}
                 </span>
                 <select
-                  defaultValue=""
-                  onChange={(e) => {
-                    const saved = addresses.find((a) => a.id === e.target.value);
-                    const form = e.currentTarget.form;
-                    if (!saved || !form) return;
-                    for (const [key, value] of Object.entries({
-                      name: saved.name,
-                      phone: saved.phone,
-                      address: saved.details,
-                    })) {
-                      const field = form.elements.namedItem(
-                        key,
-                      ) as HTMLInputElement;
-                      field.value = value;
-                    }
-                    if (saved.area_id) setArea(saved.area_id);
-                    setQuote(null);
-                    setReviewed(false);
-                  }}
+                  name="area"
+                  required
+                  value={area}
+                  onChange={(e) => setArea(e.target.value)}
+                  className="checkout-select"
                 >
-                  <option value="">—</option>
-                  {addresses.map((a) => (
-                    <option key={a.id} value={a.id}>
-                      {a.name} · {a.details}
+                  <option value="">
+                    {locale === "ar" ? "اختر المحافظة" : "Select governorate"}
+                  </option>
+                  {areas.map((a) => (
+                    <option value={a.id} key={a.id}>
+                      {shippingLabel(a, locale)} · {money(a.amount, locale)}
                     </option>
                   ))}
                 </select>
               </label>
-              <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
-                {addresses.map((addr) => (
-                  <label key={addr.id} className="saved-address-card">
-                    <input
-                      type="radio"
-                      name="saved-address"
-                      value={addr.id}
-                      readOnly
-                    />
-                    <div className="saved-address-info">
-                      <p className="saved-address-name">{addr.name}</p>
-                      <p className="saved-address-details">{addr.details}</p>
-                    </div>
-                  </label>
-                ))}
+            </div>
+
+            {area && (
+              <p className="checkout-hint">
+                {locale === "ar"
+                  ? "مدة التوصيل من تأكيد الطلب وتوافر المنتجات. أيام العمل لا تشمل الجمعة والعطلات الرسمية."
+                  : "Delivery time runs from order confirmation and product availability. Business days exclude Fridays and public holidays."}
+              </p>
+            )}
+            {!areas.length && (
+              <p className="notice checkout-notice">
+                {locale === "ar"
+                  ? "لا توجد مناطق توصيل معتمدة. الطلب غير متاح."
+                  : "No approved delivery areas. Checkout is unavailable."}
+              </p>
+            )}
+
+            <hr className="checkout-divider" />
+
+            <label className="checkout-label">
+              <span>
+                <MapPin size={14} strokeWidth={1.9} />
+                {locale === "ar" ? "العنوان بالتفصيل" : "Detailed address"}
+              </span>
+              <textarea
+                name="address"
+                required
+                minLength={10}
+                maxLength={500}
+                autoComplete="street-address"
+                className="checkout-textarea"
+              />
+            </label>
+            <label className="checkout-label">
+              <span>
+                <Barcode size={14} strokeWidth={1.9} />
+                {locale === "ar" ? "ملاحظات التوصيل" : "Delivery notes"}
+              </span>
+              <textarea
+                name="notes"
+                maxLength={1000}
+                className="checkout-textarea"
+                rows={3}
+              />
+            </label>
+            <label className="checkout-label checkout-coupon">
+              <span>
+                <Ticket size={14} strokeWidth={1.9} />
+                {locale === "ar" ? "كود الخصم" : "Coupon code"}
+              </span>
+              <input
+                name="coupon"
+                maxLength={40}
+                className="checkout-input"
+                placeholder={
+                  locale === "ar" ? "أدخل الكود" : "Enter coupon code"
+                }
+              />
+            </label>
+          </section>
+
+          <section className="checkout-panel">
+            <div className="checkout-panel-head">
+              <span className="checkout-panel-icon">
+                <CreditCard size={20} strokeWidth={1.8} />
+              </span>
+              <div>
+                <span className="checkout-panel-kicker">
+                  {locale === "ar" ? "الخطوة ٢" : "Step 2"}
+                </span>
+                <h2 className="checkout-panel-title">
+                  {locale === "ar" ? "طريقة الدفع" : "Payment method"}
+                </h2>
+                <p className="checkout-panel-sub">
+                  {locale === "ar"
+                    ? "اختر طريقة الدفع المناسبة لك. يمكنك مراجعة الإجمالي قبل التأكيد."
+                    : "Choose how you'd like to pay. You can review the totals before confirming."}
+                </p>
               </div>
             </div>
-          )}
 
-          <label className="checkout-label">
-            <span>{locale === "ar" ? "الاسم بالكامل" : "Full name"}</span>
-            <input
-              name="name"
-              required
-              minLength={2}
-              maxLength={100}
-              autoComplete="name"
-              className="checkout-input"
-            />
-          </label>
-          <label className="checkout-label">
-            <span>
-              <Phone size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
-              {locale === "ar" ? "رقم موبايل مصري" : "Egyptian mobile number"}
-            </span>
-            <input
-              name="phone"
-              required
-              pattern="01[0125][0-9]{8}"
-              dir="ltr"
-              autoComplete="tel"
-              placeholder="01xxxxxxxxx"
-              className="checkout-input"
-            />
-          </label>
-          <label className="checkout-label">
-            <span>
-              <Mail size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
-              {locale === "ar" ? "البريد الإلكتروني (اختياري)" : "Email (optional)"}
-            </span>
-            <input
-              name="email"
-              type="email"
-              maxLength={200}
-              dir="ltr"
-              autoComplete="email"
-              placeholder="name@example.com"
-              className="checkout-input"
-            />
-          </label>
-          <label className="checkout-label">
-            <span>
-              <MapPin size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
-              {locale === "ar" ? "المحافظة وطريقة الشحن" : "Governorate & shipping method"}
-            </span>
-            <select
-              name="area"
-              required
-              value={area}
-              onChange={(e) => setArea(e.target.value)}
-              className="checkout-select"
-            >
-              <option value="">—</option>
-              {areas.map((a) => (
-                <option value={a.id} key={a.id}>
-                  {shippingLabel(a, locale)} · {money(a.amount, locale)}
-                </option>
-              ))}
-            </select>
-          </label>
-          {area && (
-            <p className="muted" style={{ fontSize: "13px", marginTop: "4px" }}>
-              {locale === "ar"
-                ? "مدة التوصيل من تأكيد الطلب وتوافر المنتجات. أيام العمل لا تشمل الجمعة والعطلات الرسمية."
-                : "Delivery time runs from order confirmation and product availability. Business days exclude Fridays and public holidays."}
-            </p>
-          )}
-          {!areas.length && (
-            <p className="notice" style={{ marginBottom: "20px" }}>
-              {locale === "ar"
-                ? "لا توجد مناطق توصيل معتمدة. الطلب غير متاح."
-                : "No approved delivery areas. Checkout is unavailable."}
-            </p>
-          )}
-          <hr className="section-divider" />
-          <label className="checkout-label">
-            <span>
-              <Truck size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
-              {locale === "ar" ? "العنوان بالتفصيل" : "Detailed address"}
-            </span>
-            <textarea
-              name="address"
-              required
-              minLength={10}
-              maxLength={500}
-              autoComplete="street-address"
-              className="checkout-textarea"
-            />
-          </label>
-          <label className="checkout-label">
-            <span>
-              <Barcode size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
-              {locale === "ar" ? "ملاحظات التوصيل" : "Delivery notes"}
-            </span>
-            <textarea name="notes" maxLength={1000} className="checkout-textarea" />
-          </label>
-          <label className="checkout-label">
-            <span>
-              <Lock size={16} strokeWidth={2} style={{ marginRight: "8px" }} />
-              {locale === "ar" ? "كود الخصم" : "Coupon code"}
-            </span>
-            <input
-              name="coupon"
-              maxLength={40}
-              className="checkout-input"
-              placeholder={locale === "ar" ? "أدخل الكود" : "Enter coupon code"}
-            />
-          </label>
-        </div>
-
-        <aside className="checkout-panel">
-          <div className="checkout-panel-title">
-            <CreditCard size={18} strokeWidth={2} />
-            {locale === "ar" ? "طريقة الدفع" : "Payment method"}
-          </div>
-          <div className="checkout-panel-sub">
-            {locale === "ar"
-              ? "اختر طريقة الدفع المناسبة لك."
-              : "Choose how you'd like to pay."}
-          </div>
-
-          <div className="payment-methods">
-            {methods.length ? (
-              <>
-                {methods.includes("card") && (
-                  <label className="payment-method-card">
-                    <input
-                      type="radio"
-                      name="method"
-                      value="card"
-                      required
-                      checked={method === "card"}
-                      onChange={() => setMethod("card")}
-                    />
-                    <div className="payment-method-icon">
-                      <CreditCard size={20} strokeWidth={2} />
+            <div className="payment-methods">
+              {methods.length ? (
+                <>
+                  {methods.includes("card") && (
+                    <div
+                      className={`payment-method-card${method === "card" ? " selected" : ""}`}
+                    >
+                      <label className="payment-method-choice">
+                        <input
+                          className="payment-radio"
+                          type="radio"
+                          name="method"
+                          value="card"
+                          required
+                          checked={method === "card"}
+                          onChange={() => setMethod("card")}
+                        />
+                        <span className="payment-method-icon">
+                          <CreditCard size={20} strokeWidth={1.8} />
+                        </span>
+                        <span className="payment-method-info">
+                          <span className="payment-method-title">
+                            {locale === "ar"
+                              ? "بطاقة ائتمان أو تقسيط"
+                              : "Credit card or installments"}
+                          </span>
+                          <span className="payment-method-sub">
+                            {locale === "ar"
+                              ? "دفع آمن عبر البطاقة أو أنظمة التقسيط"
+                              : "Secure card payment or installment plans"}
+                          </span>
+                          <span className="payment-method-details-inline">
+                            {InstallmentProviders.join(" · ")}
+                          </span>
+                        </span>
+                      </label>
                     </div>
-                    <div className="payment-method-info">
-                      <p className="payment-method-title">
-                        {locale === "ar"
-                          ? "بطاقة ائتمان أو تقسيط"
-                          : "Credit card or installments"}
-                      </p>
-                      <p className="payment-method-sub">
-                        {locale === "ar"
-                          ? "دفع آمن عبر البطاقة أو أنظمة التقسيط"
-                          : "Secure card payment or installment plans"}
-                      </p>
-                      <p className="payment-method-details">
-                        {InstallmentProviders.join(" · ")}
-                      </p>
-                    </div>
-                  </label>
-                )}
-                {methods.includes("instapay") && (
-                  <label className="payment-method-card">
-                    <input
-                      type="radio"
-                      name="method"
-                      value="instapay"
-                      required
-                      checked={method === "instapay"}
-                      onChange={() => setMethod("instapay")}
-                    />
-                    <div className="payment-method-icon">
-                      <Smartphone size={20} strokeWidth={2} />
-                    </div>
-                    <div className="payment-method-info">
-                      <p className="payment-method-title">
-                        {locale === "ar" ? "إنستاباي" : "InstaPay"}
-                      </p>
-                      <p className="payment-method-sub">
-                        {locale === "ar"
-                          ? "حوّل المبلغ ثم ارفع صورة إثبات التحويل."
-                          : "Transfer the amount, then upload a receipt."}
-                      </p>
+                  )}
+                  {methods.includes("instapay") && (
+                    <div
+                      className={`payment-method-card${method === "instapay" ? " selected" : ""}`}
+                    >
+                      <label className="payment-method-choice">
+                        <input
+                          className="payment-radio"
+                          type="radio"
+                          name="method"
+                          value="instapay"
+                          required
+                          checked={method === "instapay"}
+                          onChange={() => setMethod("instapay")}
+                        />
+                        <span className="payment-method-icon">
+                          <Smartphone size={20} strokeWidth={1.8} />
+                        </span>
+                        <span className="payment-method-info">
+                          <span className="payment-method-title">
+                            {locale === "ar" ? "إنستاباي" : "InstaPay"}
+                          </span>
+                          <span className="payment-method-sub">
+                            {locale === "ar"
+                              ? "حوّل المبلغ ثم ارفع صورة إثبات التحويل."
+                              : "Transfer the amount, then upload a receipt."}
+                          </span>
+                        </span>
+                      </label>
                       {method === "instapay" && (
                         <div className="payment-method-details">
                           <a
+                            className="payment-link"
                             href={INSTAPAY_URL}
                             target="_blank"
                             rel="noreferrer"
-                            style={{ color: "var(--amber)", textDecoration: "underline", fontSize: "13px" }}
                           >
                             {locale === "ar"
                               ? "فتح رابط إنستاباي"
                               : "Open InstaPay link"}
+                            <ArrowRight size={14} strokeWidth={2} />
                           </a>
-                          <label style={{ display: "block", marginTop: "10px" }}>
-                            {locale === "ar" ? "إثبات التحويل" : "Transfer receipt"}
+                          <label className="checkout-file">
+                            <span className="checkout-file-icon">
+                              <Upload size={16} strokeWidth={1.9} />
+                            </span>
+                            <span className="checkout-file-text">
+                              <strong>
+                                {locale === "ar"
+                                  ? "إرفاق إثبات التحويل"
+                                  : "Attach transfer receipt"}
+                              </strong>
+                              <small>
+                                {locale === "ar"
+                                  ? "صورة بصيغة PNG أو JPG"
+                                  : "PNG or JPG image"}
+                              </small>
+                            </span>
                             <input
                               name="proof"
                               type="file"
                               accept="image/*"
                               required
-                            className="checkout-input"
-                          />
+                            />
                           </label>
                         </div>
                       )}
                     </div>
-                  </label>
-                )}
-                {methods.includes("wallet") && (
-                  <label className="payment-method-card">
-                    <input
-                      type="radio"
-                      name="method"
-                      value="wallet"
-                      required
-                      checked={method === "wallet"}
-                      onChange={() => setMethod("wallet")}
-                    />
-                    <div className="payment-method-icon">
-                      <Mail size={20} strokeWidth={2} />
-                    </div>
-                    <div className="payment-method-info">
-                      <p className="payment-method-title">
-                        {locale === "ar" ? "محفظة إلكترونية" : "E-wallet"}
-                      </p>
-                      <p className="payment-method-sub">
-                        {locale === "ar"
-                          ? "حوّل المبلغ إلى رقم المحفظة ثم ارفع صورة إثبات التحويل."
-                          : "Transfer the amount to the wallet number, then upload a receipt."}
-                      </p>
+                  )}
+                  {methods.includes("wallet") && (
+                    <div
+                      className={`payment-method-card${method === "wallet" ? " selected" : ""}`}
+                    >
+                      <label className="payment-method-choice">
+                        <input
+                          className="payment-radio"
+                          type="radio"
+                          name="method"
+                          value="wallet"
+                          required
+                          checked={method === "wallet"}
+                          onChange={() => setMethod("wallet")}
+                        />
+                        <span className="payment-method-icon">
+                          <Mail size={20} strokeWidth={1.8} />
+                        </span>
+                        <span className="payment-method-info">
+                          <span className="payment-method-title">
+                            {locale === "ar" ? "محفظة إلكترونية" : "E-wallet"}
+                          </span>
+                          <span className="payment-method-sub">
+                            {locale === "ar"
+                              ? "حوّل المبلغ إلى رقم المحفظة ثم ارفع صورة إثبات التحويل."
+                              : "Transfer the amount to the wallet number, then upload a receipt."}
+                          </span>
+                        </span>
+                      </label>
                       {method === "wallet" && (
                         <div className="payment-method-details">
                           <p>
-                            {locale === "ar" ? "رقم المحفظة" : "Wallet number"}:{" "}
-                            <strong dir="ltr">{WALLET_NUMBER}</strong>
+                            {locale === "ar" ? "رقم المحفظة" : "Wallet number"}
+                            : <strong dir="ltr">{WALLET_NUMBER}</strong>
                           </p>
-                          <label style={{ display: "block", marginTop: "10px" }}>
-                            {locale === "ar" ? "إثبات التحويل" : "Transfer receipt"}
+                          <label className="checkout-file">
+                            <span className="checkout-file-icon">
+                              <Upload size={16} strokeWidth={1.9} />
+                            </span>
+                            <span className="checkout-file-text">
+                              <strong>
+                                {locale === "ar"
+                                  ? "إرفاق إثبات التحويل"
+                                  : "Attach transfer receipt"}
+                              </strong>
+                              <small>
+                                {locale === "ar"
+                                  ? "صورة بصيغة PNG أو JPG"
+                                  : "PNG or JPG image"}
+                              </small>
+                            </span>
                             <input
                               name="proof"
                               type="file"
                               accept="image/*"
                               required
-                            className="checkout-input"
-                          />
+                            />
                           </label>
                         </div>
                       )}
                     </div>
-                  </label>
-                )}
-                {methods.includes("cod") && (
-                  <label className="payment-method-card">
-                    <input
-                      type="radio"
-                      name="method"
-                      value="cod"
-                      required
-                      checked={method === "cod"}
-                      onChange={() => setMethod("cod")}
-                    />
-                    <div className="payment-method-icon">
-                      <Truck size={20} strokeWidth={2} />
+                  )}
+                  {methods.includes("cod") && (
+                    <div
+                      className={`payment-method-card${method === "cod" ? " selected" : ""}`}
+                    >
+                      <label className="payment-method-choice">
+                        <input
+                          className="payment-radio"
+                          type="radio"
+                          name="method"
+                          value="cod"
+                          required
+                          checked={method === "cod"}
+                          onChange={() => setMethod("cod")}
+                        />
+                        <span className="payment-method-icon">
+                          <Truck size={20} strokeWidth={1.8} />
+                        </span>
+                        <span className="payment-method-info">
+                          <span className="payment-method-title">
+                            {locale === "ar"
+                              ? "الدفع عند الاستلام"
+                              : "Cash on delivery"}
+                          </span>
+                          <span className="payment-method-sub">
+                            {locale === "ar"
+                              ? "ادفع عند استلام الشحنة"
+                              : "Pay when you receive your order"}
+                          </span>
+                        </span>
+                      </label>
                     </div>
-                    <div className="payment-method-info">
-                      <p className="payment-method-title">
-                        {locale === "ar" ? "الدفع عند الاستلام" : "Cash on delivery"}
-                      </p>
-                      <p className="payment-method-sub">
-                        {locale === "ar"
-                          ? "ادفع عند استلام الشحنة"
-                          : "Pay when you receive your order"}
-                      </p>
+                  )}
+                </>
+              ) : (
+                <p className="notice checkout-notice">
+                  {locale === "ar"
+                    ? "لم يتم تفعيل أي طريقة دفع."
+                    : "No payment method has been activated."}
+                </p>
+              )}
+            </div>
+          </section>
+        </div>
+
+        <aside className="checkout-sidebar">
+          <section className="checkout-summary">
+            <div className="checkout-summary-head">
+              <div>
+                <span className="checkout-panel-kicker">
+                  {locale === "ar" ? "الخطوة ٣" : "Step 3"}
+                </span>
+                <h2>{locale === "ar" ? "ملخص الطلب" : "Order summary"}</h2>
+              </div>
+              <span className="checkout-summary-icon">
+                <ShoppingBag size={20} strokeWidth={1.8} />
+              </span>
+            </div>
+
+            {quote ? (
+              <div aria-live="polite">
+                <div className="order-items">
+                  {quote.items.map((item) => (
+                    <div key={item.id} className="order-item">
+                      <div className="order-item-image">
+                        {item.id ? (
+                          <img
+                            src={`/product-media/${item.id}`}
+                            alt={item.name[locale]}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <Package size={24} strokeWidth={2} />
+                        )}
+                      </div>
+                      <div className="order-item-info">
+                        <p className="order-item-name">{item.name[locale]}</p>
+                        <p className="order-item-meta">
+                          {locale === "ar" ? "الكمية" : "Qty"}:{" "}
+                          <span>{item.quantity}</span>
+                        </p>
+                      </div>
+                      <span className="order-item-price">
+                        {money(item.total, locale)}
+                      </span>
                     </div>
-                  </label>
-                )}
-              </>
+                  ))}
+                </div>
+                <div className="order-breakdown">
+                  <div className="order-line">
+                    <span className="label">{t(locale).subtotal}</span>
+                    <span>{money(quote.subtotal, locale)}</span>
+                  </div>
+                  <div className="order-line">
+                    <span className="label">
+                      {locale === "ar" ? "الخصم" : "Discount"}
+                    </span>
+                    <span>− {money(quote.discount, locale)}</span>
+                  </div>
+                  <div className="order-line">
+                    <span className="label">
+                      {locale === "ar" ? "التوصيل" : "Delivery"}
+                    </span>
+                    <span>{money(quote.shipping, locale)}</span>
+                  </div>
+                  <div className="order-line total">
+                    <span className="label">
+                      {locale === "ar" ? "الإجمالي" : "Total"}
+                    </span>
+                    <span>{money(quote.total, locale)}</span>
+                  </div>
+                </div>
+              </div>
             ) : (
-              <p className="notice">
+              <div className="checkout-summary-empty">
+                <ReceiptText size={18} strokeWidth={1.8} />
+                <p>
+                  {locale === "ar"
+                    ? "سيظهر إجمالي المنتجات والشحن والخصم هنا بعد مراجعة الطلب."
+                    : "Your item totals, delivery and discounts will appear here after you review your order."}
+                </p>
+              </div>
+            )}
+
+            <div className="checkout-assurances">
+              <div className="checkout-assurance">
+                <ShieldCheck size={17} strokeWidth={1.9} />
+                <span>
+                  <strong>
+                    {locale === "ar" ? "دفع آمن" : "Secure payment"}
+                  </strong>
+                  <small>
+                    {locale === "ar"
+                      ? "بيانات مشفرة ومحمية"
+                      : "Encrypted and protected"}
+                  </small>
+                </span>
+              </div>
+              <div className="checkout-assurance">
+                <RotateCcw size={17} strokeWidth={1.9} />
+                <span>
+                  <strong>
+                    {locale === "ar" ? "إرجاع سهل" : "Easy returns"}
+                  </strong>
+                  <small>
+                    {locale === "ar"
+                      ? "سياسة إرجاع واضحة"
+                      : "Simple, policy-backed returns"}
+                  </small>
+                </span>
+              </div>
+              <div className="checkout-assurance">
+                <Headphones size={17} strokeWidth={1.9} />
+                <span>
+                  <strong>
+                    {locale === "ar" ? "دعم الطلبات" : "Order support"}
+                  </strong>
+                  <small>
+                    {locale === "ar"
+                      ? "نحن هنا للمساعدة"
+                      : "We're here if you need us"}
+                  </small>
+                </span>
+              </div>
+            </div>
+
+            <hr className="checkout-divider" />
+
+            <label className="checkout-consent">
+              <input name="consent" type="checkbox" required value="yes" />
+              <span>
                 {locale === "ar"
-                  ? "لم يتم تفعيل أي طريقة دفع."
-                  : "No payment method has been activated."}
+                  ? "قرأت الشروط وسياسة الإرجاع"
+                  : "I have read the terms and returns policy"}{" "}
+                <a href={`/${locale}/policies/returns`}>
+                  {locale === "ar" ? "سياسة الإرجاع" : "Returns policy"}
+                </a>
+              </span>
+            </label>
+
+            <button
+              className="checkout-button"
+              disabled={busy || !methods.length || !area}
+            >
+              {busy
+                ? "…"
+                : reviewed
+                  ? locale === "ar"
+                    ? "تأكيد الطلب"
+                    : "Confirm order"
+                  : locale === "ar"
+                    ? "مراجعة الأسعار والتوصيل"
+                    : "Review prices & delivery"}
+              {!busy && <ArrowRight size={17} strokeWidth={2.2} />}
+            </button>
+            {!quote && !busy && (
+              <p className="checkout-cta-note">
+                <Lock size={12} strokeWidth={2} />
+                {locale === "ar"
+                  ? "يتم احتساب الإجمالي بأمان على السيرفر."
+                  : "Totals are calculated securely on our server."}
               </p>
             )}
-          </div>
-
-          <hr className="section-divider" />
-
-          <label className="checkout-label" style={{ marginBottom: "20px" }}>
-            <input
-              name="consent"
-              type="checkbox"
-              required
-              value="yes"
-            />
-            <span>
-              {locale === "ar"
-                ? "قرأت الشروط وسياسة الإرجاع"
-                : "I have read the terms and returns policy"}
-            </span>{" "}
-            <a
-              href={`/${locale}/policies/returns`}
-            >
-              {locale === "ar" ? "سياسة الإرجاع" : "Returns policy"}
-            </a>
-          </label>
-
-          {quote && (
-            <section className="order-summary" aria-live="polite">
-              <div className="order-summary-title">
-                <BadgeCheck size={18} strokeWidth={2} />
-                {locale === "ar" ? "مراجعة الطلب" : "Order review"}
-              </div>
-              <div className="order-items">
-                {quote.items.map((item) => (
-                  <div key={item.id} className="order-item">
-                    <div className="order-item-image">
-                      {item.id ? (
-                        <img
-                          src={`/product-media/${item.id}`}
-                          alt={item.name[locale]}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <Package size={24} strokeWidth={2} />
-                      )}
-                    </div>
-                    <div className="order-item-info">
-                      <p className="order-item-name">{item.name[locale]}</p>
-                      <p className="order-item-meta">
-                        {locale === "ar" ? "الكمية" : "Qty"}:{" "}
-                            <span>{item.quantity}</span>
-                      </p>
-                    </div>
-                    <span className="order-item-price">
-                      {money(item.total, locale)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <div className="order-breakdown">
-                <div className="order-line">
-                  <span className="label">{t(locale).subtotal}</span>
-                  <span>{money(quote.subtotal, locale)}</span>
-                </div>
-                <div className="order-line">
-                  <span className="label">{locale === "ar" ? "الخصم" : "Discount"}</span>
-                  <span>− {money(quote.discount, locale)}</span>
-                </div>
-                <div className="order-line">
-                  <span className="label">{locale === "ar" ? "التوصيل" : "Delivery"}</span>
-                  <span>{money(quote.shipping, locale)}</span>
-                </div>
-                <div className="order-line total">
-                  <span className="label">{locale === "ar" ? "الإجمالي" : "Total"}</span>
-                  <span>{money(quote.total, locale)}</span>
-                </div>
-              </div>
-              <div className="trust-badges">
-                <div className="trust-badge">
-                  <Shield size={16} strokeWidth={2} />
-                  <span>{locale === "ar" ? "دفع آمن" : "Secure payment"}</span>
-                </div>
-                <div className="trust-badge">
-                  <Lock size={16} strokeWidth={2} />
-                  <span>{locale === "ar" ? "بيانات محمية" : "Data protected"}</span>
-                </div>
-              </div>
-            </section>
-          )}
-
-          <button
-            className="checkout-button"
-            disabled={busy || !methods.length || !area}
-          >
-            {busy
-              ? "…"
-              : reviewed
-                ? locale === "ar"
-                  ? "تأكيد الطلب"
-                  : "Confirm order"
-                : locale === "ar"
-                  ? "مراجعة الأسعار والتوصيل"
-                  : "Review prices & delivery"}
-          </button>
-          {message && (
-            <p className={`checkout-message error`} role="alert">{message}</p>
-          )}
+            {message && (
+              <p className={`checkout-message ${messageTone}`} role="alert">
+                {message}
+              </p>
+            )}
+          </section>
         </aside>
       </form>
     </div>

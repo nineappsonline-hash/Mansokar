@@ -174,16 +174,13 @@ test("stable product media URLs are included in product schema and sitemap entri
   assert.deepEqual(data.image, entries[0].images);
 });
 
-test("visible answers reflect the SKU and current payment limitations in both languages", () => {
+test("visible answers reflect the SKU and current payment methods in both languages", () => {
   for (const locale of ["ar", "en"] as const) {
     const answers = productAnswers(p, locale);
     assert.equal(answers.length, 4);
     assert.ok(answers.some((a) => a.answer.includes(p.partNumber)));
     assert.ok(answers.some((a) => a.answer.includes("Germany")));
-    assert.match(
-      answers[3].answer,
-      locale === "ar" ? /غير متاحين/ : /not currently available/,
-    );
+    assert.match(answers[3].answer, /Valu/);
     assert.ok(!JSON.stringify(answers).includes("9000"));
   }
 });

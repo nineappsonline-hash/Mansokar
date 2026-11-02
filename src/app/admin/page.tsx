@@ -395,9 +395,9 @@ export default async function Admin({
         <section className="panel stack">
           <h2>Egyptian governorates · shipping rates</h2>
           <p>
-            Set and enable normal and express rates separately for each
-            governorate. All prices here are in EGP. New rates stay blank and
-            disabled until you configure them.
+            Normal delivery rates are imported from Zait Store for all 27
+            governorates, with express delivery at 150 EGP. Edit and enable each
+            option separately below. All prices here are in EGP.
           </p>
           {governorates.map((g) => {
             const options = areas.filter(
@@ -517,18 +517,29 @@ export default async function Admin({
     let orderQuery = db.from("orders");
     const { data } = await orderQuery
       .select(
-        "id,order_number,customer,status,payment_status,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)",
+        "id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)",
       )
       .order("created_at", { ascending: false })
       .match(id ? { id } : {})
       .limit(100);
+    const orderIds = data?.map((o) => o.id) ?? [];
+    const { data: transfers } = orderIds.length
+      ? await db
+          .from("manual_transfers")
+          .select(
+            "id,order_id,method,reference,amount,status,proof_path,created_at",
+          )
+          .in("order_id", orderIds)
+          .order("created_at", { ascending: false })
+      : { data: [] };
     content = (
       <div className="stack">
         {data?.map((o) => (
           <article key={o.id} className="panel">
             <p>
               {o.order_number} · {o.demo ? "DEMO" : ""} · {o.status} ·{" "}
-              {o.payment_status} · {money(o.total, "en")}
+              {o.payment_status} · {o.payment_method ?? "cod"} ·{" "}
+              {money(o.total, "en")}
             </p>
             <p>
               {o.customer.name} · {o.customer.phone} · {o.customer.address}
@@ -545,6 +556,40 @@ export default async function Admin({
                 · {money(item.snapshot.price * item.quantity, "en")}
               </p>
             ))}
+            {transfers
+              ?.filter((transfer) => transfer.order_id === o.id)
+              .map((transfer) => (
+                <div key={transfer.id} className="notice stack">
+                  <p>
+                    Transfer: {transfer.method} · {transfer.status} ·{" "}
+                    {money(transfer.amount, "en")}
+                    {transfer.reference ? ` · ${transfer.reference}` : ""}
+                  </p>
+                  {transfer.proof_path && (
+                    <a
+                      href={`/api/payment-proof?id=${transfer.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      View transfer receipt ↗
+                    </a>
+                  )}
+                  {transfer.status === "pending" && (
+                    <div className="two-col">
+                      <ApiForm
+                        action="admin-verify-transfer"
+                        extra={{ id: transfer.id, status: "verified" }}
+                        label="Approve payment"
+                      />
+                      <ApiForm
+                        action="admin-verify-transfer"
+                        extra={{ id: transfer.id, status: "rejected" }}
+                        label="Reject payment"
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
             <ApiForm
               action="admin-order"
               extra={{ id: o.id }}
@@ -831,9 +876,10 @@ export default async function Admin({
         </p>
         <p>Production rejects demo SKUs regardless of flags.</p>
         <p>
-          Card, InstaPay, wallets, installments: unavailable. No approved
-          provider configured.
+          Cards and installments via EasyKash:{" "}
+          {process.env.EASYKASH_API_KEY ? "Enabled" : "Not configured"}
         </p>
+        <p>InstaPay and e-wallet transfers: Enabled with manual review</p>
         <p>
           Runtime secrets are configured in the deployment environment, never
           through browser forms.

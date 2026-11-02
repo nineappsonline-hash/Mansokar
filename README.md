@@ -38,11 +38,11 @@ Buckets remain private. The server decodes/re-encodes raster uploads and strips 
 
 ## Checkout
 
-COD is disabled until `COD_ENABLED=true`. Before enabling orders, publish merchant-approved privacy, terms and returns content through Admin CMS and configure enabled shipping areas/rates in Admin Shipping. Every product defaults to demo content; **production always refuses demo SKUs**, regardless of `ALLOW_DEMO_CHECKOUT`. Sandbox demo orders require development mode, a database and explicit `ALLOW_DEMO_CHECKOUT=true`.
+COD is enabled with `COD_ENABLED=true`. Before enabling orders, publish merchant-approved privacy, terms and returns content through Admin CMS and configure enabled shipping areas/rates in Admin Shipping. Every product defaults to demo content; **production always refuses demo SKUs**, regardless of `ALLOW_DEMO_CHECKOUT`. Sandbox demo orders require development mode, a database and explicit `ALLOW_DEMO_CHECKOUT=true`.
 
 The PostgreSQL transaction recalculates prices, discounts and delivery, snapshots order items, locks coupons, and handles idempotency. Unknown areas fail closed. A cryptographically random 64-character confirmation capability exposes only order status/payment state/total, not contact or address. Protect this link like a password. Order-number/OTP tracking remains unavailable until a contact provider is chosen.
 
-Online cards, InstaPay, wallet and installment methods remain unavailable. `src/lib/payments.ts` defines the adapter boundary; no provider, transaction or webhook signature is fabricated. There is no exposed online webhook endpoint. The internal payment-event function deduplicates verified provider events for a future adapter. COD collection is an explicit admin action after delivery.
+Cards and installments use EasyKash Direct Payment when `EASYKASH_API_KEY` is set; configure the EasyKash callback URL to `/api/easykash-callback` and set `EASYKASH_HMAC_SECRET` so callback signatures are verified. InstaPay and e-wallet transfers are recorded as manual transfers with an uploaded receipt and require admin approval. COD collection is an explicit admin action after delivery. Provider events are idempotent and update payment state only after amount and order checks.
 
 Optional first-party analytics is disabled by default. Enable `ANALYTICS_ENABLED=true` only after reviewing consent and retention. Visitor opt-in is required. Counts contain no contact details, search text or session identifiers; purchase counts come only from non-demo, consented, verified COD collection. No browser purchase event is accepted.
 

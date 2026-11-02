@@ -3,14 +3,10 @@ import type { Locale } from "@/lib/catalog";
 
 export const installmentProviders = [
   { en: "Valu", ar: "ڤاليو" },
-  { en: "Souhoola (Suhoola)", ar: "سهولة" },
-  { en: "Forsa", ar: "فرصة" },
-  { en: "Aman", ar: "أمان" },
   { en: "Contact", ar: "كونتكت" },
-  { en: "Lucky", ar: "لاكي" },
-  { en: "Fawry", ar: "فوري" },
+  { en: "Souhoola (Suhoola)", ar: "سهولة" },
   { en: "Klivvr", ar: "كليڤر" },
-  { en: "Mogo", ar: "موجو" },
+  { en: "Aman", ar: "أمان" },
 ];
 
 export function InstallmentsGuide({ locale }: { locale: Locale }) {
@@ -35,8 +31,8 @@ export function InstallmentsGuide({ locale }: { locale: Locale }) {
         </h2>
         <p>
           {ar
-            ? "الدفع بالكروت والتقسيط غير متاحين حاليًا في المتجر. طرق الدفع المتاحة فعليًا تظهر عند إتمام الطلب. هذا الدليل للمعلومات، ولا يعني وجود شراكة أو قبول دفع مع أي شركة مذكورة."
-            : "Card payments and installments are not currently available at this store. Actual available payment methods appear at checkout. This guide is informational and does not indicate a partnership or payment acceptance with any company mentioned."}
+            ? "يمكنك الدفع بالبطاقة البنكية أو بالتقسيط عبر ڤاليو وكونتكت وسهولة وكليڤر وأمان عند إتمام الطلب، حسب توافر الخطة والموافقة. طرق الدفع المتاحة فعليًا تظهر دائمًا في صفحة إتمام الطلب."
+            : "You can pay by bank card or in installments with Valu, Contact, Souhoola, Klivvr and Aman at checkout, subject to plan availability and approval. Available payment methods always appear at checkout."}
         </p>
       </section>
       <section className="stack">
@@ -62,8 +58,8 @@ export function InstallmentsGuide({ locale }: { locale: Locale }) {
         </ul>
         <p>
           {ar
-            ? "وجود وسيلة لسداد قسط عبر فوري أو أمان لا يعني أن شراء القطعة مؤهل للتمويل أو أن المتجر يقبل تقسيط الشركة. راجع نوع الخدمة وشروطها مباشرة مع مقدمها."
-            : "Being able to repay an installment through Fawry or Aman does not establish that a spare-parts purchase is eligible for financing or that this store accepts the provider. Confirm the specific service and terms directly with the provider."}
+            ? "الموافقة على التقسيط وشروط الخطة تحددها الشركة المقدمة. راجع نوع الخدمة وشروطها مباشرة مع مقدمها قبل تأكيد الطلب."
+            : "Installment approval and plan terms are set by the provider. Confirm the specific service and terms directly with the provider before placing your order."}
         </p>
       </section>
       <section className="panel stack">

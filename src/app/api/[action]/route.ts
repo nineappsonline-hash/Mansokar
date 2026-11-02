@@ -24,7 +24,13 @@ import { planImportVehicles } from "@/lib/import-vehicles";
 import { prepareItemRows } from "@/lib/prepare-item-import";
 import { importFeedback } from "@/lib/import-feedback";
 import { validateImport } from "@/lib/importer";
-import { assertDemoAllowed, availablePayments } from "@/lib/payments";
+import {
+  assertDemoAllowed,
+  availablePayments,
+  isManualPayment,
+  paymentReference,
+} from "@/lib/payments";
+import { startEasyKashPayment } from "@/lib/easykash";
 
 export const runtime = "nodejs";
 export async function POST(
@@ -336,8 +342,8 @@ export async function POST(
       return NextResponse.json({ message: "Inquiry saved. / تم حفظ الطلب." });
     }
     if (action === "checkout-quote") {
-      if (!availablePayments().includes("cod"))
-        throw Error("Cash on delivery has not been enabled");
+      if (!availablePayments().length)
+        throw Error("No payment method has been enabled");
       const input = z
         .object({
           items: checkoutInput.shape.items,
@@ -364,8 +370,11 @@ export async function POST(
     }
     if (action === "checkout") {
       const input = checkoutInput.parse(b);
-      if (!availablePayments().includes("cod"))
-        throw Error("Cash on delivery has not been enabled");
+      const methods = availablePayments();
+      if (!methods.includes(input.method))
+        throw Error("Payment method is not available");
+      if (isManualPayment(input.method) && !input.imageToken)
+        throw Error("Payment proof is required");
       const { data: policies } = await db
         .from("cms_pages")
         .select("slug")
@@ -393,6 +402,7 @@ export async function POST(
           delivery_notes: input.notes || "",
           name: input.name,
           phone: input.phone,
+          email: input.email || "",
           address: input.address,
           analytics_consent:
             process.env.ANALYTICS_ENABLED === "true" &&
@@ -420,9 +430,84 @@ export async function POST(
             "Unable to place order. Please verify cart and delivery details.",
         );
       }
-      return NextResponse.json({
-        redirect: `/${input.locale}/order/confirmation/${data.token}`,
-      });
+      const { data: order, error: orderError } = await db
+        .from("orders")
+        .select("id,public_token,order_number,total")
+        .eq("public_token", data.token)
+        .single();
+      if (orderError || !order)
+        throw Error("Unable to place order. Please try again.");
+      const confirmation = `/${input.locale}/order/confirmation/${order.public_token}`;
+      if (input.method === "cod") {
+        const { error: updateError } = await db
+          .from("orders")
+          .update({ payment_method: "cod", payment_status: "unpaid" })
+          .eq("id", order.id);
+        if (updateError) throw updateError;
+        return NextResponse.json({ redirect: confirmation });
+      }
+      if (isManualPayment(input.method)) {
+        const cutoff = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+        const { data: upload, error: uploadError } = await db
+          .from("pending_uploads")
+          .update({ claimed: true })
+          .eq("token", input.imageToken)
+          .eq("claimed", false)
+          .gt("created_at", cutoff)
+          .select("path")
+          .maybeSingle();
+        if (uploadError || !upload)
+          throw Error("Payment proof expired or already used");
+        const { error: transferError } = await db
+          .from("manual_transfers")
+          .insert({
+            order_id: order.id,
+            method: input.method,
+            reference: order.order_number,
+            proof_path: upload.path,
+            amount: order.total,
+            status: "pending",
+          });
+        if (transferError) throw Error("Unable to save payment proof");
+        const { error: updateError } = await db
+          .from("orders")
+          .update({ payment_method: input.method, payment_status: "pending" })
+          .eq("id", order.id);
+        if (updateError) throw updateError;
+        return NextResponse.json({ redirect: confirmation });
+      }
+      const reference = paymentReference(order.id);
+      const { error: updateError } = await db
+        .from("orders")
+        .update({
+          payment_method: input.method,
+          payment_status: "pending",
+          payment_reference: reference,
+        })
+        .eq("id", order.id);
+      if (updateError) throw updateError;
+      try {
+        const siteUrl = (
+          process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin
+        ).replace(/\/$/, "");
+        const redirect = await startEasyKashPayment({
+          amount: order.total / 100,
+          customerName: input.name,
+          customerPhone: input.phone,
+          customerEmail: input.email,
+          customerReference: reference,
+          locale: input.locale,
+          publicToken: order.public_token,
+          siteUrl,
+        });
+        return NextResponse.json({ redirect });
+      } catch (paymentError) {
+        await db
+          .from("orders")
+          .update({ payment_status: "failed" })
+          .eq("id", order.id);
+        throw paymentError;
+      }
     }
     if (action.startsWith("admin-")) {
       const admin = await requireAdmin();
@@ -1141,6 +1226,20 @@ export async function POST(
         const { error } = await commit({ id });
         if (error) throw error;
         details = { order_id: id };
+      } else if (action === "admin-verify-transfer") {
+        const input = z
+          .object({
+            id: z.uuid(),
+            status: z.enum(["verified", "rejected"]),
+          })
+          .parse(b);
+        const { error } = await db.rpc("verify_manual_transfer", {
+          p_actor: admin.id,
+          p_transfer: input.id,
+          p_status: input.status,
+        });
+        if (error) throw error;
+        details = input;
       } else if (action === "admin-order") {
         const input = z
           .object({
