@@ -1,0 +1,1308 @@
+.theme:global(.mopc-cyan) {
+  --bg: #fff;
+  --surface: #fff;
+  --elevated: #f1f5f9;
+  --light: #061632;
+  --muted: #60718a;
+  --border: #dce4ee;
+  --amber: #009ed1;
+  color: #061632;
+  background: #fff;
+  font-family: var(--font-latin), sans-serif;
+  &[lang="ar"] {
+    font-family: Tajawal, sans-serif;
+  }
+  :global(h1),
+  :global(h2),
+  :global(h3) {
+    color: #061632;
+    letter-spacing: 0;
+  }
+  &[lang="ar"] :global(h1),
+  &[lang="ar"] :global(h2),
+  &[lang="ar"] :global(h3),
+  &[lang="ar"] :global(.header),
+  &[lang="ar"] :global(.cyan-vehicle-finder) {
+    font-family: "MOPC Arabic", Tajawal, sans-serif;
+  }
+  :global(.shell) {
+    width: min(1440px, calc(100% - 64px));
+    max-width: 1440px;
+  }
+  :global(.button) {
+    background: linear-gradient(110deg, #004b73, #021e3a);
+    border: 1px solid #03466a;
+    color: #fff;
+    border-radius: 11px;
+    font-weight: 800;
+    box-shadow: 0 3px 7px #003b6512;
+  }
+  :global(.button:hover) {
+    background: linear-gradient(110deg, #006e9d, #002c50);
+    border-color: #008dc6;
+    color: #fff;
+  }
+  :global(.button.secondary) {
+    background: #fff;
+    color: #063857;
+    border: 1px solid #ccd9e5;
+  }
+  :global(.text-link),
+  :global(.breadcrumbs a) {
+    color: #008dbc;
+  }
+  :global(.header) {
+    background: linear-gradient(120deg, #032c4a, #031630 65%, #020d22);
+    color: #fff;
+    border: 0;
+    position: relative;
+    padding: 0;
+    backdrop-filter: none;
+    z-index: 40;
+    box-shadow: none;
+  }
+  :global(.header-inner) {
+    display: grid;
+    grid-template-columns: max-content minmax(200px, 660px) max-content;
+    align-items: center;
+    gap: 30px;
+    min-height: 108px;
+    padding-block: 9px;
+    border: 0;
+    direction: inherit;
+  }
+  :global(.logo) {
+    gap: 12px;
+    color: #fff;
+    text-decoration: none;
+  }
+  :global(.store-logo-image) {
+    width: 195px;
+    height: 65px;
+  }
+  :global(.header .store-name-ar) {
+    font-size: 25px;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+  :global(.header-tools) {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 28px;
+    color: #fff;
+  }
+  :global(.header-tool) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 14px;
+    text-decoration: none;
+    color: #fff;
+    position: relative;
+  }
+  :global(.header-tool > span) {
+    position: relative;
+  }
+  :global(.header-tool b) {
+    font-weight: 800;
+    white-space: nowrap;
+  }
+  :global(.header-tool svg) {
+    width: 29px;
+    height: 29px;
+    stroke-width: 1.6;
+  }
+  :global(.cart-count) {
+    position: absolute;
+    top: -9px;
+    inset-inline-end: -12px;
+    background: linear-gradient(#00dafa, #00a9dc);
+    color: #fff;
+    border-radius: 50%;
+    min-width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    padding: 2px;
+    font-size: 13px;
+    font-weight: 800;
+    border: 1px solid #24d8f1;
+  }
+  :global(.header-tools > a:last-of-type:not(.header-tool)) {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0;
+    color: #b6e8f8;
+  }
+  :global(.header .mobile-menu) {
+    display: none;
+  }
+  :global(.header-search-box) {
+    min-width: 0;
+    width: 100%;
+  }
+  :global(.header-search-box .search-widget) {
+    width: 100%;
+    position: relative;
+  }
+  :global(.header-search-box .hero-search) {
+    direction: inherit;
+    flex-direction: row;
+    margin: 0;
+    width: 100%;
+    height: 57px;
+    display: flex;
+    border: 1px solid #dae3ee;
+    border-radius: 18px;
+    background: linear-gradient(#fff, #f2f5f9);
+    overflow: hidden;
+    box-shadow: 0 2px 8px #0000000a;
+    padding: 0 8px;
+  }
+  :global(.header-search-box .hero-search > svg) {
+    display: none;
+  }
+  :global(.header-search-box .hero-search input) {
+    min-width: 0;
+    flex: 1;
+    border: 0;
+    background: transparent;
+    color: #07152f;
+    padding: 10px 16px;
+    font-size: 17px;
+    font-weight: 600;
+  }
+  :global(.header-search-box .hero-search input::placeholder) {
+    color: #7789a3;
+  }
+  :global(.header-search-box .hero-search button) {
+    width: 48px;
+    min-width: 48px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #03142c;
+    display: grid;
+    place-items: center;
+  }
+  :global(.header-search-box .hero-search button svg) {
+    width: 27px;
+    height: 27px;
+  }
+  :global(.search-results) {
+    z-index: 100;
+    color: #061632;
+    background: #fff;
+    border: 1px solid #dce4ee;
+    box-shadow: 0 8px 30px #001d3c26;
+  }
+  :global(.cyan-subnav) {
+    background: #f5f7fb;
+    color: #05142e;
+    border-bottom: 1px solid #d6e3f0;
+  }
+  :global(.cyan-subnav > nav) {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 30px;
+    min-height: 60px;
+    padding-block: 7px;
+  }
+  :global(.cyan-subnav nav > a),
+  :global(.brand-nav-menu > summary) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #07152f;
+    font-size: 18px;
+    font-weight: 800;
+    white-space: nowrap;
+    text-decoration: none;
+    padding: 6px 20px;
+    border-radius: 13px;
+  }
+  :global(.cyan-subnav .nav-active) {
+    color: #fff;
+    background: linear-gradient(#00b9e5, #007bab);
+    box-shadow: inset 0 1px 0 #65e9ff;
+  }
+  :global(.brand-nav-menu) {
+    position: relative;
+  }
+  :global(.brand-nav-menu > summary) {
+    cursor: pointer;
+    list-style: none;
+  }
+  :global(.brand-nav-menu > summary::-webkit-details-marker) {
+    display: none;
+  }
+  :global(.brand-nav-menu > div) {
+    position: absolute;
+    top: calc(100% + 10px);
+    inset-inline-start: 0;
+    width: 240px;
+    display: grid;
+    padding: 10px;
+    background: #fff;
+    border: 1px solid #d9e4ed;
+    border-radius: 14px;
+    box-shadow: 0 14px 35px #021e3d26;
+    z-index: 70;
+  }
+  :global(.brand-nav-menu > div a) {
+    padding: 10px 16px;
+    color: #07152f;
+    border-radius: 7px;
+    font-weight: 700;
+  }
+  :global(.brand-nav-menu > div a:hover) {
+    background: #e6f8ff;
+    color: #008ab6;
+  }
+  :global(.cyan-home) {
+    background: linear-gradient(#fff, #f9fbfe 75%, #fff);
+  }
+  :global(.cyan-hero) {
+    position: relative;
+    background: #031b33;
+    isolation: isolate;
+    overflow: hidden;
+    color: #fff;
+  }
+  :global(.cyan-hero .cinematic-backdrop) {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    bottom: 0;
+    z-index: -1;
+  }
+  :global(.cyan-hero .cinematic-backdrop > img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 50%;
+    transform: none;
+  }
+  :global(.cyan-hero .cinematic-backdrop::after) {
+    background: linear-gradient(0deg, #00172d45, transparent 70%);
+  }
+  :global(.cyan-hero .hero-slideshow-region) {
+    min-height: 420px;
+  }
+  :global(.cyan-hero-content) {
+    padding-top: 25px;
+    padding-bottom: 32px;
+    position: relative;
+  }
+  :global(.cyan-hero-copy) {
+    width: 63%;
+    margin-left: auto;
+    text-align: right;
+    padding-inline-start: 50px;
+  }
+  &[dir="ltr"] :global(.cyan-hero-copy) {
+    text-align: left;
+  }
+  :global(.cyan-hero h1) {
+    font-size: clamp(35px, 3.65vw, 58px);
+    line-height: 1.25;
+    font-weight: 950;
+    margin: 0 0 33px;
+    color: #fff;
+  }
+  :global(.cyan-hero h1 > span),
+  :global(.cyan-hero h1 > em) {
+    display: block;
+  }
+  :global(.cyan-hero h1 > em) {
+    color: #04d4f1;
+    position: relative;
+    width: fit-content;
+    margin: 0 0 0 auto;
+    font-style: italic;
+    padding-bottom: 16px;
+  }
+  &[dir="ltr"] :global(.cyan-hero h1 > em) {
+    margin: 0 auto 0 0;
+  }
+  :global(.cyan-hero h1 > em::after) {
+    content: "";
+    position: absolute;
+    height: 13px;
+    width: 65%;
+    border-top: 5px solid #05d9f4;
+    border-radius: 50%;
+    bottom: 0;
+    inset-inline-start: 5%;
+    transform: rotate(-5deg);
+  }
+  :global(.cyan-hero-copy > p) {
+    color: #fff;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.8;
+    margin: 0;
+  }
+  :global(.cyan-vehicle-finder) {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1.03fr;
+    gap: 25px;
+    background: linear-gradient(#fff, #eff2f9);
+    padding: 18px 25px;
+    border-radius: 24px;
+    margin-top: 30px;
+    box-shadow: 0 8px 30px #0016301c;
+    color: #061632;
+  }
+  :global(.cyan-vehicle-finder > label) {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    position: relative;
+    border: 2px solid #c4d0e2;
+    border-radius: 14px;
+    min-width: 0;
+    background: #fafbff;
+    padding-inline-start: 16px;
+    margin: 0;
+  }
+  :global(.cyan-vehicle-finder label > svg) {
+    flex-shrink: 0;
+    width: 25px;
+    height: 25px;
+  }
+  :global(.cyan-vehicle-finder select) {
+    width: 100%;
+    min-width: 0;
+    min-height: 54px;
+    border: 0;
+    background: transparent;
+    font-size: 17px;
+    font-weight: 800;
+    color: #07152f;
+    padding: 10px;
+    box-shadow: none;
+  }
+  :global(.cyan-vehicle-finder select:disabled) {
+    opacity: 0.58;
+  }
+  :global(.cyan-button),
+  :global(.cyan-vehicle-finder > button) {
+    background: linear-gradient(115deg, #00c9ec, #0079ad);
+    border: 1px solid #11c9ee;
+    border-radius: 15px;
+    box-shadow: inset 0 1px 0 #9aefff;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 900;
+    gap: 10px;
+    padding: 11px 20px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+  }
+  :global(.cyan-button:hover) {
+    background: linear-gradient(115deg, #12d6f4, #0087ba);
+    color: #fff;
+  }
+  :global(.cyan-section-title) {
+    font-size: clamp(25px, 2.3vw, 36px);
+    line-height: 1.5;
+    font-weight: 950;
+    position: relative;
+    width: fit-content;
+    margin: 0 0 24px;
+    padding-bottom: 9px;
+  }
+  :global(.cyan-section-title::after) {
+    content: "";
+    height: 7px;
+    width: 76px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #00d3f2, #0098c7);
+    position: absolute;
+    bottom: 0;
+    inset-inline-start: 0;
+  }
+  :global(.cyan-brands) {
+    padding-top: 17px;
+    padding-bottom: 25px;
+  }
+  :global(.cyan-brand-grid) {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 17px;
+  }
+  :global(.cyan-brand-tile) {
+    display: block;
+    position: relative;
+    aspect-ratio: 1.65;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #03213b;
+    box-shadow: 0 4px 10px #001b3412;
+    isolation: isolate;
+  }
+  :global(.cyan-brand-tile > img) {
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  :global(.cyan-brand-tile:hover > img) {
+    transform: scale(1.04);
+  }
+  :global(.cyan-brand-tile::after) {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #00112335, transparent 70%);
+    z-index: -1;
+  }
+  :global(.cyan-brand-logo) {
+    position: absolute;
+    top: 13px;
+    left: 17px;
+    width: 85px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 4px;
+    font-family: var(--font-latin);
+    text-align: center;
+  }
+  :global(.cyan-brand-logo img) {
+    width: 54px;
+    height: 51px;
+    object-fit: contain;
+  }
+  :global(.cyan-brand-logo b) {
+    font-size: 12px;
+    letter-spacing: 1.6px;
+  }
+  :global(.cyan-brand-cta) {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    border: 1.5px solid #fff;
+    border-radius: 22px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 4px 10px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    background: #00152930;
+  }
+  :global(.cyan-trust-strip) {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    background: linear-gradient(#f8fafd, #edf1f7);
+    border-radius: 22px;
+    padding: 21px 10px;
+    box-shadow: 0 7px 12px #00193a12;
+    margin-bottom: 32px;
+  }
+  :global(.cyan-trust-strip > div) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 13px;
+    padding: 0 14px;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 1.55;
+  }
+  :global(.cyan-trust-strip > div:not(:last-child)) {
+    border-inline-end: 1px solid #56c5e7;
+  }
+  :global(.cyan-trust-strip svg) {
+    color: #009bcd;
+    flex-shrink: 0;
+  }
+  :global(.cyan-featured) {
+    padding: 20px 24px 30px;
+    margin-bottom: 4px;
+    background: linear-gradient(110deg, #f5f8fc, #fff);
+    border: 1px solid #f3f6fa;
+    border-radius: 28px;
+  }
+  :global(.cyan-featured .section-heading) {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 0;
+  }
+  :global(.cyan-featured .section-heading .cyan-section-title) {
+    color: #061632;
+    font-weight: 950;
+  }
+  :global(.cyan-all-products) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #061632;
+    font-weight: 800;
+    border-bottom: 2px solid #68c5eb;
+    font-size: 15px;
+    padding-bottom: 5px;
+  }
+  :global(.cyan-featured .product-grid) {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+  }
+  :global(.product-card) {
+    border: 1px solid #dbe4f0;
+    border-radius: 17px;
+    box-shadow: 0 3px 5px #002e5312;
+    background: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  :global(.product-card:hover) {
+    transform: translateY(-3px);
+    border-color: #a9dced;
+    box-shadow: 0 7px 20px #002e531a;
+  }
+  :global(.product-card > .product-art) {
+    background: #fff;
+    border: 0;
+    border-radius: 0;
+  }
+  :global(.product-card .product-info) {
+    background: #fff;
+    gap: 10px;
+    padding: 16px 18px;
+  }
+  :global(.product-card .product-info h3) {
+    color: #061632;
+    font-size: 19px;
+    font-weight: 900;
+    line-height: 1.6;
+  }
+  :global(.product-card .product-price) {
+    color: #061632;
+    font-size: 23px;
+    font-weight: 900;
+    margin-top: auto;
+  }
+  :global(.product-card .original-badge) {
+    position: absolute;
+    top: 15px;
+    right: 14px;
+    z-index: 3;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 7px;
+    background: linear-gradient(#07558f, #003365);
+    color: #fff;
+    font-size: 12px;
+    padding: 5px 11px;
+    box-shadow: 0 2px 5px #001b3c12;
+    animation: none;
+  }
+  :global(.favorite-toggle) {
+    position: absolute;
+    left: 14px;
+    top: 15px;
+    width: 34px;
+    height: 34px;
+    z-index: 4;
+    display: grid;
+    place-items: center;
+    color: #071b34;
+    background: #ffffffcf;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  :global(.favorite-toggle[aria-pressed="true"]) {
+    color: #009cca;
+    background: #e1f8ff;
+  }
+  :global(.cyan-featured .product-art) {
+    height: 185px;
+    aspect-ratio: auto;
+    min-height: 185px;
+    max-height: 185px;
+  }
+  :global(.cyan-featured .product-art > img) {
+    object-fit: contain;
+  }
+  :global(.cyan-featured .product-info) {
+    padding: 10px 14px 15px;
+    gap: 7px;
+  }
+  :global(.cyan-featured .product-info h3) {
+    font-size: 17px;
+    line-height: 1.5;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    min-height: 51px;
+  }
+  :global(.cyan-featured .product-brand) {
+    font-size: 11px;
+    color: #608096;
+  }
+  :global(.cyan-featured .product-origin),
+  :global(.cyan-featured .product-info > .eyebrow),
+  :global(.cyan-featured .product-info > p.small),
+  :global(.cyan-featured .product-details-link),
+  :global(.cyan-featured .purchase-buy) {
+    display: none;
+  }
+  :global(.cyan-featured .purchase-controls) {
+    display: block;
+  }
+  :global(.cyan-featured .purchase-add) {
+    width: 100%;
+    min-height: 43px;
+    padding: 9px 5px;
+    font-size: 16px;
+    font-weight: 800;
+    border-radius: 11px;
+  }
+  :global(.cyan-featured .product-meta) {
+    min-height: 14px;
+  }
+  :global(.cyan-part-banner) {
+    min-height: 160px;
+    margin: 18px 0 15px;
+    background: #032447 url("/images/cyan/request-brakes.webp") center / cover
+      no-repeat;
+    border-radius: 32px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  :global(.cyan-part-banner-copy) {
+    width: 66%;
+    margin-left: auto;
+    padding: 21px 30px;
+    text-align: right;
+  }
+  &[dir="ltr"] :global(.cyan-part-banner-copy) {
+    text-align: left;
+  }
+  :global(.cyan-part-banner h2) {
+    color: #fff;
+    font-size: clamp(22px, 2.5vw, 37px);
+    font-weight: 900;
+    line-height: 1.5;
+    margin: 0 0 10px;
+  }
+  :global(.cyan-part-banner-copy > div) {
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    align-items: center;
+  }
+  :global(.cyan-part-banner p) {
+    color: #fff;
+    font-size: 18px;
+    line-height: 1.6;
+    margin: 0;
+  }
+  :global(.cyan-part-banner .cyan-button) {
+    white-space: nowrap;
+    font-size: 16px;
+    padding: 9px 25px;
+    border-radius: 22px;
+  }
+  :global(.cyan-why) {
+    padding-block: 0 30px;
+  }
+  :global(.cyan-benefits) {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px;
+  }
+  :global(.cyan-benefits > div) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    min-height: 145px;
+    padding: 19px;
+    border-radius: 23px;
+    background: linear-gradient(#f6f8fc, #eef2f8);
+    text-align: center;
+  }
+  :global(.cyan-benefits h3) {
+    font-size: 17px;
+    line-height: 1.6;
+    font-weight: 900;
+    margin: 0;
+  }
+  :global(.cyan-benefits .cyan-benefit-accent) {
+    background: linear-gradient(140deg, #e4f7ff, #c9ebfc);
+    color: #008ad1;
+  }
+  :global(.cyan-newsletter) {
+    min-height: 180px;
+    background: #06254a url("/images/cyan/newsletter-footer.webp") center /
+      cover no-repeat;
+  }
+  :global(.cyan-newsletter-inner) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 45px;
+    align-items: center;
+    min-height: 180px;
+    padding-block: 16px;
+  }
+  :global(.newsletter-logo) {
+    width: 230px;
+    height: 85px;
+    margin: 0;
+    justify-self: start;
+    grid-column: 2;
+    grid-row: 1;
+    transform: none;
+  }
+  &[dir="ltr"] :global(.newsletter-logo) {
+    transform: none;
+    justify-self: end;
+    grid-column: 1;
+  }
+  :global(.newsletter-copy) {
+    max-width: 500px;
+    width: 100%;
+    grid-column: 1;
+    grid-row: 1;
+    color: #fff;
+  }
+  &[dir="ltr"] :global(.newsletter-copy) {
+    grid-column: 2;
+  }
+  :global(.newsletter-copy h2) {
+    font-size: 24px;
+    line-height: 1.5;
+    font-weight: 900;
+    color: #fff;
+    margin: 0;
+  }
+  :global(.newsletter-copy p) {
+    margin: 3px 0 10px;
+    color: #fff;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  :global(.newsletter-copy form) {
+    display: flex;
+    background: #f9fbff;
+    border: 1px solid #d5e4f1;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 3px;
+    gap: 7px;
+  }
+  :global(.newsletter-copy input) {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    box-shadow: none;
+    padding: 9px 13px;
+    color: #071b34;
+    background: transparent;
+    font-size: 14px;
+  }
+  :global(.newsletter-copy button) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 18px;
+    background: linear-gradient(#00c4ed, #008bc3);
+    color: #fff;
+    border: 1px solid #57e9ff;
+    border-radius: 9px;
+    font-weight: 800;
+    font-size: 14px;
+  }
+  :global(.newsletter-copy small) {
+    display: block;
+    margin-top: 7px;
+    color: #c6d4e3;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  :global(.newsletter-copy small a) {
+    color: #8deaff;
+  }
+  :global(.newsletter-status:empty) {
+    display: none;
+  }
+  :global(.footer) {
+    padding-top: 0;
+    margin-top: 35px;
+    background: #031b35;
+    color: #c5d7e7;
+  }
+  :global(.footer-grid) {
+    padding-top: 38px;
+    gap: 40px;
+  }
+  :global(.footer h3) {
+    color: #fff;
+    font-size: 17px;
+  }
+  :global(.footer a) {
+    color: #c5d7e7;
+  }
+  :global(.footer a:hover) {
+    color: #05d0ec;
+  }
+  :global(.footer-bottom) {
+    border-top: 1px solid #24425d;
+    color: #a9c5d9;
+  }
+  :global(.catalog-filters),
+  :global(.purchase-panel),
+  :global(.spec-grid > div) {
+    background: #fff;
+    border-color: #dbe4ee;
+    border-radius: 14px;
+  }
+  :global(.model-card) {
+    border-color: #dbe4ee;
+    background: #fff;
+    box-shadow: 0 3px 8px #00182d0a;
+    border-radius: 17px;
+  }
+  :global(.model-product-filters summary) {
+    color: #075079;
+  }
+  :global(.pagination) {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  :global(.favorites-empty) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 50px 24px;
+    margin-top: 25px;
+    color: #08395d;
+  }
+}
+@media (min-width: 1500px) {
+  .theme:global(.mopc-cyan) :global(.cyan-hero .hero-slideshow-region) {
+    min-height: 450px;
+  }
+}
+@media (max-width: 1180px) {
+  .theme:global(.mopc-cyan) {
+    :global(.header-inner) {
+      grid-template-columns: 205px minmax(200px, 1fr) 240px;
+      gap: 24px;
+    }
+    :global(.header-tools) {
+      gap: 19px;
+    }
+    :global(.header .store-logo-image) {
+      width: 150px;
+      height: 55px;
+    }
+    :global(.header .store-name-ar) {
+      font-size: 22px;
+    }
+    :global(.cyan-subnav > nav) {
+      gap: 10px;
+    }
+    :global(.cyan-subnav nav > a),
+    :global(.brand-nav-menu > summary) {
+      font-size: 15px;
+      padding: 6px 13px;
+    }
+    :global(.cyan-vehicle-finder) {
+      gap: 12px;
+      padding: 16px;
+    }
+    :global(.cyan-vehicle-finder select) {
+      font-size: 14px;
+    }
+    :global(.cyan-vehicle-finder > button) {
+      font-size: 17px;
+      padding: 12px;
+    }
+    :global(.cyan-brand-logo) {
+      width: 65px;
+      left: 10px;
+    }
+    :global(.cyan-brand-logo img) {
+      width: 44px;
+      height: 40px;
+    }
+    :global(.cyan-brand-logo b) {
+      font-size: 9px;
+      letter-spacing: 1px;
+    }
+    :global(.cyan-trust-strip > div) {
+      font-size: 13px;
+      padding: 0 8px;
+      gap: 8px;
+    }
+    :global(.cyan-trust-strip svg) {
+      width: 27px;
+    }
+    :global(.cyan-featured .product-grid) {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+    }
+    :global(.cyan-featured .product-info h3) {
+      font-size: 15px;
+    }
+    :global(.cyan-featured .product-info) {
+      padding: 10px;
+    }
+    :global(.cyan-featured .product-art) {
+      height: 155px;
+      min-height: 155px;
+      max-height: 155px;
+    }
+    :global(.cyan-part-banner-copy > div) {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    :global(.cyan-benefits) {
+      gap: 10px;
+    }
+    :global(.cyan-benefits > div) {
+      padding: 15px 10px;
+    }
+    :global(.cyan-benefits h3) {
+      font-size: 14px;
+    }
+  }
+}
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan) {
+    :global(.shell) {
+      width: calc(100% - 30px);
+    }
+    :global(.header-inner) {
+      grid-template-columns: minmax(0, 1fr) auto;
+      min-height: 0;
+      padding-block: 10px;
+      gap: 10px 15px;
+    }
+    :global(.header .logo) {
+      gap: 8px;
+    }
+    :global(.header .store-logo-image) {
+      width: 132px;
+      height: 44px;
+    }
+    :global(.header .store-name-ar) {
+      font-size: 21px;
+    }
+    :global(.header-tools) {
+      grid-column: 2;
+      grid-row: 1;
+      gap: 15px;
+    }
+    :global(.header-tool b) {
+      display: none;
+    }
+    :global(.header-tool svg) {
+      width: 23px;
+      height: 23px;
+    }
+    :global(.header-tools > a:last-of-type:not(.header-tool)) {
+      font-size: 10px;
+    }
+    :global(.header-search-box) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    :global(.header-search-box .hero-search) {
+      height: 44px;
+      border-radius: 11px;
+    }
+    :global(.header-search-box .hero-search input) {
+      font-size: 14px;
+      padding: 7px 10px;
+    }
+    :global(.header-search-box .hero-search button svg) {
+      width: 22px;
+      height: 22px;
+    }
+    :global(.cyan-subnav > nav) {
+      gap: 4px;
+      min-height: 48px;
+      width: calc(100% - 16px);
+    }
+    :global(.cyan-subnav nav > a),
+    :global(.brand-nav-menu > summary) {
+      font-size: 11px;
+      gap: 3px;
+      padding: 5px 4px;
+      border-radius: 9px;
+    }
+    :global(.cyan-subnav svg) {
+      width: 16px;
+      height: 16px;
+    }
+    :global(.cyan-subnav nav > a.cyan-nav-catalog) {
+      display: none;
+    }
+    :global(.brand-nav-menu > div) {
+      width: 200px;
+      inset-inline-start: -40px;
+    }
+    :global(.cyan-hero .hero-slideshow-region) {
+      min-height: 0;
+    }
+    :global(.cyan-hero .cinematic-backdrop) {
+      height: 355px;
+    }
+    :global(.cyan-hero .cinematic-backdrop > img) {
+      object-position: 35% 50%;
+    }
+    :global(.cyan-hero .cinematic-backdrop::after) {
+      background:
+        linear-gradient(0deg, #031b33 0%, #031b3360 60%),
+        linear-gradient(90deg, #00162a20, #00142bd6);
+    }
+    :global(.cyan-hero-content) {
+      padding-top: 26px;
+      padding-bottom: 25px;
+    }
+    :global(.cyan-hero-copy) {
+      width: 100%;
+      padding: 0;
+    }
+    :global(.cyan-hero h1) {
+      font-size: clamp(29px, 7.5vw, 43px);
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    :global(.cyan-hero-copy > p) {
+      font-size: 16px;
+      line-height: 1.9;
+      max-width: 95%;
+      margin-inline-start: auto;
+    }
+    :global(.cyan-vehicle-finder) {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 24px;
+      border-radius: 17px;
+      padding: 14px;
+      gap: 10px;
+    }
+    :global(.cyan-vehicle-finder > label:first-child) {
+      grid-column: 1 / -1;
+    }
+    :global(.cyan-vehicle-finder > button) {
+      grid-column: 1 / -1;
+      font-size: 17px;
+      min-height: 46px;
+      border-radius: 11px;
+    }
+    :global(.cyan-vehicle-finder label) {
+      padding-inline-start: 9px;
+      gap: 3px;
+      border-radius: 9px;
+    }
+    :global(.cyan-vehicle-finder label svg) {
+      width: 19px;
+      height: 19px;
+    }
+    :global(.cyan-vehicle-finder select) {
+      min-height: 44px;
+      font-size: 12px;
+      padding: 6px;
+    }
+    :global(.cyan-brands) {
+      padding-block: 20px;
+    }
+    :global(.cyan-section-title) {
+      font-size: 25px;
+      margin-bottom: 18px;
+    }
+    :global(.cyan-brand-grid) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    :global(.cyan-brand-tile) {
+      border-radius: 12px;
+      aspect-ratio: 1.35;
+    }
+    :global(.cyan-brand-tile:last-child) {
+      grid-column: 1 / -1;
+      aspect-ratio: 2.8;
+    }
+    :global(.cyan-brand-logo) {
+      top: 9px;
+      left: 9px;
+    }
+    :global(.cyan-brand-logo img) {
+      width: 38px;
+      height: 36px;
+    }
+    :global(.cyan-brand-cta) {
+      left: 8px;
+      bottom: 9px;
+      font-size: 10px;
+      padding: 3px 8px;
+    }
+    :global(.cyan-trust-strip) {
+      display: flex;
+      overflow-x: auto;
+      padding: 15px 7px;
+      margin-bottom: 20px;
+      border-radius: 14px;
+      scroll-snap-type: x mandatory;
+    }
+    :global(.cyan-trust-strip > div) {
+      flex: 0 0 190px;
+      scroll-snap-align: start;
+      font-size: 13px;
+    }
+    :global(.cyan-featured) {
+      padding: 18px 13px 20px;
+      width: calc(100% - 14px);
+      border-radius: 20px;
+    }
+    :global(.cyan-featured .section-heading) {
+      align-items: flex-start;
+    }
+    :global(.cyan-featured .cyan-section-title) {
+      font-size: 23px;
+      white-space: nowrap;
+    }
+    :global(.cyan-all-products) {
+      font-size: 11px;
+      gap: 3px;
+      margin-top: 7px;
+    }
+    :global(.cyan-featured .product-grid) {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(210px, 72%));
+      overflow-x: auto;
+      gap: 12px;
+      padding: 4px 3px 15px;
+      scroll-snap-type: x mandatory;
+    }
+    :global(.cyan-featured .product-card) {
+      scroll-snap-align: start;
+    }
+    :global(.cyan-featured .product-art) {
+      height: 190px;
+      min-height: 190px;
+      max-height: 190px;
+    }
+    :global(.cyan-featured .product-info h3) {
+      font-size: 17px;
+    }
+    :global(.cyan-featured .product-info) {
+      padding: 12px;
+    }
+    :global(.cyan-part-banner) {
+      border-radius: 20px;
+      margin-top: 25px;
+      min-height: 200px;
+      background-position: 30% center;
+    }
+    :global(.cyan-part-banner-copy) {
+      width: 100%;
+      padding: 23px 20px;
+      background: linear-gradient(90deg, #002346a0, #002346e8);
+    }
+    :global(.cyan-part-banner h2) {
+      font-size: 24px;
+    }
+    :global(.cyan-part-banner p) {
+      font-size: 15px;
+    }
+    :global(.cyan-part-banner .cyan-button) {
+      font-size: 15px;
+    }
+    :global(.cyan-why) {
+      padding-top: 15px;
+    }
+    :global(.cyan-benefits) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    :global(.cyan-benefits > div) {
+      min-height: 133px;
+      border-radius: 18px;
+      padding: 18px 13px;
+    }
+    :global(.cyan-benefits h3) {
+      font-size: 15px;
+    }
+    :global(.cyan-newsletter-inner) {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 9px;
+      padding-block: 23px;
+    }
+    :global(.newsletter-logo) {
+      transform: none;
+      width: 180px;
+      height: 54px;
+      margin: 0;
+      align-self: flex-start;
+    }
+    :global(.newsletter-copy) {
+      max-width: 100%;
+    }
+    :global(.newsletter-copy h2) {
+      font-size: 23px;
+    }
+    :global(.newsletter-copy form) {
+      border-radius: 9px;
+    }
+    :global(.newsletter-copy input) {
+      font-size: 13px;
+      padding: 9px;
+    }
+    :global(.newsletter-copy button) {
+      padding: 8px 13px;
+      font-size: 12px;
+    }
+    :global(.footer-grid) {
+      grid-template-columns: 1fr 1fr;
+      padding-top: 25px;
+      gap: 24px;
+    }
+    :global(.footer-grid > div:first-child) {
+      grid-column: 1 / -1;
+    }
+    :global(.footer .store-logo-image) {
+      width: 170px;
+      height: 58px;
+    }
+    :global(.footer-bottom) {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      font-size: 10px;
+    }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme:global(.mopc-cyan) :global(.cyan-brand-tile > img) {
+    transition: none;
+  }
+}

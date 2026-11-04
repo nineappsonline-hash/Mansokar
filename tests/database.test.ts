@@ -124,7 +124,18 @@ test("migration, RLS boundaries, transactional checkout, coupons, idempotency an
       "select relrowsecurity from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r'",
     );
     assert.ok(tables.rows.every((t) => t.relrowsecurity));
+    await db.exec(
+      "insert into public.newsletter_subscribers(email,locale) values('privacy-check@example.invalid','ar')",
+    );
     await db.exec("set role anon");
+    await assert.rejects(
+      db.query("select email from public.newsletter_subscribers"),
+    );
+    await assert.rejects(
+      db.query(
+        "insert into public.newsletter_subscribers(email,locale) values('public-write@example.invalid','en')",
+      ),
+    );
     await assert.rejects(db.query("select cost from public.products"));
     await assert.rejects(db.query("select specs from public.products"));
     await assert.rejects(

@@ -1,3 +1,5 @@
+import { CyanHome } from "@/components/cyan-home";
+import { Favorites } from "@/components/favorites";
 import { ProductText } from "@/components/product-text";
 import { productSpecifications } from "@/lib/product-specifications";
 import { ModelYearCards } from "@/components/model-year-cards";
@@ -15,15 +17,10 @@ import { ProductAnswers } from "@/components/product-answers";
 import { InstallmentsGuide } from "@/components/installments-guide";
 import { productSearchCopy, productStructuredData } from "@/lib/product-seo";
 import { builtInPolicy } from "@/lib/policy-content";
-import { HeroSlideshow } from "@/components/hero-slideshow";
-import { Campaigns } from "@/components/campaigns";
 import { ShippingEstimate } from "@/components/shipping-estimate";
 import { ProductCard as Card } from "@/components/product-card";
 import { PurchaseButtons } from "@/components/purchase-buttons";
-import { SpecialOffers } from "@/components/special-offers";
-import { BrandCard } from "@/components/brand-card";
 import { Reveal } from "@/components/motion-primitives";
-import { SearchBox } from "@/components/search";
 import Image from "next/image";
 import { modelPhoto, partArt } from "@/lib/visuals";
 import Link from "next/link";
@@ -96,7 +93,7 @@ export async function generateMetadata({
   const slug = path.join("/");
   const filters = await searchParams;
   const accountPage =
-    /^(cart|checkout|account|garage|compare|track-order|order)(\/|$)/.test(
+    /^(cart|checkout|account|garage|favorites|compare|track-order|order)(\/|$)/.test(
       slug,
     );
   const privatePage =
@@ -312,6 +309,7 @@ export async function generateMetadata({
     about: l === "ar" ? "عن المتجر" : "About",
     contact: l === "ar" ? "تواصل معنا" : "Contact",
     "track-order": l === "ar" ? "تتبع الطلب" : "Track your order",
+    favorites: l === "ar" ? "المفضلة" : "Favorites",
   };
   const settings = await storefrontSettings();
   return {
@@ -471,7 +469,7 @@ export default async function Page({ params, searchParams }: Props) {
       : !route
         ? [
             ...new Map(
-              [...(await catalog({ limit: 4 })), ...homeOffers].map((p) => [
+              [...(await catalog({ limit: 10 })), ...homeOffers].map((p) => [
                 p.id,
                 p,
               ]),
@@ -511,239 +509,42 @@ export default async function Page({ params, searchParams }: Props) {
   );
   let content: React.ReactNode;
   if (!route) {
-    const faq = (await policyPages(["faq"]))[0];
+    const registeredYears = configured()
+      ? await allRows<{ model_id: string; year: number }>(
+          "vehicle_model_years",
+          "model_id,year",
+        )
+      : [];
     const slideshow = await heroSlideshow(
-      branding.hero?.url ??
-        settings.heroImage ??
-        "/images/cinematic/hero-road-v2.webp",
+      branding.hero?.url ?? "/images/cyan/hero-blue.webp",
     );
     content = (
-      <>
-        <div className="cinematic-intro">
-          <HeroSlideshow {...slideshow} locale={locale}>
-            <section className="hero">
-              <div className="shell hero-content">
-                <Reveal>
-                  <p className="eyebrow hero-eyebrow">
-                    {locale === "ar"
-                      ? "قطع صح. عمر أطول."
-                      : "Right Parts. More Miles."}
-                  </p>
-                </Reveal>
-                <Reveal delay={0.08}>
-                  <h1 className="cinematic-headline">
-                    {settings.heroTitle?.[locale] ? (
-                      settings.heroTitle[locale]
-                    ) : (
-                      <>
-                        <span>
-                          {locale === "ar" ? "اختيار أدق." : "A better fit."}
-                        </span>
-                        <span className="brush-highlight">
-                          {locale === "ar"
-                            ? "لرحلة أفضل."
-                            : "For the road ahead."}
-                        </span>
-                      </>
-                    )}
-                  </h1>
-                </Reveal>
-                <Reveal delay={0.18}>
-                  <p className="hero-copy">
-                    {settings.heroIntro?.[locale] ??
-                      (locale === "ar"
-                        ? "القطعة المناسبة لسيارتك، لكل طريق ورحلة."
-                        : "The right parts for your car. For every road ahead.")}
-                  </p>
-                </Reveal>
-                <Reveal delay={0.26}>
-                  <SearchBox locale={locale} />
-                </Reveal>
-                <div className="hero-actions">
-                  <Link className="hero-browse" href={`/${locale}/catalog`}>
-                    {locale === "ar"
-                      ? "اكتشف قطع الغيار"
-                      : "Explore the collection"}
-                    <ArrowUpRight size={17} />
-                  </Link>
-                  <a className="text-link" href="#brands">
-                    {w.explore}
-                    <span>↓</span>
-                  </a>
-                </div>
-              </div>
-              <div className="hero-caption">
-                {locale === "ar" ? "موبِك" : "MOPC"}{" "}
-                <span>PARTS FOR YOUR JOURNEY</span>
-              </div>
-            </section>
-          </HeroSlideshow>
-          <section
-            id="brands"
-            className="shell section brand-deck"
-            aria-label={
-              locale === "ar" ? "اختر علامة سيارتك" : "Choose your car brand"
-            }
-          >
-            <Reveal>
-              <div className="section-heading">
-                <div>
-                  <span className="eyebrow">
-                    {locale === "ar" ? "ابدأ بسيارتك" : "START WITH YOUR CAR"}
-                  </span>
-                  <h2>{w.brands}</h2>
-                </div>
-                <p>{w.brandIntro}</p>
-              </div>
-            </Reveal>
-            <div className="brand-grid">
-              {brands.map((b, i) => (
-                <Reveal key={b.slug} delay={i * 0.08}>
-                  <BrandCard
-                    brand={b}
-                    locale={locale}
-                    photo={branding[`brand-${b.slug}-photo`]?.url}
-                    logo={branding[`brand-${b.slug}-logo`]?.url}
-                  />
-                </Reveal>
-              ))}
-            </div>
-          </section>
-        </div>
-        <div className="trust-strip">
-          <Reveal>
-            <div className="shell trust-grid">
-              <div>
-                <CarFront />
-                <span>
-                  {locale === "ar"
-                    ? "التوافق يبدأ بسيارتك"
-                    : "Fit starts with your car"}
-                </span>
-              </div>
-              <div>
-                <Route />
-                <span>
-                  {locale === "ar"
-                    ? "التوصيل حسب المنطقة"
-                    : "Delivery by configured area"}
-                </span>
-              </div>
-              <div>
-                <ShieldCheck />
-                <span>
-                  {locale === "ar"
-                    ? "أسعار واضحة. اختيار مدروس."
-                    : "Clear prices. Considered choices."}
-                </span>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-        <Campaigns locale={locale} />
-        <SpecialOffers
-          products={homeOffers}
-          locale={locale}
-          vehicle={vehicle}
-          fitments={flags}
-        />
-        <section className="shell section home-featured">
-          <Reveal>
-            <div className="section-heading">
-              <div>
-                <span className="eyebrow">
-                  {products.every((p) => p.demo)
-                    ? "MOST PURCHASED / DEMO COLLECTION"
-                    : "MOST PURCHASED"}
-                </span>
-                <h2>
-                  {locale === "ar" ? "الأكثر شراء" : "Most Purchased Items"}
-                </h2>
-              </div>
-              <Link className="text-link" href={`/${locale}/catalog`}>
-                {w.catalog}
-                <ArrowUpRight size={18} />
-              </Link>
-            </div>
-          </Reveal>
-          {cards(products.slice(0, 4))}
-        </section>
-        <section className="shell process section">
-          <span className="eyebrow">A BETTER WAY TO FIND YOUR PART</span>
-          <h2>
-            {locale === "ar"
-              ? "من سيارتك، إلى الطريق."
-              : "From your car, to the road."}
-          </h2>
-          <div className="three-col">
-            {(locale === "ar"
-              ? ["اختر سيارتك", "تحقق من التوافق", "اطلب القطعة المناسبة"]
-              : ["Choose your car", "Check your fit", "Order your part"]
-            ).map((s, i) => (
-              <Reveal key={s} delay={i * 0.1}>
-                <span className="step">0{i + 1}</span>
-                <h3>{s}</h3>
-                <p className="muted">
-                  {
-                    [
-                      w.explore,
-                      locale === "ar"
-                        ? "السنة والمحرك يحدثان الفرق."
-                        : "Year and engine make the difference.",
-                      locale === "ar"
-                        ? "الأسعار والتوصيل يتم تأكيدهما عند الطلب."
-                        : "Prices and delivery are validated at checkout.",
-                    ][i]
-                  }
-                </p>
-              </Reveal>
-            ))}
-          </div>
-        </section>
-        <section className="shell section narrow home-faq">
-          <Reveal>
-            <h2>
-              {faq?.title?.[locale] ??
-                (locale === "ar"
-                  ? "أسئلة شائعة"
-                  : "Frequently asked questions")}
-            </h2>
-          </Reveal>
-          {faq ? (
-            <p className="preserve">{faq.body[locale]}</p>
-          ) : (
-            <>
-              <details className="accordion">
-                <summary>
-                  {locale === "ar"
-                    ? "كيف أختار القطعة المناسبة؟"
-                    : "How do I choose a compatible part?"}
-                </summary>
-                <p>
-                  {locale === "ar"
-                    ? "اختر الموديل والسنة والمحرك ثم ابحث عن علامة التوافق المؤكد. تواصل معنا إذا لم تجد تكوين سيارتك."
-                    : "Choose your model, year and engine, then look for confirmed fitment. Contact us if your configuration is missing."}
-                </p>
-              </details>
-              <details className="accordion">
-                <summary>
-                  {locale === "ar"
-                    ? "متى تظهر تكلفة التوصيل؟"
-                    : "When can I see delivery costs?"}
-                </summary>
-                <p>
-                  {locale === "ar"
-                    ? "تظهر التكلفة حسب المنطقة المعتمدة في مراجعة الطلب قبل التأكيد."
-                    : "Approved delivery costs appear in your order review before confirmation."}
-                </p>
-              </details>
-            </>
-          )}
-          <Link href={`/${locale}/faq`}>
-            {locale === "ar" ? "كل الأسئلة" : "All questions"} ↗
-          </Link>
-        </section>
-      </>
+      <CyanHome
+        locale={locale}
+        vehicle={vehicle}
+        fitments={flags}
+        products={products}
+        slides={slideshow.slides}
+        cardPayments={availablePayments().includes("card")}
+        brands={brands.map((b) => ({
+          ...b,
+          photo: branding[`brand-${b.slug}-photo`]?.url,
+          logo: branding[`brand-${b.slug}-logo`]?.url,
+        }))}
+        models={vehicleModels.map((m) => ({
+          ...m,
+          years: [
+            ...new Set([
+              ...registeredYears
+                .filter((y) => y.model_id === m.id)
+                .map((y) => y.year),
+              ...vehicles
+                .filter((v) => v.brand === m.brand && v.model === m.slug)
+                .map((v) => v.year),
+            ]),
+          ],
+        }))}
+      />
     );
   } else if (path[0] === "brands" && path.length <= 2) {
     const brand = brands.find((b) => b.slug === path[1]);
@@ -1132,9 +933,7 @@ export default async function Page({ params, searchParams }: Props) {
           ? browsingContext.name.ar
           : browsingContext.name.en;
       }
-      return locale === "ar"
-        ? "لم يتم اختيار سيارة"
-        : "No vehicle selected";
+      return locale === "ar" ? "لم يتم اختيار سيارة" : "No vehicle selected";
     }
 
     let media: {
@@ -1288,9 +1087,7 @@ export default async function Page({ params, searchParams }: Props) {
                   <ProductText text={p.description[locale]} locale={locale} />
                 </p>
                 {p.editorial?.why && (
-                  <p className="product-story-why">
-                    {p.editorial.why[locale]}
-                  </p>
+                  <p className="product-story-why">{p.editorial.why[locale]}</p>
                 )}
               </header>
               <div className="product-specs">
@@ -1398,7 +1195,9 @@ export default async function Page({ params, searchParams }: Props) {
                   <del>{money(p.price, locale)}</del>
                   {savings > 0 && (
                     <span className="price-saving">
-                      {locale === "ar" ? `وفّر ${savings}%` : `Save ${savings}%`}
+                      {locale === "ar"
+                        ? `وفّر ${savings}%`
+                        : `Save ${savings}%`}
                     </span>
                   )}
                 </div>
@@ -1412,7 +1211,12 @@ export default async function Page({ params, searchParams }: Props) {
               <p>{vehicleForItem(vehicle, locale)}</p>
             </div>
             <div className="purchase-actions">
-              <ProductActions product={p} locale={locale} vehicle={vehicle} context={browsingContext} />
+              <ProductActions
+                product={p}
+                locale={locale}
+                vehicle={vehicle}
+                context={browsingContext}
+              />
             </div>
             <div className="purchase-notes">
               <Link className="small muted" href={`/${locale}/checkout`}>
@@ -1456,7 +1260,10 @@ export default async function Page({ params, searchParams }: Props) {
             }
           </section>
         )}
-        <section className="section product-page-animate slide" style={{ animationDelay: "0.4s" }}>
+        <section
+          className="section product-page-animate slide"
+          style={{ animationDelay: "0.4s" }}
+        >
           <div className="section-heading">
             <div>
               <span className="eyebrow">
@@ -1491,6 +1298,7 @@ export default async function Page({ params, searchParams }: Props) {
         <Cart products={products} locale={locale} />
       </div>
     );
+  else if (route === "favorites") content = <Favorites locale={locale} />;
   else if (route === "compare")
     content = (
       <div className="shell section">
@@ -1896,8 +1704,8 @@ export default async function Page({ params, searchParams }: Props) {
         <h1>{locale === "ar" ? "مصادر الصور" : "Image credits"}</h1>
         <p>
           {locale === "ar"
-            ? "خلفية الطريق وبطاقات العلامات في الصفحة الرئيسية رسوم مولدة بالذكاء الاصطناعي. ليست صوراً لإثبات الموديل أو السنة أو توافق القطع."
-            : "The homepage road scene and four automotive brand-card backgrounds are AI-generated illustrations. They are not evidence of model year or part compatibility."}
+            ? "مشاهد السيارات وخلفيات الماركات والبانرات في الصفحة الرئيسية رسوم توضيحية مولدة بالذكاء الاصطناعي. ليست صوراً لإثبات الموديل أو السنة أو توافق القطع."
+            : "The homepage car scenes, five brand-card backgrounds and promotional banners are AI-generated illustrations. They are not evidence of model year or part compatibility."}
         </p>
         <p>
           {locale === "ar"
@@ -2034,53 +1842,50 @@ export default async function Page({ params, searchParams }: Props) {
             <ContactForm locale={locale} enabled={configured()} />
           )}
           {path[0] === "policies" &&
-            ["shipping", "returns", "warranty"].includes(path[1]) &&
-            policyPage ? (
-              <section className="policy-page">
-                <div className="policy-header">
-                  <span className="policy-eyebrow">
-                    {locale === "ar" ? "سياسة المتجر" : "Store Policy"}
-                  </span>
-                  <h1>{policyPage.title[locale]}</h1>
-                  <p className="policy-sub">
-                    {locale === "ar"
-                      ? "آخر تحديث: " + new Date().toLocaleDateString(locale)
-                      : "Last updated: " +
-                        new Date().toLocaleDateString(locale)}
-                  </p>
-                </div>
-                <div className="policy-body">
-                  {policyPage.body[locale]
-                    .split(/\n\s*\n/)
-                    .map((paragraph: string, index: number) => {
-                      const trimmed = paragraph.trim();
-                      if (trimmed.startsWith("#")) {
-                        return (
-                          <h2 key={index} className="policy-section-title">
-                            {trimmed.replace(/^#\s*/, "")}
-                          </h2>
-                        );
-                      }
-                      if (trimmed.startsWith(">")) {
-                        return (
-                          <div key={index} className="policy-callout">
-                            <p>{trimmed.replace(/^>\s*/, "")}</p>
-                          </div>
-                        );
-                      }
+          ["shipping", "returns", "warranty"].includes(path[1]) &&
+          policyPage ? (
+            <section className="policy-page">
+              <div className="policy-header">
+                <span className="policy-eyebrow">
+                  {locale === "ar" ? "سياسة المتجر" : "Store Policy"}
+                </span>
+                <h1>{policyPage.title[locale]}</h1>
+                <p className="policy-sub">
+                  {locale === "ar"
+                    ? "آخر تحديث: " + new Date().toLocaleDateString(locale)
+                    : "Last updated: " + new Date().toLocaleDateString(locale)}
+                </p>
+              </div>
+              <div className="policy-body">
+                {policyPage.body[locale]
+                  .split(/\n\s*\n/)
+                  .map((paragraph: string, index: number) => {
+                    const trimmed = paragraph.trim();
+                    if (trimmed.startsWith("#")) {
                       return (
-                        <p key={index} className="policy-text">
-                          {trimmed}
-                        </p>
+                        <h2 key={index} className="policy-section-title">
+                          {trimmed.replace(/^#\s*/, "")}
+                        </h2>
                       );
-                    })}
-                </div>
-              </section>
-            ) : route === "guides" || route === "contact" ? null : route ===
+                    }
+                    if (trimmed.startsWith(">")) {
+                      return (
+                        <div key={index} className="policy-callout">
+                          <p>{trimmed.replace(/^>\s*/, "")}</p>
+                        </div>
+                      );
+                    }
+                    return (
+                      <p key={index} className="policy-text">
+                        {trimmed}
+                      </p>
+                    );
+                  })}
+              </div>
+            </section>
+          ) : route === "guides" || route === "contact" ? null : route ===
             "about" ? (
-            <p className="lead">
-              {w.intro}
-            </p>
+            <p className="lead">{w.intro}</p>
           ) : route === "faq" ? (
             <StoreQuestions locale={locale} />
           ) : (
@@ -2094,7 +1899,7 @@ export default async function Page({ params, searchParams }: Props) {
       );
   } else notFound();
   return (
-    <Shell locale={locale} vehicle={vehicle} home={!route}>
+    <Shell locale={locale} vehicle={vehicle} home={!route} navBrands={brands}>
       {content}
     </Shell>
   );

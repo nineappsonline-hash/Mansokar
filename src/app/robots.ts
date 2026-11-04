@@ -21,6 +21,8 @@ export default function robots(): MetadataRoute.Robots {
             "/en/order/",
             "/ar/compare",
             "/en/compare",
+            "/ar/favorites",
+            "/en/favorites",
             "/ar/track-order",
             "/en/track-order",
           ]

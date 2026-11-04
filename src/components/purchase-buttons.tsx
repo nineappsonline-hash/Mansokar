@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ShoppingBag, Check, ArrowUpRight } from "lucide-react";
+import { ShoppingCart, Check, ArrowUpRight } from "lucide-react";
 import { addCartItem } from "@/lib/cart";
 import type { Locale, Product } from "@/lib/catalog";
 import { CarContext } from "@/lib/public-product";
@@ -28,7 +28,11 @@ export function PurchaseButtons({
     if (!product.orderable || buying) return;
     try {
       setError("");
-      const cartVehicle = vehicle ?? (context ? { make: context.make, model: context.model, year: context.year } : undefined);
+      const cartVehicle =
+        vehicle ??
+        (context
+          ? { make: context.make, model: context.model, year: context.year }
+          : undefined);
       addCartItem(product.id, quantity, buyNow, cartVehicle);
       if (buyNow) {
         setBuying(true);
@@ -54,7 +58,7 @@ export function PurchaseButtons({
           {added ? (
             <Check size={18} aria-hidden="true" />
           ) : (
-            <ShoppingBag size={18} aria-hidden="true" />
+            <ShoppingCart size={18} aria-hidden="true" />
           )}
           <span>{added ? w.addedToCart : w.add}</span>
         </button>

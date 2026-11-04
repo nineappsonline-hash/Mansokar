@@ -1,3 +1,4 @@
+import { FavoriteButton } from "./favorites";
 import Link from "next/link";
 import { ArrowUpRight, Globe2, Package } from "lucide-react";
 import { productImages } from "@/lib/db";
@@ -24,6 +25,7 @@ export async function ProductCard({
   confirmed,
   context,
   contextMatched = false,
+  cover,
 }: {
   product: Product;
   locale: Locale;
@@ -31,6 +33,7 @@ export async function ProductCard({
   confirmed?: boolean;
   context?: CarContext;
   contextMatched?: boolean;
+  cover?: { url: string; alt: { ar: string; en: string } };
 }) {
   const p = publicProduct(raw, context, contextMatched || confirmed);
   const origin = p.specs.country_of_origin;
@@ -41,13 +44,17 @@ export async function ProductCard({
   );
   let media;
   try {
-    media = (await productImages(p.id))?.[0] ?? undefined;
+    media = cover ?? (await productImages(p.id))?.[0] ?? undefined;
   } catch {
     /* A missing photo does not conceal the product. */
   }
   const w = t(locale);
   return (
-    <article className="product-card product-card-animate" aria-label={p.name[locale]}>
+    <article
+      className="product-card product-card-animate"
+      aria-label={p.name[locale]}
+    >
+      <FavoriteButton id={p.id} locale={locale} />
       <Link
         href={href}
         className="product-art"
@@ -105,9 +112,7 @@ export async function ProductCard({
           )}
         </div>
         {p.type !== "oem" && (
-          <span className="eyebrow muted">
-            {locale === "ar" ? "بديل" : "After Market"}
-          </span>
+          <span className="eyebrow muted">After Market</span>
         )}
         <h3>
           <Link

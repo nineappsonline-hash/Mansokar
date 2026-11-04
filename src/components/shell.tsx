@@ -1,14 +1,22 @@
+import { SearchBox } from "./search";
+import { CartCount } from "./favorites";
+import { Newsletter } from "./newsletter";
+import cyan from "./cyan-storefront.module.css";
 import { siteMedia, storefrontSettings } from "@/lib/db";
 import { BrandLogo } from "./brand-logo";
 import { Analytics } from "./analytics";
 import Link from "next/link";
 import {
-  ShoppingBag,
+  ShoppingCart,
   UserRound,
   ArrowUpRight,
   CarFront,
   Menu,
   Search,
+  Heart,
+  Home,
+  ChevronDown,
+  Tags,
 } from "lucide-react";
 import { Language, VehicleSync, CartSync, ClearVehicle } from "./controls";
 import type { Locale, Vehicle } from "@/lib/catalog";
@@ -19,11 +27,13 @@ export async function Shell({
   vehicle,
   children,
   home = false,
+  navBrands = [],
 }: {
   locale: Locale;
   vehicle?: Vehicle;
   children: React.ReactNode;
   home?: boolean;
+  navBrands?: { slug: string; name: string; ar: string }[];
 }) {
   const w = t(locale);
   const [settings, media] = await Promise.all([
@@ -32,7 +42,7 @@ export async function Shell({
   ]);
   return (
     <div
-      className={`${styles.store}${home ? " storefront-home" : ""}`}
+      className={`${styles.store} ${cyan.theme} mopc-cyan${home ? " storefront-home" : ""}`}
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
     >
@@ -67,36 +77,36 @@ export async function Shell({
               </span>
             )}
           </Link>
-          <nav
-            className="desktop-nav"
-            aria-label={locale === "ar" ? "التنقل الرئيسي" : "Main navigation"}
-          >
-            <Link className={home ? "nav-active" : ""} href={`/${locale}`}>
-              {locale === "ar" ? "الرئيسية" : "Home"}
-            </Link>
-            <Link href={`/${locale}/catalog`}>{w.catalog}</Link>
-            <Link href={`/${locale}/offers`}>{w.offers}</Link>
-            <Link href={`/${locale}/guides`}>{w.guides}</Link>
-          </nav>
+          <div className="header-search-box">
+            <SearchBox locale={locale} />
+          </div>
           <div className="header-tools">
-            {home && (
-              <a
-                href="#home-search"
-                className="header-search"
-                aria-label={w.search}
-              >
-                <Search size={24} />
-              </a>
-            )}
-            <Link href={`/${locale}/garage`} aria-label={w.garage}>
-              <CarFront size={20} />
+            <Link
+              href={`/${locale}/cart`}
+              className="header-tool"
+              aria-label={w.cart}
+            >
+              <span>
+                <ShoppingCart size={29} />
+                <CartCount />
+              </span>
+              <b>{locale === "ar" ? "السلة" : "Cart"}</b>
             </Link>
-            <Link href={`/${locale}/account`} aria-label={w.account}>
-              <UserRound size={20} />
+            <Link
+              href={`/${locale}/favorites`}
+              className="header-tool"
+              aria-label={locale === "ar" ? "المفضلة" : "Favorites"}
+            >
+              <Heart size={29} />
+              <b>{locale === "ar" ? "المفضلة" : "Favorites"}</b>
             </Link>
-            <Link href={`/${locale}/cart`} aria-label={w.cart}>
-              <ShoppingBag size={22} />
-              <span className="cart-indicator" aria-hidden="true" />
+            <Link
+              href={`/${locale}/account`}
+              className="header-tool"
+              aria-label={w.account}
+            >
+              <UserRound size={29} />
+              <b>{locale === "ar" ? "حسابي" : "Account"}</b>
             </Link>
             <Language locale={locale} />
             <details className="mobile-menu">
@@ -111,6 +121,41 @@ export async function Shell({
             </details>
           </div>
         </div>
+        <div className="cyan-subnav">
+          <nav
+            className="shell"
+            aria-label={locale === "ar" ? "التنقل الرئيسي" : "Main navigation"}
+          >
+            <Link className={home ? "nav-active" : ""} href={`/${locale}`}>
+              <Home size={22} />
+              {locale === "ar" ? "الرئيسية" : "Home"}
+            </Link>
+            <details className="brand-nav-menu">
+              <summary>
+                {locale === "ar" ? "تصفح حسب الماركة" : "Shop by make"}
+                <ChevronDown size={19} />
+              </summary>
+              <div>
+                {navBrands.map((b) => (
+                  <Link key={b.slug} href={`/${locale}/brands/${b.slug}`}>
+                    {locale === "ar" ? b.ar : b.name}
+                  </Link>
+                ))}
+              </div>
+            </details>
+            <Link href={`/${locale}/offers`}>
+              <Tags size={22} />
+              {w.offers}
+            </Link>
+            <Link href={`/${locale}/garage`}>
+              <CarFront size={22} />
+              {w.garage}
+            </Link>
+            <Link className="cyan-nav-catalog" href={`/${locale}/catalog`}>
+              {w.catalog}
+            </Link>
+          </nav>
+        </div>
       </header>
       {vehicle && (
         <div className="vehicle-bar shell">
@@ -122,18 +167,17 @@ export async function Shell({
         </div>
       )}
       <main id="main">{children}</main>
-      <section className="request-strip shell">
-        <div>
-          <span className="eyebrow">THE EXTRA MILE</span>
-          <h2>{w.request}</h2>
-          <p>{w.requestCopy}</p>
-        </div>
-        <Link className="button secondary" href={`/${locale}/request-part`}>
-          {locale === "ar" ? "اطلب قطعة" : "Request a part"}
-          <ArrowUpRight size={18} />
-        </Link>
-      </section>
       <footer className="footer">
+        <div className="cyan-newsletter">
+          <div className="shell cyan-newsletter-inner">
+            <BrandLogo
+              className="newsletter-logo"
+              src={media.logo?.url || "/images/mopc/logo-dark.png"}
+              alt="MOPC · موبِك"
+            />
+            <Newsletter locale={locale} />
+          </div>
+        </div>
         <div className="shell footer-grid">
           <div>
             <Link className="logo" href={`/${locale}`}>
