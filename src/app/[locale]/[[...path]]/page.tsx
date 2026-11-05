@@ -1,8 +1,8 @@
+import { CarModelPage } from "@/components/car-model-page";
 import { CyanHome } from "@/components/cyan-home";
 import { Favorites } from "@/components/favorites";
 import { ProductText } from "@/components/product-text";
 import { productSpecifications } from "@/lib/product-specifications";
-import { ModelYearCards } from "@/components/model-year-cards";
 import { SiteMap } from "@/components/site-map";
 import { publicProduct, carContext } from "@/lib/public-product";
 import { CatalogCarFilters } from "@/components/catalog-car-filters";
@@ -550,9 +550,7 @@ export default async function Page({ params, searchParams }: Props) {
     const brand = brands.find((b) => b.slug === path[1]);
     if (!brand) notFound();
     if (path.length === 2) {
-      const models = brand.models.filter(
-        (m) => !q.q || normalize(m).includes(normalize(q.q)),
-      );
+      const models = brand.models;
       const modelYears = configured()
         ? await allRows<{ model_id: string; year: number }>(
             "vehicle_model_years",
@@ -561,65 +559,37 @@ export default async function Page({ params, searchParams }: Props) {
           )
         : [];
       content = (
-        <div className="shell section">
-          <Breadcrumb
-            locale={locale}
-            items={[
-              { label: brand.name, href: `/${locale}/brands/${brand.slug}` },
-            ]}
-          />
-          <span className="eyebrow">
-            {brand.name.toUpperCase()} / MODEL SELECT
-          </span>
-          <h1>
-            {locale === "ar"
-              ? `قطع غيار ${brand.ar} في مصر`
-              : `${brand.name} spare parts in Egypt`}
-          </h1>
-          <p className="lead">
-            {locale === "ar"
-              ? "اضغط على موديل سيارتك واختار السنة لعرض قطع الغيار المناسبة."
-              : "Click your model, then choose the year to see matching spare parts."}
-          </p>
-          <form className="search-form">
-            <input
-              name="q"
-              placeholder={locale === "ar" ? "بحث الموديلات" : "Search models"}
-              defaultValue={q.q}
-            />
-            <button className="button">
-              <Search size={18} />
-            </button>
-          </form>
-          <ModelYearCards
-            locale={locale}
-            brand={brand}
-            models={models.map((slug) => {
-              const model = vehicleModels.find(
-                (m) => m.brand === brand.slug && m.slug === slug,
-              );
-              return {
-                slug,
-                name: model?.name ??
-                  targetModel(brand.slug, slug)?.name ?? { ar: slug, en: slug },
-                photo:
-                  branding[`model-${brand.slug}-${slug}`]?.url ??
-                  model?.image ??
-                  modelPhoto(`${brand.slug}-${slug}`),
-                years: [
-                  ...new Set([
-                    ...modelYears
-                      .filter((y) => y.model_id === model?.id)
-                      .map((y) => y.year),
-                    ...vehicles
-                      .filter((v) => v.brand === brand.slug && v.model === slug)
-                      .map((v) => v.year),
-                  ]),
-                ],
-              };
-            })}
-          />
-        </div>
+        <CarModelPage
+          locale={locale}
+          brand={brand}
+          query={q.q}
+          sort={q.sort}
+          logo={branding[`brand-${brand.slug}-logo`]?.url}
+          models={models.map((slug) => {
+            const model = vehicleModels.find(
+              (m) => m.brand === brand.slug && m.slug === slug,
+            );
+            return {
+              slug,
+              name: model?.name ??
+                targetModel(brand.slug, slug)?.name ?? { ar: slug, en: slug },
+              photo:
+                branding[`model-${brand.slug}-${slug}`]?.url ??
+                model?.image ??
+                modelPhoto(`${brand.slug}-${slug}`),
+              years: [
+                ...new Set([
+                  ...modelYears
+                    .filter((y) => y.model_id === model?.id)
+                    .map((y) => y.year),
+                  ...vehicles
+                    .filter((v) => v.brand === brand.slug && v.model === slug)
+                    .map((v) => v.year),
+                ]),
+              ],
+            };
+          })}
+        />
       );
     }
   } else if (isCatalog) {
@@ -1704,8 +1674,8 @@ export default async function Page({ params, searchParams }: Props) {
         <h1>{locale === "ar" ? "مصادر الصور" : "Image credits"}</h1>
         <p>
           {locale === "ar"
-            ? "مشاهد السيارات وخلفيات الماركات والبانرات في الصفحة الرئيسية رسوم توضيحية مولدة بالذكاء الاصطناعي. ليست صوراً لإثبات الموديل أو السنة أو توافق القطع."
-            : "The homepage car scenes, five brand-card backgrounds and promotional banners are AI-generated illustrations. They are not evidence of model year or part compatibility."}
+            ? "مشاهد السيارات وصور الموديلات وخلفيات الماركات والبانرات رسوم توضيحية مولدة بالذكاء الاصطناعي. ليست صوراً لإثبات الموديل أو السنة أو توافق القطع."
+            : "The car scenes, model-card artwork, brand-card backgrounds and promotional banners are AI-generated illustrations. They are not evidence of model year or part compatibility."}
         </p>
         <p>
           {locale === "ar"

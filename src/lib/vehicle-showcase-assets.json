@@ -1,0 +1,102 @@
+{
+  "opel-insginia-a": {
+    "path": "/images/vehicles/showcase/opel-insginia-a.webp",
+    "title": "opel insginia a"
+  },
+  "opel-astra-j": {
+    "path": "/images/vehicles/showcase/opel-astra-j.webp",
+    "title": "opel astra j"
+  },
+  "opel-astra-h": {
+    "path": "/images/vehicles/showcase/opel-astra-h.webp",
+    "title": "opel astra h"
+  },
+  "opel-crossland-x": {
+    "path": "/images/vehicles/showcase/opel-crossland-x.webp",
+    "title": "opel crossland x"
+  },
+  "opel-grandland-x": {
+    "path": "/images/vehicles/showcase/opel-grandland-x.webp",
+    "title": "opel grandland x"
+  },
+  "peugeot-301": {
+    "path": "/images/vehicles/showcase/peugeot-301.webp",
+    "title": "peugeot 301"
+  },
+  "peugeot-308": {
+    "path": "/images/vehicles/showcase/peugeot-308.webp",
+    "title": "peugeot 308"
+  },
+  "peugeot-3008": {
+    "path": "/images/vehicles/showcase/peugeot-3008.webp",
+    "title": "peugeot 3008"
+  },
+  "peugeot-2008": {
+    "path": "/images/vehicles/showcase/peugeot-2008.webp",
+    "title": "peugeot 2008"
+  },
+  "citroen-c3": {
+    "path": "/images/vehicles/showcase/citroen-c3.webp",
+    "title": "citroen c3"
+  },
+  "citroen-c4": {
+    "path": "/images/vehicles/showcase/citroen-c4.webp",
+    "title": "citroen c4"
+  },
+  "citroen-c5": {
+    "path": "/images/vehicles/showcase/citroen-c5.webp",
+    "title": "citroen c5"
+  },
+  "mg-5": {
+    "path": "/images/vehicles/showcase/mg-5.webp",
+    "title": "mg 5"
+  },
+  "mg-6": {
+    "path": "/images/vehicles/showcase/mg-6.webp",
+    "title": "mg 6"
+  },
+  "mg-zs": {
+    "path": "/images/vehicles/showcase/mg-zs.webp",
+    "title": "mg zs"
+  },
+  "mg-hs": {
+    "path": "/images/vehicles/showcase/mg-hs.webp",
+    "title": "mg hs"
+  },
+  "mg-rx5": {
+    "path": "/images/vehicles/showcase/mg-rx5.webp",
+    "title": "mg rx5"
+  },
+  "chevrolet-cruze": {
+    "path": "/images/vehicles/showcase/chevrolet-cruze.webp",
+    "title": "chevrolet cruze"
+  },
+  "chevrolet-malibu": {
+    "path": "/images/vehicles/showcase/chevrolet-malibu.webp",
+    "title": "chevrolet malibu"
+  },
+  "chevrolet-captiva": {
+    "path": "/images/vehicles/showcase/chevrolet-captiva.webp",
+    "title": "chevrolet captiva"
+  },
+  "opel-insignia": {
+    "path": "/images/vehicles/showcase/opel-insginia-a.webp",
+    "title": "opel insginia a"
+  },
+  "opel-insignia-a": {
+    "path": "/images/vehicles/showcase/opel-insginia-a.webp",
+    "title": "opel insginia a"
+  },
+  "opel-astra": {
+    "path": "/images/vehicles/showcase/opel-astra-j.webp",
+    "title": "opel astra j"
+  },
+  "opel-crossland": {
+    "path": "/images/vehicles/showcase/opel-crossland-x.webp",
+    "title": "opel crossland x"
+  },
+  "opel-grandland": {
+    "path": "/images/vehicles/showcase/opel-grandland-x.webp",
+    "title": "opel grandland x"
+  }
+}

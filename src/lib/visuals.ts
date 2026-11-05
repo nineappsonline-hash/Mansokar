@@ -1,4 +1,6 @@
-import images from "./vehicle-assets.json";
+import originals from "./vehicle-assets.json";
+import showcase from "./vehicle-showcase-assets.json";
+const images = { ...originals, ...showcase };
 export function modelPhoto(key: string) {
   return (images as Record<string, { path: string; title: string }>)[key]?.path;
 }

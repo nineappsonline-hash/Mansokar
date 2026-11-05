@@ -1,4 +1,9 @@
 .theme:global(.mopc-cyan) {
+  &:has(:global(.vehicle-showcase)) :global(.brand-nav-menu > summary) {
+    color: #fff;
+    background: linear-gradient(#852541, #52162b);
+    box-shadow: inset 0 1px 0 #bf637d55;
+  }
   --bg: #fff;
   --surface: #fff;
   --elevated: #f1f5f9;
