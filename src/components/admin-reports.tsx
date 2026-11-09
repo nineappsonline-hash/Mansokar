@@ -74,35 +74,37 @@ export async function AdminReports({
           Historical costs are never inferred from today’s product cost.
         </p>
       </section>
-      <div className="two-col">
-        {(
-          [
-            ["Manufacturer", summary.manufacturers],
-            ["Category", summary.categories],
-          ] as const
-        ).map(([title, groups]) => (
-          <section className="panel admin-list" key={title}>
-            <h3>{title} · fully paid items</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>{title}</th>
-                  <th>Units</th>
-                  <th>Item sales before order discounts</th>
-                </tr>
-              </thead>
-              <tbody>
-                {groups.map((g) => (
-                  <tr key={g.name}>
-                    <td>{g.name}</td>
-                    <td>{g.units}</td>
-                    <td>{money(g.sales, "en")}</td>
+      <div className="stack">
+        {([["Item brand", summary.manufacturers]] as const).map(
+          ([title, groups]) => (
+            <section className="panel admin-list" key={title}>
+              <h3>{title} · fully paid items</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>{title}</th>
+                    <th>Units</th>
+                    <th>Item sales before order discounts</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-        ))}
+                </thead>
+                <tbody>
+                  {!groups.length && (
+                    <tr>
+                      <td colSpan={3}>No paid item sales in this period.</td>
+                    </tr>
+                  )}
+                  {groups.map((g) => (
+                    <tr key={g.name}>
+                      <td>{g.name}</td>
+                      <td>{g.units}</td>
+                      <td>{money(g.sales, "en")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          ),
+        )}
       </div>
       <section className="panel admin-list">
         <h3>Daily trend</h3>

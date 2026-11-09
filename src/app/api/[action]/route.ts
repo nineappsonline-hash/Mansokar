@@ -1,3 +1,4 @@
+import { couponInput, inquiryUpdateInput } from "@/lib/admin-input";
 import { shippingInput } from "@/lib/shipping-input";
 import { contactInput } from "@/lib/contact-input";
 import { vehicleInput } from "@/lib/vehicle-input";
@@ -140,6 +141,16 @@ export async function POST(
           destination: z.enum(["account", "admin"]).default("account"),
         })
         .parse(b);
+      if (input.destination === "admin" && input.mode !== "login")
+        return NextResponse.json(
+          {
+            error:
+              input.locale === "ar"
+                ? "إنشاء حسابات الإدارة غير متاح هنا."
+                : "Administrator accounts cannot be created here.",
+          },
+          { status: 403 },
+        );
       const auth = await authClient();
       const { error } =
         input.mode === "login"
@@ -164,6 +175,22 @@ export async function POST(
           },
           { status: 400 },
         );
+      if (input.destination === "admin") {
+        try {
+          await requireAdmin();
+        } catch {
+          await auth.auth.signOut({ scope: "local" });
+          return NextResponse.json(
+            {
+              error:
+                input.locale === "ar"
+                  ? "هذا الحساب غير مصرح له بالدخول إلى لوحة الإدارة."
+                  : "This account does not have administrator access.",
+            },
+            { status: 403 },
+          );
+        }
+      }
       return NextResponse.json({
         message:
           input.mode === "signup"
@@ -651,8 +678,8 @@ export async function POST(
               .string()
               .regex(/^\/images\/[a-zA-Z0-9/_.-]+$/)
               .nullable(),
-            starts_at: z.iso.datetime(),
-            ends_at: z.iso.datetime(),
+            starts_at: z.iso.datetime({ offset: true }),
+            ends_at: z.iso.datetime({ offset: true }),
             enabled: z.boolean(),
           })
           .refine(
@@ -662,6 +689,11 @@ export async function POST(
           .parse(JSON.parse(b.json));
         const { error } = await commit(input);
         if (error) throw error;
+        revalidatePath("/", "layout");
+        return NextResponse.json({
+          message: "Campaign saved",
+          redirect: `/admin?module=campaigns&id=${input.id}`,
+        });
       } else if (action === "admin-product") {
         const parsed = typeof b.json === "string" ? JSON.parse(b.json) : b;
         if (parsed.automatic === true) {
@@ -1032,28 +1064,14 @@ export async function POST(
         if (error) throw error;
         details = { key: "storefront" };
       } else if (action === "admin-coupon") {
-        const input = z
-          .object({
-            code: z.string().regex(/^[A-Z0-9_-]{2,40}$/),
-            kind: z.enum(["fixed", "percentage"]),
-            amount: z.number().int().positive(),
-            starts_at: z.iso.datetime(),
-            ends_at: z.iso.datetime(),
-            max_redemptions: z.number().int().positive(),
-            per_customer_limit: z
-              .number()
-              .int()
-              .positive()
-              .nullable()
-              .optional(),
-            scope_category: z.string().max(100).nullable().optional(),
-          })
-          .parse(JSON.parse(b.json));
-        if (input.kind === "percentage" && input.amount > 100)
-          throw Error("Percentage must be at most 100");
+        const input = couponInput.parse(JSON.parse(b.json));
         const { error } = await commit(input);
         if (error) throw error;
-        details = { code: input.code };
+        revalidatePath("/", "layout");
+        return NextResponse.json({
+          message: "Coupon saved",
+          redirect: `/admin?module=promotions&id=${encodeURIComponent(input.code)}`,
+        });
       } else if (action === "admin-delete-vehicle-record") {
         const input = z
           .object({
@@ -1262,17 +1280,7 @@ export async function POST(
         if (error) throw error;
         details = input;
       } else if (action === "admin-inquiry") {
-        const input = z
-          .object({
-            id: z.uuid(),
-            status: z.enum(["pending", "quoted", "resolved", "closed"]),
-            quoted_amount: z.preprocess(
-              (v) => (v === "" ? undefined : v),
-              z.coerce.number().int().min(0).optional(),
-            ),
-            staff_notes: z.string().max(5000).optional(),
-          })
-          .parse(b);
+        const input = inquiryUpdateInput.parse(b);
         const { error } = await commit(input);
         if (error) throw error;
         details = input;

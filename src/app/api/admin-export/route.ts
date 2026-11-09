@@ -53,7 +53,7 @@ export async function GET(request: Request) {
           "Content-Type": xlsx
             ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             : "text/csv; charset=utf-8",
-          "Content-Disposition": `attachment; filename="mansokar-products.${xlsx ? "xlsx" : "csv"}"`,
+          "Content-Disposition": `attachment; filename="mopc-products.${xlsx ? "xlsx" : "csv"}"`,
           "Cache-Control": "private, no-store",
         },
       },

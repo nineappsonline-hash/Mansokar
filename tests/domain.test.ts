@@ -103,3 +103,80 @@ test("empty imports have actionable file feedback and validation issues are read
     "Item 2 · sale_price: Enter a price",
   );
 });
+
+test("admin inquiry quotes accept whole EGP, preserve zero and convert only once", async () => {
+  const { inquiryUpdateInput } = await import("../src/lib/admin-input");
+  const base = { id: "e343ca72-bbcc-4eec-a2fc-b3b553699b1c", status: "quoted" };
+  assert.equal(
+    inquiryUpdateInput.parse({ ...base, quoted_amount_egp: "1250" })
+      .quoted_amount,
+    125000,
+  );
+  assert.equal(
+    inquiryUpdateInput.parse({ ...base, quoted_amount_egp: "0" }).quoted_amount,
+    0,
+  );
+  assert.equal(
+    inquiryUpdateInput.parse({ ...base, quoted_amount_egp: "" }).quoted_amount,
+    undefined,
+  );
+  assert.equal(
+    inquiryUpdateInput.parse({ ...base, quoted_amount: 125000 }).quoted_amount,
+    125000,
+  );
+  assert.equal(
+    inquiryUpdateInput.safeParse({ ...base, quoted_amount_egp: "12.5" })
+      .success,
+    false,
+  );
+  assert.equal(
+    inquiryUpdateInput.safeParse({ ...base, quoted_amount_egp: "-10" }).success,
+    false,
+  );
+});
+test("coupon rules reject reversed schedules and percentages above 100", async () => {
+  const { couponInput } = await import("../src/lib/admin-input");
+  const coupon = {
+    code: " test50 ",
+    kind: "fixed",
+    amount: 5000,
+    starts_at: "2026-01-01T00:00:00.000Z",
+    ends_at: "2026-02-01T00:00:00.000Z",
+    max_redemptions: 10,
+    per_customer_limit: 1,
+    scope_category: null,
+  };
+  assert.equal(couponInput.parse(coupon).code, "TEST50");
+  assert.equal(couponInput.parse(coupon).amount, 5000);
+  assert.equal(
+    couponInput.safeParse({ ...coupon, ends_at: coupon.starts_at }).success,
+    false,
+  );
+  assert.equal(
+    couponInput.safeParse({ ...coupon, kind: "percentage", amount: 101 })
+      .success,
+    false,
+  );
+  assert.equal(
+    couponInput.safeParse({ ...coupon, kind: "percentage", amount: 100 })
+      .success,
+    true,
+  );
+});
+
+test("saved coupon timestamps with a UTC offset remain editable", async () => {
+  const { couponInput } = await import("../src/lib/admin-input");
+  assert.equal(
+    couponInput.safeParse({
+      code: "EDIT50",
+      kind: "fixed",
+      amount: 5000,
+      starts_at: "2026-01-01T00:00:00+00:00",
+      ends_at: "2026-02-01T00:00:00+00:00",
+      max_redemptions: 10,
+      per_customer_limit: 1,
+      scope_category: null,
+    }).success,
+    true,
+  );
+});

@@ -61,6 +61,7 @@ export function AdminProducts({
     [tab, setTab] = useState(initialTab),
     [query, setQuery] = useState(""),
     [brandQuery, setBrandQuery] = useState(""),
+    [newBrand, setNewBrand] = useState(""),
     [carMake, setCarMake] = useState(""),
     [carModel, setCarModel] = useState(""),
     [carYear, setCarYear] = useState(""),
@@ -70,6 +71,17 @@ export function AdminProducts({
   useEffect(() => setView(initialView), [initialView]);
   useEffect(() => setTab(initialTab), [initialTab]);
   const selected = products.find((p) => p.id === selectedId);
+  const router = useRouter();
+  function navigate(nextView: string, nextTab = tab) {
+    setView(nextView);
+    setTab(nextTab);
+    const params = new URLSearchParams({ module: "products" });
+    if (selectedId) params.set("id", selectedId);
+    if (nextView !== "products") params.set("view", nextView);
+    if (nextTab !== "details") params.set("tab", nextTab);
+    router.replace("/admin?" + params.toString(), { scroll: false });
+  }
+
   const vehicleById = useMemo(
     () => new Map(vehicles.map((vehicle) => [vehicle.id, vehicle])),
     [vehicles],
@@ -266,7 +278,7 @@ export function AdminProducts({
         <button
           type="button"
           aria-current={view === "products" ? "page" : undefined}
-          onClick={() => setView("products")}
+          onClick={() => navigate("products")}
         >
           <Package size={17} />
           Products <span>{products.length}</span>
@@ -274,7 +286,7 @@ export function AdminProducts({
         <button
           type="button"
           aria-current={view === "brands" ? "page" : undefined}
-          onClick={() => setView("brands")}
+          onClick={() => navigate("brands")}
         >
           <Tags size={17} />
           Item brands
@@ -282,7 +294,7 @@ export function AdminProducts({
         <button
           type="button"
           aria-current={view === "excel" ? "page" : undefined}
-          onClick={() => setView("excel")}
+          onClick={() => navigate("excel")}
         >
           <FileSpreadsheet size={17} />
           Excel import & export
@@ -299,7 +311,7 @@ export function AdminProducts({
                 </span>
               </h2>
               <Link
-                href="/admin?module=products"
+                href="/admin?module=products#product-editor"
                 aria-label="Create a new product"
               >
                 <Plus size={19} />
@@ -449,7 +461,7 @@ export function AdminProducts({
               </p>
             )}
           </section>
-          <div className="stack">
+          <div className="stack" id="product-editor">
             <div className={styles.context}>
               <div>
                 <h2>{selected?.name.en || "Create a product"}</h2>
@@ -473,7 +485,7 @@ export function AdminProducts({
               <button
                 type="button"
                 aria-current={tab === "details" ? "page" : undefined}
-                onClick={() => setTab("details")}
+                onClick={() => navigate(view, "details")}
               >
                 <Package size={17} />
                 Product details
@@ -481,7 +493,7 @@ export function AdminProducts({
               <button
                 type="button"
                 aria-current={tab === "vehicles" ? "page" : undefined}
-                onClick={() => setTab("vehicles")}
+                onClick={() => navigate(view, "vehicles")}
               >
                 <CarFront size={17} />
                 Cars & years
@@ -489,7 +501,7 @@ export function AdminProducts({
               <button
                 type="button"
                 aria-current={tab === "photos" ? "page" : undefined}
-                onClick={() => setTab("photos")}
+                onClick={() => navigate(view, "photos")}
               >
                 <Image size={17} />
                 Photos
@@ -513,7 +525,7 @@ export function AdminProducts({
                   <button
                     type="button"
                     className="button"
-                    onClick={() => setTab("details")}
+                    onClick={() => navigate(view, "details")}
                   >
                     Enter product details
                   </button>
@@ -557,7 +569,7 @@ export function AdminProducts({
               extra={{
                 json: JSON.stringify({
                   kind: "manufacturer",
-                  name: brandQuery.trim(),
+                  name: newBrand.trim(),
                 }),
               }}
             >
@@ -566,8 +578,8 @@ export function AdminProducts({
                 <input
                   required
                   maxLength={100}
-                  value={brandQuery}
-                  onChange={(e) => setBrandQuery(e.target.value)}
+                  value={newBrand}
+                  onChange={(e) => setNewBrand(e.target.value)}
                 />
               </label>
             </ApiForm>

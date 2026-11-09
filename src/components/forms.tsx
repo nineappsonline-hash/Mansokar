@@ -46,19 +46,26 @@ export function ApiForm({
 }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
   const router = useRouter();
   return (
     <form
       className="stack"
       onSubmit={async (e) => {
         e.preventDefault();
+        if (busy || disabled) return;
+        const locale =
+          e.currentTarget.closest("[lang]")?.getAttribute("lang") === "ar"
+            ? "ar"
+            : "en";
         setBusy(true);
+        setFailed(false);
         setMessage("");
         try {
           const form = new FormData(e.currentTarget);
           const body: Record<string, unknown> = {
-            ui_locale: document.documentElement.lang === "ar" ? "ar" : "en",
-            locale: document.documentElement.lang === "ar" ? "ar" : "en",
+            ui_locale: locale === "ar" ? "ar" : "en",
+            locale: locale === "ar" ? "ar" : "en",
             ...Object.fromEntries(form),
             ...extra,
           };
@@ -83,7 +90,7 @@ export function ApiForm({
           const data = await response.json();
           if (!response.ok) throw Error(data.error);
           setMessage(
-            document.documentElement.lang === "ar"
+            locale === "ar"
               ? action === "auth" && body.mode === "signup"
                 ? "راجع بريدك الإلكتروني لتأكيد الحساب، ثم قم بتسجيل الدخول."
                 : action === "contact"
@@ -118,10 +125,15 @@ export function ApiForm({
               window.location.assign(data.redirect);
               return;
             }
-            router.push(data.redirect);
+            if (
+              new URL(data.redirect, window.location.origin).href !==
+              window.location.href
+            )
+              router.push(data.redirect);
           }
           router.refresh();
         } catch (error) {
+          setFailed(true);
           setMessage(error instanceof Error ? error.message : "Request failed");
         } finally {
           setBusy(false);
@@ -132,7 +144,13 @@ export function ApiForm({
       <button className="button" disabled={busy || disabled}>
         {busy ? "…" : label}
       </button>
-      <p role="status" aria-live="polite">
+      <p
+        role={failed ? "alert" : "status"}
+        className={
+          failed ? "form-feedback form-feedback-error" : "form-feedback"
+        }
+        aria-live={failed ? "assertive" : "polite"}
+      >
         {message}
       </p>
     </form>
@@ -385,9 +403,7 @@ export function Checkout({
       <ol
         className="checkout-stepper"
         data-step={step}
-        aria-label={
-          locale === "ar" ? "مراحل إتمام الطلب" : "Checkout progress"
-        }
+        aria-label={locale === "ar" ? "مراحل إتمام الطلب" : "Checkout progress"}
       >
         {steps.map((label, index) => {
           const number = index + 1;
@@ -538,9 +554,7 @@ export function Checkout({
               <div className="checkout-saved">
                 <div className="checkout-saved-head">
                   <span className="checkout-saved-label">
-                    {locale === "ar"
-                      ? "العناوين المحفوظة"
-                      : "Saved addresses"}
+                    {locale === "ar" ? "العناوين المحفوظة" : "Saved addresses"}
                   </span>
                   <span className="checkout-saved-hint">
                     {locale === "ar" ? "اضغط لملء البيانات" : "Tap to autofill"}
@@ -873,8 +887,8 @@ export function Checkout({
                       {method === "wallet" && (
                         <div className="payment-method-details">
                           <p>
-                            {locale === "ar" ? "رقم المحفظة" : "Wallet number"}
-                            : <strong dir="ltr">{WALLET_NUMBER}</strong>
+                            {locale === "ar" ? "رقم المحفظة" : "Wallet number"}:{" "}
+                            <strong dir="ltr">{WALLET_NUMBER}</strong>
                           </p>
                           <label className="checkout-file">
                             <span className="checkout-file-icon">

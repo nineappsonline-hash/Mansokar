@@ -65,7 +65,7 @@
 .drop small {
   font-size: 11px;
 }
-.browse {
+.drop .browse {
   display: inline-flex;
   padding: 8px 14px;
   border-radius: 6px;

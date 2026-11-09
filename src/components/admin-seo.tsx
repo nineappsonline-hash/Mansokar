@@ -1,22 +1,33 @@
+import { readApplications } from "@/lib/product-applications";
+import { countryOfOrigin } from "@/lib/product-specifications";
 import Link from "next/link";
 import { allRows } from "@/lib/db";
 import { searchPages } from "@/lib/seo-pages";
 import type { Product } from "@/lib/catalog";
 export async function AdminSeo() {
-  const [products, images, fitments, pages] = await Promise.all([
+  const [products, images, fitments, pages, models] = await Promise.all([
     allRows<Product>("products"),
     allRows<{ product_id: string }>("product_images", "product_id"),
     allRows<{ product_id: string }>("product_fitments", "product_id"),
     searchPages(),
+    allRows<{ id: string }>("vehicle_models", "id"),
   ]);
   const withImages = new Set(images.map((p) => p.product_id)),
     withFitments = new Set(fitments.map((p) => p.product_id));
+  const modelIds = new Set(models.map((m) => m.id));
+  const hasCompatibility = (p: Product) =>
+    withFitments.has(p.id) ||
+    readApplications(p.specs).some(
+      (a) => modelIds.has(a.model_id) && a.years.length > 0,
+    );
   const real = products.filter((p) => !p.demo),
     published = real.filter((p) => p.status === "published");
   const issues = (p: Product) => [
     ...(!withImages.has(p.id) ? ["Product photos"] : []),
-    ...(!withFitments.has(p.id) ? ["Verified compatibility"] : []),
-    ...(!p.specs.country_of_origin ? ["Verified country of origin"] : []),
+    ...(!hasCompatibility(p) ? ["Car make, model & years"] : []),
+    ...(!countryOfOrigin(p.specs.country_of_origin)
+      ? ["Verified country of origin"]
+      : []),
     ...(!p.partNumber ? ["Part number"] : []),
     ...(!p.description.ar.trim() || !p.description.en.trim()
       ? ["Arabic/English descriptions"]
@@ -79,7 +90,7 @@ export async function AdminSeo() {
                 "Photos, compatibility, origin, part number and bilingual descriptions present"}
             </p>
             {!withImages.has(p.id) && (
-              <Link href={`/admin?module=images&id=${p.id}`}>
+              <Link href={`/admin?module=products&id=${p.id}&tab=photos`}>
                 Add product photos ↗
               </Link>
             )}
@@ -89,8 +100,8 @@ export async function AdminSeo() {
       <section className="panel stack">
         <h2>Remaining search work</h2>
         <p>
-          Complete verified catalog data, publish approved policies after the
-          callback form is deployed, validate mobile performance on the
+          Complete missing product photos, country of origin and vehicle years.
+          Review published policies and validate mobile performance on the
           production domain, then measure Egypt queries, inquiries and collected
           sales. Search rankings and answer-engine citations are not guaranteed.
         </p>

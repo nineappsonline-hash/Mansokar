@@ -30,7 +30,7 @@ export async function GET(request: Request) {
     return new Response("\uFEFF" + csv, {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="mansokar-orders-${range.from}-${range.to}.csv"`,
+        "Content-Disposition": `attachment; filename="mopc-orders-${range.from}-${range.to}.csv"`,
         "Cache-Control": "private, no-store",
       },
     });

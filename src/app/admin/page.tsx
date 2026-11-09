@@ -1,3 +1,5 @@
+import { AdminCheckoutReadiness } from "@/components/admin-checkout-readiness";
+import { AdminCoupon } from "@/components/admin-coupon";
 import { AdminSeo } from "@/components/admin-seo";
 import { AdminProducts } from "@/components/admin-products";
 import { redirect } from "next/navigation";
@@ -84,29 +86,82 @@ export default async function Admin({
     if (module === "import") destination.set("view", "excel");
     redirect("/admin?" + destination.toString());
   }
+  if (
+    ![
+      "overview",
+      "reports",
+      "seo",
+      "analytics",
+      "products",
+      "customers",
+      "hero-slideshow",
+      "branding",
+      "recommendations",
+      "campaigns",
+      "shipping",
+      "cms",
+      "orders",
+      "inquiries",
+      "vehicles",
+      "promotions",
+      "settings",
+    ].includes(module)
+  )
+    redirect("/admin");
   const db = service();
   let content: React.ReactNode;
   if (module === "overview" || module === "reports") {
-    content = <AdminReports module={module} from={from} to={to} />;
+    content = (
+      <div className="stack">
+        {module === "overview" && <AdminCheckoutReadiness />}
+        <AdminReports module={module} from={from} to={to} />
+      </div>
+    );
   } else if (module === "seo") content = <AdminSeo />;
   else if (module === "analytics") {
-    const { data } = await db
+    const { data, error } = await db
       .from("analytics_events")
       .select("event,amount")
+      .order("created_at", { ascending: false })
       .limit(1000);
+    if (error) throw error;
     const counts = (data ?? []).reduce((acc: Record<string, number>, row) => {
       acc[row.event] = (acc[row.event] ?? 0) + 1;
       return acc;
     }, {});
     content = (
       <div className="panel">
-        <h2>First-party anonymous event counts</h2>
+        <h2>Storefront activity</h2>
         <p>
           Enabled: {process.env.ANALYTICS_ENABLED === "true" ? "Yes" : "No"}.
           Consent required; no contact details, search queries or browser
           purchase events accepted. Latest 1000 records.
         </p>
-        <pre className="code-editor">{JSON.stringify(counts, null, 2)}</pre>
+        {Object.keys(counts).length ? (
+          <table>
+            <thead>
+              <tr>
+                <th>Activity</th>
+                <th>Events</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(counts)
+                .sort((a, b) => b[1] - a[1])
+                .map(([event, count]) => (
+                  <tr key={event}>
+                    <td>{event.replaceAll("_", " ")}</td>
+                    <td>{count}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        ) : (
+          <p className="notice">
+            No activity recorded yet. Events appear here after visitors consent
+            to analytics and tracking is enabled.
+          </p>
+        )}
       </div>
     );
   } else if (module === "products") {
@@ -188,43 +243,57 @@ export default async function Admin({
         return [productId, { url, count: photoCounts.get(productId) ?? 0 }];
       }),
     );
-    content = (
-      <AdminProducts
-        products={products}
-        images={productPictures}
-        fitments={fitments}
-        vehicles={vehicles}
-        carBrands={brands}
-        carModels={models}
-        manufacturers={manufacturers.map((m) => m.name)}
-        selectedId={selected?.id}
-        initialView={view === "brands" || view === "excel" ? view : "products"}
-        initialTab={tab === "photos" || tab === "vehicles" ? tab : "details"}
-        editor={
-          <SimpleProductEditor
-            key={id}
-            manufacturers={manufacturers.map((m) => m.name)}
-            vehicles={vehicles}
-            brands={brands}
-            models={models}
-            selected={fitments
-              .filter((f) => f.product_id === id)
-              .map((f) => f.vehicle_config_id)}
-            initial={selected ?? {}}
-          />
-        }
-        photos={
-          <ImageManager
-            key={selected?.id}
-            products={products}
-            product={selected?.id ?? ""}
-            initial={initialImages}
-            fixedProduct
-          />
-        }
-        excel={<Importer />}
-      />
-    );
+    content =
+      id && !selected ? (
+        <section className="panel admin-empty">
+          <h2>Product not found</h2>
+          <p>
+            This product may have been deleted. Choose an existing product or
+            create a new one.
+          </p>
+          <Link className="button secondary" href="/admin?module=products">
+            Back to products
+          </Link>
+        </section>
+      ) : (
+        <AdminProducts
+          products={products}
+          images={productPictures}
+          fitments={fitments}
+          vehicles={vehicles}
+          carBrands={brands}
+          carModels={models}
+          manufacturers={manufacturers.map((m) => m.name)}
+          selectedId={selected?.id}
+          initialView={
+            view === "brands" || view === "excel" ? view : "products"
+          }
+          initialTab={tab === "photos" || tab === "vehicles" ? tab : "details"}
+          editor={
+            <SimpleProductEditor
+              key={id}
+              manufacturers={manufacturers.map((m) => m.name)}
+              vehicles={vehicles}
+              brands={brands}
+              models={models}
+              selected={fitments
+                .filter((f) => f.product_id === id)
+                .map((f) => f.vehicle_config_id)}
+              initial={selected ?? {}}
+            />
+          }
+          photos={
+            <ImageManager
+              key={selected?.id}
+              products={products}
+              product={selected?.id ?? ""}
+              initial={initialImages}
+              fixedProduct
+            />
+          }
+          excel={<Importer />}
+        />
+      );
   } else if (module === "customers") {
     content = <AdminCustomers actor={admin.id} id={id} q={q} page={page} />;
   } else if (module === "hero-slideshow") {
@@ -271,10 +340,7 @@ export default async function Admin({
         { slot: `brand-${b.slug}-photo`, label: b.name + " card photo" },
         { slot: `brand-${b.slug}-logo`, label: b.name + " logo" },
       ]),
-      ...models.map((m) => ({
-        slot: `model-${m.brand}-${m.slug}`,
-        label: `Model photo · ${m.name.en}`,
-      })),
+
       ...campaigns.map((c) => ({
         slot: "campaign-" + c.id,
         label: "Campaign · " + c.title.en,
@@ -295,6 +361,11 @@ export default async function Admin({
         <Link className="button secondary" href="/admin?module=hero-slideshow">
           Manage homepage slideshow
         </Link>
+        <p className="notice">
+          Manage car make and model pictures in{" "}
+          <Link href="/admin?module=vehicles">Vehicles</Link>. Use this page for
+          your store logo, homepage artwork and promotional images.
+        </p>
         <BrandingMedia slots={slots} initial={initial} />
       </div>
     );
@@ -328,6 +399,7 @@ export default async function Admin({
           action="admin-campaign"
           initial={
             campaigns.find((c) => c.id === id) ?? {
+              id: crypto.randomUUID(),
               title: { ar: "", en: "" },
               body: { ar: "", en: "" },
               href: null,
@@ -395,9 +467,9 @@ export default async function Admin({
         <section className="panel stack">
           <h2>Egyptian governorates · shipping rates</h2>
           <p>
-            Normal delivery rates are imported from Zait Store for all 27
-            governorates, with express delivery at 150 EGP. Edit and enable each
-            option separately below. All prices here are in EGP.
+            Set normal and express delivery rates for all 27 governorates.
+            Normal delivery takes 2–5 business days; express delivery is within
+            48 hours. Edit and enable each option below. All rates are in EGP.
           </p>
           {governorates.map((g) => {
             const options = areas.filter(
@@ -450,10 +522,17 @@ export default async function Admin({
       </div>
     );
   } else if (module === "cms") {
-    const { data } = await db.from("cms_pages").select("*");
+    const { data, error } = await db
+      .from("cms_pages")
+      .select("*")
+      .order("slug");
+    if (error) throw error;
     content = (
       <div className="two-col">
         <div className="panel stack">
+          <Link className="button secondary" href="/admin?module=cms">
+            Create a new page
+          </Link>
           {data?.map((p) => (
             <Link key={p.slug} href={`/admin?module=cms&id=${p.slug}`}>
               {p.slug} · {p.published ? "Published" : "Draft"}
@@ -504,8 +583,8 @@ export default async function Admin({
           ]}
           initial={
             data?.find((p) => p.slug === id) ?? {
-              slug: "about",
-              title: { en: "About", ar: "من نحن" },
+              slug: id ?? "",
+              title: { en: "", ar: "" },
               body: { en: "", ar: "" },
               published: false,
             }
@@ -515,15 +594,16 @@ export default async function Admin({
     );
   } else if (module === "orders") {
     let orderQuery = db.from("orders");
-    const { data } = await orderQuery
+    const { data, error } = await orderQuery
       .select(
         "id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)",
       )
       .order("created_at", { ascending: false })
       .match(id ? { id } : {})
       .limit(100);
+    if (error) throw error;
     const orderIds = data?.map((o) => o.id) ?? [];
-    const { data: transfers } = orderIds.length
+    const { data: transfers, error: transferError } = orderIds.length
       ? await db
           .from("manual_transfers")
           .select(
@@ -531,11 +611,38 @@ export default async function Admin({
           )
           .in("order_id", orderIds)
           .order("created_at", { ascending: false })
-      : { data: [] };
+      : { data: [], error: null };
+    if (transferError) throw transferError;
     content = (
       <div className="stack">
+        {!data?.length && (
+          <section className="panel admin-empty">
+            <h2>{id ? "Order not found" : "No orders yet"}</h2>
+            <p>
+              {id
+                ? "This order could not be found. Return to the order list to continue."
+                : "New customer orders will appear here with payment and delivery details."}
+            </p>
+            {id && (
+              <Link className="button secondary" href="/admin?module=orders">
+                View all orders
+              </Link>
+            )}
+          </section>
+        )}
         {data?.map((o) => (
           <article key={o.id} className="panel">
+            <h2>Order {o.order_number}</h2>
+            <p>
+              <time dateTime={o.created_at}>
+                {new Intl.DateTimeFormat("en-GB", {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                  timeZone: "Africa/Cairo",
+                }).format(new Date(o.created_at))}
+              </time>{" "}
+              · Cairo time
+            </p>
             <p>
               {o.order_number} · {o.demo ? "DEMO" : ""} · {o.status} ·{" "}
               {o.payment_status} · {o.payment_method ?? "cod"} ·{" "}
@@ -636,29 +743,53 @@ export default async function Admin({
                 </select>
               </label>
             </ApiForm>
-            {o.status === "delivered" && o.payment_status !== "paid" && (
-              <ApiForm
-                action="admin-collect-cod"
-                extra={{ id: o.id }}
-                label="Confirm COD collection"
-              />
-            )}
+            {o.status === "delivered" &&
+              o.payment_status !== "paid" &&
+              (o.payment_method ?? "cod") === "cod" && (
+                <ApiForm
+                  action="admin-collect-cod"
+                  extra={{ id: o.id }}
+                  label="Confirm COD collection"
+                />
+              )}
           </article>
         ))}
       </div>
     );
   } else if (module === "inquiries") {
-    const { data } = await db
+    const { data, error } = await db
       .from("part_requests")
       .select("*")
       .match(id ? { id } : {})
       .order("created_at", { ascending: false })
       .limit(100);
+    if (error) throw error;
     content = (
       <div className="stack">
+        {!data?.length && (
+          <section className="panel admin-empty">
+            <h2>{id ? "Inquiry not found" : "No inquiries yet"}</h2>
+            <p>Customer callbacks and spare-part requests appear here.</p>
+            {id && (
+              <Link className="button secondary" href="/admin?module=inquiries">
+                View all inquiries
+              </Link>
+            )}
+          </section>
+        )}
         {data?.map((r) => (
           <article key={r.id} className="panel">
-            <h3>{r.contact}</h3>
+            <h2>{r.contact}</h2>
+            <p>
+              <time dateTime={r.created_at}>
+                {new Intl.DateTimeFormat("en-GB", {
+                  dateStyle: "medium",
+                  timeStyle: "short",
+                  timeZone: "Africa/Cairo",
+                }).format(new Date(r.created_at))}
+              </time>{" "}
+              · Cairo time
+            </p>
             <p>{r.description}</p>
             <p>
               {r.vehicle_details?.request_type === "contact"
@@ -688,12 +819,15 @@ export default async function Admin({
               label="Update inquiry"
             >
               <label>
-                Quoted amount · piasters
+                Quoted amount · EGP (whole pounds)
                 <input
-                  name="quoted_amount"
+                  name="quoted_amount_egp"
                   type="number"
                   min="0"
-                  defaultValue={r.quoted_amount ?? ""}
+                  step="1"
+                  defaultValue={
+                    r.quoted_amount == null ? "" : r.quoted_amount / 100
+                  }
                 />
               </label>
               <label>
@@ -704,11 +838,14 @@ export default async function Admin({
                   defaultValue={r.staff_notes ?? ""}
                 />
               </label>
-              <select name="status" defaultValue={r.status}>
-                {["pending", "quoted", "resolved", "closed"].map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
+              <label>
+                Inquiry status
+                <select name="status" defaultValue={r.status}>
+                  {["pending", "quoted", "resolved", "closed"].map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </select>
+              </label>
             </ApiForm>
           </article>
         ))}
@@ -739,10 +876,7 @@ export default async function Admin({
       />
     );
   } else if (module === "promotions") {
-    const [coupons, categories] = await Promise.all([
-      allRows<any>("coupons"),
-      allRows<any>("categories"),
-    ]);
+    const coupons = await allRows<any>("coupons");
     content = (
       <div className="two-col">
         <section className="panel stack">
@@ -756,14 +890,12 @@ export default async function Admin({
             </Link>
           ))}
           <p>
-            One coupon per order. Sale prices are edited on the product. Coupon
-            categories match the exact selected category; children are excluded.
+            One coupon per order. Edit sale prices on the product itself. New
+            coupons apply to all products.
           </p>
         </section>
-        <MerchantForm
-          key={id}
-          title="Coupon rules and schedule"
-          action="admin-coupon"
+        <AdminCoupon
+          key={id ?? "new"}
           initial={
             coupons.find((c) => c.code === id) ?? {
               code: "",
@@ -776,125 +908,104 @@ export default async function Admin({
               scope_category: null,
             }
           }
-          fields={[
-            { path: "code", label: "Coupon code (uppercase)", required: true },
-            {
-              path: "kind",
-              label: "Discount type",
-              type: "select",
-              options: [
-                { value: "percentage", label: "Percentage" },
-                { value: "fixed", label: "Fixed piasters" },
-              ],
-            },
-            {
-              path: "amount",
-              label: "Discount amount",
-              type: "number",
-              required: true,
-            },
-            {
-              path: "starts_at",
-              label: "Valid from (UTC)",
-              type: "datetime-local",
-              required: true,
-            },
-            {
-              path: "ends_at",
-              label: "Valid until (UTC)",
-              type: "datetime-local",
-              required: true,
-            },
-            {
-              path: "max_redemptions",
-              label: "Maximum total uses",
-              type: "number",
-              required: true,
-            },
-            {
-              path: "per_customer_limit",
-              label: "Uses per customer (blank for no per-customer limit)",
-              type: "number",
-              nullable: true,
-            },
-            {
-              path: "scope_category",
-              label: "Exact category",
-              type: "select",
-              options: [
-                { value: "", label: "All categories" },
-                ...categories.map((c) => ({ value: c.slug, label: c.name.en })),
-              ],
-            },
-          ]}
         />
       </div>
     );
   } else if (module === "settings") {
-    const { data: currentSettings } = await db
+    const { data: currentSettings, error: settingsError } = await db
       .from("site_settings")
       .select("value")
       .eq("key", "storefront")
       .maybeSingle();
+    if (settingsError) throw settingsError;
     content = (
-      <div className="panel">
+      <div className="stack">
+        <AdminCheckoutReadiness />
         <MerchantForm
-          title="Storefront copy / assets"
+          title="Store name & homepage"
           action="admin-settings"
-          initial={
-            currentSettings?.value ?? {
-              heroImage: "/images/cinematic/hero-road-v2.webp",
-            }
-          }
+          initial={{
+            heroImage: "/images/cyan/hero-blue.webp",
+            heroTitle: {
+              ar: "قطع غيار عربيتك…\nمن غير تدوير.",
+              en: "The right parts for your car…\nWithout the runaround.",
+            },
+            heroIntro: {
+              ar: "اختار عربيتك، واعرف قطع الغيار المناسبة ليها، وقارن الأسعار واطلب بكل سهولة.",
+              en: "Choose your car, find the parts that fit, compare prices and order with confidence.",
+            },
+            storeName: { ar: "موبِك", en: "MOPC" },
+            ...currentSettings?.value,
+          }}
           fields={[
             {
               path: "heroImage",
-              label: "Hero fallback local image (/images/…)",
+              label: "Fallback image path (uploaded hero photos take priority)",
+              required: true,
             },
             ...["ar", "en"].flatMap((lang) => [
-              { path: "storeName." + lang, label: "Store name · " + lang },
-              { path: "heroTitle." + lang, label: "Hero heading · " + lang },
+              {
+                path: "storeName." + lang,
+                label: "Store name · " + lang,
+                required: true,
+              },
+              {
+                path: "heroTitle." + lang,
+                label: "Hero heading · " + lang + " (new line = accent text)",
+                type: "textarea" as const,
+                required: true,
+              },
               {
                 path: "heroIntro." + lang,
                 label: "Hero introduction · " + lang,
-                type: "textarea" as const,
-              },
-              {
-                path: "contact." + lang,
-                label: "Support / contact details · " + lang,
                 type: "textarea" as const,
               },
             ]),
           ]}
         />
 
-        <h2>Provider and launch settings</h2>
-        <p>COD enabled: {process.env.COD_ENABLED === "true" ? "Yes" : "No"}</p>
-        <p>
-          Demo checkout in development:{" "}
-          {process.env.ALLOW_DEMO_CHECKOUT === "true" ? "Yes" : "No"}
-        </p>
-        <p>Production rejects demo SKUs regardless of flags.</p>
-        <p>
-          Cards and installments via EasyKash:{" "}
-          {process.env.EASYKASH_API_KEY ? "Enabled" : "Not configured"}
-        </p>
-        <p>InstaPay and e-wallet transfers: Enabled with manual review</p>
-        <p>
-          Runtime secrets are configured in the deployment environment, never
-          through browser forms.
-        </p>
+        <section className="panel stack">
+          <h2>Payment availability</h2>
+          <p>
+            Cash on delivery:{" "}
+            {process.env.COD_ENABLED === "true" ? "Available" : "Disabled"}
+          </p>
+          <p>
+            Cards and installments via EasyKash:{" "}
+            {process.env.EASYKASH_API_KEY ? "Configured" : "Not configured"}
+          </p>
+          <p>
+            InstaPay and e-wallet transfers: Available with manual payment
+            review
+          </p>
+          <p className="muted">
+            Payment availability is controlled in the hosting settings. Uploaded
+            homepage photos are managed in{" "}
+            <Link href="/admin?module=hero-slideshow">Hero slideshow</Link> and{" "}
+            <Link href="/admin?module=branding">Branding</Link>.
+          </p>
+          <details>
+            <summary>Technical launch settings</summary>
+            <p>
+              Search indexing:{" "}
+              {process.env.STORE_LAUNCH_APPROVED === "true"
+                ? "Enabled"
+                : "Disabled"}
+              . Analytics:{" "}
+              {process.env.ANALYTICS_ENABLED === "true"
+                ? "Enabled"
+                : "Disabled"}
+              .
+            </p>
+            <p>
+              Production checkout excludes demonstration products. Provider
+              credentials are managed in the deployment environment.
+            </p>
+          </details>
+        </section>
       </div>
     );
-  } else
-    content = (
-      <div className="panel">
-        <p>
-          This module awaits implementation. It is not advertised as
-          operational.
-        </p>
-      </div>
-    );
+  } else redirect("/admin");
   return (
     <AdminWorkspace module={module} email={admin.email ?? "Administrator"}>
       {content}

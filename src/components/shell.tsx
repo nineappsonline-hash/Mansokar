@@ -73,7 +73,7 @@ export async function Shell({
             />
             {locale === "ar" && (
               <span className="store-name-ar" lang="ar">
-                موبِك
+                {settings.storeName?.ar?.replace(/^موبك$/, "موبِك") || "موبِك"}
               </span>
             )}
           </Link>
@@ -188,7 +188,8 @@ export async function Shell({
               />
               {locale === "ar" && (
                 <span className="store-name-ar" lang="ar">
-                  موبِك
+                  {settings.storeName?.ar?.replace(/^موبك$/, "موبِك") ||
+                    "موبِك"}
                 </span>
               )}
             </Link>

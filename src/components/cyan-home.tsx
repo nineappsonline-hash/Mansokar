@@ -25,6 +25,11 @@ export async function CyanHome({
   fitments,
   slides,
   cardPayments,
+  heroTitle,
+  heroIntro,
+  intervalSeconds,
+  autoplay,
+  campaigns,
 }: {
   locale: Locale;
   brands: {
@@ -40,6 +45,11 @@ export async function CyanHome({
   fitments: Record<string, boolean>;
   slides: HeroSlide[];
   cardPayments: boolean;
+  heroTitle?: string;
+  heroIntro?: string;
+  intervalSeconds?: number;
+  autoplay?: boolean;
+  campaigns?: React.ReactNode;
 }) {
   const ar = locale === "ar";
   const order = ["opel", "peugeot", "citroen", "mg", "chevrolet"];
@@ -84,19 +94,41 @@ export async function CyanHome({
   return (
     <div className="cyan-home">
       <section className="cyan-hero">
-        <HeroSlideshow slides={slides} locale={locale} autoplay={false}>
+        <HeroSlideshow
+          slides={slides}
+          locale={locale}
+          intervalSeconds={intervalSeconds}
+          autoplay={autoplay}
+        >
           <div className="shell cyan-hero-content">
             <div className="cyan-hero-copy">
               <h1>
-                <span>
-                  {ar ? "قطع غيار عربيتك…" : "The right parts for your car…"}
-                </span>
-                <em>{ar ? "من غير تدوير." : "Without the runaround."}</em>
+                {heroTitle?.trim() ? (
+                  heroTitle
+                    .split("\n")
+                    .map((line, i) =>
+                      i === 0 ? (
+                        <span key={i}>{line}</span>
+                      ) : (
+                        <em key={i}>{line}</em>
+                      ),
+                    )
+                ) : (
+                  <>
+                    <span>
+                      {ar
+                        ? "قطع غيار عربيتك…"
+                        : "The right parts for your car…"}
+                    </span>
+                    <em>{ar ? "من غير تدوير." : "Without the runaround."}</em>
+                  </>
+                )}
               </h1>
               <p>
-                {ar
-                  ? "اختار عربيتك، واعرف قطع الغيار المناسبة ليها، وقارن الأسعار واطلب بكل سهولة."
-                  : "Choose your car, find the parts that fit, compare prices and order with confidence."}
+                {heroIntro ??
+                  (ar
+                    ? "اختار عربيتك، واعرف قطع الغيار المناسبة ليها، وقارن الأسعار واطلب بكل سهولة."
+                    : "Choose your car, find the parts that fit, compare prices and order with confidence.")}
               </p>
             </div>
             <HomeVehicleFinder
@@ -165,6 +197,7 @@ export async function CyanHome({
           ))}
         </div>
       </div>
+      {campaigns}
       <section className="cyan-featured shell">
         <div className="section-heading">
           <h2 className="cyan-section-title">

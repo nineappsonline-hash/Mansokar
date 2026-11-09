@@ -184,7 +184,7 @@
 }
 .modelList > button > span {
   font-size: 10px;
-  color: #8a96a7;
+  color: #607086;
 }
 .modelList > button[aria-pressed="true"] {
   background: #eef3fa;
@@ -295,4 +295,8 @@
     gap: 8px;
     padding: 12px;
   }
+}
+
+.intro.intro p {
+  color: #516175;
 }

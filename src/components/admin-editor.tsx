@@ -685,70 +685,73 @@ export function MerchantForm({
         label="Save"
         extra={{ json: JSON.stringify(value) }}
       >
-        {fields.map((field) => {
-          const current = get(field.path);
-          return (
-            <label
-              key={field.path}
-              className={field.type === "checkbox" ? "check" : undefined}
-            >
-              {field.label}
-              {field.type === "checkbox" ? (
-                <input
-                  type="checkbox"
-                  checked={Boolean(current)}
-                  onChange={(e) => set(field.path, e.target.checked)}
-                />
-              ) : field.type === "textarea" ? (
-                <textarea
-                  rows={field.path.startsWith("body.") ? 10 : 4}
-                  dir={field.path.endsWith(".ar") ? "rtl" : "ltr"}
-                  value={current ?? ""}
-                  required={field.required}
-                  onChange={(e) => set(field.path, e.target.value)}
-                />
-              ) : field.type === "select" ? (
-                <select
-                  value={current ?? ""}
-                  onChange={(e) => set(field.path, e.target.value || null)}
-                >
-                  {field.options?.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type={field.type ?? "text"}
-                  required={field.required}
-                  min={field.type === "number" ? 0 : undefined}
-                  value={
-                    field.type === "datetime-local"
-                      ? (current?.slice(0, 16) ?? "")
-                      : (current ?? "")
-                  }
-                  onChange={(e) =>
-                    set(
-                      field.path,
-                      field.type === "number"
-                        ? e.target.value === "" && field.nullable
-                          ? null
-                          : Number(e.target.value)
-                        : field.type === "datetime-local"
-                          ? e.target.value
-                            ? new Date(e.target.value + "Z").toISOString()
-                            : null
-                          : e.target.value === "" && field.nullable
+        <div className="merchant-form-fields">
+          {fields.map((field) => {
+            const current = get(field.path);
+            return (
+              <label
+                key={field.path}
+                className={field.type === "checkbox" ? "check" : undefined}
+              >
+                {field.label}
+                {field.type === "checkbox" ? (
+                  <input
+                    type="checkbox"
+                    checked={Boolean(current)}
+                    onChange={(e) => set(field.path, e.target.checked)}
+                  />
+                ) : field.type === "textarea" ? (
+                  <textarea
+                    rows={field.path.startsWith("body.") ? 10 : 4}
+                    dir={field.path.endsWith(".ar") ? "rtl" : "ltr"}
+                    value={current ?? ""}
+                    required={field.required}
+                    onChange={(e) => set(field.path, e.target.value)}
+                  />
+                ) : field.type === "select" ? (
+                  <select
+                    value={current ?? ""}
+                    onChange={(e) => set(field.path, e.target.value || null)}
+                  >
+                    {field.options?.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type={field.type ?? "text"}
+                    dir={field.path.endsWith(".ar") ? "rtl" : "ltr"}
+                    required={field.required}
+                    min={field.type === "number" ? 0 : undefined}
+                    value={
+                      field.type === "datetime-local"
+                        ? (current?.slice(0, 16) ?? "")
+                        : (current ?? "")
+                    }
+                    onChange={(e) =>
+                      set(
+                        field.path,
+                        field.type === "number"
+                          ? e.target.value === "" && field.nullable
                             ? null
-                            : e.target.value,
-                    )
-                  }
-                />
-              )}
-            </label>
-          );
-        })}
+                            : Number(e.target.value)
+                          : field.type === "datetime-local"
+                            ? e.target.value
+                              ? new Date(e.target.value + "Z").toISOString()
+                              : null
+                            : e.target.value === "" && field.nullable
+                              ? null
+                              : e.target.value,
+                      )
+                    }
+                  />
+                )}
+              </label>
+            );
+          })}
+        </div>
       </ApiForm>
     </section>
   );
@@ -959,6 +962,7 @@ export function ImageManager({
       <ApiForm
         action="admin-images"
         label="Save image order and descriptions"
+        disabled={busy}
         extra={{
           json: JSON.stringify({
             product,
@@ -1078,6 +1082,7 @@ export function BrandingMedia({
       <label htmlFor="branding-slot">Image location</label>
       <select
         id="branding-slot"
+        disabled={busy}
         value={slot}
         onChange={(e) => {
           setSlot(e.target.value);
@@ -1149,6 +1154,7 @@ export function BrandingMedia({
       <ApiForm
         action="admin-site-media"
         label="Save media assignment"
+        disabled={busy}
         extra={{
           json: JSON.stringify({ slot, path: record.path, alt: record.alt }),
         }}
@@ -1174,6 +1180,7 @@ export function BrandingMedia({
         <button
           type="button"
           className="button secondary"
+          disabled={busy}
           onClick={() =>
             setRecord({
               path: null,

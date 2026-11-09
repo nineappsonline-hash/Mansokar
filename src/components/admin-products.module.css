@@ -46,7 +46,7 @@
   margin: 0;
 }
 .count {
-  color: #8a96a7;
+  color: #607086;
   font-size: 11px;
   font-weight: 500;
 }
@@ -153,8 +153,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  font-size: 9px;
-  color: #8a96a7;
+  font-size: 11px;
+  color: #607086;
   margin-top: 8px;
   overflow-wrap: anywhere;
 }

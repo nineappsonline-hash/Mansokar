@@ -1,3 +1,4 @@
+import { Campaigns } from "@/components/campaigns";
 import { CarModelPage } from "@/components/car-model-page";
 import { CyanHome } from "@/components/cyan-home";
 import { Favorites } from "@/components/favorites";
@@ -516,7 +517,7 @@ export default async function Page({ params, searchParams }: Props) {
         )
       : [];
     const slideshow = await heroSlideshow(
-      branding.hero?.url ?? "/images/cyan/hero-blue.webp",
+      branding.hero?.url ?? settings.heroImage ?? "/images/cyan/hero-blue.webp",
     );
     content = (
       <CyanHome
@@ -525,6 +526,11 @@ export default async function Page({ params, searchParams }: Props) {
         fitments={flags}
         products={products}
         slides={slideshow.slides}
+        heroTitle={settings.heroTitle?.[locale]}
+        heroIntro={settings.heroIntro?.[locale]}
+        intervalSeconds={slideshow.intervalSeconds}
+        autoplay={slideshow.autoplay}
+        campaigns={<Campaigns locale={locale} />}
         cardPayments={availablePayments().includes("card")}
         brands={brands.map((b) => ({
           ...b,

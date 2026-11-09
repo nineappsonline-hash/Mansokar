@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 import {
@@ -81,6 +81,21 @@ const descriptions: Record<string, string> = {
   shipping: "Set delivery options and rates for every governorate.",
   vehicles: "Keep your vehicle makes, models and configurations up to date.",
   seo: "Review search visibility and improve your product content.",
+  customers: "Find customer accounts, orders and private support notes.",
+  recommendations:
+    "Choose alternatives and products that customers can buy together.",
+  campaigns: "Schedule promotional banners for the homepage.",
+  promotions:
+    "Create checkout coupons and manage their dates and usage limits.",
+  cms: "Write and publish your store pages, guides and policies.",
+  branding: "Upload your logo, brand artwork and vehicle pictures.",
+  "hero-slideshow": "Choose homepage photos, their order and slideshow timing.",
+  reports:
+    "Review orders, collected sales and product contribution for a date range.",
+  analytics:
+    "View anonymous storefront activity recorded with customer consent.",
+  settings:
+    "Update your store name and homepage wording, and review payment availability.",
 };
 export function AdminSignIn({ children }: { children: React.ReactNode }) {
   return (
@@ -133,6 +148,56 @@ export function AdminWorkspace({
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const sidebar = useRef<HTMLElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  const needle = query.trim().toLowerCase();
+  const groups = navigation
+    .map((g) => ({
+      ...g,
+      items: g.items.filter(([, label]) =>
+        label.toLowerCase().includes(needle),
+      ),
+    }))
+    .filter((g) => g.items.length);
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const focusable = () =>
+      Array.from(
+        sidebar.current?.querySelectorAll<HTMLElement>(
+          "a[href],button:not(:disabled),input:not(:disabled)",
+        ) ?? [],
+      ).filter((e) => e.getClientRects().length);
+    focusable()[0]?.focus();
+    const close = () => {
+      setOpen(false);
+      menuButton.current?.focus();
+    };
+    const key = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        close();
+      }
+      if (e.key === "Tab") {
+        const nodes = focusable(),
+          first = nodes[0],
+          last = nodes.at(-1);
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last?.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", key);
+    return () => {
+      document.body.style.overflow = previous;
+      document.removeEventListener("keydown", key);
+    };
+  }, [open]);
   const title =
     navigation.flatMap((g) => g.items).find((i) => i[0] === module)?.[1] ||
     "Administration";
@@ -145,7 +210,21 @@ export function AdminWorkspace({
           onClick={() => setOpen(false)}
         />
       )}
-      <aside className={`${styles.sidebar} ${open ? styles.open : ""}`}>
+      <aside
+        ref={sidebar}
+        className={`${styles.sidebar} ${open ? styles.open : ""}`}
+      >
+        <button
+          type="button"
+          className={styles.closeNav}
+          aria-label="Close navigation"
+          onClick={() => {
+            setOpen(false);
+            menuButton.current?.focus();
+          }}
+        >
+          <X size={21} />
+        </button>
         <Link className={styles.brand} href="/admin">
           <span>
             <BrandLogo className={styles.brandLogo} />
@@ -162,27 +241,28 @@ export function AdminWorkspace({
           />
         </div>
         <nav aria-label="Administration">
-          {navigation.map((group) => (
+          {groups.map((group) => (
             <div className={styles.navGroup} key={group.title}>
               <p>{group.title}</p>
-              {group.items
-                .filter(([, label]) =>
-                  label.toLowerCase().includes(query.toLowerCase()),
-                )
-                .map(([key, label, Icon]) => (
-                  <Link
-                    key={key}
-                    href={`/admin?module=${key}`}
-                    aria-current={module === key ? "page" : undefined}
-                    onClick={() => setOpen(false)}
-                  >
-                    <Icon size={18} strokeWidth={1.7} />
-                    <span>{label}</span>
-                    {module === key && <ChevronRight size={14} />}
-                  </Link>
-                ))}
+              {group.items.map(([key, label, Icon]) => (
+                <Link
+                  key={key}
+                  href={`/admin?module=${key}`}
+                  aria-current={module === key ? "page" : undefined}
+                  onClick={() => setOpen(false)}
+                >
+                  <Icon size={18} strokeWidth={1.7} />
+                  <span>{label}</span>
+                  {module === key && <ChevronRight size={14} />}
+                </Link>
+              ))}
             </div>
           ))}
+          {!groups.length && (
+            <p className={styles.noMatches} role="status">
+              No sections match “{query}”.
+            </p>
+          )}
         </nav>
         <div className={styles.profile}>
           <span className={styles.avatar}>{email.charAt(0).toUpperCase()}</span>
@@ -201,6 +281,7 @@ export function AdminWorkspace({
         <header className={styles.topbar}>
           <div>
             <button
+              ref={menuButton}
               className={styles.menu}
               aria-label={open ? "Close navigation" : "Open navigation"}
               aria-expanded={open}
@@ -219,14 +300,21 @@ export function AdminWorkspace({
         <div className={styles.content}>
           <div className={styles.heading}>
             <div>
-              <span className={styles.eyebrow}>YOUR STORE, AT A GLANCE</span>
+              <span className={styles.eyebrow}>
+                {navigation
+                  .find((g) => g.items.some((i) => i[0] === module))
+                  ?.title.toUpperCase() ?? "STORE MANAGEMENT"}
+              </span>
               <h1>{title}</h1>
               <p>
                 {descriptions[module] ||
                   `Manage your ${title.toLowerCase()} and store preferences.`}
               </p>
             </div>
-            <Link className={styles.newProduct} href="/admin?module=products">
+            <Link
+              className={styles.newProduct}
+              href="/admin?module=products#product-editor"
+            >
               <Plus size={18} />
               Add product
             </Link>

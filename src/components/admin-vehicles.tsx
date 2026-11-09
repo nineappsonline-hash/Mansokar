@@ -52,7 +52,9 @@ export function AdminVehicles({
         generations.find((g) => g.id === initialId)?.model_id ??
         initialId),
   );
-  const [brand, setBrand] = useState(initialModel?.brand || "opel");
+  const [brand, setBrand] = useState(
+    initialModel?.brand || brands[0]?.slug || "",
+  );
   const [modelId, setModelId] = useState(initialModel?.id || "");
   const [query, setQuery] = useState("");
   const [addingModel, setAddingModel] = useState(false);
