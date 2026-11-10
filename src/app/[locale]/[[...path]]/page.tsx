@@ -1089,7 +1089,9 @@ export default async function Page({ params, searchParams }: Props) {
           ]}
         />
         <div className="product-layout">
-          <div className="product-page-animate product-media-column">
+          <div
+            className={`product-page-animate product-media-column ${compatibilityStyles.media}`}
+          >
             <div className="product-gallery">
               <Gallery
                 locale={locale}
@@ -1107,6 +1109,84 @@ export default async function Page({ params, searchParams }: Props) {
                       ? "صورة المنتج غير متاحة بعد."
                       : "Product photo is not available yet."}
                 </p>
+              )}
+            </div>
+            <div
+              className={`fit-card ${confirmed ? "confirmed" : ""} ${showApplications ? compatibilityStyles.panel : ""}`}
+              data-compatibility-result={confirmed ? "confirmed" : "unknown"}
+            >
+              <span className="eyebrow">
+                <span className="status-dot" />
+                {w.fit}
+              </span>
+              {showApplications ? (
+                <div className={compatibilityStyles.applications}>
+                  <h2>
+                    {locale === "ar"
+                      ? "السيارات المتوافقة"
+                      : "Compatible vehicles"}
+                  </h2>
+                  {compatibleCars.length > 0 ? (
+                    <>
+                      <ul
+                        aria-label={
+                          locale === "ar"
+                            ? "السيارات المتوافقة"
+                            : "Compatible vehicles"
+                        }
+                      >
+                        {compatibleCars.map((car) => (
+                          <li key={car.id}>
+                            <span className={compatibilityStyles.emblem}>
+                              {car.logo ? (
+                                <img
+                                  src={car.logo}
+                                  alt=""
+                                  width={40}
+                                  height={40}
+                                />
+                              ) : (
+                                <CarFront size={25} aria-hidden="true" />
+                              )}
+                            </span>
+                            <div className={compatibilityStyles.identity}>
+                              <span className={compatibilityStyles.make}>
+                                {car.make}
+                              </span>
+                              <strong>{car.model || car.name}</strong>
+                            </div>
+                            <div className={compatibilityStyles.yearGroup}>
+                              <span>
+                                {locale === "ar"
+                                  ? "سنوات الموديل"
+                                  : "Model years"}
+                              </span>
+                              <bdi>
+                                {car.years ||
+                                  (locale === "ar"
+                                    ? "راجع سنوات الموديل"
+                                    : "Check model years")}
+                              </bdi>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                      <small>
+                        {locale === "ar"
+                          ? "راجع رقم القطعة ومواصفات المحرك قبل الطلب."
+                          : "Check the part number and engine specifications before ordering."}
+                      </small>
+                    </>
+                  ) : (
+                    <p>
+                      {locale === "ar"
+                        ? "لم تُسجّل سيارات متوافقة لهذه القطعة بعد. تواصل معنا برقم القطعة وبيانات سيارتك للتحقق من التوافق."
+                        : "No compatible vehicles have been recorded for this part yet. Contact us with the part number and your vehicle details to check fitment."}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p>{vehicleForItem(vehicle, locale)}</p>
               )}
             </div>
             <ul className="product-assurances">
@@ -1280,84 +1360,6 @@ export default async function Page({ params, searchParams }: Props) {
                     </span>
                   )}
                 </div>
-              )}
-            </div>
-            <div
-              className={`fit-card ${confirmed ? "confirmed" : ""} ${showApplications ? compatibilityStyles.panel : ""}`}
-              data-compatibility-result={confirmed ? "confirmed" : "unknown"}
-            >
-              <span className="eyebrow">
-                <span className="status-dot" />
-                {w.fit}
-              </span>
-              {showApplications ? (
-                <div className={compatibilityStyles.applications}>
-                  <h2>
-                    {locale === "ar"
-                      ? "السيارات المتوافقة مع هذه القطعة"
-                      : "Compatible vehicles for this part"}
-                  </h2>
-                  {compatibleCars.length > 0 ? (
-                    <>
-                      <ul
-                        aria-label={
-                          locale === "ar"
-                            ? "السيارات المتوافقة"
-                            : "Compatible vehicles"
-                        }
-                      >
-                        {compatibleCars.map((car) => (
-                          <li key={car.id}>
-                            <span className={compatibilityStyles.emblem}>
-                              {car.logo ? (
-                                <img
-                                  src={car.logo}
-                                  alt=""
-                                  width={40}
-                                  height={40}
-                                />
-                              ) : (
-                                <CarFront size={25} aria-hidden="true" />
-                              )}
-                            </span>
-                            <div className={compatibilityStyles.identity}>
-                              <span className={compatibilityStyles.make}>
-                                {car.make}
-                              </span>
-                              <strong>{car.model || car.name}</strong>
-                            </div>
-                            <div className={compatibilityStyles.yearGroup}>
-                              <span>
-                                {locale === "ar"
-                                  ? "سنوات الموديل"
-                                  : "Model years"}
-                              </span>
-                              <bdi>
-                                {car.years ||
-                                  (locale === "ar"
-                                    ? "راجع سنوات الموديل"
-                                    : "Check model years")}
-                              </bdi>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                      <small>
-                        {locale === "ar"
-                          ? "راجع رقم القطعة ومواصفات المحرك قبل الطلب."
-                          : "Check the part number and engine specifications before ordering."}
-                      </small>
-                    </>
-                  ) : (
-                    <p>
-                      {locale === "ar"
-                        ? "لم تُسجّل سيارات متوافقة لهذه القطعة بعد. تواصل معنا برقم القطعة وبيانات سيارتك للتحقق من التوافق."
-                        : "No compatible vehicles have been recorded for this part yet. Contact us with the part number and your vehicle details to check fitment."}
-                    </p>
-                  )}
-                </div>
-              ) : (
-                <p>{vehicleForItem(vehicle, locale)}</p>
               )}
             </div>
             <div className="purchase-actions">
