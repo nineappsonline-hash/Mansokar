@@ -1,3 +1,5 @@
+import { MobileNavigation } from "./mobile-navigation";
+import responsive from "./shell-responsive.module.css";
 import { SearchBox } from "./search";
 import { CartCount } from "./favorites";
 import { Newsletter } from "./newsletter";
@@ -11,8 +13,6 @@ import {
   UserRound,
   ArrowUpRight,
   CarFront,
-  Menu,
-  Search,
   Heart,
   Home,
   ChevronDown,
@@ -109,16 +109,7 @@ export async function Shell({
               <b>{locale === "ar" ? "حسابي" : "Account"}</b>
             </Link>
             <Language locale={locale} />
-            <details className="mobile-menu">
-              <summary aria-label={locale === "ar" ? "القائمة" : "Menu"}>
-                <Menu size={22} />
-              </summary>
-              <nav>
-                <Link href={`/${locale}/catalog`}>{w.catalog}</Link>
-                <Link href={`/${locale}/offers`}>{w.offers}</Link>
-                <Link href={`/${locale}/guides`}>{w.guides}</Link>
-              </nav>
-            </details>
+            <MobileNavigation locale={locale} brands={navBrands} />
           </div>
         </div>
         <div className="cyan-subnav">
@@ -167,7 +158,7 @@ export async function Shell({
         </div>
       )}
       <main id="main">{children}</main>
-      <footer className="footer">
+      <footer className={`footer ${responsive.footer}`}>
         <div className="cyan-newsletter">
           <div className="shell cyan-newsletter-inner">
             <BrandLogo
@@ -198,63 +189,63 @@ export async function Shell({
               <p className="prose">{settings.contact[locale]}</p>
             )}
           </div>
-          <div>
-            <h3>{w.catalog}</h3>
-            {["catalog", "compare", "garage", "request-part"].map((x, i) => (
-              <Link key={x} href={`/${locale}/${x}`}>
-                {[w.catalog, w.compare, w.garage, w.request][i]}
-              </Link>
-            ))}
-          </div>
-          <div>
-            <h3>{locale === "ar" ? "المساعدة" : "Help & information"}</h3>
-            {[
-              "about",
-              "contact",
-              "faq",
-              "site-map",
-              "installments",
-              "credits",
-            ].map((x) => (
-              <Link key={x} href={`/${locale}/${x}`}>
-                {locale === "ar"
-                  ? {
-                      about: "من نحن",
-                      contact: "تواصل معنا",
-                      faq: "أسئلة شائعة",
-                      "site-map": "خريطة الموقع",
-                      installments: "الكروت والتقسيط",
-                      credits: "مصادر الصور",
-                    }[x]
-                  : {
-                      about: "About us",
-                      contact: "Contact us",
-                      faq: "FAQs",
-                      "site-map": "Site map",
-                      installments: "Cards & installments",
-                      credits: "Image credits",
-                    }[x]}
-              </Link>
-            ))}
-          </div>
-          <div>
-            <h3>{locale === "ar" ? "السياسات" : "Policies"}</h3>
-            {["privacy", "terms", "shipping", "returns", "warranty"].map(
-              (x) => (
-                <Link key={x} href={`/${locale}/policies/${x}`}>
-                  {locale === "ar"
-                    ? {
-                        privacy: "الخصوصية",
-                        terms: "الشروط",
-                        shipping: "الشحن",
-                        returns: "الإرجاع",
-                        warranty: "الضمان",
-                      }[x]
-                    : x}
-                </Link>
-              ),
-            )}
-          </div>
+          <FooterGroup
+            title={w.catalog}
+            links={[
+              [w.catalog, `/${locale}/catalog`],
+              [w.compare, `/${locale}/compare`],
+              [w.garage, `/${locale}/garage`],
+              [w.request, `/${locale}/request-part`],
+            ]}
+          />
+          <FooterGroup
+            title={locale === "ar" ? "المساعدة" : "Help & information"}
+            links={[
+              [locale === "ar" ? "من نحن" : "About us", `/${locale}/about`],
+              [
+                locale === "ar" ? "تواصل معنا" : "Contact us",
+                `/${locale}/contact`,
+              ],
+              [locale === "ar" ? "أسئلة شائعة" : "FAQs", `/${locale}/faq`],
+              [
+                locale === "ar" ? "خريطة الموقع" : "Site map",
+                `/${locale}/site-map`,
+              ],
+              [
+                locale === "ar" ? "الكروت والتقسيط" : "Cards & installments",
+                `/${locale}/installments`,
+              ],
+              [
+                locale === "ar" ? "مصادر الصور" : "Image credits",
+                `/${locale}/credits`,
+              ],
+            ]}
+          />
+          <FooterGroup
+            title={locale === "ar" ? "السياسات" : "Policies"}
+            links={[
+              [
+                locale === "ar" ? "الخصوصية" : "Privacy",
+                `/${locale}/policies/privacy`,
+              ],
+              [
+                locale === "ar" ? "الشروط" : "Terms",
+                `/${locale}/policies/terms`,
+              ],
+              [
+                locale === "ar" ? "الشحن" : "Shipping",
+                `/${locale}/policies/shipping`,
+              ],
+              [
+                locale === "ar" ? "الإرجاع" : "Returns",
+                `/${locale}/policies/returns`,
+              ],
+              [
+                locale === "ar" ? "الضمان" : "Warranty",
+                `/${locale}/policies/warranty`,
+              ],
+            ]}
+          />
         </div>
         <div className="shell footer-bottom">
           <span>
@@ -264,5 +255,34 @@ export async function Shell({
         </div>
       </footer>
     </div>
+  );
+}
+
+function FooterGroup({
+  title,
+  links,
+}: {
+  title: string;
+  links: [string, string][];
+}) {
+  const content = links.map(([label, href]) => (
+    <Link key={href} href={href}>
+      {label}
+    </Link>
+  ));
+  return (
+    <>
+      <div className={responsive.desktopGroup}>
+        <h3>{title}</h3>
+        {content}
+      </div>
+      <details className={responsive.mobileGroup}>
+        <summary>
+          {title}
+          <ChevronDown size={15} aria-hidden="true" />
+        </summary>
+        <div>{content}</div>
+      </details>
+    </>
   );
 }

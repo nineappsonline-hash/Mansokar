@@ -1322,3 +1322,40 @@
     transition: none;
   }
 }
+
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan) {
+    :global(.cyan-subnav) {
+      display: none;
+    }
+    :global(.header-tools) {
+      gap: 8px;
+    }
+    :global(.header .store-logo-image) {
+      width: 110px;
+      height: 38px;
+    }
+    :global(.header .store-name-ar) {
+      font-size: 18px;
+    }
+    :global(.header-inner) {
+      gap: 8px;
+    }
+  }
+}
+@media (max-width: 380px) {
+  .theme:global(.mopc-cyan) {
+    :global(.header .store-logo-image) {
+      width: 90px;
+    }
+    :global(.header .store-name-ar) {
+      font-size: 16px;
+    }
+    :global(.header .logo) {
+      gap: 4px;
+    }
+    :global(.header-tools) {
+      gap: 5px;
+    }
+  }
+}
