@@ -613,7 +613,8 @@
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 @keyframes originalBadgePulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow:
       0 0 0 2px #fff8,
       0 0 16px 4px rgba(245, 200, 70, 0.8),
@@ -1878,7 +1879,7 @@
 }
 
 .store :global(.header .logo .store-name-ar) {
-  font-family: "MOPC Arabic", Tajawal, sans-serif;
+  font-family: var(--font-arabic);
   font-size: 32px;
   font-weight: 900;
   font-synthesis: none;

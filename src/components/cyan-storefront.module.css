@@ -10,7 +10,7 @@
   background: #fff;
   font-family: var(--font-latin), sans-serif;
   &[lang="ar"] {
-    font-family: Tajawal, sans-serif;
+    font-family: var(--font-arabic);
   }
   :global(h1),
   :global(h2),
@@ -23,7 +23,7 @@
   &[lang="ar"] :global(h3),
   &[lang="ar"] :global(.header),
   &[lang="ar"] :global(.cyan-vehicle-finder) {
-    font-family: "MOPC Arabic", Tajawal, sans-serif;
+    font-family: var(--font-arabic);
   }
   :global(.shell) {
     width: min(1440px, calc(100% - 64px));
@@ -654,9 +654,25 @@
     overflow: hidden;
     min-height: 51px;
   }
-  :global(.cyan-featured .product-brand) {
-    font-size: 11px;
-    color: #608096;
+  :global(.product-card .product-brand) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
+    min-width: 54px;
+    min-height: 32px;
+    padding: 5px 12px;
+    border: 1px solid #075177;
+    border-radius: 7px;
+    background: #063857;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+    box-shadow: 0 2px 5px #002c5014;
   }
   :global(.cyan-featured .product-origin),
   :global(.cyan-featured .product-info > .eyebrow),

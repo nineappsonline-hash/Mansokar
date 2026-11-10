@@ -127,7 +127,13 @@ export async function ProductCard({
       <div className="product-info">
         {p.type === "oem" && <OriginalBadge locale={locale} />}
         <div className="product-meta">
-          <strong className="product-brand">{p.manufacturer}</strong>
+          <strong
+            className="product-brand"
+            dir="auto"
+            aria-label={`${locale === "ar" ? "الماركة" : "Brand"}: ${p.manufacturer}`}
+          >
+            {p.manufacturer}
+          </strong>
           {origin && (
             <span className="product-origin" dir="auto">
               <Globe2 size={14} aria-hidden="true" />

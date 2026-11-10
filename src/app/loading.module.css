@@ -35,7 +35,7 @@
   height: 100px;
 }
 .name {
-  font-family: "MOPC Arabic", Tajawal, sans-serif;
+  font-family: var(--font-arabic);
   font-size: 38px;
   line-height: 1.6;
   font-weight: 900;
