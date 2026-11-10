@@ -1,3 +1,4 @@
+import deliveryStyles from "@/components/shipping-estimate.module.css";
 import compactProduct from "@/components/product-page.module.css";
 import { productCardVehicles } from "@/lib/product-card-vehicles";
 import compatibilityStyles from "@/components/product-compatibility.module.css";
@@ -1360,21 +1361,33 @@ export default async function Page({ params, searchParams }: Props) {
               {p.warranty && (
                 <p className="product-warranty-note">{p.warranty[locale]}</p>
               )}
-              <div className="shipping-estimate-row">
+              <div className={deliveryStyles.layout}>
                 <ShippingEstimate locale={locale} areas={areas} />
-                <details className="accordion">
-                  <summary>
-                    {locale === "ar"
-                      ? "الشحن والإرجاع والضمان"
-                      : "Shipping, returns & warranty"}
-                  </summary>
-                  <p>
+                <section className={deliveryStyles.card}>
+                  <header className={deliveryStyles.header}>
+                    <span className={deliveryStyles.icon}>
+                      <ShieldCheck size={20} aria-hidden="true" />
+                    </span>
+                    <div>
+                      <h3>
+                        {locale === "ar"
+                          ? "الشحن والإرجاع والضمان"
+                          : "Shipping, returns & warranty"}
+                      </h3>
+                      <p>
+                        {locale === "ar"
+                          ? "منتجات أصلية وضمان موثوق"
+                          : "Genuine products and dependable warranty"}
+                      </p>
+                    </div>
+                  </header>
+                  <p className={deliveryStyles.policyText}>
                     {locale === "ar"
                       ? "جميع منتجاتنا أصلية وبضمان الوكيل أو المورد حسب المنتج. تتحدد رسوم التوصيل حسب المنطقة، وتطبق سياسة الإرجاع المنشورة."
                       : "All products are genuine, with an agent or supplier warranty according to the product. Delivery fees vary by area, and our published returns policy applies."}
                   </p>
                   <nav
-                    className="product-policy-links"
+                    className={deliveryStyles.links}
                     aria-label={
                       locale === "ar"
                         ? "سياسات الشحن والاسترجاع والضمان"
@@ -1391,7 +1404,7 @@ export default async function Page({ params, searchParams }: Props) {
                       {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
                     </Link>
                   </nav>
-                </details>
+                </section>
               </div>
             </div>
           </section>

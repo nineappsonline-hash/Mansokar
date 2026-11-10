@@ -1,14 +1,13 @@
 "use client";
-import { governorates, shippingLabel, type ShippingArea } from "@/lib/shipping";
+import {
+  shippingGovernorates,
+  shippingWindow,
+  type ShippingArea,
+} from "@/lib/shipping";
 import { useState } from "react";
 import { money, type Locale } from "@/lib/catalog";
-import { Truck, ChevronRight } from "lucide-react";
-
-function governorateFor(area: ShippingArea, locale: Locale) {
-  return governorates.find(
-    (g) => g.en === area.governorate || g.ar === area.governorate,
-  )?.[locale] ?? area.governorate;
-}
+import { Truck } from "lucide-react";
+import styles from "./shipping-estimate.module.css";
 
 export function ShippingEstimate({
   areas,
@@ -18,120 +17,87 @@ export function ShippingEstimate({
   locale: Locale;
 }) {
   const [governorate, setGovernorate] = useState("");
-
-  const standard = areas.find(
-    (a) =>
-      a.service_type === "standard" &&
-      governorateFor(a, "en") === governorate &&
-      a.amount != null,
-  );
-  const express = areas.find(
-    (a) =>
-      a.service_type === "express" &&
-      governorateFor(a, "en") === governorate &&
-      a.amount != null,
-  );
-
-  const shown = governorate
-    ? areas.filter(
-        (a) => governorateFor(a, "en") === governorate && a.amount != null,
-      )
-    : [];
-
-  const optionList = governorates.map((g) => {
-    const matched = areas.find(
-      (a) =>
-        (a.governorate === g.en || a.governorate === g.ar) && a.amount != null,
-    );
-    return {
-      value: g.en,
-      label: g[locale],
-      hasAny: Boolean(matched),
-    };
-  });
-
+  const groups = shippingGovernorates(areas, locale);
+  const shown = groups.find((g) => g.value === governorate)?.areas ?? [];
+  const ar = locale === "ar";
   return (
-    <section className="shipping-estimate">
-      <div className="shipping-estimate-header">
-        <div className="shipping-estimate-icon">
-          <Truck size={20} strokeWidth={2} />
-        </div>
+    <section
+      className={styles.card}
+      aria-label={ar ? "تقدير تكلفة التوصيل" : "Delivery estimate"}
+    >
+      <header className={styles.header}>
+        <span className={styles.icon}>
+          <Truck size={20} aria-hidden="true" />
+        </span>
         <div>
-          <h3>
-            {locale === "ar" ? "تقدير التكلفة" : "Delivery estimate"}
-          </h3>
-          <p className="shipping-estimate-sub">
-            {locale === "ar"
-              ? "احسب تكلفة التوصيل حسب منطقتك"
-              : "Calculate delivery cost to your area"}
+          <h3>{ar ? "تكلفة التوصيل" : "Delivery estimate"}</h3>
+          <p>
+            {ar
+              ? "تعرف على خيارات الشحن إلى محافظتك"
+              : "Explore delivery options for your governorate"}
           </p>
         </div>
-      </div>
-
-      {areas.length ? (
+      </header>
+      {groups.length > 0 ? (
         <>
-          <label className="shipping-estimate-label">
-            <div className="shipping-estimate-select-wrap">
-              <select
-                value={governorate}
-                onChange={(e) => setGovernorate(e.target.value)}
-                className="shipping-estimate-select"
-              >
-                <option value="">اختار المحافظة</option>
-                {optionList.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <label className={styles.field}>
+            <span>{ar ? "المحافظة" : "Governorate"}</span>
+            <select
+              value={governorate}
+              onChange={(e) => setGovernorate(e.target.value)}
+            >
+              <option value="">
+                {ar ? "اختر المحافظة" : "Select governorate"}
+              </option>
+              {groups.map((g) => (
+                <option value={g.value} key={g.value}>
+                  {g.label}
+                </option>
+              ))}
+            </select>
           </label>
-
-          {shown.length ? (
-            <ul className="shipping-estimate-results">
-              <li className="shipping-estimate-row">
-                <span className="shipping-estimate-method">
-                  <Truck size={14} strokeWidth={2} className="shipping-estimate-method-icon" />
-                  {locale === "ar" ? "الشحن العادي" : "Standard delivery"}
-                </span>
-                <div className="shipping-estimate-cost-group">
-                  <b className="shipping-estimate-cost">
-                    {money(standard!.amount, locale)}
-                  </b>
-                  <span className="shipping-estimate-arrow">
-                    <ChevronRight size={12} strokeWidth={2} />
-                  </span>
-                </div>
-              </li>
-              {express && (
-                <li className="shipping-estimate-row">
-                  <span className="shipping-estimate-method">
-                    <Truck size={14} strokeWidth={2} className="shipping-estimate-method-icon" />
-                    {locale === "ar" ? "الشحن السريع" : "Express delivery"}
-                  </span>
-                  <div className="shipping-estimate-cost-group">
-                    <b className="shipping-estimate-cost">
-                      {money(express.amount, locale)}
-                    </b>
-                    <span className="shipping-estimate-arrow">
-                      <ChevronRight size={12} strokeWidth={2} />
-                    </span>
-                  </div>
-                </li>
-              )}
-            </ul>
-          ) : (
-            <p className="shipping-estimate-none">
-              {locale === "ar"
-                ? "لم يتم اعتماد مناطق التوصيل بعد."
-                : "Delivery coverage has not been approved yet."}
-            </p>
-          )}
+          <div aria-live="polite">
+            {shown.length > 0 ? (
+              <ul className={styles.rates}>
+                {[...shown]
+                  .sort(
+                    (a, b) =>
+                      Number(a.service_type === "express") -
+                      Number(b.service_type === "express"),
+                  )
+                  .map((area) => (
+                    <li key={area.id}>
+                      <div>
+                        <strong>
+                          {area.service_type === "express"
+                            ? ar
+                              ? "توصيل سريع"
+                              : "Express delivery"
+                            : ar
+                              ? "توصيل عادي"
+                              : "Normal delivery"}
+                        </strong>
+                        {shippingWindow(area, locale) && (
+                          <small>{shippingWindow(area, locale)}</small>
+                        )}
+                      </div>
+                      <bdi>{money(area.amount, locale)}</bdi>
+                    </li>
+                  ))}
+              </ul>
+            ) : (
+              <p className={styles.hint}>
+                {ar
+                  ? "اختر محافظتك لعرض طرق التوصيل وتكلفة كل منها."
+                  : "Choose your governorate to see delivery methods and their costs."}
+              </p>
+            )}
+          </div>
         </>
       ) : (
-        <p className="shipping-estimate-none">
-          {locale === "ar"
-            ? "لم يتم اعتماد مناطق التوصيل بعد."
+        <p className={styles.hint}>
+          {ar
+            ? "لم تُعتمد مناطق التوصيل بعد."
             : "Delivery coverage has not been approved yet."}
         </p>
       )}
