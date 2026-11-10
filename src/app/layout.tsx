@@ -34,6 +34,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: copy.description,
       images: ["/images/mopc/logo.png"],
     },
+    ...(process.env.BING_SITE_VERIFICATION
+      ? { other: { "msvalidate.01": process.env.BING_SITE_VERIFICATION } }
+      : {}),
     ...(process.env.GOOGLE_SITE_VERIFICATION
       ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
       : {}),

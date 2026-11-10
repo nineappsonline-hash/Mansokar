@@ -9,7 +9,7 @@ import {
   eligibleProduct,
   translatedProduct,
 } from "@/lib/seo-policy";
-import { siteOrigin } from "@/lib/site-url";
+import { siteOrigin, indexingApproved } from "@/lib/site-url";
 import { Campaigns } from "@/components/campaigns";
 import { CarModelPage } from "@/components/car-model-page";
 import { CyanHome } from "@/components/cyan-home";
@@ -404,7 +404,23 @@ export async function generateMetadata({
               images: ["/images/mopc/logo.png"],
             },
           }
-        : {}),
+        : {
+            openGraph: {
+              type: "website",
+              siteName,
+              title: pageMeta?.title?.[l] ?? routeTitles[slug] ?? siteName,
+              description: pageMeta?.description?.[l] ?? identity.description,
+              url: canonicalPage(`/${l}/${slug}`, filters),
+              locale: l === "ar" ? "ar_EG" : "en_EG",
+              images: [{ url: "/images/mopc/logo.png", alt: "MOPC · موبِك" }],
+            },
+            twitter: {
+              card: "summary",
+              title: pageMeta?.title?.[l] ?? routeTitles[slug] ?? siteName,
+              description: pageMeta?.description?.[l] ?? identity.description,
+              images: ["/images/mopc/logo.png"],
+            },
+          }),
     alternates: {
       canonical: canonicalPage(
         productMeta
@@ -435,7 +451,7 @@ export async function generateMetadata({
     },
     robots: {
       index:
-        process.env.STORE_LAUNCH_APPROVED === "true" &&
+        indexingApproved() &&
         !privatePage &&
         configured() &&
         !productMeta?.demo &&
@@ -444,6 +460,11 @@ export async function generateMetadata({
         (!["about", "contact", "faq", "guides", "policies"].includes(path[0]) ||
           Boolean(pageMeta)),
       follow: !accountPage,
+      googleBot: {
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
   };
 }

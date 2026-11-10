@@ -1,3 +1,4 @@
+import { policyContent } from "./policy-content";
 import { eligibleProduct, translatedProduct } from "./seo-policy";
 import type { Product, Text } from "./catalog";
 import { isRemoteImageUrl } from "./image-links";
@@ -73,6 +74,11 @@ export function collectSearchPages(input: {
       path: `/guides/${g.slug}`,
       title: g.title,
       kind: "guide" as const,
+    })),
+    ...Object.entries(policyContent).map(([slug, policy]) => ({
+      path: `/policies/${slug}`,
+      title: policy.title,
+      kind: "policy" as const,
     })),
     ...input.cms
       .filter((p) => p.published && publicCmsPath(p.slug))

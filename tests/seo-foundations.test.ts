@@ -216,3 +216,47 @@ test("fractional legacy prices are withheld from merchant offers instead of disa
     ),
   );
 });
+
+test("published built-in policies are discoverable and CMS overrides do not duplicate sitemap URLs", async () => {
+  const { collectSearchPages } = await import("../src/lib/seo-inventory");
+  const pages = collectSearchPages({
+    brands: [],
+    modelNames: [],
+    categories: [],
+    guides: [],
+    products: [],
+    cms: [
+      {
+        slug: "policies/shipping",
+        title: { ar: "الشحن", en: "Delivery" },
+        published: true,
+      },
+    ],
+  });
+  for (const slug of ["shipping", "returns", "warranty"]) {
+    assert.equal(pages.filter((p) => p.path === `/policies/${slug}`).length, 1);
+  }
+  assert.equal(
+    pages.find((p) => p.path === "/policies/shipping")?.title.en,
+    "Delivery",
+  );
+  assert.equal(
+    pages.some((p) => p.path === "/policies/privacy"),
+    false,
+  );
+});
+
+test("indexing is enabled only by explicit launch configuration and never for previews", () => {
+  assert.equal(indexingApproved({}), false);
+  assert.equal(
+    indexingApproved({
+      STORE_LAUNCH_APPROVED: "true",
+      VERCEL_ENV: "production",
+    }),
+    true,
+  );
+  assert.equal(
+    indexingApproved({ STORE_LAUNCH_APPROVED: "true", VERCEL_ENV: "preview" }),
+    false,
+  );
+});

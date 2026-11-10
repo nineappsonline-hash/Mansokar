@@ -20,6 +20,10 @@ export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request: { headers } });
   const protectPreview = () => {
     if (
+      /^\/(admin|api|auth)(\/|$)/.test(request.nextUrl.pathname) ||
+      /^\/(ar|en)\/(cart|checkout|account|garage|favorites|compare|track-order|order)(\/|$)/.test(
+        request.nextUrl.pathname,
+      ) ||
       !indexingApproved() ||
       request.nextUrl.hostname !== new URL(siteOrigin()).hostname
     )

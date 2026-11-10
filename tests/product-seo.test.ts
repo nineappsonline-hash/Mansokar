@@ -406,7 +406,7 @@ test("sitemap inventory excludes demos, drafts and invalid/private CMS routes", 
         published: true,
       },
       {
-        slug: "policies/warranty",
+        slug: "policies/privacy",
         title: { ar: "الضمان", en: "Warranty" },
         published: false,
       },
@@ -424,7 +424,7 @@ test("sitemap inventory excludes demos, drafts and invalid/private CMS routes", 
   for (const excluded of [
     "/products/" + demoProducts[0].slug,
     "/products/draft-part",
-    "/policies/warranty",
+    "/policies/privacy",
     "/account",
     "/nonexistent-route",
   ])
