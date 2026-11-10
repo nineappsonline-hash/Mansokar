@@ -2082,12 +2082,6 @@ export default async function Page({ params, searchParams }: Props) {
                 <span className="policy-eyebrow">
                   {locale === "ar" ? "سياسة المتجر" : "Store Policy"}
                 </span>
-                <h1>{policyPage.title[locale]}</h1>
-                <p className="policy-sub">
-                  {locale === "ar"
-                    ? "آخر تحديث: " + new Date().toLocaleDateString(locale)
-                    : "Last updated: " + new Date().toLocaleDateString(locale)}
-                </p>
               </div>
               <div className="policy-body">
                 {policyPage.body[locale]
