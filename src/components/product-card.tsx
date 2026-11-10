@@ -155,6 +155,10 @@ export async function ProductCard({
             {p.name[locale]}
           </Link>
         </h3>
+        <div className={styles.partNumber}>
+          <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
+          <bdi dir="ltr">{p.partNumber}</bdi>
+        </div>
         {vehicleRows.length > 0 && (
           <div
             className={styles.vehicles}
@@ -193,10 +197,7 @@ export async function ProductCard({
             )}
           </div>
         )}
-        <div className={styles.partNumber}>
-          <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
-          <bdi dir="ltr">{p.partNumber}</bdi>
-        </div>
+
         <p className="small muted">
           {fitmentLabel(vehicle, !!confirmed, locale)}
         </p>
