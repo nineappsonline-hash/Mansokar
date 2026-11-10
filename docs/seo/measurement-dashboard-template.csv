@@ -1,0 +1,5 @@
+month,channel,impressions,clicks,sessions,conversions,confirmed_revenue_egp,source,notes
+not connected,organic,unknown,unknown,unknown,unknown,unknown,Search Console + consented analytics,No fabricated historical values
+not connected,ai_referral,unknown,unknown,unknown,unknown,unknown,Consented referral hostname categories,No fabricated historical values
+not connected,merchant,unknown,unknown,unknown,unknown,unknown,Merchant Center,No fabricated historical values
+not connected,purchase,unknown,unknown,unknown,unknown,unknown,Server-confirmed payment events; no client purchase event,No fabricated historical values

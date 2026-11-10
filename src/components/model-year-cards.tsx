@@ -173,6 +173,7 @@ export function ModelYearCards({
                   </span>
                 </div>
               </button>
+              <Link className="model-browse-link" data-model-canonical href={href}>{ar ? "تصفح كل قطع هذا الموديل" : "Browse all parts for this model"}</Link>
               <motion.div
                 className={styles.expansion}
                 id={panelId}

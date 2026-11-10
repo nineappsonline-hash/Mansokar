@@ -1,3 +1,6 @@
+import { siteOrigin } from "@/lib/site-url";
+import { browserAnalyticsInput } from "@/lib/analytics-input";
+import { publicProductSlug, publicProductId } from "@/lib/public-product";
 import { couponInput, inquiryUpdateInput } from "@/lib/admin-input";
 import { shippingInput } from "@/lib/shipping-input";
 import { contactInput } from "@/lib/contact-input";
@@ -76,36 +79,45 @@ export async function POST(
           { error: "Consent required" },
           { status: 403 },
         );
-      const input = z
-        .object({
-          event: z.enum([
-            "view_item",
-            "search",
-            "select_item",
-            "add_to_cart",
-            "begin_checkout",
-            "part_request",
-          ]),
-          product: z.string().max(150).optional(),
-        })
-        .strict()
-        .parse(b);
+      const input = browserAnalyticsInput.parse(b);
+      const enriched = process.env.SEO_CONTENT_TIMESTAMPS_ENABLED === "true";
+      if (
+        !enriched &&
+        ![
+          "view_item",
+          "search",
+          "select_item",
+          "add_to_cart",
+          "begin_checkout",
+          "part_request",
+        ].includes(input.event)
+      )
+        return NextResponse.json(
+          { message: "Measurement upgrade pending" },
+          { status: 202 },
+        );
+      const productReference = input.product
+        ? (publicProductId(input.product) || input.product).replace(
+            /[^a-zA-Z0-9_-]/g,
+            "",
+          )
+        : "";
       let productId = null;
       if (input.product) {
         const { data } = await db
           .from("products")
           .select("id")
           .eq("status", "published")
-          .or(
-            `id.eq.${input.product.replace(/[^a-zA-Z0-9_-]/g, "")},slug.eq.${input.product.replace(/[^a-zA-Z0-9_-]/g, "")}`,
-          )
+          .or(`id.eq.${productReference},slug.eq.${productReference}`)
           .maybeSingle();
         if (!data) throw Error("Unknown product");
         productId = data.id;
       }
-      const { error } = await db
-        .from("analytics_events")
-        .insert({ event: input.event, product_id: productId });
+      const { error } = await db.from("analytics_events").insert({
+        event: input.event,
+        product_id: productId,
+        ...(enriched ? { context: input.context ?? {} } : {}),
+      });
       if (error) throw error;
       return NextResponse.json({ message: "Recorded" });
     }
@@ -161,7 +173,9 @@ export async function POST(
               options: {
                 emailRedirectTo: new URL(
                   "/auth/confirm",
-                  process.env.NEXT_PUBLIC_SITE_URL ?? request.url,
+                  process.env.SEO_DOMAIN_MIGRATION === "true"
+                    ? siteOrigin()
+                    : (process.env.NEXT_PUBLIC_SITE_URL ?? request.url),
                 ).toString(),
               },
             });
@@ -515,7 +529,9 @@ export async function POST(
       if (updateError) throw updateError;
       try {
         const siteUrl = (
-          process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin
+          process.env.SEO_DOMAIN_MIGRATION === "true"
+            ? siteOrigin()
+            : (process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin)
         ).replace(/\/$/, "");
         const redirect = await startEasyKashPayment({
           amount: order.total / 100,
@@ -767,6 +783,11 @@ export async function POST(
               );
             if (error) throw error;
           }
+          const manualSeo = parsed.seo?.manual
+            ? parsed.seo
+            : existing?.data?.seo?.manual && parsed.seo?.manual !== false
+              ? existing.data.seo
+              : undefined;
           const auto = automaticProduct({
             name: z
               .object({
@@ -805,6 +826,10 @@ export async function POST(
                 : { warranty_months: String(months) }),
             },
           });
+          if (manualSeo) parsed.seo = manualSeo;
+          parsed.specs.public_slug = publicProductSlug(
+            existing?.data ?? parsed,
+          );
         }
         const { fitments: ignored, ...product } = productInput.parse(parsed);
         if (!product.id) {
@@ -867,6 +892,16 @@ export async function POST(
             },
             { status: 422 },
           );
+        // Freeze the current public URL before spreadsheet updates can rename an item.
+        // Preserve explicit editorial overrides while ordinary import SEO remains automatic.
+        const previousProducts = await allRows<any>("products");
+        for (const row of result.rows) {
+          const old = previousProducts.find((p) => p.sku === row.sku);
+          if (old) {
+            row.specs = { ...row.specs, public_slug: publicProductSlug(old) };
+            if (old.seo?.manual && row.seo?.manual !== false) row.seo = old.seo;
+          }
+        }
         const [{ data: makers }, { data: categories }, { data: catalogRows }] =
           await Promise.all([
             db.from("manufacturers").select("name"),

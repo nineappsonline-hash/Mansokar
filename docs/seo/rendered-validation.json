@@ -1,0 +1,188 @@
+{
+  "checkedAt": "2026-11-09T14:29:28.983Z",
+  "scope": "Local production build, real read-only catalog. No charges or writes. Unthrottled lab LCP/CLS; not field p75 or INP certification.",
+  "results": [
+    {
+      "route": "/ar",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/ar",
+      "jsonLd": 1
+    },
+    {
+      "route": "/en",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/en",
+      "jsonLd": 1
+    },
+    {
+      "route": "/en/brands/chevrolet",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/en/brands/chevrolet",
+      "jsonLd": 2
+    },
+    {
+      "route": "/en/brands/chevrolet/captiva",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/en/brands/chevrolet/captiva",
+      "jsonLd": 2
+    },
+    {
+      "route": "/en/products/rear-brake-pad-kit-gm-p-0182b757-b427-457f-b28d-e49f0190a6a7",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/en/products/rear-brake-pad-kit-gm-p-0182b757-b427-457f-b28d-e49f0190a6a7",
+      "jsonLd": 3
+    },
+    {
+      "route": "/en/guides/check-part-compatibility",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/en/guides/check-part-compatibility",
+      "jsonLd": 2
+    },
+    {
+      "route": "/ar/brands/chevrolet",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/ar/brands/chevrolet",
+      "jsonLd": 2
+    },
+    {
+      "route": "/ar/brands/chevrolet/captiva",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/ar/brands/chevrolet/captiva",
+      "jsonLd": 2
+    },
+    {
+      "route": "/ar/products/genuine-parts-p-00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/ar/products/genuine-parts-p-00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "jsonLd": 3
+    },
+    {
+      "route": "/ar/guides/check-part-compatibility",
+      "status": 200,
+      "serverRendered": true,
+      "canonical": "https://mansokar.vercel.app/ar/guides/check-part-compatibility",
+      "jsonLd": 2
+    }
+  ],
+  "performance": [
+    {
+      "route": "/ar",
+      "width": 390,
+      "vitals": {
+        "lcp": 2384,
+        "cls": 0.0012406547202911734
+      },
+      "domMs": 2308.2999999523163,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar/brands/chevrolet",
+      "width": 390,
+      "vitals": {
+        "lcp": 776,
+        "cls": 0.000890163564504132
+      },
+      "domMs": 721.6999999284744,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar/brands/chevrolet/captiva",
+      "width": 390,
+      "vitals": {
+        "lcp": 1332,
+        "cls": 0.000890163564504132
+      },
+      "domMs": 1199.1000000238419,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar/products/genuine-parts-p-00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "width": 390,
+      "vitals": {
+        "lcp": 360,
+        "cls": 0.001647886894181743
+      },
+      "domMs": 1220.2999999523163,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar/guides/check-part-compatibility",
+      "width": 390,
+      "vitals": {
+        "lcp": 1344,
+        "cls": 0.000890163564504132
+      },
+      "domMs": 1290.7999999523163,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar",
+      "width": 1440,
+      "vitals": {
+        "lcp": 1772,
+        "cls": 0.0012924116421923224
+      },
+      "domMs": 1681.3000000715256,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar/brands/chevrolet",
+      "width": 1440,
+      "vitals": {
+        "lcp": 812,
+        "cls": 0.0006746282582224151
+      },
+      "domMs": 750.6000000238419,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar/brands/chevrolet/captiva",
+      "width": 1440,
+      "vitals": {
+        "lcp": 1340,
+        "cls": 0.00015035630967881943
+      },
+      "domMs": 1109.4000000953674,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar/products/genuine-parts-p-00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "width": 1440,
+      "vitals": {
+        "lcp": 392,
+        "cls": 0.00015035630967881943
+      },
+      "domMs": 1139.2000000476837,
+      "overflow": false,
+      "failedImages": 0
+    },
+    {
+      "route": "/ar/guides/check-part-compatibility",
+      "width": 1440,
+      "vitals": {
+        "lcp": 988,
+        "cls": 0.00015035630967881943
+      },
+      "domMs": 947.8999999761581,
+      "overflow": false,
+      "failedImages": 0
+    }
+  ]
+}

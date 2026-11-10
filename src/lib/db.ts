@@ -44,7 +44,10 @@ export function service() {
   );
 }
 export const publicProductFields =
-  "id,sku,slug,name,description,manufacturer,category,family,type,price,sale,partNumber,partNumbers,synonyms,seo,policy_refs,condition,demo,orderable,status,specs,warranty,editorial";
+  "id,sku,slug,name,description,manufacturer,category,family,type,price,sale,partNumber,partNumbers,synonyms,seo,policy_refs,condition,demo,orderable,status,specs,warranty,editorial" +
+  (process.env.SEO_CONTENT_TIMESTAMPS_ENABLED === "true"
+    ? ",seo_updated_at"
+    : "");
 
 export async function allRows<T = Record<string, unknown>>(
   table: string,
@@ -128,7 +131,7 @@ export async function catalog(
     .order("created_at", { ascending: false })
     .limit(options.limit ?? 48);
   if (error) throw error;
-  return data ?? [];
+  return (data ?? []) as unknown as Product[];
 }
 export async function fitmentFlags(
   ids: string[],

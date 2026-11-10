@@ -13,7 +13,11 @@ export function prepareItemRows(
 ) {
   return rows.map((row, index) => {
     if (!row.spreadsheet) return row;
-    const old = existing.find((p) => p.sku === row.sku);
+    const old =
+      existing.find((p) => p.sku === row.sku) ||
+      (row.sku_automatic
+        ? existing.find((p) => p.sku === row.item_key)
+        : undefined);
     const grouped = new Map<string, number[]>();
     const inputs = z
       .array(
@@ -43,11 +47,12 @@ export function prepareItemRows(
       model_id,
       years,
     }));
+    const sku = old?.sku || row.sku;
     const auto = automaticProduct({
       name: row.name,
       manufacturer: row.manufacturer,
       partNumber: row.partNumber,
-      sku: row.sku,
+      sku,
       slug: old?.slug || undefined,
       months: row.specs.warranty_months
         ? Number(row.specs.warranty_months)

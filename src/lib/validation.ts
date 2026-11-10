@@ -30,6 +30,7 @@ export const productInput = z
       .optional(),
     seo: z
       .object({
+        manual: z.boolean().optional(),
         title: z
           .object({
             ar: z.string().max(200).default(""),

@@ -1,3 +1,11 @@
+import { siteCopy } from "@/lib/site-copy";
+import { ModelSearchContent } from "@/components/model-search-content";
+import {
+  canonicalPage,
+  eligibleProduct,
+  translatedProduct,
+} from "@/lib/seo-policy";
+import { siteOrigin } from "@/lib/site-url";
 import { Campaigns } from "@/components/campaigns";
 import { CarModelPage } from "@/components/car-model-page";
 import { CyanHome } from "@/components/cyan-home";
@@ -5,7 +13,11 @@ import { Favorites } from "@/components/favorites";
 import { ProductText } from "@/components/product-text";
 import { productSpecifications } from "@/lib/product-specifications";
 import { SiteMap } from "@/components/site-map";
-import { publicProduct, carContext } from "@/lib/public-product";
+import {
+  publicProduct,
+  publicProductSlug,
+  carContext,
+} from "@/lib/public-product";
 import { CatalogCarFilters } from "@/components/catalog-car-filters";
 import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
@@ -20,13 +32,14 @@ import { productSearchCopy, productStructuredData } from "@/lib/product-seo";
 import { builtInPolicy } from "@/lib/policy-content";
 import { ShippingEstimate } from "@/components/shipping-estimate";
 import { ProductCard as Card } from "@/components/product-card";
+import { Pagination } from "@/components/pagination";
 import { PurchaseButtons } from "@/components/purchase-buttons";
 import { Reveal } from "@/components/motion-primitives";
 import Image from "next/image";
 import { modelPhoto, partArt } from "@/lib/visuals";
 import Link from "next/link";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import {
   ArrowUpRight,
@@ -91,6 +104,7 @@ export async function generateMetadata({
   searchParams,
 }: Props): Promise<Metadata> {
   const { locale, path = [] } = await params;
+  if (locale !== "ar" && locale !== "en") notFound();
   const slug = path.join("/");
   const filters = await searchParams;
   const accountPage =
@@ -110,7 +124,6 @@ export async function generateMetadata({
         "min",
         "max",
         "sort",
-        "page",
         "make",
         "model",
         "year",
@@ -120,6 +133,8 @@ export async function generateMetadata({
     path[0] === "products" && path.length === 2
       ? ((await catalog({ slug: path[1] }))[0] ?? null)
       : null;
+  if (path[0] === "products" && path.length === 2 && !rawProductMeta)
+    notFound();
   let productMeta = rawProductMeta ? publicProduct(rawProductMeta) : null;
   let yearKeywords: string[] = [];
   if (rawProductMeta && filters.make && filters.model) {
@@ -167,6 +182,7 @@ export async function generateMetadata({
     productMeta && !productMeta.demo
       ? await productImages(productMeta.id).catch(() => [])
       : [];
+  let modelHasInventory = true;
   let pageMeta: {
     title?: Record<string, string>;
     description?: Record<string, string>;
@@ -208,7 +224,12 @@ export async function generateMetadata({
     const brands = coveredBrands(storedBrands);
     const brand = brands.find((b) => b.slug === path[1]);
     const model = models.find((m) => m.brand === path[1] && m.slug === path[2]);
+    if (!brand || (path[2] && !model) || path.length > 3) notFound();
     if (brand && (!path[2] || model)) {
+      if (path[2] && configured())
+        modelHasInventory =
+          (await searchCatalog({ make: brand.slug, model: path[2], size: 1 }))
+            .total > 0;
       const target = targetModel(brand.slug, path[2]);
       const nameAr =
         brand.ar +
@@ -313,6 +334,9 @@ export async function generateMetadata({
     favorites: l === "ar" ? "المفضلة" : "Favorites",
   };
   const settings = await storefrontSettings();
+  const identity = siteCopy[l];
+  const siteName = settings.storeName?.[l] || identity.name;
+  const homeTitle = `${identity.heading} | ${siteName}`;
   return {
     keywords: productMeta
       ? [
@@ -330,14 +354,13 @@ export async function generateMetadata({
           : "A guide to credit cards, spare-parts installments in Egypt, eligibility, total costs and store payment availability."
         : undefined) ??
       pageMeta?.description?.[locale] ??
-      (!slug ? settings.heroIntro?.[l] : undefined),
+      (!slug ? identity.description : undefined),
     title:
       productCopy?.title ??
       pageMeta?.title?.[locale] ??
       (slug
         ? (routeTitles[slug] ?? slug.split("/").at(-1)?.replaceAll("-", " "))
-        : (settings.storeName?.[l] ??
-          (l === "ar" ? "موبِك · لكل رحلة" : "MOPC · The road ahead"))),
+        : { absolute: homeTitle }),
     ...(productMeta && productCopy
       ? {
           openGraph: {
@@ -355,25 +378,52 @@ export async function generateMetadata({
             images: productMedia.map((m) => m.url),
           },
         }
-      : {}),
+      : !slug
+        ? {
+            openGraph: {
+              type: "website",
+              siteName,
+              title: homeTitle,
+              description: identity.description,
+              url: `/${l}`,
+              locale: l === "ar" ? "ar_EG" : "en_EG",
+              images: [{ url: "/images/mopc/logo.png", alt: "MOPC · موبِك" }],
+            },
+            twitter: {
+              card: "summary",
+              title: homeTitle,
+              description: identity.description,
+              images: ["/images/mopc/logo.png"],
+            },
+          }
+        : {}),
     alternates: {
-      canonical: productMeta
-        ? `/${locale}/products/${productMeta.slug}`
-        : slug
-          ? `/${locale}/${slug}`
-          : `/${locale}`,
-      languages: {
-        ar: productMeta
-          ? `/ar/products/${productMeta.slug}`
+      canonical: canonicalPage(
+        productMeta
+          ? `/${l}/products/${productMeta.slug}`
           : slug
-            ? `/ar/${slug}`
-            : "/ar",
-        en: productMeta
-          ? `/en/products/${productMeta.slug}`
-          : slug
-            ? `/en/${slug}`
-            : "/en",
-      },
+            ? `/${l}/${slug}`
+            : `/${l}`,
+        filters,
+      ),
+      languages: Object.fromEntries(
+        (["ar", "en"] as const)
+          .filter(
+            (lang) =>
+              !rawProductMeta || translatedProduct(rawProductMeta, lang),
+          )
+          .map((lang) => [
+            `${lang}-EG`,
+            canonicalPage(
+              productMeta
+                ? `/${lang}/products/${productMeta.slug}`
+                : slug
+                  ? `/${lang}/${slug}`
+                  : `/${lang}`,
+              filters,
+            ),
+          ]),
+      ),
     },
     robots: {
       index:
@@ -381,6 +431,8 @@ export async function generateMetadata({
         !privatePage &&
         configured() &&
         !productMeta?.demo &&
+        modelHasInventory &&
+        (!rawProductMeta || eligibleProduct(rawProductMeta, l)) &&
         (!["about", "contact", "faq", "guides", "policies"].includes(path[0]) ||
           Boolean(pageMeta)),
       follow: !accountPage,
@@ -845,31 +897,52 @@ export default async function Page({ params, searchParams }: Props) {
             <Link href={`/${locale}/request-part`}>{w.request}</Link>
           </div>
         )}
-        {(serverResults?.total ?? filtered.length) > 12 && (
-          <div className="pagination">
-            {Array.from(
-              {
-                length: Math.ceil(
-                  (serverResults?.total ?? filtered.length) / 12,
-                ),
-              },
-              (_, i) => (
-                <a
-                  key={i}
-                  aria-current={page === i + 1 ? "page" : undefined}
-                  href={`?${new URLSearchParams({ ...Object.fromEntries(Object.entries(q).filter((e): e is [string, string] => typeof e[1] === "string")), page: String(i + 1) })}`}
-                >
-                  {i + 1}
-                </a>
-              ),
-            )}
-          </div>
+        {modelListing && listingModel && listingBrand && (
+          <ModelSearchContent
+            locale={locale}
+            name={`${locale === "ar" ? listingBrand.ar : listingBrand.name} ${listingModel.name[locale]}`}
+            total={serverResults?.total ?? filtered.length}
+            years={vehicles
+              .filter(
+                (v) =>
+                  v.brand === listingBrand.slug &&
+                  v.model === listingModel.slug,
+              )
+              .map((v) => v.year)}
+          />
         )}
+        <Pagination
+          page={page}
+          total={serverResults?.total ?? filtered.length}
+          hrefFor={(target) =>
+            `?${new URLSearchParams({
+              ...Object.fromEntries(
+                Object.entries(q).filter(
+                  (entry): entry is [string, string] =>
+                    typeof entry[1] === "string",
+                ),
+              ),
+              page: String(target),
+            })}`
+          }
+          locale={locale}
+        />
       </div>
     );
   } else if (path[0] === "products" && path.length === 2) {
     const raw = primary[0];
     if (!raw) notFound();
+    const canonicalSlug = publicProductSlug(raw);
+    if (path[1] !== canonicalSlug) {
+      const query = new URLSearchParams(
+        Object.entries(q).filter(
+          (entry): entry is [string, string] => typeof entry[1] === "string",
+        ),
+      );
+      permanentRedirect(
+        `/${locale}/products/${canonicalSlug}${query.size ? "?" + query.toString() : ""}`,
+      );
+    }
     const matching =
       browsingContext && q.make && q.model && configured()
         ? await searchCatalog({
@@ -956,7 +1029,7 @@ export default async function Page({ params, searchParams }: Props) {
                 productStructuredData(
                   p,
                   locale,
-                  process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+                  siteOrigin(),
                   media.map((m) => m.url),
                 ),
               ).replace(/</g, "\\u003c"),
@@ -1013,12 +1086,14 @@ export default async function Page({ params, searchParams }: Props) {
                 <ShieldCheck size={18} aria-hidden="true" />
                 <div>
                   <strong>
-                    {locale === "ar" ? "أصلي أو بديل" : "OEM or aftermarket"}
+                    {locale === "ar"
+                      ? "Original وAfter Market"
+                      : "Original and After Market"}
                   </strong>
                   <span>
                     {locale === "ar"
-                      ? "مصدره موثّق من التاجر"
-                      : "Merchant-supplied and documented"}
+                      ? "راجع المصدر وبيانات المورد"
+                      : "Review supplier and product details"}
                   </span>
                 </div>
               </li>
@@ -1045,8 +1120,8 @@ export default async function Page({ params, searchParams }: Props) {
                   </strong>
                   <span>
                     {locale === "ar"
-                      ? "الإرجاع والضمان منشوران"
-                      : "Returns and warranty published"}
+                      ? "راجع شروط الإرجاع والضمان قبل الطلب"
+                      : "Review returns and warranty before ordering"}
                   </span>
                 </div>
               </li>
@@ -1179,7 +1254,10 @@ export default async function Page({ params, searchParams }: Props) {
                 </div>
               )}
             </div>
-            <div className={`fit-card ${confirmed ? "confirmed" : ""}`}>
+            <div
+              className={`fit-card ${confirmed ? "confirmed" : ""}`}
+              data-compatibility-result={confirmed ? "confirmed" : "unknown"}
+            >
               <span className="eyebrow">
                 <span className="status-dot" />
                 {w.fit}
@@ -1270,7 +1348,6 @@ export default async function Page({ params, searchParams }: Props) {
   else if (route === "cart")
     content = (
       <div className="shell section">
-        <h1>{w.cart}</h1>
         <Cart products={products} locale={locale} />
       </div>
     );
@@ -1891,7 +1968,7 @@ function Breadcrumb({
     { label: locale === "ar" ? "الرئيسية" : "Home", href: `/${locale}` },
     ...items,
   ];
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const base = siteOrigin();
   return (
     <>
       <nav

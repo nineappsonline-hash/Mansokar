@@ -34,16 +34,61 @@ export function JsonEditor({
     </div>
   );
 }
-export function Importer() {
+export function Importer({
+  carBrands = [],
+  carModels = [],
+  itemBrands = [],
+  years = [],
+}: {
+  carBrands?: { slug: string; name: string }[];
+  carModels?: {
+    slug: string;
+    brand: string;
+    name: { ar: string; en: string };
+  }[];
+  itemBrands?: string[];
+  years?: number[];
+}) {
   const [json, setJson] = useState("[]");
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [validated, setValidated] = useState(false);
+  const [filters, setFilters] = useState({
+    make: "",
+    model: "",
+    year: "",
+    photo: "",
+    status: "",
+    brand: "",
+  });
   const update = (v: string) => {
     setJson(v);
     setValidated(false);
   };
+  const setFilter = (key: keyof typeof filters, value: string) =>
+    setFilters((previous) => {
+      const next = { ...previous, [key]: value };
+      if (
+        key === "make" &&
+        value &&
+        !carModels.some(
+          (model) => model.brand === value && model.slug === previous.model,
+        )
+      )
+        next.model = "";
+      return next;
+    });
+  const exportParams = new URLSearchParams({ format: "xlsx" });
+  for (const [key, value] of Object.entries(filters))
+    if (value) exportParams.set(key, value);
+  const csvParams = new URLSearchParams(exportParams);
+  csvParams.delete("format");
+  const modelOptions = carModels
+    .filter((model) => !filters.make || model.brand === filters.make)
+    .sort((a, b) => a.name.en.localeCompare(b.name.en));
+  const brandName = (slug: string) =>
+    carBrands.find((brand) => brand.slug === slug)?.name || slug;
   async function submit(commit: boolean) {
     setBusy(true);
     setMessage(
@@ -115,12 +160,134 @@ export function Importer() {
       >
         Download Excel import template ↗
       </a>
-      <a className="text-link" href="/api/admin-export?format=xlsx">
-        Export XLSX ↗
-      </a>
-      <a className="text-link" href="/api/admin-export">
-        Legacy CSV export ↗
-      </a>
+      <fieldset
+        className="stack"
+        style={{
+          border: "1px solid var(--border)",
+          borderRadius: 6,
+          gap: 12,
+          padding: 16,
+        }}
+      >
+        <legend>Export filters</legend>
+        <div
+          style={{
+            display: "grid",
+            gap: 12,
+            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+          }}
+        >
+          <label>
+            Car make
+            <select
+              value={filters.make}
+              onChange={(e) => setFilter("make", e.target.value)}
+            >
+              <option value="">All makes</option>
+              {carBrands.map((brand) => (
+                <option key={brand.slug} value={brand.slug}>
+                  {brand.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Car model
+            <select
+              value={filters.model}
+              onChange={(e) => setFilter("model", e.target.value)}
+            >
+              <option value="">All models</option>
+              {modelOptions.map((model) => (
+                <option key={`${model.brand}-${model.slug}`} value={model.slug}>
+                  {filters.make
+                    ? model.name.en
+                    : `${brandName(model.brand)} ${model.name.en}`}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Year
+            <select
+              value={filters.year}
+              onChange={(e) => setFilter("year", e.target.value)}
+            >
+              <option value="">All years</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Photos
+            <select
+              value={filters.photo}
+              onChange={(e) => setFilter("photo", e.target.value)}
+            >
+              <option value="">All products</option>
+              <option value="yes">With photos</option>
+              <option value="no">Without photos</option>
+            </select>
+          </label>
+          <label>
+            Status
+            <select
+              value={filters.status}
+              onChange={(e) => setFilter("status", e.target.value)}
+            >
+              <option value="">All statuses</option>
+              <option value="published">Active (published)</option>
+              <option value="draft">Draft</option>
+            </select>
+          </label>
+          <label>
+            Item brand
+            <select
+              value={filters.brand}
+              onChange={(e) => setFilter("brand", e.target.value)}
+            >
+              <option value="">All brands</option>
+              {itemBrands.map((brand) => (
+                <option key={brand} value={brand}>
+                  {brand}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <p className="muted" style={{ margin: 0 }}>
+          Filters choose which products are exported. Every matching product
+          keeps all of its car applications, so importing the file back does not
+          remove fitments or create duplicate products.
+        </p>
+        <div className="admin-nav" style={{ margin: 0 }}>
+          <a className="button" href={`/api/admin-export?${exportParams}`}>
+            Export filtered XLSX ↗
+          </a>
+          <a className="text-link" href={`/api/admin-export?${csvParams}`}>
+            Legacy CSV export ↗
+          </a>
+          <button
+            className="button secondary"
+            type="button"
+            onClick={() =>
+              setFilters({
+                make: "",
+                model: "",
+                year: "",
+                photo: "",
+                status: "",
+                brand: "",
+              })
+            }
+          >
+            Clear filters
+          </button>
+        </div>
+      </fieldset>
       <label>
         CSV / XLSX (max 1 MB)
         <input
@@ -400,12 +567,72 @@ export function ProductEditor({
           </p>
         </fieldset>
         <fieldset className="stack">
-          <legend>SEO and search terms</legend>
+          <legend>Verified listing data · optional</legend>
+          <p className="muted">
+            Use confirmed inventory data only. Unknown stock is excluded from
+            merchant feeds; this does not change checkout orderability.
+          </p>
+          <label>
+            Stock status
+            <select
+              value={value.specs?.stock_status ?? ""}
+              onChange={(e) =>
+                setValue({
+                  ...value,
+                  specs: { ...value.specs, stock_status: e.target.value },
+                })
+              }
+            >
+              <option value="">Unknown / not verified</option>
+              <option value="in_stock">In stock</option>
+              <option value="out_of_stock">Out of stock</option>
+              <option value="preorder">Preorder</option>
+              <option value="backorder">Backorder</option>
+            </select>
+          </label>
+          <label>
+            Product condition
+            <select
+              value={value.specs?.product_condition ?? value.condition ?? ""}
+              onChange={(e) =>
+                setValue({
+                  ...value,
+                  specs: { ...value.specs, product_condition: e.target.value },
+                })
+              }
+            >
+              <option value="">Unknown</option>
+              <option value="new">New</option>
+              <option value="used">Used</option>
+              <option value="refurbished">Refurbished</option>
+            </select>
+          </label>
+        </fieldset>
+        <fieldset className="stack">
+          <legend>SEO and search terms · optional</legend>
+          <p className="muted">
+            Titles and descriptions are generated automatically. Enable an
+            override only when you need custom editorial copy.
+          </p>
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={value.seo?.manual === true}
+              onChange={(e) =>
+                setValue({
+                  ...value,
+                  seo: { ...value.seo, manual: e.target.checked },
+                })
+              }
+            />{" "}
+            Use custom search titles and descriptions
+          </label>
           {(["ar", "en"] as const).flatMap((lang) => [
             <label key={`title-${lang}`}>
               Search title · {lang}
               <input
                 maxLength={200}
+                disabled={!value.seo?.manual}
                 dir={lang === "ar" ? "rtl" : "ltr"}
                 value={value.seo?.title?.[lang] ?? ""}
                 onChange={(e) =>
@@ -428,6 +655,7 @@ export function ProductEditor({
               Search description · {lang}
               <textarea
                 maxLength={500}
+                disabled={!value.seo?.manual}
                 dir={lang === "ar" ? "rtl" : "ltr"}
                 value={value.seo?.description?.[lang] ?? ""}
                 onChange={(e) =>

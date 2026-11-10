@@ -1,9 +1,13 @@
 "use client";
+import commerce from "./commerce.module.css";
 import { addCartItem } from "@/lib/cart";
 import { partArt } from "@/lib/visuals";
 import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
+  ShieldCheck,
+  Truck,
+  ArrowRight,
   ShoppingBag,
   ArrowUpRight,
   Check,
@@ -318,109 +322,185 @@ export function Cart({
     return sum + (p ? (p.sale ?? p.price) * line.qty : 0);
   }, 0);
   return (
-    <div className="two-col">
-      <div className="stack">
-        {lines.length === 0 ? (
-          <p>{t(locale).empty}</p>
-        ) : (
-          lines.map((line) => {
-            const p = products.find((p) => p.id === line.id);
-            return (
-              <article className="cart-row panel" key={line.id}>
-                <div className="cart-row-image">
-                  {p ? (
-                    <img
-                      src={(p as any).imageUrl ?? partArt(p.category)}
-                      alt={p.name[locale]}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div className="cart-image-placeholder">
-                      <Package size={40} aria-hidden="true" />
-                    </div>
-                  )}
-                </div>
-                <div className="cart-row-info">
-                  <a href={p ? `/${locale}/products/${p.slug}` : undefined}>
-                    {p?.name[locale] ??
-                      (loading
-                        ? locale === "ar"
-                          ? "جار تحميل المنتج…"
-                          : "Loading product…"
-                        : locale === "ar"
-                          ? "المنتج غير متاح — يرجى حذفه"
-                          : "Product unavailable — please remove it")}
-                  </a>
-                  {line.make && (
-                    <span className="cart-vehicle">
-                      {line.make} {line.model} {line.year}
-                    </span>
-                  )}
-                  <p className="muted">
-                    {p && money(p.sale ?? p.price, locale)}
-                  </p>
-                </div>
-                <label>
-                  {t(locale).quantity}
-                  <input
-                    type="number"
-                    min="1"
-                    max="99"
-                    value={line.qty}
-                    onChange={(e) =>
-                      update(
-                        lines.map((x) =>
-                          x.id === line.id
-                            ? {
-                                ...x,
-                                qty: Math.max(
-                                  1,
-                                  Math.min(99, Number(e.target.value) || 1),
-                                ),
-                              }
-                            : x,
-                        ),
-                      )
-                    }
-                  />
-                </label>
-                <button
-                  aria-label={locale === "ar" ? "حذف القطعة" : "Remove item"}
-                  onClick={() => update(lines.filter((x) => x.id !== line.id))}
-                >
-                  <X size={18} />
-                </button>
-              </article>
-            );
-          })
-        )}
-      </div>
-      <aside className="panel stack">
-        <h2>{t(locale).subtotal}</h2>
-        {loadError && (
-          <p role="alert">
-            {locale === "ar"
-              ? "تعذر تحميل السلة. أعد تحميل الصفحة."
-              : "Could not load the cart. Please reload the page."}
-          </p>
-        )}
-        <p className="price">{money(total, locale)}</p>
-        <p className="muted">
+    <div className={`${commerce.commerce} ${commerce.cart}`}>
+      <header className={commerce.header}>
+        <span className={commerce.eyebrow}>
           {locale === "ar"
-            ? "يتم حساب التوصيل والخصم على الخادم عند الطلب."
-            : "Delivery and discounts are calculated on the server at checkout."}
+            ? "اختياراتك، في مكان واحد"
+            : "YOUR NEXT JOURNEY STARTS HERE"}
+        </span>
+        <h1>{locale === "ar" ? "سلة التسوق" : "Your shopping bag"}</h1>
+        <p>
+          {locale === "ar"
+            ? "راجع القطع التي اخترتها واستعد للطريق."
+            : "A few great choices. Review your parts and get ready for the road."}
         </p>
-        {!loading &&
-          !loadError &&
-          lines.length > 0 &&
-          lines.every((line) =>
-            products.some((p) => p.id === line.id && p.orderable),
-          ) && (
-            <a className="button" href={`/${locale}/checkout`}>
-              {t(locale).checkout} ↗
-            </a>
+        <a href={`/${locale}/catalog`}>
+          {locale === "ar" ? "متابعة التسوق" : "Continue shopping"}{" "}
+          <ArrowRight size={16} />
+        </a>
+      </header>
+      <div className={commerce.cartLayout}>
+        <div className={commerce.items}>
+          <div className={commerce.itemsHeading}>
+            <h2>{locale === "ar" ? "القطع المختارة" : "Selected parts"}</h2>
+            <span>
+              {lines.reduce((sum, line) => sum + line.qty, 0)}{" "}
+              {locale === "ar" ? "قطعة" : "items"}
+            </span>
+          </div>
+          {lines.length === 0 ? (
+            <div className={commerce.empty}>
+              <ShoppingBag size={44} strokeWidth={1.2} />
+              <h2>
+                {locale === "ar"
+                  ? "سلتك بانتظار اختياراتك"
+                  : "Your bag is waiting"}
+              </h2>
+              <p>
+                {locale === "ar"
+                  ? "اكتشف القطع المناسبة لسيارتك وأضفها إلى السلة."
+                  : "Find the right parts for your car and add them to your bag."}
+              </p>
+              <a className="button" href={`/${locale}/catalog`}>
+                {locale === "ar" ? "تصفح القطع" : "Explore the collection"}
+                <ArrowRight size={16} />
+              </a>
+            </div>
+          ) : (
+            lines.map((line) => {
+              const p = products.find((p) => p.id === line.id);
+              return (
+                <article className="cart-row panel" key={line.id}>
+                  <div className="cart-row-image">
+                    {p ? (
+                      <img
+                        src={(p as any).imageUrl ?? partArt(p.category)}
+                        alt={p.name[locale]}
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="cart-image-placeholder">
+                        <Package size={40} aria-hidden="true" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="cart-row-info">
+                    <a href={p ? `/${locale}/products/${p.slug}` : undefined}>
+                      {p?.name[locale] ??
+                        (loading
+                          ? locale === "ar"
+                            ? "جار تحميل المنتج…"
+                            : "Loading product…"
+                          : locale === "ar"
+                            ? "المنتج غير متاح — يرجى حذفه"
+                            : "Product unavailable — please remove it")}
+                    </a>
+                    {line.make && (
+                      <span className="cart-vehicle">
+                        {line.make} {line.model} {line.year}
+                      </span>
+                    )}
+                    <p className="muted">
+                      {p && money(p.sale ?? p.price, locale)}
+                    </p>
+                  </div>
+                  <label>
+                    {t(locale).quantity}
+                    <input
+                      type="number"
+                      min="1"
+                      max="99"
+                      value={line.qty}
+                      onChange={(e) =>
+                        update(
+                          lines.map((x) =>
+                            x.id === line.id
+                              ? {
+                                  ...x,
+                                  qty: Math.max(
+                                    1,
+                                    Math.min(99, Number(e.target.value) || 1),
+                                  ),
+                                }
+                              : x,
+                          ),
+                        )
+                      }
+                    />
+                  </label>
+                  <button
+                    aria-label={locale === "ar" ? "حذف القطعة" : "Remove item"}
+                    onClick={() =>
+                      update(lines.filter((x) => x.id !== line.id))
+                    }
+                  >
+                    <X size={18} />
+                  </button>
+                </article>
+              );
+            })
           )}
-      </aside>
+        </div>
+        <aside className={commerce.summary}>
+          <span className={commerce.eyebrow}>
+            {locale === "ar" ? "كل التفاصيل" : "THE DETAILS"}
+          </span>
+          <h2>{locale === "ar" ? "ملخص السلة" : "Bag summary"}</h2>
+          <div className={commerce.summaryLine}>
+            <span>{t(locale).subtotal}</span>
+            <strong>{money(total, locale)}</strong>
+          </div>
+          <div className={commerce.summaryLine}>
+            <span>{locale === "ar" ? "التوصيل" : "Delivery"}</span>
+            <span>{locale === "ar" ? "يُحسب عند الدفع" : "At checkout"}</span>
+          </div>
+          {loadError && (
+            <p role="alert">
+              {locale === "ar"
+                ? "تعذر تحميل السلة. أعد تحميل الصفحة."
+                : "Could not load the cart. Please reload the page."}
+            </p>
+          )}
+          <div className={commerce.total}>
+            <span>
+              {locale === "ar" ? "الإجمالي التقديري" : "Estimated total"}
+            </span>
+            <strong>{money(total, locale)}</strong>
+          </div>
+          <p className="muted">
+            {locale === "ar"
+              ? "تتم إضافة رسوم التوصيل وتطبيق الخصم عند مراجعة الطلب."
+              : "Delivery and any discounts are confirmed when you review your order."}
+          </p>
+          {!loading &&
+            !loadError &&
+            lines.length > 0 &&
+            lines.every((line) =>
+              products.some((p) => p.id === line.id && p.orderable),
+            ) && (
+              <a className="button" href={`/${locale}/checkout`}>
+                {t(locale).checkout} <ArrowRight size={17} />
+              </a>
+            )}
+          <div className={commerce.reassurance}>
+            <ShieldCheck size={18} />
+            <span>
+              {locale === "ar"
+                ? "مراجعة الطلب قبل التأكيد"
+                : "Review your order before confirming"}
+            </span>
+          </div>
+          <div className={commerce.reassurance}>
+            <Truck size={18} />
+            <span>
+              {locale === "ar"
+                ? "اختر منطقة التوصيل عند الدفع"
+                : "Choose your delivery area at checkout"}
+            </span>
+          </div>
+        </aside>
+      </div>
     </div>
   );
 }

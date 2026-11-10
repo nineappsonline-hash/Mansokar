@@ -1,3 +1,4 @@
+import { siteOrigin } from "@/lib/site-url";
 import Image from "next/image";
 import Link from "next/link";
 import { CarFront } from "lucide-react";
@@ -57,7 +58,7 @@ export function CarModelPage({
               name: c.name,
               item: new URL(
                 c.path,
-                process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+                siteOrigin(),
               ).href,
             })),
           }).replace(/</g, "\\u003c"),

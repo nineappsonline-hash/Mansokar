@@ -80,10 +80,10 @@
 .en {
   display: none;
 }
-:global(html[lang="en"]) .ar {
+:global(html[lang|="en"]) .ar {
   display: none;
 }
-:global(html[lang="en"]) .en {
+:global(html[lang|="en"]) .en {
   display: block;
 }
 @keyframes travel {

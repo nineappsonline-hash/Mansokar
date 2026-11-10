@@ -1,4 +1,8 @@
+import { siteCopy } from "@/lib/site-copy";
+import { siteOrigin } from "@/lib/site-url";
 import { siteIdentity } from "@/lib/site-identity";
+import { notFound } from "next/navigation";
+import { catalog, vehicleCatalog } from "@/lib/db";
 import { storefrontSettings } from "@/lib/db";
 import "./globals.css";
 import { headers } from "next/headers";
@@ -9,25 +13,30 @@ export async function generateMetadata(): Promise<Metadata> {
   const settings = await storefrontSettings();
   const name =
     settings.storeName?.[locale] ?? (locale === "ar" ? "موبِك" : "MOPC");
+  const copy = siteCopy[locale];
+  const title = `${copy.heading} | ${name}`;
   return {
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-    ),
+    metadataBase: new URL(siteOrigin()),
+    applicationName: name,
+    title: { default: title, template: `%s | ${name}` },
+    description: copy.description,
     openGraph: {
+      type: "website",
       siteName: name,
+      title,
+      description: copy.description,
+      locale: locale === "ar" ? "ar_EG" : "en_EG",
       images: [{ url: "/images/mopc/logo.png", alt: "MOPC · موبِك" }],
     },
-    title: {
-      default:
-        settings.storeName?.[locale] ?? (locale === "ar" ? "موبِك" : "MOPC"),
-      template: `%s | ${name}`,
+    twitter: {
+      card: "summary",
+      title,
+      description: copy.description,
+      images: ["/images/mopc/logo.png"],
     },
     ...(process.env.GOOGLE_SITE_VERIFICATION
       ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } }
       : {}),
-    description:
-      settings.heroIntro?.[locale] ??
-      "Automotive parts for Opel, Peugeot, Citroën and MG. Fictional demonstration catalog.",
   };
 }
 export default async function RootLayout({
@@ -37,10 +46,29 @@ export default async function RootLayout({
 }) {
   const locale =
     (await headers()).get("x-mansokar-locale") === "en" ? "en" : "ar";
+  // Validate resources above the root loading boundary so missing URLs retain HTTP 404.
+  const pathname = (await headers()).get("x-mopc-pathname") || "";
+  const segments = pathname.split("/").filter(Boolean);
+  if (["ar", "en"].includes(segments[0]) && segments[1] === "brands") {
+    const { brands, models } = await vehicleCatalog();
+    if (
+      !brands.some((b) => b.slug === segments[2]) ||
+      segments.length > 4 ||
+      (segments[3] &&
+        !models.some((m) => m.brand === segments[2] && m.slug === segments[3]))
+    )
+      notFound();
+  }
+  if (
+    ["ar", "en"].includes(segments[0]) &&
+    segments[1] === "products" &&
+    (segments.length !== 3 || !(await catalog({ slug: segments[2] })).length)
+  )
+    notFound();
   const settings = await storefrontSettings();
   return (
     <html
-      lang={locale}
+      lang={locale === "ar" ? "ar-EG" : "en-EG"}
       dir={locale === "ar" ? "rtl" : "ltr"}
       data-scroll-behavior="smooth"
     >
@@ -50,9 +78,9 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(
               siteIdentity(
-                process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-                settings.storeName?.[locale] ||
-                  (locale === "ar" ? "موبِك" : "MOPC"),
+                siteOrigin(),
+                settings.storeName?.[locale] || siteCopy[locale].name,
+                locale,
               ),
             ).replace(/</g, "\\u003c"),
           }}

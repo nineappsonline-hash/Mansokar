@@ -1,7 +1,15 @@
+import {
+  migrationRedirect,
+  siteOrigin,
+  indexingApproved,
+} from "@/lib/site-url";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 export async function proxy(request: NextRequest) {
+  const redirect = migrationRedirect(request.nextUrl);
+  if (redirect) return NextResponse.redirect(redirect, 308);
   const headers = new Headers(request.headers);
+  headers.set("x-mopc-pathname", request.nextUrl.pathname);
   headers.set(
     "x-mansokar-locale",
     request.nextUrl.pathname.startsWith("/en") ||
@@ -10,6 +18,14 @@ export async function proxy(request: NextRequest) {
       : "ar",
   );
   let response = NextResponse.next({ request: { headers } });
+  const protectPreview = () => {
+    if (
+      !indexingApproved() ||
+      request.nextUrl.hostname !== new URL(siteOrigin()).hostname
+    )
+      response.headers.set("X-Robots-Tag", "noindex, follow");
+  };
+  protectPreview();
   const authPath =
     /^\/(admin|api|ar\/(account|garage)|en\/(account|garage))/.test(
       request.nextUrl.pathname,
@@ -40,9 +56,10 @@ export async function proxy(request: NextRequest) {
     },
   );
   await supabase.auth.getUser();
+  protectPreview();
   response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
 export const config = {
-  matcher: ["/ar/:path*", "/en/:path*", "/admin/:path*", "/api/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };

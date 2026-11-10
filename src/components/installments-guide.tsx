@@ -31,8 +31,8 @@ export function InstallmentsGuide({ locale }: { locale: Locale }) {
         </h2>
         <p>
           {ar
-            ? "يمكنك الدفع بالبطاقة البنكية أو بالتقسيط عبر ڤاليو وكونتكت وسهولة وكليڤر وأمان عند إتمام الطلب، حسب توافر الخطة والموافقة. طرق الدفع المتاحة فعليًا تظهر دائمًا في صفحة إتمام الطلب."
-            : "You can pay by bank card or in installments with Valu, Contact, Souhoola, Klivvr and Aman at checkout, subject to plan availability and approval. Available payment methods always appear at checkout."}
+            ? "راجع طرق الدفع المفعلة الظاهرة عند إتمام الطلب. هذا الدليل يشرح البطاقات وشركات التقسيط، مثل ڤاليو وكونتكت وسهولة وكليڤر وأمان؛ ذكر الشركة لا يؤكد قبولها لهذا الطلب. تحقق من الأهلية والتكلفة والخطة مع مقدم الخدمة."
+            : "Check the enabled payment methods shown at checkout. This guide explains cards and finance providers such as Valu, Contact, Souhoola, Klivvr and Aman; naming a provider does not confirm acceptance for this order. Verify eligibility, costs and the plan with the provider."}
         </p>
       </section>
       <section className="stack">

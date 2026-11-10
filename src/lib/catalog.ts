@@ -31,9 +31,10 @@ export type Product = {
   partNumber: string;
   partNumbers?: string[];
   synonyms?: { ar: string[]; en: string[] };
-  seo?: { title?: Text; description?: Text };
+  seo?: { title?: Text; description?: Text; manual?: boolean };
   policy_refs?: string[];
   condition?: "new";
+  seo_updated_at?:string|null;
   demo: boolean;
   orderable: boolean;
   status: string;
@@ -167,15 +168,15 @@ export function fitmentLabel(
   locale: Locale,
 ) {
   if (!vehicle) {
-    if (locale === "ar") return ""; 
-    return ""; 
+    if (locale === "ar") return "";
+    return "";
   }
   if (confirmed) {
-    if (locale === "ar") return `متوافق مع ${vehicle.name.ar}`; 
-    return `Compatible with your ${vehicle.name.en}`; 
+    if (locale === "ar") return `متوافق مع ${vehicle.name.ar}`;
+    return `Compatible with your ${vehicle.name.en}`;
   }
-  if (locale === "ar") return `لم يتم تأكيد التوافق مع ${vehicle.name.ar}`; 
-  return `Compatibility not confirmed for ${vehicle.name.en}`; 
+  if (locale === "ar") return `لم يتم تأكيد التوافق مع ${vehicle.name.ar}`;
+  return `Compatibility not confirmed for ${vehicle.name.en}`;
 }
 export function priceCart(
   items: { product: Product; qty: number }[],

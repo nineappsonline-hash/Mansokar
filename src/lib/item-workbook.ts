@@ -481,6 +481,7 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
         ...extra,
         ...common,
         sku,
+        sku_automatic: !v.sku,
         item_key: v.item_key || sku,
         slug: extra.slug || "",
         family: extra.family || sku,

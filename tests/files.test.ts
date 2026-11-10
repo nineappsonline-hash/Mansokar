@@ -10,6 +10,10 @@ import {
 import { demoProducts } from "../src/lib/catalog";
 import { validateImport } from "../src/lib/importer";
 import { exportItemWorkbook, itemColumns } from "../src/lib/item-workbook";
+import {
+  matchesProductExportFilter,
+  parseProductExportFilter,
+} from "../src/lib/export-filter";
 import { planImportVehicles } from "../src/lib/import-vehicles";
 import { prepareItemRows } from "../src/lib/prepare-item-import";
 
@@ -589,4 +593,117 @@ test("modern Excel photos accept uploaded image references, JSON arrays and mult
     (await parse()).images?.map((image: { path: string }) => image.path),
     ["https://images.example.com/a.webp", "https://images.example.com/b.webp"],
   );
+});
+
+test("product export filters match make, model, year, photos, status and item brand", () => {
+  const models = [
+    { id: "opel-astra", brand: "opel", slug: "astra" },
+    { id: "chevrolet-cruze", brand: "chevrolet", slug: "cruze" },
+  ];
+  const vehicles = [
+    {
+      id: "chevrolet-cruze-2022-0",
+      brand: "chevrolet",
+      model: "cruze",
+      year: 2022,
+      engine: "1.6",
+      name: { ar: "كروز", en: "Cruze" },
+    },
+  ];
+  const product = {
+    ...demoProducts[0],
+    manufacturer: "Bosch",
+    status: "published",
+    specs: { "car_years:opel-astra": "2020,2021" },
+  };
+  const matches = (
+    query: string,
+    context: { fitmentIds?: string[]; imageCount?: number } = {},
+  ) =>
+    matchesProductExportFilter(
+      product,
+      { imageCount: 2, ...context },
+      { vehicles, models },
+      parseProductExportFilter(new URLSearchParams(query)),
+    );
+  assert.equal(matches("make=opel"), true);
+  assert.equal(matches("make=chevrolet"), false);
+  assert.equal(matches("model=astra"), true);
+  assert.equal(matches("model=cruze"), false);
+  assert.equal(matches("year=2021"), true);
+  assert.equal(matches("year=2022"), false);
+  assert.equal(
+    matches("year=2022", { fitmentIds: ["chevrolet-cruze-2022-0"] }),
+    true,
+  );
+  assert.equal(matches("photo=yes"), true);
+  assert.equal(matches("photo=no"), false);
+  assert.equal(matches("photo=no", { imageCount: 0 }), true);
+  assert.equal(matches("status=published"), true);
+  assert.equal(matches("status=draft"), false);
+  assert.equal(matches("brand=bosch"), true);
+  assert.equal(matches("brand=brembo"), false);
+  assert.equal(
+    matchesProductExportFilter(
+      { ...product, specs: {} },
+      { fitmentIds: ["chevrolet-cruze-2022-0"], imageCount: 0 },
+      { vehicles, models },
+      parseProductExportFilter(new URLSearchParams("make=chevrolet&year=2022")),
+    ),
+    true,
+  );
+  assert.equal(
+    parseProductExportFilter(new URLSearchParams("year=1800")).year,
+    undefined,
+  );
+});
+
+test("cleared SKU keeps the exported item_key identity instead of duplicating", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const models = [
+    {
+      id: "opel-astra",
+      brand: "opel",
+      slug: "astra",
+      name: { ar: "أسترا", en: "Astra" },
+    },
+  ];
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await exportItemWorkbook([], [], models));
+  const sheet = workbook.worksheets[0];
+  sheet.addRow(
+    (
+      workbook.getWorksheet("Examples — copy to Products")!.getRow(2)
+        .values as unknown[]
+    ).slice(1),
+  );
+  const set = (field: string, value: string | number) => {
+    sheet.getRow(2).getCell(itemColumns.indexOf(field as any) + 1).value =
+      value;
+  };
+  set("car_make", "opel");
+  set("car_model", "astra");
+  set("start_year", 2020);
+  set("end_year", 2021);
+  const source = new Uint8Array(await workbook.xlsx.writeBuffer());
+  const prepared = prepareItemRows(
+    await parseSpreadsheet(source.buffer as ArrayBuffer, "items.xlsx"),
+    models,
+    [],
+  )[0];
+  prepared.id = "product-1";
+  const exported = new ExcelJS.Workbook();
+  await exported.xlsx.load(await exportItemWorkbook([prepared], [], models));
+  const products = exported.worksheets[0];
+  for (let n = 2; n <= products.rowCount; n++)
+    products.getRow(n).getCell(itemColumns.indexOf("sku") + 1).value = null;
+  const cleared = new Uint8Array(await exported.xlsx.writeBuffer());
+  const parsed = await parseSpreadsheet(
+    cleared.buffer as ArrayBuffer,
+    "items.xlsx",
+  );
+  assert.equal(parsed[0].sku_automatic, true);
+  const roundtrip = prepareItemRows(parsed, models, [prepared])[0];
+  assert.equal(roundtrip.sku, prepared.sku);
+  assert.equal(roundtrip.id, "product-1");
 });

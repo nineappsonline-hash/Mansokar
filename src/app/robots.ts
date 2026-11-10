@@ -1,33 +1,21 @@
 import type { MetadataRoute } from "next";
+import { siteOrigin } from "@/lib/site-url";
 export default function robots(): MetadataRoute.Robots {
-  const base = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
   return {
-    rules: {
-      userAgent: "*",
-      allow: process.env.NEXT_PUBLIC_SUPABASE_URL ? "/" : undefined,
-      disallow: process.env.NEXT_PUBLIC_SUPABASE_URL
-        ? [
-            "/admin",
-            "/api/",
-            "/ar/cart",
-            "/en/cart",
-            "/ar/checkout",
-            "/en/checkout",
-            "/ar/account",
-            "/en/account",
-            "/ar/garage",
-            "/en/garage",
-            "/ar/order/",
-            "/en/order/",
-            "/ar/compare",
-            "/en/compare",
-            "/ar/favorites",
-            "/en/favorites",
-            "/ar/track-order",
-            "/en/track-order",
-          ]
-        : "/",
-    },
-    sitemap: `${base}/sitemap.xml`,
+    rules: [
+      {
+        userAgent: "*",
+        allow: process.env.NEXT_PUBLIC_SUPABASE_URL
+          ? ["/", "/api/merchant-feed"]
+          : undefined,
+        disallow: process.env.NEXT_PUBLIC_SUPABASE_URL
+          ? ["/admin", "/api/", "/auth/"]
+          : "/",
+      },
+      ...(process.env.SEO_ALLOW_TRAINING_CRAWLERS === "true"
+        ? []
+        : [{ userAgent: ["GPTBot", "Google-Extended"], disallow: "/" }]),
+    ],
+    sitemap: siteOrigin() + "/sitemap.xml",
   };
 }

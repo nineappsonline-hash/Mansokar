@@ -1,7 +1,11 @@
 import { requireAdmin, allRows, vehicleCatalog } from "@/lib/db";
-import { exportCsv, exportXlsx } from "@/lib/spreadsheets";
+import { exportCsv } from "@/lib/spreadsheets";
 import { exportItemWorkbook } from "@/lib/item-workbook";
 import { enforceRate } from "@/lib/rate-limit";
+import {
+  matchesProductExportFilter,
+  parseProductExportFilter,
+} from "@/lib/export-filter";
 import type { Product } from "@/lib/catalog";
 export async function GET(request: Request) {
   try {
@@ -20,23 +24,41 @@ export async function GET(request: Request) {
         ...(byProduct.get(f.product_id) ?? []),
         f.vehicle_config_id,
       ]);
+    const imageCounts = new Map<string, number>();
+    for (const image of images)
+      imageCounts.set(
+        image.product_id,
+        (imageCounts.get(image.product_id) ?? 0) + 1,
+      );
     const { vehicles, models } = await vehicleCatalog();
-    const template =
-      new URL(request.url).searchParams.get("template") === "true";
-    const rows = products.flatMap((p) => {
+    const params = new URL(request.url).searchParams;
+    const filter = parseProductExportFilter(params);
+    const filtered = products.filter((product) =>
+      matchesProductExportFilter(
+        product,
+        {
+          fitmentIds: byProduct.get(product.id),
+          imageCount: imageCounts.get(product.id),
+        },
+        { vehicles, models },
+        filter,
+      ),
+    );
+    const template = params.get("template") === "true";
+    const rows = filtered.flatMap((p) => {
       const ids = byProduct.get(p.id);
       return ids?.length
         ? ids.map((id) => ({ ...p, vehicle_config_id: id }))
         : [p];
     });
-    const xlsx = new URL(request.url).searchParams.get("format") === "xlsx";
+    const xlsx = params.get("format") === "xlsx";
     return new Response(
       xlsx
         ? new Uint8Array(
             await exportItemWorkbook(
               template
                 ? []
-                : products.map((p) => ({
+                : filtered.map((p) => ({
                     ...p,
                     fitments: byProduct.get(p.id) || [],
                     images: images

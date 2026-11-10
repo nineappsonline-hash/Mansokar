@@ -72,7 +72,7 @@ export async function CyanHome({
   const benefits = [
     {
       icon: ShieldCheck,
-      text: ar ? "قطع أصلية وماركات موثوقة" : "Original parts & trusted brands",
+      text: ar ? "قطع غيار أصلية بضمان" : "Genuine parts with warranty",
     },
     {
       icon: CarFront,
@@ -117,18 +117,20 @@ export async function CyanHome({
                   <>
                     <span>
                       {ar
-                        ? "قطع غيار عربيتك…"
-                        : "The right parts for your car…"}
+                        ? "قطع غيار أصلية لعربيتك…"
+                        : "Genuine parts for your car…"}
                     </span>
-                    <em>{ar ? "من غير تدوير." : "Without the runaround."}</em>
+                    <em>
+                      {ar ? "بضمان وراحة بال." : "Warranty. Peace of mind."}
+                    </em>
                   </>
                 )}
               </h1>
               <p>
                 {heroIntro ??
                   (ar
-                    ? "اختار عربيتك، واعرف قطع الغيار المناسبة ليها، وقارن الأسعار واطلب بكل سهولة."
-                    : "Choose your car, find the parts that fit, compare prices and order with confidence.")}
+                    ? "اختار عربيتك واعرف قطع الغيار الأصلية المناسبة ليها، بضمان الوكيل أو المورد حسب المنتج. راجع التوافق والأسعار واطلب بثقة."
+                    : "Find genuine parts for your car, backed by agent or supplier warranties according to the product. Check fitment, compare prices and order with confidence.")}
               </p>
             </div>
             <HomeVehicleFinder

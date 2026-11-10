@@ -1,3 +1,8 @@
+import {
+  merchantPriceReady,
+  verifiedAvailability,
+  verifiedCondition,
+} from "./seo-policy";
 import { countryOfOrigin } from "./product-specifications";
 import { money, type Locale, type Product } from "./catalog";
 
@@ -31,7 +36,7 @@ export function productStructuredData(
     name: p.name[locale],
     description: p.description[locale],
     sku: p.sku,
-    mpn: p.partNumber,
+    ...(p.partNumber?.trim() ? { mpn: p.partNumber } : {}),
     brand: { "@type": "Brand", name: p.manufacturer },
     manufacturer: { "@type": "Organization", name: p.manufacturer },
     ...(images.length
@@ -48,14 +53,21 @@ export function productStructuredData(
           ],
         }
       : {}),
-    offers: {
-      "@type": "Offer",
-      url,
-      priceCurrency: "EGP",
-      price: ((p.sale ?? p.price) / 100).toFixed(2),
-      // Orderability alone does not prove physical stock availability.
-      itemCondition: "https://schema.org/NewCondition",
-    },
+    offers: merchantPriceReady(p)
+      ? {
+          "@type": "Offer",
+          url,
+          priceCurrency: "EGP",
+          price: ((p.sale ?? p.price) / 100).toFixed(2),
+          // Orderability alone does not prove physical stock availability.
+          ...(verifiedCondition(p)
+            ? { itemCondition: verifiedCondition(p) }
+            : {}),
+          ...(verifiedAvailability(p)
+            ? { availability: verifiedAvailability(p) }
+            : {}),
+        }
+      : undefined,
   };
 }
 
@@ -100,8 +112,8 @@ export function productAnswers(p: Product, locale: Locale) {
         ? "هل أقدر أشتري القطعة بالتقسيط أو بالكريدت كارد؟"
         : "Can I buy this part in installments or with a credit card?",
       answer: ar
-        ? "في المتجر طرق دفع متعددة: الدفع عند الاستلام، وInstapay، والمحفظة الإلكترونية، وبطاقات الائتمان والخصم. كمان فيه تقسيط عبر Valu وSuhoola وContact وKlivvr وAman."
-        : "In the store you can pay by cash on delivery, Instapay, e-wallet, credit and debit cards. There are also installments through Valu, Suhoola, Contact, Klivvr and Aman.",
+        ? "راجع طرق الدفع المعروضة عند إتمام الطلب. دليل التقسيط يشرح خيارات مثل Valu وSuhoola وContact وKlivvr وAman؛ ذكر الشركة لا يؤكد تفعيلها لهذا الطلب. الأهلية والتكلفة والموافقة يحددها مقدم الخدمة."
+        : "Check the payment methods shown at checkout. The installments guide explains options such as Valu, Suhoola, Contact, Klivvr and Aman; naming a provider does not confirm it is enabled for this order. Eligibility, costs and approval depend on the provider.",
     },
   ];
 }

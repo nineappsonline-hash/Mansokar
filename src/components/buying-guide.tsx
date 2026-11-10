@@ -1,13 +1,30 @@
+import { siteOrigin } from "@/lib/site-url";
 import Link from "next/link";
 import type { Locale } from "@/lib/catalog";
 import { buyingGuides } from "@/lib/buying-guides";
-export function BuyingGuide({
+import { catalog, vehicleCatalog } from "@/lib/db";
+import { eligibleProduct } from "@/lib/seo-policy";
+import { publicProduct } from "@/lib/public-product";
+import { readApplications } from "@/lib/product-applications";
+export async function BuyingGuide({
   guide,
   locale,
 }: {
   guide: (typeof buyingGuides)[number];
   locale: Locale;
 }) {
+  const [products, { models, brands }] = await Promise.all([
+    catalog({ all: true }),
+    vehicleCatalog(),
+  ]);
+  const eligible = products.filter((p) => eligibleProduct(p, locale));
+  const related = models.filter((m) =>
+    eligible.some((p) =>
+      readApplications(p.specs).some(
+        (a) => a.model_id === m.id && a.years.length,
+      ),
+    ),
+  );
   return (
     <article className="shell section narrow stack">
       <script
@@ -17,11 +34,17 @@ export function BuyingGuide({
             "@context": "https://schema.org",
             "@type": "Article",
             headline: guide.title[locale],
+            author: {
+              "@type": "Organization",
+              "@id": siteOrigin() + "/#organization",
+              name: "MOPC",
+            },
+            publisher: { "@id": siteOrigin() + "/#organization" },
             description: guide.description[locale],
             inLanguage: locale === "ar" ? "ar-EG" : "en-EG",
             mainEntityOfPage: new URL(
               `/${locale}/guides/${guide.slug}`,
-              process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+              siteOrigin(),
             ).href,
           }).replace(/</g, "\\u003c"),
         }}
@@ -38,6 +61,43 @@ export function BuyingGuide({
           <p className="prose">{section.body[locale]}</p>
         </section>
       ))}
+      <section className="stack">
+        <h2>
+          {locale === "ar"
+            ? "ابدأ بالموديل أو رقم القطعة المسجل"
+            : "Start with a saved model or recorded part number"}
+        </h2>
+        <p>
+          {locale === "ar"
+            ? "الروابط التالية من الكتالوج الحالي. وجود القطعة في الكتالوج لا يؤكد المخزون أو التوافق مع كل محرك؛ راجع البيانات قبل الطلب."
+            : "These links come from the current catalog. A listing does not confirm stock or compatibility with every engine; check the details before ordering."}
+        </p>
+        <nav
+          className="admin-nav"
+          aria-label={locale === "ar" ? "موديلات مسجلة" : "Saved models"}
+        >
+          {related.slice(0, 8).map((m) => (
+            <Link key={m.id} href={`/${locale}/brands/${m.brand}/${m.slug}`}>
+              {brands.find((b) => b.slug === m.brand)?.name} {m.name[locale]}
+            </Link>
+          ))}
+        </nav>
+        <nav
+          className="admin-nav"
+          aria-label={
+            locale === "ar" ? "أرقام قطع مسجلة" : "Recorded part numbers"
+          }
+        >
+          {eligible.slice(0, 4).map((raw) => {
+            const p = publicProduct(raw);
+            return (
+              <Link key={p.id} href={`/${locale}/products/${p.slug}`}>
+                {p.name[locale]} · {p.partNumber}
+              </Link>
+            );
+          })}
+        </nav>
+      </section>
       <nav
         className="stack"
         aria-label={

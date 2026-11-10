@@ -1,0 +1,106 @@
+[
+  {
+    "route": "/ar",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "موبِك | موبِك",
+    "h1": "قطع غيار عربيتك…من غير تدوير.",
+    "canonical": "https://mansokar.vercel.app/ar",
+    "jsonLd": 2,
+    "htmlBytes": 107911
+  },
+  {
+    "route": "/en",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "MOPC | MOPC",
+    "h1": "The right parts for your car…Without the runaround.",
+    "canonical": "https://mansokar.vercel.app/en",
+    "jsonLd": 2,
+    "htmlBytes": 105597
+  },
+  {
+    "route": "/ar/brands/opel",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "قطع غيار أوبل في مصر | موبِك",
+    "h1": "قطع غيار أوبل الأصلية وAfter Market",
+    "canonical": "https://mansokar.vercel.app/ar/brands/opel",
+    "jsonLd": 4,
+    "htmlBytes": 108087
+  },
+  {
+    "route": "/ar/brands/peugeot/301",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "قطع غيار بيجو 301 في مصر | موبِك",
+    "h1": "قطع غيار بيجو 301",
+    "canonical": "https://mansokar.vercel.app/ar/brands/peugeot/301",
+    "jsonLd": 4,
+    "htmlBytes": 50395
+  },
+  {
+    "route": "/ar/products/genuine-parts-p-96ac259c-e873-415c-928e-6f7d673d304f",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "شدادة سير دينامو | Genuine Parts | OP-1698284480 في مصر | موبِك",
+    "h1": "شدادة سير دينامو",
+    "canonical": "https://mansokar.vercel.app/ar/products/genuine-parts-p-96ac259c-e873-415c-928e-6f7d673d304f",
+    "jsonLd": 6,
+    "htmlBytes": 78284
+  },
+  {
+    "route": "/en/products/genuine-parts-p-96ac259c-e873-415c-928e-6f7d673d304f",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "شدادة سير دينامو | Genuine Parts | OP-1698284480 in Egypt | MOPC",
+    "h1": "شدادة سير دينامو",
+    "canonical": "https://mansokar.vercel.app/en/products/genuine-parts-p-96ac259c-e873-415c-928e-6f7d673d304f",
+    "jsonLd": 6,
+    "htmlBytes": 74384
+  },
+  {
+    "route": "/ar/guides/check-part-compatibility",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "إزاي تتأكد إن قطعة الغيار تناسب عربيتك؟ | موبِك",
+    "h1": "إزاي تتأكد إن قطعة الغيار تناسب عربيتك؟",
+    "canonical": "https://mansokar.vercel.app/ar/guides/check-part-compatibility",
+    "jsonLd": 4,
+    "htmlBytes": 44627
+  },
+  {
+    "route": "/ar/catalog?q=filter",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "تسوق القطع | موبِك",
+    "h1": "تسوق القطع",
+    "canonical": "https://mansokar.vercel.app/ar/catalog",
+    "jsonLd": 4,
+    "htmlBytes": 126152
+  },
+  {
+    "route": "/ar/cart",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "title": "السلة | موبِك",
+    "h1": "السلة",
+    "canonical": "https://mansokar.vercel.app/ar/cart",
+    "jsonLd": 2,
+    "htmlBytes": 34637
+  },
+  {
+    "route": "/sitemap.xml",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "jsonLd": 0,
+    "htmlBytes": 450075
+  },
+  {
+    "route": "/robots.txt",
+    "status": 200,
+    "headerRobots": "noindex, nofollow",
+    "jsonLd": 0,
+    "htmlBytes": 462
+  }
+]

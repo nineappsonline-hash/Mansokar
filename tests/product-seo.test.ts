@@ -11,7 +11,7 @@ const p = {
   ...demoProducts[0],
   demo: false,
   price: 20000,
-  sale: 12550,
+  sale: 12500,
   cost: 9000,
   specs: { country_of_origin: "Germany" },
 };
@@ -108,8 +108,8 @@ test("product markup uses public identifiers, real images and EGP without claimi
   const data = productStructuredData(p, "ar", "https://example.com", [
     "/part.jpg",
   ])!;
-  assert.equal(data.offers.price, "125.50");
-  assert.equal(data.offers.priceCurrency, "EGP");
+  assert.equal(data.offers!.price, "125.00");
+  assert.equal(data.offers!.priceCurrency, "EGP");
   assert.equal(data.mpn, p.partNumber);
   assert.deepEqual(data.image, ["https://example.com/part.jpg"]);
   assert.equal(data.url, `https://example.com/ar/products/${p.slug}`);
@@ -441,8 +441,8 @@ test("sitemap inventory excludes demos, drafts and invalid/private CMS routes", 
   assert.ok(
     entries.every(
       (e) =>
-        e.alternates.languages.ar.startsWith("https://example.com/ar") &&
-        e.alternates.languages.en.startsWith("https://example.com/en"),
+        e.alternates.languages["ar-EG"].startsWith("https://example.com/ar") &&
+        e.alternates.languages["en-EG"].startsWith("https://example.com/en"),
     ),
   );
   assert.equal(new Set(entries.map((e) => e.url)).size, entries.length);
@@ -454,6 +454,19 @@ test("site identity provides stable entity IDs without unsupported merchant clai
   assert.equal(data["@graph"][0]["@id"], "https://example.com/#organization");
   assert.ok(!JSON.stringify(data).includes("address"));
   assert.ok(!JSON.stringify(data).includes("aggregateRating"));
+  const { siteCopy } = await import("../src/lib/site-copy");
+  for (const locale of ["ar", "en"] as const) {
+    const copy = siteCopy[locale];
+    const localized = siteIdentity("https://example.com", copy.name, locale);
+    for (const entity of localized["@graph"]) {
+      assert.equal(entity.name, copy.name);
+      assert.equal(entity.description, copy.description);
+      assert.equal(
+        entity.alternateName,
+        siteCopy[locale === "ar" ? "en" : "ar"].name,
+      );
+    }
+  }
 });
 
 test("model-scoped public copy expands every range year without exposing other models", async () => {

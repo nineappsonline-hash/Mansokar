@@ -9,8 +9,14 @@ export type CarContext = {
   name: Text;
 };
 export function publicProductSlug(
-  p: Pick<Product, "id" | "name" | "manufacturer">,
+  p: Pick<Product, "id" | "name" | "manufacturer"> & {
+    slug?: string;
+    specs?: Record<string, string>;
+  },
 ) {
+  for (const slug of [p.specs?.public_slug, p.slug])
+    if (slug && publicProductId(slug) === p.id && /^[-a-z0-9]+$/i.test(slug))
+      return slug;
   const stem = `${p.name.en} ${p.manufacturer}`
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
@@ -121,7 +127,10 @@ export function publicProduct(
     specs: {
       ...Object.fromEntries(
         Object.entries(p.specs || {}).filter(
-          ([key]) => !key.startsWith("car_years:"),
+          ([key]) =>
+            !key.startsWith("car_years:") &&
+            !key.startsWith("seo_") &&
+            key !== "public_slug",
         ),
       ),
       country_of_origin: countryOfOrigin(p.specs?.country_of_origin),
@@ -129,19 +138,22 @@ export function publicProduct(
     warranty: p.warranty,
     policy_refs: p.policy_refs,
     condition: p.condition,
-    seo: {
-      title: {
-        ar: `${name.ar} | ${p.manufacturer} | ${p.partNumber} في مصر`.slice(
-          0,
-          200,
-        ),
-        en: `${name.en} | ${p.manufacturer} | ${p.partNumber} in Egypt`.slice(
-          0,
-          200,
-        ),
-      },
-      description,
-    },
+    seo:
+      p.seo?.manual && !context
+        ? { ...p.seo }
+        : {
+            title: {
+              ar: `${name.ar} | ${p.manufacturer} | ${p.partNumber} في مصر`.slice(
+                0,
+                200,
+              ),
+              en: `${name.en} | ${p.manufacturer} | ${p.partNumber} in Egypt`.slice(
+                0,
+                200,
+              ),
+            },
+            description,
+          },
   };
 }
 export function productContextHref(

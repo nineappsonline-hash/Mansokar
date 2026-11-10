@@ -1,4 +1,5 @@
 "use client";
+import commerce from "./commerce.module.css";
 import { shippingLabel, type ShippingArea } from "@/lib/shipping";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -117,7 +118,7 @@ export function ApiForm({
           if (action === "request")
             window.dispatchEvent(
               new CustomEvent("analytics-event", {
-                detail: { event: "part_request" },
+                detail: { event: "request_part_submitted" },
               }),
             );
           if (data.redirect) {
@@ -372,7 +373,11 @@ export function Checkout({
     locale === "ar" ? "التأكيد" : "Confirm",
   ];
   return (
-    <div className="checkout-page">
+    <div className={`${commerce.commerce} ${commerce.checkout} checkout-page`}>
+      <a className={commerce.backLink} href={`/${locale}/cart`}>
+        <ShoppingBag size={15} />
+        {locale === "ar" ? "العودة إلى السلة" : "Back to your bag"}
+      </a>
       <header className="checkout-header">
         <span className="checkout-eyebrow">
           <Lock size={12} strokeWidth={2.4} />
@@ -656,7 +661,14 @@ export function Checkout({
                   name="area"
                   required
                   value={area}
-                  onChange={(e) => setArea(e.target.value)}
+                  onChange={(e) => {
+                    setArea(e.target.value);
+                    window.dispatchEvent(
+                      new CustomEvent("analytics-event", {
+                        detail: { event: "add_shipping_info" },
+                      }),
+                    );
+                  }}
                   className="checkout-select"
                 >
                   <option value="">
@@ -765,7 +777,14 @@ export function Checkout({
                           value="card"
                           required
                           checked={method === "card"}
-                          onChange={() => setMethod("card")}
+                          onChange={() => {
+                            setMethod("card");
+                            window.dispatchEvent(
+                              new CustomEvent("analytics-event", {
+                                detail: { event: "add_payment_info" },
+                              }),
+                            );
+                          }}
                         />
                         <span className="payment-method-icon">
                           <CreditCard size={20} strokeWidth={1.8} />
@@ -800,7 +819,14 @@ export function Checkout({
                           value="instapay"
                           required
                           checked={method === "instapay"}
-                          onChange={() => setMethod("instapay")}
+                          onChange={() => {
+                            setMethod("instapay");
+                            window.dispatchEvent(
+                              new CustomEvent("analytics-event", {
+                                detail: { event: "add_payment_info" },
+                              }),
+                            );
+                          }}
                         />
                         <span className="payment-method-icon">
                           <Smartphone size={20} strokeWidth={1.8} />
@@ -868,7 +894,14 @@ export function Checkout({
                           value="wallet"
                           required
                           checked={method === "wallet"}
-                          onChange={() => setMethod("wallet")}
+                          onChange={() => {
+                            setMethod("wallet");
+                            window.dispatchEvent(
+                              new CustomEvent("analytics-event", {
+                                detail: { event: "add_payment_info" },
+                              }),
+                            );
+                          }}
                         />
                         <span className="payment-method-icon">
                           <Mail size={20} strokeWidth={1.8} />
@@ -929,7 +962,14 @@ export function Checkout({
                           value="cod"
                           required
                           checked={method === "cod"}
-                          onChange={() => setMethod("cod")}
+                          onChange={() => {
+                            setMethod("cod");
+                            window.dispatchEvent(
+                              new CustomEvent("analytics-event", {
+                                detail: { event: "add_payment_info" },
+                              }),
+                            );
+                          }}
                         />
                         <span className="payment-method-icon">
                           <Truck size={20} strokeWidth={1.8} />
@@ -1115,8 +1155,8 @@ export function Checkout({
               <p className="checkout-cta-note">
                 <Lock size={12} strokeWidth={2} />
                 {locale === "ar"
-                  ? "يتم احتساب الإجمالي بأمان على السيرفر."
-                  : "Totals are calculated securely on our server."}
+                  ? "راجع الإجمالي قبل تأكيد طلبك."
+                  : "Review your final total before placing your order."}
               </p>
             )}
             {message && (

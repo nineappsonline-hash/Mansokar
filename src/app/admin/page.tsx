@@ -178,6 +178,22 @@ export default async function Admin({
       allRows<any>("product_images", "id,product_id,path,alt,position"),
       vehicleCatalog(),
     ]);
+    const exportYears = [
+      ...new Set([
+        ...vehicles.map((vehicle: any) => vehicle.year),
+        ...products.flatMap((product: any) =>
+          Object.entries(product.specs || {})
+            .filter(([key]) => key.startsWith("car_years:"))
+            .flatMap(([, value]) =>
+              String(value)
+                .split(",")
+                .map((year) => Number(year)),
+            ),
+        ),
+      ]),
+    ]
+      .filter((year) => Number.isInteger(year) && year >= 1950 && year <= 2100)
+      .sort((a, b) => b - a);
     const selected = products.find((p) => p.id === id);
     const images = selected
       ? productImages
@@ -291,7 +307,21 @@ export default async function Admin({
               fixedProduct
             />
           }
-          excel={<Importer />}
+          excel={
+            <Importer
+              carBrands={brands.map((brand) => ({
+                slug: brand.slug,
+                name: brand.name,
+              }))}
+              carModels={models.map((model) => ({
+                slug: model.slug,
+                brand: model.brand,
+                name: model.name,
+              }))}
+              itemBrands={manufacturers.map((brand) => brand.name)}
+              years={exportYears}
+            />
+          }
         />
       );
   } else if (module === "customers") {

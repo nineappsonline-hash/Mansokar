@@ -1,0 +1,149 @@
+{
+  "checkedAt": "2026-11-09T14:28:35.570Z",
+  "totalRecords": 350,
+  "checked": 20,
+  "scope": "Bounded sample, not a complete image certification",
+  "failures": [],
+  "results": [
+    {
+      "productId": "86766f65-2b07-4240-b7dd-0ebeeebb23a9",
+      "mediaId": "001a5ba3-60ef-405a-afcd-41549bd82f90",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "mediaId": "019bea98-3b29-4804-9cb3-ac852983c9da",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "0182b757-b427-457f-b28d-e49f0190a6a7",
+      "mediaId": "03fe7ca6-72ea-4572-ac59-be0175bc9d48",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "dd15ae03-6343-4eef-b93d-c82b952f0127",
+      "mediaId": "0477c609-ac85-492a-8156-1f326290ac6e",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "bf0d0c89-fc74-4b7f-b878-b67d7245186a",
+      "mediaId": "04cad622-ea83-40b7-bda8-2a5930752292",
+      "status": 200,
+      "type": "image/png",
+      "valid": true
+    },
+    {
+      "productId": "4ab2fea8-592c-4041-a6a8-17999806f107",
+      "mediaId": "085a4e27-3be1-4757-8ef2-e8ea345c62a9",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "91f9c050-3312-412c-af7d-526976fa2b31",
+      "mediaId": "06295e32-53a2-4eab-ae7a-c6bd5d5fdac1",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "82c0e5b6-abf0-4224-91e2-df82d6a3e758",
+      "mediaId": "05772757-a13e-42b6-b5a9-29fe5bb96032",
+      "status": "network_error",
+      "valid": true,
+      "retryStatus": 206
+    },
+    {
+      "productId": "424f5ba0-185b-48d8-bdaa-5704bfd703c1",
+      "mediaId": "099f31f6-d84a-4044-a000-e863784cfe4c",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "4de50bb5-55ac-4ddd-8b51-0ce6bc0561d8",
+      "mediaId": "08912cba-a0ef-4828-a55f-b3be2e3e47f3",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "79a442e2-5cf5-4a6e-a903-e5c10363ea6c",
+      "mediaId": "09a0e784-b9bc-491d-b5bd-9289bcb5c5d0",
+      "status": "network_error",
+      "valid": true,
+      "retryStatus": 206
+    },
+    {
+      "productId": "a3143333-157e-4de0-a05e-58f170d3de77",
+      "mediaId": "095d5dc3-d95a-426c-81fa-c7bb3c3a19a0",
+      "status": "network_error",
+      "valid": true,
+      "retryStatus": 206
+    },
+    {
+      "productId": "17000474-cddf-4de1-bbe6-82b1d575d86e",
+      "mediaId": "09ca5766-c52c-46a7-89fb-f1de46d73161",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "fd1100fd-4b31-4658-9a26-c51670abf826",
+      "mediaId": "0b30df02-bbdc-4180-9610-dff4b18398d1",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "9a169db1-affc-473d-8222-93af16a084a5",
+      "mediaId": "0bf5041c-5b2d-4cf0-af77-6b20852c51e6",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "58dd51b4-d5d8-40d8-bd1d-28ae4ae233a8",
+      "mediaId": "0a8a944e-522c-4ecc-a85c-8e0aceafa1f0",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "56655884-873c-4ef9-b30b-36492b20e61f",
+      "mediaId": "0cd3faa0-faf4-43de-ae32-8ec96ad0c79e",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "dd57654c-0390-4437-ab32-c85e62181fbf",
+      "mediaId": "0d18e836-548e-42f9-9ec8-9ac18b86865a",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "ab5bf2d8-0f3b-496e-914c-5e395731d2d6",
+      "mediaId": "0c900b8d-7adc-4b4c-a086-a7e7f6618ae3",
+      "status": 200,
+      "type": "image/webp",
+      "valid": true
+    },
+    {
+      "productId": "5bda3401-92fb-4b37-a5e9-40c366053d97",
+      "mediaId": "0d626f0d-2955-4fd3-8878-847e8626f559",
+      "status": "network_error",
+      "valid": true,
+      "retryStatus": 206
+    }
+  ]
+}

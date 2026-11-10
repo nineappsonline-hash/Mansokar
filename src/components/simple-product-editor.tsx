@@ -251,6 +251,115 @@ export function SimpleProductEditor({
               />
               Available to order
             </label>
+            <details className="stack">
+              <summary>Optional: verified stock and SEO overrides</summary>
+              <p>
+                Search copy is automatic. Leave stock unknown until verified;
+                this setting does not change checkout orderability.
+              </p>
+              <label>
+                Verified stock
+                <select
+                  value={value.specs?.stock_status ?? ""}
+                  onChange={(e) =>
+                    setValue({
+                      ...value,
+                      specs: { ...value.specs, stock_status: e.target.value },
+                    })
+                  }
+                >
+                  <option value="">Unknown</option>
+                  <option value="in_stock">In stock</option>
+                  <option value="out_of_stock">Out of stock</option>
+                  <option value="preorder">Preorder</option>
+                  <option value="backorder">Backorder</option>
+                </select>
+              </label>
+              <label>
+                Verified condition
+                <select
+                  value={
+                    value.specs?.product_condition ?? value.condition ?? ""
+                  }
+                  onChange={(e) =>
+                    setValue({
+                      ...value,
+                      specs: {
+                        ...value.specs,
+                        product_condition: e.target.value,
+                      },
+                    })
+                  }
+                >
+                  <option value="">Unknown</option>
+                  <option value="new">New</option>
+                  <option value="used">Used</option>
+                  <option value="refurbished">Refurbished</option>
+                </select>
+              </label>
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={value.seo?.manual === true}
+                  onChange={(e) =>
+                    setValue({
+                      ...value,
+                      seo: { ...value.seo, manual: e.target.checked },
+                    })
+                  }
+                />
+                Override generated search titles and descriptions
+              </label>
+              {value.seo?.manual &&
+                (["ar", "en"] as const).map((lang) => (
+                  <div className="stack" key={lang}>
+                    <label>
+                      Search title · {lang}
+                      <input
+                        maxLength={200}
+                        dir={lang === "ar" ? "rtl" : "ltr"}
+                        value={value.seo?.title?.[lang] ?? ""}
+                        onChange={(e) =>
+                          setValue({
+                            ...value,
+                            seo: {
+                              ...value.seo,
+                              title: {
+                                ar: "",
+                                en: "",
+                                ...value.seo?.title,
+                                [lang]: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                      />
+                    </label>
+                    <label>
+                      Search description · {lang}
+                      <textarea
+                        maxLength={500}
+                        dir={lang === "ar" ? "rtl" : "ltr"}
+                        value={value.seo?.description?.[lang] ?? ""}
+                        onChange={(e) =>
+                          setValue({
+                            ...value,
+                            seo: {
+                              ...value.seo,
+                              description: {
+                                ar: "",
+                                en: "",
+                                ...value.seo?.description,
+                                [lang]: e.target.value,
+                              },
+                            },
+                          })
+                        }
+                      />
+                    </label>
+                  </div>
+                ))}
+            </details>
             <p>
               SKU, product URL, Arabic/English descriptions and SEO are
               generated when you save.
