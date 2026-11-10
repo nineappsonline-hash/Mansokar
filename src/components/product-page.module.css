@@ -258,3 +258,74 @@
     padding: 12px;
   }
 }
+
+.page.page :global(.purchase-panel .badges) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+.brandPart {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+}
+.page.page .brandLabel {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: #17405a;
+  background: #eef4f7;
+  border: 1px solid #dce7ee;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.page.page .partNumber {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 7px;
+  border-inline-start: 1px solid #dfe6eb;
+  padding-inline-start: 10px;
+  min-width: 0;
+}
+.partNumber > span {
+  font-size: 10px;
+  color: #7c8b95;
+  white-space: nowrap;
+}
+.page.page .partNumber :global(.copy) {
+  font-size: 12px;
+  color: #29495e;
+  padding: 4px 0;
+  min-height: 32px;
+  gap: 6px;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+.page.page :global(.purchase-panel .fit-card) {
+  margin: 0;
+  padding: 12px 0;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #e8edf1;
+  border-radius: 0;
+  box-shadow: none;
+}
+.page.page :global(.purchase-panel .fit-card h2) {
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+.page.page :global(.purchase-panel .fit-card li) {
+  background: #f7f9fb;
+  box-shadow: none;
+  border-color: #e5ebf0;
+}
+.page.page :global(.purchase-panel .fit-card small) {
+  margin-top: 7px;
+}

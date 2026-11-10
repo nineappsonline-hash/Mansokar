@@ -1113,6 +1113,34 @@ export default async function Page({ params, searchParams }: Props) {
                 </p>
               )}
             </div>
+          </div>
+          <aside className="purchase-panel product-page-animate slide">
+            <div className="purchase-heading">
+              <span className="eyebrow">
+                {p.category.toUpperCase()} / {p.sku}
+              </span>
+              <h1>{p.name[locale]}</h1>
+              <div className="badges">
+                <div className={compactProduct.brandPart}>
+                  <span className={compactProduct.brandLabel} dir="auto">
+                    {p.manufacturer}
+                  </span>
+                  <div className={compactProduct.partNumber}>
+                    <span>{locale === "ar" ? "رقم القطعة" : "Part no."}</span>
+                    <CopyPart value={p.partNumber} locale={locale} />
+                  </div>
+                </div>
+                {p.type === "oem" && <OriginalBadge locale={locale} />}
+                {p.type !== "oem" && (
+                  <span className="badge after-market">
+                    {locale === "ar" ? "بديل" : "After Market"}
+                  </span>
+                )}
+                {p.demo && (
+                  <span className="badge demo-badge">{w.demoProduct}</span>
+                )}
+              </div>
+            </div>
             <div
               className={`fit-card ${confirmed ? "confirmed" : ""} ${showApplications ? compatibilityStyles.panel : ""}`}
               data-compatibility-result={confirmed ? "confirmed" : "unknown"}
@@ -1190,32 +1218,6 @@ export default async function Page({ params, searchParams }: Props) {
               ) : (
                 <p>{vehicleForItem(vehicle, locale)}</p>
               )}
-            </div>
-          </div>
-          <aside className="purchase-panel product-page-animate slide">
-            <div className="purchase-heading">
-              <span className="eyebrow">
-                {p.category.toUpperCase()} / {p.sku}
-              </span>
-              <h1>{p.name[locale]}</h1>
-              <div className="badges">
-                <span>{p.manufacturer}</span>
-                {p.type === "oem" && <OriginalBadge locale={locale} />}
-                {p.type !== "oem" && (
-                  <span className="badge after-market">
-                    {locale === "ar" ? "بديل" : "After Market"}
-                  </span>
-                )}
-                {p.demo && (
-                  <span className="badge demo-badge">{w.demoProduct}</span>
-                )}
-              </div>
-            </div>
-            <div className="part-row">
-              <span className="part-row-label">
-                {locale === "ar" ? "رقم القطعة" : "Part number"}
-              </span>
-              <CopyPart value={p.partNumber} locale={locale} />
             </div>
             <div className="detail-price">
               <span className="price">{money(p.sale ?? p.price, locale)}</span>
