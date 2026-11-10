@@ -964,7 +964,28 @@ export default async function Page({ params, searchParams }: Props) {
     const confirmed = flags[p.id];
     const showApplications = !vehicle && !browsingContext;
     const compatibleCars = showApplications
-      ? productCardVehicles(raw, { brands, models: vehicleModels }, locale)
+      ? productCardVehicles(raw, { brands, models: vehicleModels }, locale).map(
+          (car) => {
+            const model = vehicleModels.find((m) => m.id === car.id);
+            const brand = brands.find((b) => b.slug === model?.brand);
+            const make = brand?.slug;
+            const logo =
+              make &&
+              ["opel", "chevrolet", "peugeot", "citroen", "mg"].includes(make)
+                ? make === "chevrolet"
+                  ? "/images/brands/chevrolet.png"
+                  : make === "citroen"
+                    ? "/images/brands/citroen-2022.svg"
+                    : `/images/brands/${make}.svg`
+                : undefined;
+            return {
+              ...car,
+              make: locale === "ar" ? brand?.ar : brand?.name,
+              model: model?.name[locale],
+              logo,
+            };
+          },
+        )
       : [];
 
     function vehicleForItem(
@@ -1262,7 +1283,7 @@ export default async function Page({ params, searchParams }: Props) {
               )}
             </div>
             <div
-              className={`fit-card ${confirmed ? "confirmed" : ""}`}
+              className={`fit-card ${confirmed ? "confirmed" : ""} ${showApplications ? compatibilityStyles.panel : ""}`}
               data-compatibility-result={confirmed ? "confirmed" : "unknown"}
             >
               <span className="eyebrow">
@@ -1287,14 +1308,37 @@ export default async function Page({ params, searchParams }: Props) {
                       >
                         {compatibleCars.map((car) => (
                           <li key={car.id}>
-                            <CarFront size={17} aria-hidden="true" />
-                            <strong>{car.name}</strong>
-                            <bdi>
-                              {car.years ||
-                                (locale === "ar"
-                                  ? "راجع سنوات الموديل"
-                                  : "Check model years")}
-                            </bdi>
+                            <span className={compatibilityStyles.emblem}>
+                              {car.logo ? (
+                                <img
+                                  src={car.logo}
+                                  alt=""
+                                  width={40}
+                                  height={40}
+                                />
+                              ) : (
+                                <CarFront size={25} aria-hidden="true" />
+                              )}
+                            </span>
+                            <div className={compatibilityStyles.identity}>
+                              <span className={compatibilityStyles.make}>
+                                {car.make}
+                              </span>
+                              <strong>{car.model || car.name}</strong>
+                            </div>
+                            <div className={compatibilityStyles.yearGroup}>
+                              <span>
+                                {locale === "ar"
+                                  ? "سنوات الموديل"
+                                  : "Model years"}
+                              </span>
+                              <bdi>
+                                {car.years ||
+                                  (locale === "ar"
+                                    ? "راجع سنوات الموديل"
+                                    : "Check model years")}
+                              </bdi>
+                            </div>
                           </li>
                         ))}
                       </ul>
