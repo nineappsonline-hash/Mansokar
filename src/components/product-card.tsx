@@ -76,7 +76,7 @@ export async function ProductCard({
   const w = t(locale);
   return (
     <article
-      className="product-card product-card-animate"
+      className={`product-card product-card-animate ${styles.card}`}
       aria-label={p.name[locale]}
     >
       <FavoriteButton id={p.id} locale={locale} />
@@ -193,9 +193,10 @@ export async function ProductCard({
             )}
           </div>
         )}
-        <span className="small muted" dir="ltr">
-          {p.partNumber}
-        </span>
+        <div className={styles.partNumber}>
+          <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
+          <bdi dir="ltr">{p.partNumber}</bdi>
+        </div>
         <p className="small muted">
           {fitmentLabel(vehicle, !!confirmed, locale)}
         </p>

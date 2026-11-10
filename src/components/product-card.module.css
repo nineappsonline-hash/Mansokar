@@ -11,3 +11,93 @@
 .more:hover {
   text-decoration: underline;
 }
+
+.card.card:global(.product-card) {
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #12334d0b;
+}
+.card.card :global(.product-info) {
+  width: 100%;
+  min-width: 0;
+  align-items: stretch;
+  padding: 12px;
+  gap: 10px;
+}
+.card.card :global(.product-info h3) {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+  min-height: 3.2em;
+}
+.partNumber {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 8px;
+  padding-block: 3px;
+}
+.partNumber > span {
+  color: #7c8a95;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.partNumber bdi {
+  color: #486174;
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.card.card :global(.product-price) {
+  font-size: 22px;
+  padding-top: 8px;
+  border-top: 1px solid #edf1f4;
+}
+.card.card :global(.purchase-controls),
+.card.card :global(.purchase-buttons) {
+  width: 100%;
+  min-width: 0;
+  align-self: stretch;
+}
+.card.card :global(.purchase-buttons) {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.card.card :global(.purchase-buttons .button) {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.card.card :global(.purchase-buttons .button span) {
+  white-space: nowrap;
+}
+.card.card :global(.purchase-buttons svg) {
+  flex-shrink: 0;
+}
+@media (max-width: 380px) {
+  .card.card :global(.product-info) {
+    padding: 10px;
+    gap: 8px;
+  }
+  .card.card :global(.purchase-buttons .button) {
+    font-size: 12px;
+    gap: 5px;
+  }
+  .card.card :global(.product-price) {
+    font-size: 20px;
+  }
+}
+
+.card.card :global(.purchase-add) {
+  display: flex;
+}
