@@ -17,7 +17,7 @@ export function ContactForm({
       </h2>
       <p>
         {ar
-          ? "لطلب مساعدة بخصوص الشحن أو الاسترجاع أو الضمان، املأ النموذج. أضف رقم الطلب داخل الاستفسار إن وجد. لا ترسل بيانات كارت أو أكواد تحقق أو رقم شاسيه كامل."
+          ? "لطلب مساعدة بخصوص الشحن أو الاسترجاع أو الضمان، املأ النموذج. أضف رقم الطلب داخل الاستفسار لو موجود. لا ترسل بيانات كارت أو أكواد تحقق أو رقم شاسيه كامل."
           : "Use this form for shipping, returns or warranty assistance. Include the order number in your inquiry if available. Do not send card details, verification codes or a full VIN."}
       </p>
       <ApiForm
@@ -77,7 +77,7 @@ export function ContactForm({
       {!enabled && (
         <p role="status">
           {ar
-            ? "طلب التواصل غير متاح حاليًا. يُرجى المحاولة لاحقًا."
+            ? "طلب التواصل غير متاح حاليًا. جرّب تاني كمان شوية."
             : "Callback requests are currently unavailable. Please try again later."}
         </p>
       )}

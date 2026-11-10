@@ -80,7 +80,7 @@ export function FavoriteButton({ id, locale }: { id: string; locale: Locale }) {
           } catch {
             setMessage(
               locale === "ar"
-                ? "تعذر حفظ المفضلة على هذا الجهاز"
+                ? "مقدرناش نحفظ المفضلة على الجهاز ده"
                 : "Favorites could not be saved on this device",
             );
           }
@@ -156,7 +156,7 @@ export function Favorites({ locale }: { locale: Locale }) {
         if (e.name !== "AbortError")
           setError(
             locale === "ar"
-              ? "تعذر تحميل المنتجات. حاول مرة أخرى."
+              ? "مقدرناش نحمّل المنتجات. جرّب تاني."
               : "Unable to load favorites. Please try again.",
           );
       })

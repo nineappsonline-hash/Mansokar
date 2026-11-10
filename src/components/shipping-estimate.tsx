@@ -33,7 +33,7 @@ export function ShippingEstimate({
           <h3>{ar ? "تكلفة التوصيل" : "Delivery estimate"}</h3>
           <p>
             {ar
-              ? "تعرف على خيارات الشحن إلى محافظتك"
+              ? "شوف طرق التوصيل المتاحة لمحافظتك"
               : "Explore delivery options for your governorate"}
           </p>
         </div>
@@ -47,7 +47,7 @@ export function ShippingEstimate({
               onChange={(e) => setGovernorate(e.target.value)}
             >
               <option value="">
-                {ar ? "اختر المحافظة" : "Select governorate"}
+                {ar ? "اختار المحافظة" : "Select governorate"}
               </option>
               {groups.map((g) => (
                 <option value={g.value} key={g.value}>
@@ -88,7 +88,7 @@ export function ShippingEstimate({
             ) : (
               <p className={styles.hint}>
                 {ar
-                  ? "اختر محافظتك لعرض طرق التوصيل وتكلفة كل منها."
+                  ? "اختار محافظتك علشان تشوف طرق التوصيل وتكلفتها."
                   : "Choose your governorate to see delivery methods and their costs."}
               </p>
             )}
@@ -97,7 +97,7 @@ export function ShippingEstimate({
       ) : (
         <p className={styles.hint}>
           {ar
-            ? "لم تُعتمد مناطق التوصيل بعد."
+            ? "التوصيل مش متاح حاليًا."
             : "Delivery coverage has not been approved yet."}
         </p>
       )}

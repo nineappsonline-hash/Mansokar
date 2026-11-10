@@ -13,7 +13,7 @@ export function automaticProduct(input: {
     en: input.vehicles.map((v) => v.name.en).join(", "),
   };
   const description = {
-    ar: `${input.name.ar} من ماركة ${input.manufacturer}${vehicle.ar ? ` لسيارات ${vehicle.ar}` : ""}. رقم القطعة ${input.partNumber}. متاح للطلب في مصر؛ راجع رقم القطعة وتكوين السيارة قبل الشراء.`,
+    ar: `${input.name.ar} من ماركة ${input.manufacturer}${vehicle.ar ? ` لعربيات ${vehicle.ar}` : ""}. رقم القطعة ${input.partNumber}. متاح للطلب في مصر؛ راجع رقم القطعة ومواصفات العربية قبل الشراء.`,
     en: `${input.name.en} by ${input.manufacturer}${vehicle.en ? ` for ${vehicle.en}` : ""}. Part number ${input.partNumber}. Order in Egypt; check the part number and vehicle configuration before purchase.`,
   };
   const stem = `${input.name.en} ${input.manufacturer}`

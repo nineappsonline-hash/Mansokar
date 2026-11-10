@@ -21,11 +21,11 @@ export function HomeVehicleFinder({
     <form
       className="cyan-vehicle-finder"
       action={`/${locale}/catalog`}
-      aria-label={ar ? "اختار سيارتك" : "Find parts for your car"}
+      aria-label={ar ? "اختار عربيتك" : "Find parts for your car"}
     >
       <label>
         <CarFront aria-hidden="true" />
-        <span className="sr-only">{ar ? "ماركة السيارة" : "Car make"}</span>
+        <span className="sr-only">{ar ? "ماركة العربية" : "Car make"}</span>
         <select
           name="make"
           required
@@ -36,7 +36,7 @@ export function HomeVehicleFinder({
             setYear("");
           }}
         >
-          <option value="">{ar ? "اختر الماركة" : "Choose make"}</option>
+          <option value="">{ar ? "اختار الماركة" : "Choose make"}</option>
           {brands.map((b) => (
             <option key={b.slug} value={b.slug}>
               {ar ? b.ar : b.name}
@@ -46,7 +46,7 @@ export function HomeVehicleFinder({
       </label>
       <label>
         <Layers3 aria-hidden="true" />
-        <span className="sr-only">{ar ? "موديل السيارة" : "Car model"}</span>
+        <span className="sr-only">{ar ? "موديل العربية" : "Car model"}</span>
         <select
           name="model"
           required
@@ -57,7 +57,7 @@ export function HomeVehicleFinder({
             setYear("");
           }}
         >
-          <option value="">{ar ? "اختر الموديل" : "Choose model"}</option>
+          <option value="">{ar ? "اختار الموديل" : "Choose model"}</option>
           {models
             .filter((m) => m.brand === make)
             .map((m) => (
@@ -76,7 +76,7 @@ export function HomeVehicleFinder({
           value={year}
           onChange={(e) => setYear(e.target.value)}
         >
-          <option value="">{ar ? "اختر سنة الصنع" : "Choose year"}</option>
+          <option value="">{ar ? "اختار سنة الصنع" : "Choose year"}</option>
           {[...new Set(years)]
             .sort((a, b) => b - a)
             .map((y) => (

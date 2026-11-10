@@ -70,7 +70,7 @@ export async function Shell({
             <BrandLogo
               className="store-logo-image"
               src={media.logo?.url || "/images/mopc/logo-dark.png"}
-              alt={locale === "ar" ? "موبِك — قطع غيار السيارات" : "MOPC"}
+              alt={locale === "ar" ? "موبِك — قطع غيار العربيات" : "MOPC"}
             />
             {locale === "ar" && (
               <span className="store-name-ar" lang="ar">
@@ -176,7 +176,7 @@ export async function Shell({
               <BrandLogo
                 className="store-logo-image"
                 src={media.logo?.url || "/images/mopc/logo-dark.png"}
-                alt={locale === "ar" ? "موبِك — قطع غيار السيارات" : "MOPC"}
+                alt={locale === "ar" ? "موبِك — قطع غيار العربيات" : "MOPC"}
               />
               {locale === "ar" && (
                 <span className="store-name-ar" lang="ar">

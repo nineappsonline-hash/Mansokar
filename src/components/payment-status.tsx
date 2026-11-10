@@ -69,7 +69,7 @@ export function PaymentStatus({
       {paymentMethod === "cod" && paymentStatus === "unpaid" && (
         <p className="notice">
           {ar
-            ? "يرجى تجهيز مبلغ الطلب نقداً عند الاستلام."
+            ? "جهّز قيمة الطلب كاش علشان تدفع وقت الاستلام."
             : "Please prepare the order total in cash for delivery."}
         </p>
       )}
@@ -77,7 +77,7 @@ export function PaymentStatus({
         paymentStatus === "failed" && (
           <p className="notice">
             {ar
-              ? "لم يتم تأكيد إثبات التحويل. يرجى التواصل مع الدعم مع رقم الطلب."
+              ? "إيصال التحويل لسه ما اتأكدش. تواصل مع خدمة العملاء وابعثلنا رقم الطلب."
               : "The transfer receipt was not confirmed. Please contact support with your order number."}
           </p>
         )}
@@ -86,7 +86,7 @@ export function PaymentStatus({
           <div className="notice">
             <p>
               {ar
-                ? "تم استلام طلبك وإثبات التحويل. سيتم مراجعة الدفع خلال 24 ساعة."
+                ? "تم استلام طلبك وإيصال التحويل. هنراجع الدفع خلال 24 ساعة."
                 : "Your order and transfer receipt were received. Payment will be reviewed within 24 hours."}
             </p>
             {method === "instapay" ? (

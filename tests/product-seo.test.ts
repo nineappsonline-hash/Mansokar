@@ -517,7 +517,7 @@ test("customer specs label warranty months and never present a part type as a co
     en = productSpecifications(item, "en");
   assert.deepEqual(
     ar.find((r) => r.key === "warranty_months"),
-    { key: "warranty_months", label: "مدة الضمان", value: "٦ أشهر" },
+    { key: "warranty_months", label: "مدة الضمان", value: "٦ شهور" },
   );
   assert.equal(en.find((r) => r.key === "warranty_months")!.value, "6 months");
   assert.equal(
@@ -620,4 +620,83 @@ test("product card vehicles show localized makes, models and exact year ranges",
     productCardVehicles({ specs: {} }, catalog, "en", context, true)[0].years,
     "2018",
   );
+});
+
+test("canonical product metadata and descriptions include every recorded make, model and year range", async () => {
+  const { publicProduct } = await import("../src/lib/public-product");
+  const catalog = {
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل" }],
+    models: [
+      {
+        id: "astra",
+        brand: "opel",
+        slug: "astra",
+        name: { ar: "أسترا", en: "Astra" },
+      },
+      {
+        id: "corsa",
+        brand: "opel",
+        slug: "corsa",
+        name: { ar: "كورسا", en: "Corsa" },
+      },
+    ],
+  };
+  const raw = {
+    ...p,
+    specs: {
+      "car_years:astra": "2015,2016,2018",
+      "car_years:corsa": "2021,2022",
+    },
+  };
+  const before = JSON.stringify(raw);
+  const projected = publicProduct(raw, undefined, false, catalog);
+  for (const locale of ["ar", "en"] as const) {
+    const copy = productSearchCopy(projected, locale);
+    for (const label of [
+      locale === "ar" ? "أوبل أسترا" : "Opel Astra",
+      locale === "ar" ? "أوبل كورسا" : "Opel Corsa",
+      "2015–2016, 2018",
+      "2021–2022",
+      p.partNumber,
+    ]) {
+      assert.ok(copy.title.includes(label), `${locale} title missing ${label}`);
+      assert.ok(
+        copy.description.includes(label),
+        `${locale} description missing ${label}`,
+      );
+      assert.ok(projected.description[locale].includes(label));
+    }
+  }
+  assert.equal(JSON.stringify(raw), before);
+  assert.ok(!JSON.stringify(projected).includes("car_years:"));
+  const scoped = publicProduct(
+    raw,
+    {
+      modelId: "astra",
+      make: "opel",
+      model: "astra",
+      year: 2018,
+      name: { ar: "أوبل أسترا 2018", en: "Opel Astra 2018" },
+    },
+    false,
+    catalog,
+  );
+  assert.ok(scoped.description.en.includes("Opel Astra 2018"));
+  assert.ok(!scoped.description.en.includes("Corsa"));
+  const manual = publicProduct(
+    {
+      ...raw,
+      seo: {
+        manual: true,
+        title: { ar: "عنوان مخصص", en: "Custom title" },
+        description: { ar: "وصف مخصص", en: "Custom description" },
+      },
+    },
+    undefined,
+    false,
+    catalog,
+  );
+  assert.ok(manual.seo!.title!.en.startsWith("Custom title"));
+  assert.ok(manual.seo!.title!.en.includes("Opel Corsa 2021–2022"));
+  assert.ok(manual.seo!.description!.ar.includes("أوبل أسترا 2015–2016, 2018"));
 });

@@ -75,7 +75,9 @@ export const searchPages = cache(async () => {
     productDates: Object.fromEntries(
       products.map((p) => [p.id, p.seo_updated_at ?? undefined]),
     ),
-    products: products.map((p) => publicProduct(p)),
+    products: products.map((p) =>
+      publicProduct(p, undefined, false, { brands, models }),
+    ),
     productImages,
     cms,
     guides: buyingGuides,

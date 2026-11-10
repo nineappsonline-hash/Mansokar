@@ -34,7 +34,7 @@ export type Product = {
   seo?: { title?: Text; description?: Text; manual?: boolean };
   policy_refs?: string[];
   condition?: "new";
-  seo_updated_at?:string|null;
+  seo_updated_at?: string | null;
   demo: boolean;
   orderable: boolean;
   status: string;
@@ -175,7 +175,8 @@ export function fitmentLabel(
     if (locale === "ar") return `متوافق مع ${vehicle.name.ar}`;
     return `Compatible with your ${vehicle.name.en}`;
   }
-  if (locale === "ar") return `لم يتم تأكيد التوافق مع ${vehicle.name.ar}`;
+  if (locale === "ar")
+    return `لسه ما اتأكدناش إن القطعة مناسبة لـ ${vehicle.name.ar}`;
   return `Compatibility not confirmed for ${vehicle.name.en}`;
 }
 export function priceCart(

@@ -15,7 +15,7 @@ export function InstallmentsGuide({ locale }: { locale: Locale }) {
     <article className="shell section stack">
       <h1>
         {ar
-          ? "دليل شراء قطع غيار السيارات بالتقسيط في مصر"
+          ? "دليل شراء قطع غيار العربيات بالتقسيط في مصر"
           : "Buying car spare parts in installments in Egypt"}
       </h1>
       <p className="lead">
@@ -31,7 +31,7 @@ export function InstallmentsGuide({ locale }: { locale: Locale }) {
         </h2>
         <p>
           {ar
-            ? "راجع طرق الدفع المفعلة الظاهرة عند إتمام الطلب. هذا الدليل يشرح البطاقات وشركات التقسيط، مثل ڤاليو وكونتكت وسهولة وكليڤر وأمان؛ ذكر الشركة لا يؤكد قبولها لهذا الطلب. تحقق من الأهلية والتكلفة والخطة مع مقدم الخدمة."
+            ? "راجع طرق الدفع المفعلة الظاهرة وقت تأكيد الطلب. هذا الدليل يشرح البطاقات وشركات التقسيط، مثل ڤاليو وكونتكت وسهولة وكليڤر وأمان؛ ذكر الشركة لا يؤكد قبولها لهذا الطلب. تحقق من الأهلية والتكلفة والخطة مع مقدم الخدمة."
             : "Check the enabled payment methods shown at checkout. This guide explains cards and finance providers such as Valu, Contact, Souhoola, Klivvr and Aman; naming a provider does not confirm acceptance for this order. Verify eligibility, costs and the plan with the provider."}
         </p>
       </section>
@@ -71,7 +71,7 @@ export function InstallmentsGuide({ locale }: { locale: Locale }) {
         <ul>
           <li>
             {ar
-              ? "رقم القطعة، سنة السيارة، المحرك والتوافق."
+              ? "رقم القطعة، سنة الصنع، الموتور والتوافق."
               : "Part number, vehicle year, engine and compatibility."}
           </li>
           <li>

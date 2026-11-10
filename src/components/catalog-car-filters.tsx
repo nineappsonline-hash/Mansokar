@@ -23,7 +23,7 @@ export function CatalogCarFilters({
   return (
     <>
       <label>
-        {ar ? "ماركة السيارة" : "Car make"}
+        {ar ? "ماركة العربية" : "Car make"}
         <select
           name="make"
           value={make}
@@ -42,7 +42,7 @@ export function CatalogCarFilters({
         </select>
       </label>
       <label>
-        {ar ? "موديل السيارة" : "Car model"}
+        {ar ? "موديل العربية" : "Car model"}
         <select
           name="model"
           disabled={!make}
@@ -63,7 +63,7 @@ export function CatalogCarFilters({
         </select>
       </label>
       <label>
-        {ar ? "سنة السيارة" : "Model year"}
+        {ar ? "سنة الصنع" : "Model year"}
         <select
           name="year"
           disabled={!model}

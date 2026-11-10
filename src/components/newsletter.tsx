@@ -13,7 +13,7 @@ export function Newsletter({ locale }: { locale: Locale }) {
       <h2>{ar ? "اشترك في عروضنا" : "Be first to know"}</h2>
       <p>
         {ar
-          ? "كن أول من يعرف أحدث العروض والمنتجات"
+          ? "خليك أول واحد يعرف عروضنا والمنتجات الجديدة"
           : "Get the latest offers and new arrivals."}
       </p>
       <form
@@ -30,14 +30,14 @@ export function Newsletter({ locale }: { locale: Locale }) {
             if (!r.ok) throw Error();
             setMessage(
               ar
-                ? "تم الاشتراك بنجاح. شكرًا لاهتمامك بموبِك!"
+                ? "اشتراكك اتسجل. هنبعتلك أحدث عروض موبِك!"
                 : "You’re subscribed. Thank you for choosing MOPC!",
             );
             setEmail("");
           } catch {
             setMessage(
               ar
-                ? "تعذر الاشتراك الآن. حاول مرة أخرى."
+                ? "مقدرناش نسجّل اشتراكك دلوقتي. جرّب تاني."
                 : "Unable to subscribe right now. Please try again.",
             );
           } finally {
@@ -55,12 +55,12 @@ export function Newsletter({ locale }: { locale: Locale }) {
           maxLength={254}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder={ar ? "أدخل بريدك الإلكتروني" : "Your email address"}
+          placeholder={ar ? "اكتب إيميلك" : "Your email address"}
         />
         <button disabled={busy} type="submit">
           {busy
             ? ar
-              ? "جارٍ الاشتراك…"
+              ? "بنسجّل اشتراكك…"
               : "Joining…"
             : ar
               ? "اشتراك"
@@ -70,7 +70,7 @@ export function Newsletter({ locale }: { locale: Locale }) {
       </form>
       <small>
         {ar
-          ? "بالاشتراك توافق على استلام عروضنا وفق "
+          ? "باشتراكك بتوافق تستقبل عروضنا حسب "
           : "By subscribing you agree to receive offers under our "}
         <Link href={`/${locale}/policies/privacy`}>
           {ar ? "سياسة الخصوصية" : "privacy policy"}

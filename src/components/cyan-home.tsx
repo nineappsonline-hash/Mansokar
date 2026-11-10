@@ -82,7 +82,7 @@ export async function CyanHome({
     },
     {
       icon: CarFront,
-      text: ar ? "توافق دقيق مع عربيتك" : "Find the right fit for your car",
+      text: ar ? "قطع مناسبة لعربيتك" : "Find the right fit for your car",
     },
     { icon: Coins, text: ar ? "أسعار واضحة" : "Clear, straightforward prices" },
     {
@@ -257,7 +257,7 @@ export async function CyanHome({
       </section>
       <section className="shell cyan-why">
         <h2 className="cyan-section-title">
-          {ar ? "لماذا تختار MOPC؟" : "Why choose MOPC?"}
+          {ar ? "ليه تختار موبِك؟" : "Why choose MOPC?"}
         </h2>
         <div className="cyan-benefits">
           {[

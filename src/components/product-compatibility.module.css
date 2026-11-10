@@ -40,73 +40,7 @@
   gap: 8px;
 }
 .applications li {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: #fff;
-  border: 1px solid #e2e8ee;
-  border-radius: 9px;
-  box-shadow: 0 4px 12px -10px #102b4c33;
-}
-.emblem {
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border: 1px solid #e9edf1;
-  border-radius: 50%;
-  background: #fafbfc;
-  color: #50718a;
-}
-.emblem img {
-  width: 26px;
-  height: 26px;
-  object-fit: contain;
-}
-.identity {
   min-width: 0;
-}
-.make {
-  display: block;
-  color: #718391;
-  font-size: 11px;
-  font-weight: 500;
-  margin-bottom: 3px;
-  line-height: 1.6;
-}
-.identity strong {
-  display: block;
-  color: #102d46;
-  font-size: 17px;
-  font-weight: 600;
-  line-height: 1.4;
-  overflow-wrap: anywhere;
-}
-.yearGroup {
-  display: grid;
-  gap: 4px;
-  justify-items: start;
-  min-width: 0;
-}
-.yearGroup > span {
-  color: #81909c;
-  font-size: 10px;
-  line-height: 1.5;
-}
-.yearGroup bdi {
-  background: #edf4f8;
-  color: #23526f;
-  border: 1px solid #e2edf3;
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1.5;
-  font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
-  max-width: 160px;
 }
 .applications small {
   display: block;
@@ -121,16 +55,6 @@
   }
   .applications h2 {
     font-size: 13px;
-  }
-  .applications li {
-    gap: 9px;
-    padding: 10px;
-  }
-  .identity strong {
-    font-size: 16px;
-  }
-  .yearGroup bdi {
-    max-width: 110px;
   }
 }
 

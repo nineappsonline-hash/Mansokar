@@ -25,8 +25,8 @@ export function productSpecifications(
     country_of_origin: ar ? "بلد المنشأ" : "Country of origin",
     warranty_months: ar ? "مدة الضمان" : "Warranty period",
     fitting_position: ar ? "مكان التركيب" : "Fitting position",
-    engine: ar ? "المحرك" : "Engine",
-    engine_code: ar ? "كود المحرك" : "Engine code",
+    engine: ar ? "الموتور" : "Engine",
+    engine_code: ar ? "كود الموتور" : "Engine code",
     material: ar ? "الخامة" : "Material",
     color: ar ? "اللون" : "Colour",
     weight: ar ? "الوزن" : "Weight",
@@ -93,8 +93,8 @@ export function productSpecifications(
         ? months === 1
           ? "شهر واحد"
           : months === 2
-            ? "شهران"
-            : `${number} ${months <= 10 ? "أشهر" : "شهرًا"}`
+            ? "شهرين"
+            : `${number} ${months <= 10 ? "شهور" : "شهر"}`
         : `${number} ${months === 1 ? "month" : "months"}`;
     }
     rows.push({

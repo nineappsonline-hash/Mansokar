@@ -1,3 +1,7 @@
+import {
+  productCardVehicles,
+  type CardCarCatalog,
+} from "./product-card-vehicles";
 import type { Product, Text } from "./catalog";
 import { countryOfOrigin } from "./product-specifications";
 import { readApplications } from "./product-applications";
@@ -62,6 +66,7 @@ export function publicProduct(
   p: Product,
   context?: CarContext,
   verified = false,
+  catalog?: CardCarCatalog,
 ): Product {
   const matches =
     context &&
@@ -100,14 +105,14 @@ export function publicProduct(
   const description =
     p.demo && !matches
       ? {
-          ar: "منتج تجريبي خيالي. المواصفات والأسعار بيانات اختبار وليست عرضاً فعلياً.",
+          ar: "منتج تجريبي للاختبار بس. المواصفات والأسعار دي مش عرض بيع حقيقي.",
           en: "Fictional demonstration product. Specifications and prices are test data, not a real offering.",
         }
       : {
-          ar: `${name.ar} من ${p.manufacturer}. رقم القطعة ${p.partNumber}. راجع رقم القطعة وتكوين السيارة قبل الطلب.${compatibility.ar}`,
+          ar: `${name.ar} من ${p.manufacturer}. رقم القطعة ${p.partNumber}. راجع رقم القطعة ومواصفات العربية قبل الطلب.${compatibility.ar}`,
           en: `${name.en} by ${p.manufacturer}. Part number ${p.partNumber}. Check the part number and vehicle configuration before ordering.${compatibility.en}`,
         };
-  return {
+  const projected: Product = {
     id: p.id,
     sku: p.sku,
     slug: publicProductSlug(p),
@@ -155,6 +160,52 @@ export function publicProduct(
             description,
           },
   };
+  if (catalog && !p.demo) {
+    for (const locale of ["ar", "en"] as const) {
+      const cars = productCardVehicles(
+        p,
+        catalog,
+        locale,
+        context,
+        Boolean(matches),
+      );
+      if (!cars.length) continue;
+      const vehicleText = cars
+        .map((car) => `${car.name}${car.years ? ` ${car.years}` : ""}`)
+        .join(locale === "ar" ? "، " : "; ");
+      const automaticTitle = `${p.name[locale]} ${p.manufacturer} | ${vehicleText} | ${p.partNumber}`;
+      const manualTitle =
+        p.seo?.manual && !context ? p.seo.title?.[locale]?.trim() : undefined;
+      const title = manualTitle
+        ? cars.every(
+            (car) =>
+              manualTitle.includes(car.name) &&
+              (!car.years || manualTitle.includes(car.years)),
+          )
+          ? manualTitle
+          : `${manualTitle} | ${vehicleText}`
+        : automaticTitle;
+      const automaticDescription =
+        locale === "ar"
+          ? `${p.name.ar} من ماركة ${p.manufacturer} لعربيات ${vehicleText}. رقم القطعة ${p.partNumber}. قطعة غيار أصلية بضمان الوكيل أو المورد حسب المنتج، وتقدر تطلبها من موبِك في مصر.`
+          : `${p.name.en} by ${p.manufacturer} for ${vehicleText}. Part number ${p.partNumber}. Genuine spare parts with an agent or supplier warranty according to the product, available to order in Egypt.`;
+      const manualDescription =
+        p.seo?.manual && !context
+          ? p.seo.description?.[locale]?.trim()
+          : undefined;
+      const description = manualDescription
+        ? `${manualDescription} ${locale === "ar" ? "العربيات المناسبة للقطعة:" : "Fits"} ${vehicleText}.`
+        : automaticDescription;
+      projected.description[locale] = description;
+      projected.seo ??= {};
+      projected.seo.title = { ...projected.seo.title, [locale]: title } as Text;
+      projected.seo.description = {
+        ...projected.seo.description,
+        [locale]: description,
+      } as Text;
+    }
+  }
+  return projected;
 }
 export function productContextHref(
   locale: string,

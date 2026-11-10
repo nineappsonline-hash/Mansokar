@@ -5,7 +5,7 @@ import {
 import styles from "./product-card.module.css";
 import { FavoriteButton } from "./favorites";
 import Link from "next/link";
-import { ArrowUpRight, CarFront, Globe2, Package } from "lucide-react";
+import { ArrowUpRight, Globe2, Package } from "lucide-react";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -24,6 +24,7 @@ import {
   type CarContext,
 } from "@/lib/public-product";
 import { OriginalBadge } from "./original-badge";
+import { VehicleBadge } from "./vehicle-badge";
 export async function ProductCard({
   product: raw,
   locale,
@@ -158,18 +159,31 @@ export async function ProductCard({
           <div
             className={styles.vehicles}
             aria-label={
-              locale === "ar" ? "السيارات المتوافقة" : "Vehicle applications"
+              locale === "ar" ? "العربيات المتوافقة" : "Vehicle applications"
             }
           >
-            {vehicleRows.slice(0, 2).map((row) => (
-              <div className={styles.vehicle} key={row.id}>
-                <CarFront size={15} aria-hidden="true" />
-                <span>
-                  <strong>{row.name}</strong>
-                  {row.years && <bdi className={styles.years}>{row.years}</bdi>}
-                </span>
-              </div>
-            ))}
+            {vehicleRows.slice(0, 2).map((row) => {
+              const model = carCatalog.models.find((m) => m.id === row.id);
+              const brand = carCatalog.brands.find(
+                (b) => b.slug === model?.brand,
+              );
+              return (
+                <VehicleBadge
+                  key={row.id}
+                  locale={locale}
+                  make={
+                    brand
+                      ? locale === "ar"
+                        ? brand.ar
+                        : brand.name
+                      : undefined
+                  }
+                  model={model?.name[locale] ?? row.name}
+                  years={row.years}
+                  brand={brand?.slug}
+                />
+              );
+            })}
             {vehicleRows.length > 2 && (
               <Link className={styles.more} href={href}>
                 {locale === "ar"

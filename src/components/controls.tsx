@@ -81,7 +81,7 @@ export function SelectVehicle({
     >
       <label htmlFor="configuration">
         {locale === "ar"
-          ? "السنة والمحرك وتفاصيل السيارة"
+          ? "السنة والموتور وتفاصيل العربية"
           : "Year, engine & vehicle details"}
       </label>
       <select
@@ -326,13 +326,13 @@ export function Cart({
       <header className={commerce.header}>
         <span className={commerce.eyebrow}>
           {locale === "ar"
-            ? "اختياراتك، في مكان واحد"
+            ? "كل اختياراتك في مكان واحد"
             : "YOUR NEXT JOURNEY STARTS HERE"}
         </span>
         <h1>{locale === "ar" ? "سلة التسوق" : "Your shopping bag"}</h1>
         <p>
           {locale === "ar"
-            ? "راجع القطع التي اخترتها واستعد للطريق."
+            ? "كل القطع اللي اخترتها هنا. كمّل طلبك لما تكون جاهز."
             : "A few great choices. Review your parts and get ready for the road."}
         </p>
         <a href={`/${locale}/catalog`}>
@@ -353,13 +353,11 @@ export function Cart({
             <div className={commerce.empty}>
               <ShoppingBag size={44} strokeWidth={1.2} />
               <h2>
-                {locale === "ar"
-                  ? "سلتك بانتظار اختياراتك"
-                  : "Your bag is waiting"}
+                {locale === "ar" ? "سلتك لسه فاضية" : "Your bag is waiting"}
               </h2>
               <p>
                 {locale === "ar"
-                  ? "اكتشف القطع المناسبة لسيارتك وأضفها إلى السلة."
+                  ? "اختار القطع المناسبة لعربيتك وضيفها للسلة."
                   : "Find the right parts for your car and add them to your bag."}
               </p>
               <a className="button" href={`/${locale}/catalog`}>
@@ -393,7 +391,7 @@ export function Cart({
                             ? "جار تحميل المنتج…"
                             : "Loading product…"
                           : locale === "ar"
-                            ? "المنتج غير متاح — يرجى حذفه"
+                            ? "المنتج غير متاح — احذفه من السلة"
                             : "Product unavailable — please remove it")}
                     </a>
                     {line.make && (
@@ -458,7 +456,7 @@ export function Cart({
           {loadError && (
             <p role="alert">
               {locale === "ar"
-                ? "تعذر تحميل السلة. أعد تحميل الصفحة."
+                ? "مقدرناش نحمّل السلة. حدّث الصفحة وجرّب تاني."
                 : "Could not load the cart. Please reload the page."}
             </p>
           )}
@@ -495,7 +493,7 @@ export function Cart({
             <Truck size={18} />
             <span>
               {locale === "ar"
-                ? "اختر منطقة التوصيل عند الدفع"
+                ? "اختار منطقة التوصيل عند الدفع"
                 : "Choose your delivery area at checkout"}
             </span>
           </div>
@@ -559,7 +557,7 @@ export function Compare({
       <section className="panel stack">
         <h2>
           {locale === "ar"
-            ? "اختر قطعة ثانية للمقارنة"
+            ? "اختار قطعة ثانية للمقارنة"
             : "Choose a second product to compare"}
         </h2>
         <p>{selected[0].name[locale]}</p>
@@ -589,7 +587,7 @@ export function Compare({
     <>
       <p className="muted">
         {locale === "ar"
-          ? "اختر ٢–٤ قطع من نفس العائلة للمقارنة."
+          ? "اختار ٢–٤ قطع من نفس العائلة للمقارنة."
           : "Select 2–4 products from one part family to compare."}
       </p>
       {selected.length === 1 && (
@@ -824,7 +822,7 @@ export function ClearVehicle({ locale }: { locale: Locale }) {
         window.location.assign(`/${locale}/catalog`);
       }}
     >
-      {locale === "ar" ? "إلغاء اختيار السيارة" : "Clear vehicle"}
+      {locale === "ar" ? "إلغاء اختيار العربية" : "Clear vehicle"}
     </button>
   );
 }

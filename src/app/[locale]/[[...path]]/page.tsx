@@ -50,7 +50,6 @@ import {
   Search,
   ShieldCheck,
   Route,
-  CarFront,
   SlidersHorizontal,
   Truck,
   RotateCcw,
@@ -96,6 +95,7 @@ import {
   MobileBuyBar,
 } from "@/components/controls";
 import { OriginalBadge } from "@/components/original-badge";
+import { VehicleBadge } from "@/components/vehicle-badge";
 import { AuthForm, RequestForm, Checkout, ApiForm } from "@/components/forms";
 import { PaymentStatus } from "@/components/payment-status";
 export const dynamic = "force-dynamic";
@@ -139,10 +139,13 @@ export async function generateMetadata({
       : null;
   if (path[0] === "products" && path.length === 2 && !rawProductMeta)
     notFound();
-  let productMeta = rawProductMeta ? publicProduct(rawProductMeta) : null;
+  const metadataVehicles = rawProductMeta ? await vehicleCatalog() : undefined;
+  let productMeta = rawProductMeta
+    ? publicProduct(rawProductMeta, undefined, false, metadataVehicles)
+    : null;
   let yearKeywords: string[] = [];
   if (rawProductMeta && filters.make && filters.model) {
-    const { models, brands } = await vehicleCatalog();
+    const { models, brands } = metadataVehicles!;
     const context = carContext(
       { make: filters.make, model: filters.model, year: filters.year },
       models,
@@ -162,6 +165,7 @@ export async function generateMetadata({
         rawProductMeta,
         context,
         matching?.products.some((p) => p.id === rawProductMeta.id),
+        metadataVehicles,
       );
       const application = readApplications(rawProductMeta.specs).find(
         (a) => a.model_id === context.modelId,
@@ -250,7 +254,7 @@ export async function generateMetadata({
           ar:
             "استعرض قطع غيار " +
             nameAr +
-            " وحدد سنة السيارة والمحرك للتحقق من التوافق.",
+            " وحدد سنة الصنع والموتور للتحقق من التوافق.",
           en:
             "Browse " +
             nameEn +
@@ -268,7 +272,7 @@ export async function generateMetadata({
   if (!pageMeta && slug === "site-map")
     pageMeta = {
       title: {
-        ar: "خريطة الموقع: السيارات والمنتجات وأدلة الشراء",
+        ar: "خريطة الموقع: العربيات والمنتجات وأدلة الشراء",
         en: "Site map: vehicles, products and buying guides",
       },
       description: {
@@ -307,7 +311,7 @@ export async function generateMetadata({
   if (!pageMeta && slug === "guides")
     pageMeta = {
       title: {
-        ar: "أدلة شراء قطع غيار السيارات في مصر",
+        ar: "أدلة شراء قطع غيار العربيات في مصر",
         en: "Car spare-parts buying guides in Egypt",
       },
       description: {
@@ -320,7 +324,7 @@ export async function generateMetadata({
   const routeTitles: Record<string, string> = {
     installments:
       l === "ar"
-        ? "تقسيط قطع غيار السيارات في مصر: الكروت وشركات التمويل"
+        ? "تقسيط قطع غيار العربيات في مصر: الكروت وشركات التمويل"
         : "Car parts installments in Egypt: cards and finance companies",
     catalog: labels.catalog,
     offers: labels.offers,
@@ -896,7 +900,7 @@ export default async function Page({ params, searchParams }: Props) {
             <h2>{w.empty}</h2>
             <p>
               {locale === "ar"
-                ? "لا توجد بيانات توافق مؤكدة لهذه السيارة ضمن النتائج الحالية."
+                ? "مفيش بيانات توافق مؤكدة لهذه العربية ضمن النتائج الحالية."
                 : "No confirmed fitment data for this vehicle in the current results."}
             </p>
             <Link href={`/${locale}/request-part`}>{w.request}</Link>
@@ -962,6 +966,7 @@ export default async function Page({ params, searchParams }: Props) {
       raw,
       browsingContext,
       Boolean(flags[raw.id] || matching?.products.some((p) => p.id === raw.id)),
+      { brands, models: vehicleModels },
     );
     const confirmed = flags[p.id];
     const showApplications = !vehicle && !browsingContext;
@@ -989,6 +994,42 @@ export default async function Page({ params, searchParams }: Props) {
           },
         )
       : [];
+    const activeVehicle =
+      vehicle ??
+      (browsingContext
+        ? vehicles.find(
+            (v) =>
+              v.brand === browsingContext.make &&
+              v.model === browsingContext.model &&
+              v.year === browsingContext.year,
+          )
+        : undefined);
+    const activeBrand = brands.find(
+      (b) =>
+        b.slug ===
+        (activeVehicle?.brand ?? (browsingContext ? browsingContext.make : "")),
+    );
+    const activeModel = activeVehicle
+      ? vehicleModels.find(
+          (m) =>
+            m.brand === activeVehicle.brand && m.slug === activeVehicle.model,
+        )
+      : browsingContext
+        ? vehicleModels.find((m) => m.id === browsingContext.modelId)
+        : undefined;
+    const activeYear = activeVehicle?.year ?? browsingContext?.year;
+    const activeVehicleBadge = activeBrand
+      ? {
+          brand: activeBrand.slug,
+          make: locale === "ar" ? activeBrand.ar : activeBrand.name,
+          model:
+            activeModel?.name[locale] ??
+            browsingContext?.model ??
+            activeVehicle?.model ??
+            "",
+          years: activeYear ? String(activeYear) : undefined,
+        }
+      : undefined;
 
     function vehicleForItem(
       vehicle: Vehicle | undefined,
@@ -1012,7 +1053,7 @@ export default async function Page({ params, searchParams }: Props) {
           ? browsingContext.name.ar
           : browsingContext.name.en;
       }
-      return locale === "ar" ? "لم يتم اختيار سيارة" : "No vehicle selected";
+      return locale === "ar" ? "لسه ما اخترتش عربيتك" : "No vehicle selected";
     }
 
     let media: {
@@ -1117,7 +1158,9 @@ export default async function Page({ params, searchParams }: Props) {
           <aside className="purchase-panel product-page-animate slide">
             <div className="purchase-heading">
               <span className="eyebrow">
-                {p.category.toUpperCase()} / {p.sku}
+                {locale === "ar"
+                  ? "قطع غيار أصلية بضمان"
+                  : "Genuine spare parts with warranty"}
               </span>
               <h1>{p.name[locale]}</h1>
               <div className="badges">
@@ -1153,7 +1196,7 @@ export default async function Page({ params, searchParams }: Props) {
                 <div className={compatibilityStyles.applications}>
                   <h2>
                     {locale === "ar"
-                      ? "السيارات المتوافقة"
+                      ? "العربيات المتوافقة"
                       : "Compatible vehicles"}
                   </h2>
                   {compatibleCars.length > 0 ? (
@@ -1161,60 +1204,46 @@ export default async function Page({ params, searchParams }: Props) {
                       <ul
                         aria-label={
                           locale === "ar"
-                            ? "السيارات المتوافقة"
+                            ? "العربيات المتوافقة"
                             : "Compatible vehicles"
                         }
                       >
                         {compatibleCars.map((car) => (
                           <li key={car.id}>
-                            <span className={compatibilityStyles.emblem}>
-                              {car.logo ? (
-                                <img
-                                  src={car.logo}
-                                  alt=""
-                                  width={40}
-                                  height={40}
-                                />
-                              ) : (
-                                <CarFront size={25} aria-hidden="true" />
-                              )}
-                            </span>
-                            <div className={compatibilityStyles.identity}>
-                              <span className={compatibilityStyles.make}>
-                                {car.make}
-                              </span>
-                              <strong>{car.model || car.name}</strong>
-                            </div>
-                            <div className={compatibilityStyles.yearGroup}>
-                              <span>
-                                {locale === "ar"
-                                  ? "سنوات الموديل"
-                                  : "Model years"}
-                              </span>
-                              <bdi>
-                                {car.years ||
-                                  (locale === "ar"
-                                    ? "راجع سنوات الموديل"
-                                    : "Check model years")}
-                              </bdi>
-                            </div>
+                            <VehicleBadge
+                              locale={locale}
+                              make={car.make}
+                              model={car.model || car.name}
+                              years={car.years}
+                              logo={car.logo}
+                              size="large"
+                            />
                           </li>
                         ))}
                       </ul>
                       <small>
                         {locale === "ar"
-                          ? "راجع رقم القطعة ومواصفات المحرك قبل الطلب."
+                          ? "راجع رقم القطعة ومواصفات الموتور قبل الطلب."
                           : "Check the part number and engine specifications before ordering."}
                       </small>
                     </>
                   ) : (
                     <p>
                       {locale === "ar"
-                        ? "لم تُسجّل سيارات متوافقة لهذه القطعة بعد. تواصل معنا برقم القطعة وبيانات سيارتك للتحقق من التوافق."
+                        ? "لسه مفيش عربيات مسجلة للقطعة دي. ابعتلنا رقم القطعة وبيانات عربيتك علشان نساعدك."
                         : "No compatible vehicles have been recorded for this part yet. Contact us with the part number and your vehicle details to check fitment."}
                     </p>
                   )}
                 </div>
+              ) : activeVehicleBadge ? (
+                <VehicleBadge
+                  locale={locale}
+                  size="large"
+                  brand={activeVehicleBadge.brand}
+                  make={activeVehicleBadge.make}
+                  model={activeVehicleBadge.model}
+                  years={activeVehicleBadge.years}
+                />
               ) : (
                 <p>{vehicleForItem(vehicle, locale)}</p>
               )}
@@ -1245,14 +1274,14 @@ export default async function Page({ params, searchParams }: Props) {
             <div className="purchase-notes">
               <Link className="small muted" href={`/${locale}/checkout`}>
                 {locale === "ar"
-                  ? "تحقق من منطقة التوصيل عند الطلب"
+                  ? "اختار منطقة التوصيل وقت تأكيد الطلب"
                   : "Check delivery area at checkout"}{" "}
                 ↗
               </Link>
               <p className="small muted">
                 {p.demo
                   ? locale === "ar"
-                    ? "منتج تجريبي خيالي للاختبار."
+                    ? "منتج تجريبي للاختبار للاختبار."
                     : "Fictional demonstration product for testing."
                   : locale === "ar"
                     ? ""
@@ -1285,7 +1314,7 @@ export default async function Page({ params, searchParams }: Props) {
               </strong>
               <span>
                 {locale === "ar"
-                  ? "الرسوم حسب المحافظة"
+                  ? "التكلفة حسب المحافظة"
                   : "Fees by governorate"}
               </span>
             </div>
@@ -1316,7 +1345,7 @@ export default async function Page({ params, searchParams }: Props) {
               <span className="eyebrow">01 / THE DETAILS</span>
               <h2>
                 {locale === "ar"
-                  ? "التفاصيل تصنع الفرق."
+                  ? "تفاصيل القطعة"
                   : "The difference is in the details."}
               </h2>
               <p className="lead">
@@ -1414,7 +1443,7 @@ export default async function Page({ params, searchParams }: Props) {
         <details className={compactProduct.disclosure}>
           <summary>
             {locale === "ar"
-              ? "الأسئلة الشائعة عن المنتج"
+              ? "أسئلة عن القطعة"
               : "Product questions & answers"}
           </summary>
           <ProductAnswers product={p} locale={locale} />
@@ -1423,7 +1452,7 @@ export default async function Page({ params, searchParams }: Props) {
           <section className="section product-page-animate slide">
             <h2>
               {locale === "ar"
-                ? "قطع مكملة لسيارتك"
+                ? "قطع مكملة لعربيتك"
                 : "Often purchased together for your car"}
             </h2>
             {
@@ -1736,7 +1765,7 @@ export default async function Page({ params, searchParams }: Props) {
               <>
                 <ApiForm
                   action="garage"
-                  label={locale === "ar" ? "حفظ السيارة" : "Save vehicle"}
+                  label={locale === "ar" ? "حفظ العربية" : "Save vehicle"}
                 >
                   <label>
                     {w.selected}
@@ -1750,7 +1779,7 @@ export default async function Page({ params, searchParams }: Props) {
                   </label>
                   <label>
                     {locale === "ar"
-                      ? "اسم اختياري للسيارة"
+                      ? "اسم اختياري للعربية"
                       : "Vehicle nickname (optional)"}
                     <input name="nickname" maxLength={70} />
                   </label>
@@ -1774,7 +1803,7 @@ export default async function Page({ params, searchParams }: Props) {
                       extra={{ vehicle: g.vehicle_config_id }}
                       label={
                         locale === "ar"
-                          ? "استخدام هذه السيارة"
+                          ? "استخدام هذه العربية"
                           : "Use this vehicle"
                       }
                     />
@@ -1784,7 +1813,7 @@ export default async function Page({ params, searchParams }: Props) {
                       label={locale === "ar" ? "حفظ الاسم" : "Save nickname"}
                     >
                       <label>
-                        {locale === "ar" ? "اسم السيارة" : "Vehicle nickname"}
+                        {locale === "ar" ? "اسم العربية" : "Vehicle nickname"}
                         <input
                           name="nickname"
                           defaultValue={g.nickname}
@@ -1887,12 +1916,12 @@ export default async function Page({ params, searchParams }: Props) {
         <h1>{locale === "ar" ? "مصادر الصور" : "Image credits"}</h1>
         <p>
           {locale === "ar"
-            ? "مشاهد السيارات وصور الموديلات وخلفيات الماركات والبانرات رسوم توضيحية مولدة بالذكاء الاصطناعي. ليست صوراً لإثبات الموديل أو السنة أو توافق القطع."
+            ? "مشوف العربيات وصور الموديلات وخلفيات الماركات والبانرات رسوم توضيحية مولدة بالذكاء الاصطناعي. ليست صوراً لإثبات الموديل أو السنة أو توافق القطع."
             : "The car scenes, model-card artwork, brand-card backgrounds and promotional banners are AI-generated illustrations. They are not evidence of model year or part compatibility."}
         </p>
         <p>
           {locale === "ar"
-            ? "الصور توضيحية للموديل ولا تثبت التوافق مع السنة أو المحرك. تم قص الصور وتعتيمها في التصميم."
+            ? "الصور توضيحية للموديل ولا تثبت التوافق مع السنة أو الموتور. تم قص الصور وتعتيمها في التصميم."
             : "Photographs illustrate model names; they do not establish year or engine fitment. Images are cropped and darkened in the design."}
         </p>
         <p>

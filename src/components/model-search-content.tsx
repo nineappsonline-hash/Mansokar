@@ -22,10 +22,10 @@ export function ModelSearchContent({
       <p>
         {total
           ? ar
-            ? `توجد ${total} نتيجة منشورة مرتبطة بهذا الموديل في كتالوج موبِك. اختار سنة سيارتك وراجع رقم القطعة والمحرك وأي استثناءات قبل الطلب.`
+            ? `توجد ${total} نتيجة منشورة مرتبطة بهذا الموديل في كتالوج موبِك. اختار سنة عربيتك وراجع رقم القطعة والموتور وأي استثناءات قبل الطلب.`
             : `The MOPC catalog has ${total} published results linked to this model. Choose your year and check the part number, engine and any exclusions before ordering.`
           : ar
-            ? "لا توجد قطع منشورة مرتبطة بهذا الموديل حاليًا. تواصل معنا برقم القطعة وبيانات السيارة للمراجعة؛ عدم وجود رابط توافق لا يعني أن القطعة مناسبة."
+            ? "مفيش قطع منشورة مرتبطة بهذا الموديل حاليًا. تواصل معنا برقم القطعة وبيانات العربية للمراجعة؛ عدم وجود رابط توافق لا يعني أن القطعة مناسبة."
             : "No published parts are linked to this model yet. Send the part number and vehicle details for review; a missing compatibility record does not mean a part fits."}
       </p>
       {years.length > 0 && (
@@ -44,7 +44,7 @@ export function ModelSearchContent({
       <h3>{ar ? "إزاي أتأكد من التوافق؟" : "How can I confirm fitment?"}</h3>
       <p>
         {ar
-          ? "طابق رقم الشركة المصنعة ورقم القطعة القديمة، ثم راجع سنة الصنع وتكوين السيارة. اطلب مراجعة إذا كانت البيانات ناقصة."
+          ? "طابق رقم الشركة المصنعة ورقم القطعة القديمة، ثم راجع سنة الصنع ومواصفات العربية. اطلب مراجعة إذا كانت البيانات ناقصة."
           : "Match the manufacturer part number and old part number, then check the vehicle year and configuration. Request a review when details are incomplete."}
       </p>
       <nav
@@ -55,7 +55,7 @@ export function ModelSearchContent({
           {ar ? "دليل التوافق" : "Fitment guide"}
         </Link>
         <Link href={`/${locale}/guides/identify-vehicle-configuration`}>
-          {ar ? "تحديد بيانات السيارة" : "Identify your vehicle"}
+          {ar ? "تحديد بيانات العربية" : "Identify your vehicle"}
         </Link>
         <Link href={`/${locale}/request-part`}>
           {ar ? "طلب مراجعة قطعة" : "Request a part review"}

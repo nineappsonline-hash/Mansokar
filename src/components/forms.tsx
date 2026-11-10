@@ -97,13 +97,13 @@ export function ApiForm({
           setMessage(
             locale === "ar"
               ? action === "auth" && body.mode === "signup"
-                ? "راجع بريدك الإلكتروني لتأكيد الحساب، ثم قم بتسجيل الدخول."
+                ? "افتح الإيميل وفعّل حسابك من رسالة التأكيد، وبعدها سجّل دخولك."
                 : action === "contact"
-                  ? "تم استلام طلبك. سنتواصل معك على الرقم المسجل."
+                  ? "طلبك وصلنا. هنتواصل معاك على رقم الموبايل اللي سجلته."
                   : action === "request"
-                    ? "تم حفظ طلبك للمراجعة."
+                    ? "طلبك وصلنا وهنراجعه."
                     : action === "privacy-request"
-                      ? "تم حفظ طلب حذف البيانات للمراجعة."
+                      ? "طلب حذف بياناتك وصلنا وهنراجعه."
                       : "تم الحفظ."
               : data.message || "Saved",
           );
@@ -178,7 +178,7 @@ export function AuthForm({
       {!configured && (
         <p className="notice">
           {locale === "ar"
-            ? "يلزم إعداد Supabase لتفعيل الحسابات."
+            ? "تسجيل الدخول مش متاح حاليًا. جرّب تاني بعد شوية."
             : "Supabase setup is required to enable accounts."}
         </p>
       )}
@@ -248,7 +248,7 @@ export function RequestForm({
           <input name="contact" required minLength={6} maxLength={254} />
         </label>
         <label htmlFor="request-vehicle">
-          {locale === "ar" ? "السيارة" : "Vehicle"}
+          {locale === "ar" ? "العربية" : "Vehicle"}
         </label>
         <select
           id="request-vehicle"
@@ -263,7 +263,7 @@ export function RequestForm({
           ))}
           <option value="other">
             {locale === "ar"
-              ? "سيارتي غير موجودة بالقائمة"
+              ? "عربيتي مش موجودة في القائمة"
               : "My vehicle is not listed"}
           </option>
         </select>
@@ -271,7 +271,7 @@ export function RequestForm({
           <fieldset className="stack">
             <legend>
               {locale === "ar"
-                ? "صف سيارتك للمراجعة اليدوية"
+                ? "اكتب بيانات عربيتك علشان نساعدك نحدد القطعة"
                 : "Describe your vehicle for manual review"}
             </legend>
             <label htmlFor="request-make">
@@ -292,12 +292,12 @@ export function RequestForm({
               <input name="year" type="number" required min={1950} max={2100} />
             </label>
             <label>
-              {locale === "ar" ? "المحرك" : "Engine"}
+              {locale === "ar" ? "الموتور" : "Engine"}
               <input name="engine" required maxLength={100} />
             </label>
             <p className="muted">
               {locale === "ar"
-                ? "هذه البيانات لوصف الطلب فقط ولا تؤكد توافق أي قطعة."
+                ? "البيانات دي بتساعدنا نفهم طلبك، وفريقنا هيأكدلك القطعة المناسبة قبل الشراء."
                 : "These details describe your inquiry and do not confirm compatibility with any part."}
             </p>
           </fieldset>
@@ -389,12 +389,12 @@ export function Checkout({
       <header className="checkout-header">
         <span className="checkout-eyebrow">
           <Lock size={12} strokeWidth={2.4} />
-          {locale === "ar" ? "إتمام آمن" : "Secure checkout"}
+          {locale === "ar" ? "طلب ودفع آمن" : "Secure checkout"}
         </span>
-        <h1>{locale === "ar" ? "إتمام طلبك" : "Complete your order"}</h1>
+        <h1>{locale === "ar" ? "كمّل طلبك" : "Complete your order"}</h1>
         <p>
           {locale === "ar"
-            ? "أكمل بيانات التوصيل واختر طريقة الدفع لإتمام الطلب."
+            ? "اكتب بيانات التوصيل واختار طريقة الدفع علشان تكمّل طلبك."
             : "Fill in delivery details and choose a payment method to place your order."}
         </p>
         <div className="checkout-header-meta">
@@ -488,7 +488,7 @@ export function Checkout({
               if (!(proof instanceof File) || !proof.size)
                 throw Error(
                   locale === "ar"
-                    ? "يرجى رفع إثبات التحويل لإتمام الطلب."
+                    ? "ارفع إيصال التحويل علشان تكمّل الطلب."
                     : "Please upload the transfer receipt to complete the order.",
                 );
               const upload = new FormData();
@@ -503,7 +503,7 @@ export function Checkout({
               if (!imageToken)
                 throw Error(
                   locale === "ar"
-                    ? "تعذر حفظ إثبات التحويل. يرجى المحاولة مرة أخرى."
+                    ? "مقدرناش نحفظ إيصال التحويل. جرّب تاني."
                     : "Unable to save the transfer receipt. Please try again.",
                 );
             }
@@ -685,7 +685,7 @@ export function Checkout({
                   className="checkout-select"
                 >
                   <option value="">
-                    {locale === "ar" ? "اختر المحافظة" : "Select governorate"}
+                    {locale === "ar" ? "اختار المحافظة" : "Select governorate"}
                   </option>
                   {governorateOptions.map((g) => (
                     <option value={g.value} key={g.value}>
@@ -701,7 +701,7 @@ export function Checkout({
                 >
                   <legend>
                     {locale === "ar"
-                      ? "اختر طريقة التوصيل"
+                      ? "اختار طريقة التوصيل"
                       : "Choose delivery method"}
                   </legend>
                   <div className={commerce.deliveryGrid}>
@@ -757,14 +757,14 @@ export function Checkout({
             {area && (
               <p className="checkout-hint">
                 {locale === "ar"
-                  ? "مدة التوصيل من تأكيد الطلب وتوافر المنتجات. أيام العمل لا تشمل الجمعة والعطلات الرسمية."
+                  ? "مدة التوصيل من تأكيد الطلب وتوافر المنتجات. أيام العمل مش بتشمل الجمعة والعطلات الرسمية."
                   : "Delivery time runs from order confirmation and product availability. Business days exclude Fridays and public holidays."}
               </p>
             )}
             {!areas.length && (
               <p className="notice checkout-notice">
                 {locale === "ar"
-                  ? "لا توجد مناطق توصيل معتمدة. الطلب غير متاح."
+                  ? "التوصيل مش متاح حاليًا، علشان كده مش ممكن نكمّل الطلب."
                   : "No approved delivery areas. Checkout is unavailable."}
               </p>
             )}
@@ -807,7 +807,7 @@ export function Checkout({
                 maxLength={40}
                 className="checkout-input"
                 placeholder={
-                  locale === "ar" ? "أدخل الكود" : "Enter coupon code"
+                  locale === "ar" ? "اكتب كود الخصم" : "Enter coupon code"
                 }
               />
             </label>
@@ -827,7 +827,7 @@ export function Checkout({
                 </h2>
                 <p className="checkout-panel-sub">
                   {locale === "ar"
-                    ? "اختر طريقة الدفع المناسبة لك. يمكنك مراجعة الإجمالي قبل التأكيد."
+                    ? "اختار طريقة الدفع المناسبة ليك. هتشوف الإجمالي قبل ما تأكد الطلب."
                     : "Choose how you'd like to pay. You can review the totals before confirming."}
                 </p>
               </div>
@@ -908,7 +908,7 @@ export function Checkout({
                           </span>
                           <span className="payment-method-sub">
                             {locale === "ar"
-                              ? "حوّل المبلغ ثم ارفع صورة إثبات التحويل."
+                              ? "حوّل المبلغ وبعدها ارفع صورة إيصال التحويل."
                               : "Transfer the amount, then upload a receipt."}
                           </span>
                         </span>
@@ -933,7 +933,7 @@ export function Checkout({
                             <span className="checkout-file-text">
                               <strong>
                                 {locale === "ar"
-                                  ? "إرفاق إثبات التحويل"
+                                  ? "ارفع إيصال التحويل"
                                   : "Attach transfer receipt"}
                               </strong>
                               <small>
@@ -983,7 +983,7 @@ export function Checkout({
                           </span>
                           <span className="payment-method-sub">
                             {locale === "ar"
-                              ? "حوّل المبلغ إلى رقم المحفظة ثم ارفع صورة إثبات التحويل."
+                              ? "حوّل المبلغ لرقم المحفظة وبعدها ارفع صورة الإيصال."
                               : "Transfer the amount to the wallet number, then upload a receipt."}
                           </span>
                         </span>
@@ -1001,7 +1001,7 @@ export function Checkout({
                             <span className="checkout-file-text">
                               <strong>
                                 {locale === "ar"
-                                  ? "إرفاق إثبات التحويل"
+                                  ? "ارفع إيصال التحويل"
                                   : "Attach transfer receipt"}
                               </strong>
                               <small>
@@ -1064,7 +1064,7 @@ export function Checkout({
               ) : (
                 <p className="notice checkout-notice">
                   {locale === "ar"
-                    ? "لم يتم تفعيل أي طريقة دفع."
+                    ? "لسه مفيش طريقة دفع متاحة."
                     : "No payment method has been activated."}
                 </p>
               )}
@@ -1145,7 +1145,7 @@ export function Checkout({
                 <ReceiptText size={18} strokeWidth={1.8} />
                 <p>
                   {locale === "ar"
-                    ? "سيظهر إجمالي المنتجات والشحن والخصم هنا بعد مراجعة الطلب."
+                    ? "إجمالي المنتجات والتوصيل والخصم هيظهر هنا بعد مراجعة الطلب."
                     : "Your item totals, delivery and discounts will appear here after you review your order."}
                 </p>
               </div>
@@ -1186,7 +1186,7 @@ export function Checkout({
                   </strong>
                   <small>
                     {locale === "ar"
-                      ? "نحن هنا للمساعدة"
+                      ? "إحنا موجودين علشان نساعدك"
                       : "We're here if you need us"}
                   </small>
                 </span>

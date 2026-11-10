@@ -56,10 +56,7 @@ export function CarModelPage({
               "@type": "ListItem",
               position: i + 1,
               name: c.name,
-              item: new URL(
-                c.path,
-                siteOrigin(),
-              ).href,
+              item: new URL(c.path, siteOrigin()).href,
             })),
           }).replace(/</g, "\\u003c"),
         }}
@@ -113,7 +110,7 @@ export function CarModelPage({
             </h1>
             <p>
               {ar
-                ? "اختر موديل سيارتك وسنة الصنع لعرض قطع الغيار المناسبة."
+                ? "اختار موديل عربيتك وسنة الصنع لعرض قطع الغيار المناسبة."
                 : "Choose your model and year to find the right spare parts."}
             </p>
           </div>

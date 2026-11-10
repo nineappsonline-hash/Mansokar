@@ -80,8 +80,12 @@ export function ModelYearCards({
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
             <option value="default">{ar ? "ترتيب حسب" : "Sort by"}</option>
             <option value="name">{ar ? "اسم الموديل" : "Model name"}</option>
-            <option value="newest">{ar ? "الأحدث سنة" : "Newest year"}</option>
-            <option value="years">{ar ? "الأكثر سنوات" : "Most years"}</option>
+            <option value="newest">
+              {ar ? "الأحدث في سنة الصنع" : "Newest year"}
+            </option>
+            <option value="years">
+              {ar ? "الأكتر في سنوات الصنع" : "Most years"}
+            </option>
           </select>
         </label>
       </div>
@@ -89,9 +93,7 @@ export function ModelYearCards({
         <div className={styles.noResults} role="status">
           <CarFront size={46} />
           <p>
-            {ar
-              ? "لا توجد موديلات مطابقة لبحثك."
-              : "No models match your search."}
+            {ar ? "مفيش موديلات مطابقة لبحثك." : "No models match your search."}
           </p>
           <button type="button" onClick={() => setQuery("")}>
             {ar ? "عرض كل الموديلات" : "Show all models"}
@@ -147,7 +149,7 @@ export function ModelYearCards({
                     {years.length ? (
                       <>
                         <span>
-                          {ar ? "الموديلات المتاحة:" : "Available years:"}
+                          {ar ? "سنوات الصنع المتاحة:" : "Available years:"}
                         </span>
                         <bdi>
                           {years.length === 1
@@ -158,7 +160,7 @@ export function ModelYearCards({
                     ) : (
                       <span>
                         {ar
-                          ? "سنوات الصنع تُضاف قريبًا"
+                          ? "سنوات الصنع هتتضاف قريب"
                           : "Model years coming soon"}
                       </span>
                     )}
@@ -173,7 +175,15 @@ export function ModelYearCards({
                   </span>
                 </div>
               </button>
-              <Link className="model-browse-link" data-model-canonical href={href}>{ar ? "تصفح كل قطع هذا الموديل" : "Browse all parts for this model"}</Link>
+              <Link
+                className="model-browse-link"
+                data-model-canonical
+                href={href}
+              >
+                {ar
+                  ? "تصفح كل قطع هذا الموديل"
+                  : "Browse all parts for this model"}
+              </Link>
               <motion.div
                 className={styles.expansion}
                 id={panelId}
@@ -240,7 +250,7 @@ export function ModelYearCards({
                     ) : (
                       <p className={styles.empty}>
                         {ar
-                          ? "سنوات هذا الموديل لم تُضف بعد."
+                          ? "لسه مفيش سنوات صنع مسجلة للموديل ده."
                           : "Years have not been added for this model yet."}
                       </p>
                     )}

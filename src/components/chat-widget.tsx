@@ -233,7 +233,7 @@ export function ChatWidget({
                 {!enabled && (
                   <p role="status" className={styles.status}>
                     {ar
-                      ? "نموذج التواصل غير متاح حاليًا. يُرجى المحاولة لاحقًا."
+                      ? "نموذج التواصل غير متاح حاليًا. جرّب تاني كمان شوية."
                       : "The contact form is currently unavailable. Please try again later."}
                   </p>
                 )}

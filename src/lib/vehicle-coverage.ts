@@ -18,7 +18,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "insignia",
         name: note("انسيجنيا", "Insignia"),
         note: note(
-          "حدّد الجيل والمحرك ومكان تركيب القطعة؛ اسم انسيجنيا وحده لا يحدد رقم القطعة.",
+          "حدّد الجيل والموتور ومكان تركيب القطعة؛ اسم انسيجنيا وحده لا يحدد رقم القطعة.",
           "Identify the generation, engine and fitting position; the Insignia name alone does not identify a part number.",
         ),
       },
@@ -26,7 +26,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "astra",
         name: note("استرا", "Astra"),
         note: note(
-          "اذكر جيل أسترا ونوع الهيكل مع السنة والمحرك، ولا تعتبر قطع الأجيال المختلفة متبادلة تلقائيًا.",
+          "اذكر جيل أسترا ونوع الهيكل مع السنة والموتور، ولا تعتبر قطع الأجيال المختلفة متبادلة تلقائيًا.",
           "Include the Astra generation and body style alongside year and engine; do not assume parts interchange between generations.",
         ),
       },
@@ -34,7 +34,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "grandland",
         name: note("جراند لاند", "Grandland"),
         note: note(
-          "اكتب الاسم الكامل لجراند لاند أو جراند لاند X كما في بيانات السيارة، وراجع المحرك ورقم القطعة.",
+          "اكتب الاسم الكامل لجراند لاند أو جراند لاند X كما في بيانات العربية، وراجع الموتور ورقم القطعة.",
           "Use the full Grandland or Grandland X designation from the vehicle records and check engine and part number.",
         ),
       },
@@ -42,7 +42,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "crossland",
         name: note("كروس لاند", "Crossland"),
         note: note(
-          "وضّح اسم كروس لاند أو كروس لاند X وسنة الصنع والمحرك قبل مطابقة قطع الصيانة.",
+          "وضّح اسم كروس لاند أو كروس لاند X وسنة الصنع والموتور قبل مطابقة قطع الصيانة.",
           "Specify Crossland or Crossland X, model year and engine before matching service parts.",
         ),
       },
@@ -65,7 +65,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "6",
         name: note("6", "6"),
         note: note(
-          "حدّد نسخة MG 6 وسنة الصنع والمحرك؛ التشابه مع أسماء قطع MG 5 لا يؤكد التوافق.",
+          "حدّد نسخة MG 6 وسنة الصنع والموتور؛ التشابه مع أسماء قطع MG 5 لا يؤكد التوافق.",
           "Identify the MG 6 version, year and engine; a similar MG 5 part name does not confirm compatibility.",
         ),
       },
@@ -73,7 +73,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "hs",
         name: note("HS", "HS"),
         note: note(
-          "دوّن جيل MG HS وبيانات المحرك ونسخة السيارة كما في مستنداتها، خاصة قبل طلب قطعة ميكانيكية أو كهربائية.",
+          "دوّن جيل MG HS وبيانات الموتور ونسخة العربية كما في مستنداتها، خاصة قبل طلب قطعة ميكانيكية أو كهربائية.",
           "Record the MG HS generation, engine and version from its documents, especially for mechanical or electrical parts.",
         ),
       },
@@ -81,7 +81,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "rx5",
         name: note("RX5", "RX5"),
         note: note(
-          "ميّز جيل RX5 ونسخة المحرك، وراجع الوصلات ومكان التركيب ورقم القطعة عند المطابقة.",
+          "ميّز جيل RX5 ونسخة الموتور، وراجع الوصلات ومكان التركيب ورقم القطعة عند المطابقة.",
           "Distinguish the RX5 generation and engine version, and compare connectors, fitting position and part number.",
         ),
       },
@@ -89,7 +89,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "zs",
         name: note("ZS", "ZS"),
         note: note(
-          "اكتب نسخة MG ZS والمحرك بالكامل؛ الاسم التجاري أو شكل القطعة وحده لا يثبت التوافق.",
+          "اكتب نسخة MG ZS والموتور بالكامل؛ الاسم التجاري أو شكل القطعة وحده لا يثبت التوافق.",
           "Provide the full MG ZS version and engine; the model name or a part's appearance alone does not prove compatibility.",
         ),
       },
@@ -104,7 +104,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "cruze",
         name: note("كروز", "Cruze"),
         note: note(
-          "حدّد سنة كروز والمحرك وناقل الحركة عند طلب القطع المرتبطة به؛ رقم القطعة أهم من التشابه في الشكل.",
+          "حدّد سنة كروز والموتور وناقل الحركة عند طلب القطع المرتبطة به؛ رقم القطعة أهم من التشابه في الشكل.",
           "Specify Cruze year, engine and transmission where relevant; part numbers matter more than visual similarity.",
         ),
       },
@@ -112,7 +112,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "malibu",
         name: note("ماليبو", "Malibu"),
         note: note(
-          "راجع جيل ماليبو والمحرك ومكان تركيب القطعة؛ لا تفترض أن قطع كروز تناسبها لمجرد اشتراك الماركة.",
+          "راجع جيل ماليبو والموتور ومكان تركيب القطعة؛ لا تفترض أن قطع كروز تناسبها لمجرد اشتراك الماركة.",
           "Check Malibu generation, engine and fitting position; sharing the Chevrolet brand does not establish Cruze compatibility.",
         ),
       },
@@ -120,7 +120,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "captiva",
         name: note("كابتيفا", "Captiva"),
         note: note(
-          "اسم كابتيفا قد يشير لتكوينات وأجيال مختلفة؛ طابق سنة الصنع والمحرك ورقم القطعة قبل الطلب.",
+          "كابتيفا ليها أكتر من جيل ومواصفات. حدد سنة الصنع والموتور ورقم القطعة علشان تلاقي القطعة المناسبة.",
           "Captiva can refer to different configurations and generations; match year, engine and part number before ordering.",
         ),
       },
@@ -135,7 +135,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "2008",
         name: note("2008", "2008"),
         note: note(
-          "2008 هو اسم الموديل وليس سنة الصنع. اذكر سنة تصنيع سيارتك والجيل والمحرك بشكل منفصل.",
+          "2008 هو اسم الموديل وليس سنة الصنع. اذكر سنة تصنيع عربيتك والجيل والموتور بشكل منفصل.",
           "2008 is the model name, not the build year. Provide the vehicle's actual year, generation and engine separately.",
         ),
       },
@@ -143,7 +143,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "3008",
         name: note("3008", "3008"),
         note: note(
-          "حدّد جيل 3008 وسنة الصنع والمحرك؛ مشاركة الاسم أو بعض المكونات مع موديل آخر لا تكفي للمطابقة.",
+          "حدّد جيل 3008 وسنة الصنع والموتور؛ مشاركة الاسم أو بعض المكونات مع موديل آخر لا تكفي للمطابقة.",
           "Identify the 3008 generation, year and engine; shared naming or components with another model does not establish a match.",
         ),
       },
@@ -158,7 +158,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "c3",
         name: note("C3", "C3"),
         note: note(
-          "وضّح هل السيارة C3 أم C3 Aircross؛ لا نعتبر الاسمين موديلًا واحدًا عند تأكيد توافق القطع.",
+          "وضّح هل العربية C3 أم C3 Aircross؛ لا نعتبر الاسمين موديلًا واحدًا عند تأكيد توافق القطع.",
           "Specify C3 or C3 Aircross; these names are not treated as one model when confirming fitment.",
         ),
       },
@@ -166,7 +166,7 @@ export const targetBrands: TargetBrand[] = [
         slug: "c5",
         name: note("C5", "C5"),
         note: note(
-          "ميّز C5 عن C5 Aircross واذكر الجيل والمحرك؛ توافق القطع يحتاج مطابقة صريحة للتكوين.",
+          "وضّح هل عربيتك C5 ولا C5 Aircross، وحدد الجيل والموتور علشان نتأكد إن القطعة مناسبة.",
           "Distinguish C5 from C5 Aircross and provide generation and engine; fitment requires an explicit configuration match.",
         ),
       },

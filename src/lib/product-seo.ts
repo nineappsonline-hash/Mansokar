@@ -14,7 +14,7 @@ export function productSearchCopy(p: Product, locale: Locale) {
     description:
       p.seo?.description?.[locale]?.trim() ||
       (locale === "ar"
-        ? `${p.name.ar} من ${p.manufacturer}، رقم القطعة ${p.partNumber}. السعر ${money(p.sale ?? p.price, locale)}. راجع سنة السيارة والمحرك والتوافق قبل الطلب. ${p.description.ar}`
+        ? `${p.name.ar} من ${p.manufacturer}، رقم القطعة ${p.partNumber}. السعر ${money(p.sale ?? p.price, locale)}. راجع سنة الصنع والموتور والتوافق قبل الطلب. ${p.description.ar}`
         : `${p.name.en} by ${p.manufacturer}, part ${p.partNumber}. ${money(p.sale ?? p.price, locale)}. Check vehicle year, engine and compatibility before ordering. ${p.description.en}`
       ).slice(0, 300),
   };
@@ -78,7 +78,7 @@ export function productAnswers(p: Product, locale: Locale) {
     {
       question: ar ? `سعر ${p.name.ar} كام؟` : `How much is ${p.name.en}?`,
       answer: ar
-        ? `السعر المعروض ${money(p.sale ?? p.price, locale)}. رسوم التوصيل تتحدد حسب المنطقة وتظهر عند الطلب.`
+        ? `السعر المعروض ${money(p.sale ?? p.price, locale)}. تكلفة التوصيل بتتحدد حسب المحافظة وبتظهر وقت تأكيد الطلب.`
         : `The displayed price is ${money(p.sale ?? p.price, locale)}. Delivery charges depend on your area and are shown when ordering.`,
     },
     {
@@ -86,7 +86,7 @@ export function productAnswers(p: Product, locale: Locale) {
         ? "إزاي أتأكد إن القطعة تناسب عربيتي؟"
         : "How do I check whether this part fits my car?",
       answer: ar
-        ? `راجع رقم القطعة ${p.partNumber}، واختار سيارتك بسنة الصنع والمحرك للتحقق من التوافق. اسم الموديل لوحده مش كفاية. لو التوافق غير مؤكد، اطلب مراجعة قبل الشراء.`
+        ? `راجع رقم القطعة ${p.partNumber}، واختار عربيتك بسنة الصنع والموتور للتحقق من التوافق. اسم الموديل لوحده مش كفاية. لو التوافق غير مؤكد، اطلب مراجعة قبل الشراء.`
         : `Check part number ${p.partNumber} and select your car's year and engine to check compatibility. The model name alone is insufficient. Request a review before buying if compatibility is unconfirmed.`,
     },
     ...(restrictions
@@ -104,7 +104,7 @@ export function productAnswers(p: Product, locale: Locale) {
         ? "ماركة القطعة وبلد المنشأ إيه؟"
         : "What are the item brand and country of origin?",
       answer: ar
-        ? `ماركة القطعة: ${p.manufacturer}. بلد المنشأ: ${countryOfOrigin(p.specs.country_of_origin) || "غير محدد؛ اطلب تأكيده قبل الشراء"}. بلد الماركة لا يحدد بلد تصنيع القطعة.`
+        ? `ماركة القطعة: ${p.manufacturer}. بلد المنشأ: ${countryOfOrigin(p.specs.country_of_origin) || "مش موضح؛ اسألنا قبل الشراء"}. بلد الماركة مش شرط يكون هو بلد تصنيع القطعة.`
         : `Item brand: ${p.manufacturer}. Country of origin: ${countryOfOrigin(p.specs.country_of_origin) || "not specified; request confirmation before buying"}. Brand nationality does not determine where the item was manufactured.`,
     },
     {
@@ -112,7 +112,7 @@ export function productAnswers(p: Product, locale: Locale) {
         ? "هل أقدر أشتري القطعة بالتقسيط أو بالكريدت كارد؟"
         : "Can I buy this part in installments or with a credit card?",
       answer: ar
-        ? "راجع طرق الدفع المعروضة عند إتمام الطلب. دليل التقسيط يشرح خيارات مثل Valu وSuhoola وContact وKlivvr وAman؛ ذكر الشركة لا يؤكد تفعيلها لهذا الطلب. الأهلية والتكلفة والموافقة يحددها مقدم الخدمة."
+        ? "راجع طرق الدفع المعروضة وقت تأكيد الطلب. دليل التقسيط يشرح خيارات مثل Valu وSuhoola وContact وKlivvr وAman؛ ذكر الشركة لا يؤكد تفعيلها لهذا الطلب. الأهلية والتكلفة والموافقة يحددها مقدم الخدمة."
         : "Check the payment methods shown at checkout. The installments guide explains options such as Valu, Suhoola, Contact, Klivvr and Aman; naming a provider does not confirm it is enabled for this order. Eligibility, costs and approval depend on the provider.",
     },
   ];

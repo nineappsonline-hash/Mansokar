@@ -18,8 +18,8 @@ export function SiteMap({
   );
   const groups = [
     { kind: "main", ar: "صفحات المتجر", en: "Store pages" },
-    { kind: "brand", ar: "ماركات السيارات", en: "Vehicle brands" },
-    { kind: "model", ar: "موديلات السيارات", en: "Vehicle models" },
+    { kind: "brand", ar: "ماركات العربيات", en: "Vehicle brands" },
+    { kind: "model", ar: "موديلات العربيات", en: "Vehicle models" },
     { kind: "category", ar: "أقسام قطع الغيار", en: "Part categories" },
     { kind: "guide", ar: "أدلة الشراء", en: "Buying guides" },
     { kind: "policy", ar: "السياسات المنشورة", en: "Published policies" },
@@ -30,7 +30,7 @@ export function SiteMap({
       <h1>{locale === "ar" ? "خريطة الموقع" : "Site map"}</h1>
       <p>
         {locale === "ar"
-          ? "روابط مباشرة لماركات وموديلات السيارات وأقسام القطع والأدلة والمنتجات المنشورة."
+          ? "روابط مباشرة لماركات وموديلات العربيات وأقسام القطع والأدلة والمنتجات المنشورة."
           : "Direct links to vehicle brands, models, part categories, buying guides and published products."}
       </p>
       <a className="text-link" href="/sitemap.xml">
