@@ -1,6 +1,11 @@
+import {
+  productCardVehicles,
+  type CardCarCatalog,
+} from "@/lib/product-card-vehicles";
+import styles from "./product-card.module.css";
 import { FavoriteButton } from "./favorites";
 import Link from "next/link";
-import { ArrowUpRight, Globe2, Package } from "lucide-react";
+import { ArrowUpRight, CarFront, Globe2, Package } from "lucide-react";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -13,6 +18,7 @@ import {
 import { PurchaseButtons } from "./purchase-buttons";
 import { t } from "@/lib/i18n";
 import {
+  carContext,
   publicProduct,
   productContextHref,
   type CarContext,
@@ -26,8 +32,10 @@ export async function ProductCard({
   context,
   contextMatched = false,
   cover,
+  carCatalog,
 }: {
   product: Product;
+  carCatalog: CardCarCatalog;
   locale: Locale;
   vehicle?: Vehicle;
   confirmed?: boolean;
@@ -37,6 +45,22 @@ export async function ProductCard({
 }) {
   const p = publicProduct(raw, context, contextMatched || confirmed);
   const origin = p.specs.country_of_origin;
+  const vehicleContext =
+    context ??
+    (vehicle
+      ? carContext(
+          { make: vehicle.brand, model: vehicle.model, year: vehicle.year },
+          carCatalog.models,
+          carCatalog.brands,
+        )
+      : undefined);
+  const vehicleRows = productCardVehicles(
+    raw,
+    carCatalog,
+    locale,
+    vehicleContext,
+    contextMatched || !!confirmed,
+  );
   const href = productContextHref(
     locale,
     p.slug,
@@ -124,6 +148,31 @@ export async function ProductCard({
             {p.name[locale]}
           </Link>
         </h3>
+        {vehicleRows.length > 0 && (
+          <div
+            className={styles.vehicles}
+            aria-label={
+              locale === "ar" ? "السيارات المتوافقة" : "Vehicle applications"
+            }
+          >
+            {vehicleRows.slice(0, 2).map((row) => (
+              <div className={styles.vehicle} key={row.id}>
+                <CarFront size={15} aria-hidden="true" />
+                <span>
+                  <strong>{row.name}</strong>
+                  {row.years && <bdi className={styles.years}>{row.years}</bdi>}
+                </span>
+              </div>
+            ))}
+            {vehicleRows.length > 2 && (
+              <Link className={styles.more} href={href}>
+                {locale === "ar"
+                  ? `+ ${vehicleRows.length - 2} موديلات أخرى`
+                  : `+ ${vehicleRows.length - 2} more models`}
+              </Link>
+            )}
+          </div>
+        )}
         <span className="small muted" dir="ltr">
           {p.partNumber}
         </span>

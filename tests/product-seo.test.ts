@@ -572,3 +572,52 @@ test("checkout groups translated governorates once and retains distinct delivery
   }
   assert.deepEqual(shippingGovernorates([], "en"), []);
 });
+
+test("product card vehicles show localized makes, models and exact year ranges", async () => {
+  const { productCardVehicles } =
+    await import("../src/lib/product-card-vehicles");
+  const catalog = {
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل" }],
+    models: [
+      {
+        id: "astra",
+        brand: "opel",
+        slug: "astra",
+        name: { en: "Astra", ar: "أسترا" },
+      },
+    ],
+  };
+  const product = {
+    specs: {
+      "car_years:astra": "2015,2016,2018,2019,2019",
+      "car_years:deleted": "2020",
+    },
+  };
+  assert.deepEqual(productCardVehicles(product, catalog, "en"), [
+    { id: "astra", name: "Opel Astra", years: "2015–2016, 2018–2019" },
+  ]);
+  assert.equal(
+    productCardVehicles(product, catalog, "ar")[0].name,
+    "أوبل أسترا",
+  );
+  const context = {
+    modelId: "astra",
+    make: "opel",
+    model: "astra",
+    year: 2018,
+    name: { en: "Opel Astra 2018", ar: "أوبل أسترا 2018" },
+  };
+  assert.equal(
+    productCardVehicles(product, catalog, "en", context)[0].years,
+    "2018",
+  );
+  assert.deepEqual(
+    productCardVehicles(product, catalog, "en", { ...context, year: 2017 }),
+    [],
+  );
+  assert.deepEqual(productCardVehicles({ specs: {} }, catalog, "en"), []);
+  assert.equal(
+    productCardVehicles({ specs: {} }, catalog, "en", context, true)[0].years,
+    "2018",
+  );
+});

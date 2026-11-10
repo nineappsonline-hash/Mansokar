@@ -550,6 +550,7 @@ export default async function Page({ params, searchParams }: Props) {
         <Reveal key={p.id} delay={(i % 4) * 0.06}>
           <Card
             product={p}
+            carCatalog={{ brands, models: vehicleModels }}
             locale={locale}
             vehicle={vehicle}
             confirmed={flags[p.id]}
@@ -1305,6 +1306,7 @@ export default async function Page({ params, searchParams }: Props) {
                   <Card
                     key={item.id}
                     product={item}
+                    carCatalog={{ brands, models: vehicleModels }}
                     locale={locale}
                     vehicle={vehicle}
                     confirmed={true}

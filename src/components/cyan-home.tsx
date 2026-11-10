@@ -39,7 +39,13 @@ export async function CyanHome({
     photo?: string;
     logo?: string;
   }[];
-  models: { brand: string; slug: string; name: Text; years: number[] }[];
+  models: {
+    id: string;
+    brand: string;
+    slug: string;
+    name: Text;
+    years: number[];
+  }[];
   products: Product[];
   vehicle?: Vehicle;
   fitments: Record<string, boolean>;
@@ -215,6 +221,7 @@ export async function CyanHome({
             <ProductCard
               key={p.id}
               product={p}
+              carCatalog={{ brands, models }}
               cover={media}
               locale={locale}
               vehicle={vehicle}
