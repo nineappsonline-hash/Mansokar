@@ -537,3 +537,38 @@ test("customer specs label warranty months and never present a part type as a co
     ),
   );
 });
+
+test("checkout groups translated governorates once and retains distinct delivery rates", async () => {
+  const { shippingGovernorates } = await import("../src/lib/shipping");
+  const areas = [
+    {
+      id: "normal",
+      name: "Cairo normal",
+      governorate: "Cairo",
+      amount: 75,
+      service_type: "standard" as const,
+    },
+    {
+      id: "express",
+      name: "Cairo express",
+      governorate: "القاهرة",
+      amount: 125,
+      service_type: "express" as const,
+    },
+    { id: "giza", name: "Giza normal", governorate: "giza", amount: 0 },
+  ];
+  for (const locale of ["ar", "en"] as const) {
+    const groups = shippingGovernorates(areas, locale);
+    assert.equal(groups.length, 2);
+    assert.equal(groups[0].label, locale === "ar" ? "القاهرة" : "Cairo");
+    assert.deepEqual(
+      groups[0].areas.map((a) => [a.id, a.amount]),
+      [
+        ["normal", 75],
+        ["express", 125],
+      ],
+    );
+    assert.equal(groups[1].areas[0].amount, 0);
+  }
+  assert.deepEqual(shippingGovernorates([], "en"), []);
+});

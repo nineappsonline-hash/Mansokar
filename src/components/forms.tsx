@@ -1,6 +1,10 @@
 "use client";
 import commerce from "./commerce.module.css";
-import { shippingLabel, type ShippingArea } from "@/lib/shipping";
+import {
+  shippingGovernorates,
+  shippingWindow,
+  type ShippingArea,
+} from "@/lib/shipping";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale, Vehicle } from "@/lib/catalog";
@@ -350,6 +354,10 @@ export function Checkout({
   const [messageTone, setMessageTone] = useState<"error" | "success">("error");
   const [busy, setBusy] = useState(false);
   const [area, setArea] = useState("");
+  const [governorate, setGovernorate] = useState("");
+  const governorateOptions = shippingGovernorates(areas, locale);
+  const deliveryOptions =
+    governorateOptions.find((g) => g.value === governorate)?.areas ?? [];
   const [method, setMethod] = useState<PaymentMethod>(methods[0] ?? "cod");
   const [quote, setQuote] = useState<{
     items: {
@@ -433,7 +441,11 @@ export function Checkout({
         className="checkout-layout"
         onChange={(e) => {
           const target = e.target as unknown as { name?: string };
-          if (target.name === "area" || target.name === "coupon") {
+          if (
+            target.name === "area" ||
+            target.name === "governorate" ||
+            target.name === "coupon"
+          ) {
             setQuote(null);
             setReviewed(false);
           }
@@ -584,7 +596,12 @@ export function Checkout({
                           ) as HTMLInputElement | null;
                           if (field) field.value = value;
                         }
-                        if (addr.area_id) setArea(addr.area_id);
+                        const savedGovernorate = governorateOptions.find((g) =>
+                          g.areas.some((a) => a.id === addr.area_id),
+                        );
+                        setGovernorate(savedGovernorate?.value ?? "");
+                        setArea(savedGovernorate ? addr.area_id! : "");
+                        setMessage("");
                         setQuote(null);
                         setReviewed(false);
                       }}
@@ -653,34 +670,88 @@ export function Checkout({
               <label className="checkout-label checkout-field-full">
                 <span>
                   <MapPin size={14} strokeWidth={1.9} />
-                  {locale === "ar"
-                    ? "المحافظة وطريقة الشحن"
-                    : "Governorate & shipping method"}
+                  {locale === "ar" ? "المحافظة" : "Governorate"}
                 </span>
                 <select
-                  name="area"
+                  name="governorate"
                   required
-                  value={area}
+                  value={governorate}
+                  disabled={busy}
                   onChange={(e) => {
-                    setArea(e.target.value);
-                    window.dispatchEvent(
-                      new CustomEvent("analytics-event", {
-                        detail: { event: "add_shipping_info" },
-                      }),
-                    );
+                    setGovernorate(e.target.value);
+                    setArea("");
+                    setMessage("");
                   }}
                   className="checkout-select"
                 >
                   <option value="">
                     {locale === "ar" ? "اختر المحافظة" : "Select governorate"}
                   </option>
-                  {areas.map((a) => (
-                    <option value={a.id} key={a.id}>
-                      {shippingLabel(a, locale)} · {money(a.amount, locale)}
+                  {governorateOptions.map((g) => (
+                    <option value={g.value} key={g.value}>
+                      {g.label}
                     </option>
                   ))}
                 </select>
               </label>
+              {governorate && (
+                <fieldset
+                  className={`${commerce.deliveryChoices} checkout-field-full`}
+                  disabled={busy}
+                >
+                  <legend>
+                    {locale === "ar"
+                      ? "اختر طريقة التوصيل"
+                      : "Choose delivery method"}
+                  </legend>
+                  <div className={commerce.deliveryGrid}>
+                    {[...deliveryOptions]
+                      .sort(
+                        (a, b) =>
+                          Number(a.service_type === "express") -
+                          Number(b.service_type === "express"),
+                      )
+                      .map((option) => (
+                        <label
+                          key={option.id}
+                          className={`${commerce.deliveryOption} ${area === option.id ? commerce.deliverySelected : ""}`}
+                        >
+                          <input
+                            type="radio"
+                            name="area"
+                            value={option.id}
+                            checked={area === option.id}
+                            required
+                            onChange={() => {
+                              setArea(option.id);
+                              setMessage("");
+                              window.dispatchEvent(
+                                new CustomEvent("analytics-event", {
+                                  detail: { event: "add_shipping_info" },
+                                }),
+                              );
+                            }}
+                          />
+                          <span>
+                            <strong>
+                              {option.service_type === "express"
+                                ? locale === "ar"
+                                  ? "توصيل سريع"
+                                  : "Express delivery"
+                                : locale === "ar"
+                                  ? "توصيل عادي"
+                                  : "Normal delivery"}
+                            </strong>
+                            {shippingWindow(option, locale) && (
+                              <small>{shippingWindow(option, locale)}</small>
+                            )}
+                          </span>
+                          <b>{money(option.amount, locale)}</b>
+                        </label>
+                      ))}
+                  </div>
+                </fieldset>
+              )}
             </div>
 
             {area && (

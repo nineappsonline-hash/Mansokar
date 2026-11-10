@@ -68,3 +68,30 @@ export function shippingWindow(area: ShippingArea, locale: Locale) {
     ? `خلال ${area.delivery_max_hours} ساعة`
     : `Within ${area.delivery_max_hours} hours`;
 }
+
+/** Group translated governorate names without losing the shipping rate IDs. */
+export function shippingGovernorates(areas: ShippingArea[], locale: Locale) {
+  const groups = new Map<
+    string,
+    { value: string; label: string; areas: ShippingArea[] }
+  >();
+  for (const area of areas) {
+    const name = area.governorate.trim();
+    const governorate = governorates.find(
+      (g) =>
+        g.en.toLowerCase() === name.toLowerCase() ||
+        g.ar === name ||
+        g.code === name,
+    );
+    const value = governorate?.code ?? name;
+    const existing = groups.get(value);
+    if (existing) existing.areas.push(area);
+    else
+      groups.set(value, {
+        value,
+        label: governorate?.[locale] ?? name,
+        areas: [area],
+      });
+  }
+  return [...groups.values()];
+}
