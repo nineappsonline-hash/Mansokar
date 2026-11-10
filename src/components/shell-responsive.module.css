@@ -25,6 +25,20 @@
   font-size: 12px;
   line-height: 1.7;
 }
+.footer.footer .branding {
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 6px;
+}
+.footer.footer .branding :global(.logo) {
+  width: fit-content;
+  justify-self: start;
+}
+.footer.footer .branding > p {
+  text-align: start;
+  margin: 0;
+}
 .footer.footer :global(.footer-grid .store-logo-image) {
   width: 145px;
   height: 44px;
@@ -62,15 +76,13 @@
     display: block;
     padding-block: 16px 8px;
   }
-  .footer.footer :global(.footer-grid > div:first-child) {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 4px 12px;
+  .footer.footer .branding {
+    display: grid;
+    justify-items: start;
+    gap: 3px;
     padding-bottom: 12px;
   }
-  .footer.footer :global(.footer-grid > div:first-child > p) {
+  .footer.footer .branding > p {
     margin: 0;
     font-size: 11px;
   }

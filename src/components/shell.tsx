@@ -170,7 +170,7 @@ export async function Shell({
           </div>
         </div>
         <div className="shell footer-grid">
-          <div>
+          <div className={responsive.branding}>
             <Link className="logo" href={`/${locale}`}>
               <BrandLogo
                 className="store-logo-image"
