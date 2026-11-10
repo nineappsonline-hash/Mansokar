@@ -1195,13 +1195,13 @@ export default async function Page({ params, searchParams }: Props) {
                 <div>
                   <strong>
                     {locale === "ar"
-                      ? "Original وAfter Market"
-                      : "Original and After Market"}
+                      ? "جميع منتجاتنا أصلية"
+                      : "All products are genuine"}
                   </strong>
                   <span>
                     {locale === "ar"
-                      ? "راجع المصدر وبيانات المورد"
-                      : "Review supplier and product details"}
+                      ? "قطع غيار أصلية مضمونة"
+                      : "Guaranteed genuine spare parts"}
                   </span>
                 </div>
               </li>
@@ -1224,12 +1224,12 @@ export default async function Page({ params, searchParams }: Props) {
                 <RotateCcw size={18} aria-hidden="true" />
                 <div>
                   <strong>
-                    {locale === "ar" ? "سياسات واضحة" : "Clear policies"}
+                    {locale === "ar" ? "ضمان أصلي" : "Genuine warranty"}
                   </strong>
                   <span>
                     {locale === "ar"
-                      ? "راجع شروط الإرجاع والضمان قبل الطلب"
-                      : "Review returns and warranty before ordering"}
+                      ? "بضمان الوكيل أو المورد حسب المنتج"
+                      : "Agent or supplier warranty by product"}
                   </span>
                 </div>
               </li>
@@ -1296,8 +1296,8 @@ export default async function Page({ params, searchParams }: Props) {
                     </summary>
                     <p>
                       {locale === "ar"
-                        ? "تتحدد رسوم التوصيل حسب المنطقة. راجع السياسات المنشورة وشروط ضمان المنتج قبل الطلب."
-                        : "Delivery fees depend on your area. Review the published policies and product warranty terms before ordering."}
+                        ? "جميع منتجاتنا أصلية وبضمان الوكيل أو المورد حسب المنتج. تتحدد رسوم التوصيل حسب المنطقة، وتطبق سياسة الإرجاع المنشورة."
+                        : "All products are genuine, with an agent or supplier warranty according to the product. Delivery fees vary by area, and our published returns policy applies."}
                     </p>
                     <nav
                       className="product-policy-links"
