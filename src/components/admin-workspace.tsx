@@ -13,6 +13,7 @@ import {
   Car,
   ShoppingBag,
   MessageSquare,
+  Inbox,
   Truck,
   Ticket,
   FileText,
@@ -40,6 +41,7 @@ const navigation: { title: string; items: [string, string, LucideIcon][] }[] = [
     items: [
       ["overview", "Overview", LayoutDashboard],
       ["orders", "Orders", ShoppingBag],
+      ["messages", "Messages", Inbox],
       ["inquiries", "Inquiries", MessageSquare],
       ["customers", "Customers", Users],
     ],
@@ -77,6 +79,7 @@ const descriptions: Record<string, string> = {
   overview: "A clear view of your store’s performance and everyday operations.",
   products: "Manage your parts, prices and vehicle coverage in one place.",
   orders: "Review purchases and keep fulfillment moving.",
+  messages: "Read and respond to messages sent from the storefront chat.",
   inquiries: "Follow up on customer questions and part requests.",
   shipping: "Set delivery options and rates for every governorate.",
   vehicles: "Keep your vehicle makes, models and configurations up to date.",

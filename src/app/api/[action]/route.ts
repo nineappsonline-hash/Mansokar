@@ -4,6 +4,7 @@ import { publicProductSlug, publicProductId } from "@/lib/public-product";
 import { couponInput, inquiryUpdateInput } from "@/lib/admin-input";
 import { shippingInput } from "@/lib/shipping-input";
 import { contactInput } from "@/lib/contact-input";
+import { messageInput } from "@/lib/message-input";
 import { vehicleInput } from "@/lib/vehicle-input";
 import { apiError } from "@/lib/api-errors";
 import { readLimited } from "@/lib/body";
@@ -53,7 +54,7 @@ export async function POST(
     await enforceRate(
       request,
       action,
-      ["auth", "contact"].includes(action) ? 8 : 30,
+      ["auth", "contact", "message"].includes(action) ? 8 : 30,
     );
     if (!configured())
       return NextResponse.json(
@@ -141,6 +142,22 @@ export async function POST(
           input.ui_locale === "ar"
             ? "تم استلام طلبك. سنتواصل معك على الرقم المسجل."
             : "Your inquiry has been received. We will contact you on the number provided.",
+      });
+    }
+    if (action === "message") {
+      const input = messageInput.parse(b);
+      const { error } = await db.from("contact_messages").insert({
+        name: input.name,
+        phone: input.phone,
+        email: input.email,
+        body: input.body,
+      });
+      if (error) throw error;
+      return NextResponse.json({
+        message:
+          input.ui_locale === "ar"
+            ? "تم استلام رسالتك. هيتواصل معاك فريق المتجر قريبًا."
+            : "Your message has been received. The store team will contact you soon.",
       });
     }
     if (action === "auth") {
@@ -561,7 +578,28 @@ export async function POST(
           p_action: action,
           p_payload: payload,
         });
-      if (action === "admin-hero-slides") {
+      if (action === "admin-message") {
+        const input = z
+          .object({
+            id: z.uuid(),
+            status: z.enum(["new", "read", "replied", "closed"]),
+          })
+          .parse(b);
+        const { data, error } = await db
+          .from("contact_messages")
+          .update({ status: input.status })
+          .eq("id", input.id)
+          .select("id")
+          .maybeSingle();
+        if (error) throw error;
+        if (!data) throw Error("Message not found");
+        await db.from("admin_audit_logs").insert({
+          user_id: admin.id,
+          action,
+          details: { record: input.id, status: input.status },
+        });
+        details = input;
+      } else if (action === "admin-hero-slides") {
         const input = z
           .object({
             slides: z

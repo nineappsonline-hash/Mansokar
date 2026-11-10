@@ -101,6 +101,7 @@ export default async function Admin({
       "shipping",
       "cms",
       "orders",
+      "messages",
       "inquiries",
       "vehicles",
       "promotions",
@@ -782,6 +783,66 @@ export default async function Admin({
                   label="Confirm COD collection"
                 />
               )}
+          </article>
+        ))}
+      </div>
+    );
+  } else if (module === "messages") {
+    const { data, error } = await db
+      .from("contact_messages")
+      .select("*")
+      .match(id ? { id } : {})
+      .order("created_at", { ascending: false })
+      .limit(200);
+    if (error) throw error;
+    content = (
+      <div className="stack">
+        {!data?.length && (
+          <section className="panel admin-empty">
+            <h2>{id ? "Message not found" : "No messages yet"}</h2>
+            <p>Messages sent through the storefront chat appear here.</p>
+            {id && (
+              <Link className="button secondary" href="/admin?module=messages">
+                View all messages
+              </Link>
+            )}
+          </section>
+        )}
+        {data?.map((m) => (
+          <article key={m.id} className="panel stack">
+            <div>
+              <h2>{m.name}</h2>
+              <p>
+                <time dateTime={m.created_at}>
+                  {new Intl.DateTimeFormat("en-GB", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                    timeZone: "Africa/Cairo",
+                  }).format(new Date(m.created_at))}
+                </time>{" "}
+                · Cairo time · {m.status}
+              </p>
+            </div>
+            <p>
+              <a href={`tel:${m.phone}`}>{m.phone}</a>
+              {" · "}
+              <a href={`mailto:${m.email}`}>{m.email}</a>
+            </p>
+            <p className="prose">{m.body}</p>
+            <ApiForm
+              action="admin-message"
+              extra={{ id: m.id }}
+              label="Update message"
+            >
+              <label>
+                Message status
+                <select name="status" defaultValue={m.status}>
+                  {["new", "read", "replied", "closed"].map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </select>
+              </label>
+            </ApiForm>
           </article>
         ))}
       </div>

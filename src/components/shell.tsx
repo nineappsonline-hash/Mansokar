@@ -3,8 +3,9 @@ import responsive from "./shell-responsive.module.css";
 import { SearchBox } from "./search";
 import { CartCount } from "./favorites";
 import { Newsletter } from "./newsletter";
+import { ChatWidget } from "./chat-widget";
 import cyan from "./cyan-storefront.module.css";
-import { siteMedia, storefrontSettings } from "@/lib/db";
+import { configured, siteMedia, storefrontSettings } from "@/lib/db";
 import { BrandLogo } from "./brand-logo";
 import { Analytics } from "./analytics";
 import Link from "next/link";
@@ -254,6 +255,7 @@ export async function Shell({
           <span>OPEL　/　MG　/　CHEVROLET　/　PEUGEOT　/　CITROËN</span>
         </div>
       </footer>
+      <ChatWidget locale={locale} enabled={configured()} />
     </div>
   );
 }
