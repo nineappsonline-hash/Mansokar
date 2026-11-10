@@ -1,3 +1,5 @@
+import { productCardVehicles } from "@/lib/product-card-vehicles";
+import compatibilityStyles from "@/components/product-compatibility.module.css";
 import { siteCopy } from "@/lib/site-copy";
 import { ModelSearchContent } from "@/components/model-search-content";
 import {
@@ -960,6 +962,10 @@ export default async function Page({ params, searchParams }: Props) {
       Boolean(flags[raw.id] || matching?.products.some((p) => p.id === raw.id)),
     );
     const confirmed = flags[p.id];
+    const showApplications = !vehicle && !browsingContext;
+    const compatibleCars = showApplications
+      ? productCardVehicles(raw, { brands, models: vehicleModels }, locale)
+      : [];
 
     function vehicleForItem(
       vehicle: Vehicle | undefined,
@@ -1263,7 +1269,52 @@ export default async function Page({ params, searchParams }: Props) {
                 <span className="status-dot" />
                 {w.fit}
               </span>
-              <p>{vehicleForItem(vehicle, locale)}</p>
+              {showApplications ? (
+                <div className={compatibilityStyles.applications}>
+                  <h2>
+                    {locale === "ar"
+                      ? "السيارات المتوافقة مع هذه القطعة"
+                      : "Compatible vehicles for this part"}
+                  </h2>
+                  {compatibleCars.length > 0 ? (
+                    <>
+                      <ul
+                        aria-label={
+                          locale === "ar"
+                            ? "السيارات المتوافقة"
+                            : "Compatible vehicles"
+                        }
+                      >
+                        {compatibleCars.map((car) => (
+                          <li key={car.id}>
+                            <CarFront size={17} aria-hidden="true" />
+                            <strong>{car.name}</strong>
+                            <bdi>
+                              {car.years ||
+                                (locale === "ar"
+                                  ? "راجع سنوات الموديل"
+                                  : "Check model years")}
+                            </bdi>
+                          </li>
+                        ))}
+                      </ul>
+                      <small>
+                        {locale === "ar"
+                          ? "راجع رقم القطعة ومواصفات المحرك قبل الطلب."
+                          : "Check the part number and engine specifications before ordering."}
+                      </small>
+                    </>
+                  ) : (
+                    <p>
+                      {locale === "ar"
+                        ? "لم تُسجّل سيارات متوافقة لهذه القطعة بعد. تواصل معنا برقم القطعة وبيانات سيارتك للتحقق من التوافق."
+                        : "No compatible vehicles have been recorded for this part yet. Contact us with the part number and your vehicle details to check fitment."}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <p>{vehicleForItem(vehicle, locale)}</p>
+              )}
             </div>
             <div className="purchase-actions">
               <ProductActions

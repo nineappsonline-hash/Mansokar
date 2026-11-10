@@ -1,0 +1,57 @@
+.applications {
+  margin-top: 12px;
+  text-align: start;
+}
+.applications h2 {
+  margin: 0 0 12px;
+  color: #243d32;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+.applications ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.applications li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 9px;
+  padding: 10px 12px;
+  background: #ffffffbd;
+  border: 1px solid #dce5d7;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+.applications li svg {
+  color: #53765b;
+  flex-shrink: 0;
+}
+.applications li strong {
+  flex: 1;
+  min-width: 100px;
+  overflow-wrap: anywhere;
+}
+.applications li bdi {
+  color: #4b6554;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.applications small {
+  display: block;
+  margin-top: 12px;
+  color: #6b786b;
+  font-size: 11px;
+  line-height: 1.7;
+}
+@media (max-width: 420px) {
+  .applications li bdi {
+    flex-basis: 100%;
+    padding-inline-start: 26px;
+  }
+}
