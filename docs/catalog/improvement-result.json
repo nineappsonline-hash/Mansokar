@@ -1,0 +1,18 @@
+{
+  "appliedAt": "2026-11-11T15:12:07.569Z",
+  "products": 424,
+  "changedProducts": 424,
+  "translatedNames": 187,
+  "cleanedOrigins": 424,
+  "verifiedReadBack": 424,
+  "preserved": [
+    "canonical URLs",
+    "prices",
+    "part numbers",
+    "manufacturer",
+    "vehicle applications",
+    "orderability",
+    "manual SEO overrides"
+  ],
+  "resumedAfterTransientNetworkError": true
+}

@@ -1,0 +1,4760 @@
+{
+  "capturedAt": "2026-11-11T15:09:22.254Z",
+  "products": 424,
+  "changedProducts": 424,
+  "translatedNames": 187,
+  "cleanedOrigins": 424,
+  "changes": [
+    {
+      "id": "00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "partNumber": "OP-9826619080",
+      "nameAr": "طلمبة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طلمبة مياه",
+      "newEnglishName": "Water Pump"
+    },
+    {
+      "id": "0182b757-b427-457f-b28d-e49f0190a6a7",
+      "partNumber": "23761250",
+      "nameAr": "تيل خلفي LV3",
+      "canonical": "https://mopc.store/ar/products/rear-brake-pad-kit-gm-p-0182b757-b427-457f-b28d-e49f0190a6a7",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "01ce432f-187f-47c6-9b1b-6e94df4ab452",
+      "partNumber": "55563957",
+      "nameAr": "بلف زيت",
+      "canonical": "https://mopc.store/ar/products/pcv-valve-gm-p-01ce432f-187f-47c6-9b1b-6e94df4ab452",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "034761d1-acdf-4918-93f7-80dd8b078ab0",
+      "partNumber": "24563770",
+      "nameAr": "اويل سيل كرنك خلفي بالقاعده",
+      "canonical": "https://mopc.store/ar/products/rear-crankshaft-seal-with-housing-gm-p-034761d1-acdf-4918-93f7-80dd8b078ab0",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "04444d1f-bdaa-4a1f-8d8e-6a59c793ebbb",
+      "partNumber": "23995320",
+      "nameAr": "عمة هواء كامله",
+      "canonical": "https://mopc.store/ar/products/air-cleaner-housing-gm-p-04444d1f-bdaa-4a1f-8d8e-6a59c793ebbb",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "04748538-cfe3-483f-acdb-e7d6f24c0e92",
+      "partNumber": "23740856",
+      "nameAr": "كوبلن يمين",
+      "canonical": "https://mopc.store/ar/products/right-cv-joint-gm-p-04748538-cfe3-483f-acdb-e7d6f24c0e92",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "051ea3e7-bd79-4468-909e-fba534d128ef",
+      "partNumber": "23632160",
+      "nameAr": "قاعدة موتور",
+      "canonical": "https://mopc.store/ar/products/engine-mount-gm-p-051ea3e7-bd79-4468-909e-fba534d128ef",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "0641bcc3-438b-4fbb-90ce-2b866aa3940c",
+      "partNumber": "25189500",
+      "nameAr": "2 حساس عادم",
+      "canonical": "https://mopc.store/ar/products/o2-sensor-number-2-gm-p-0641bcc3-438b-4fbb-90ce-2b866aa3940c",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "07d513d6-fead-4aa0-a030-d51f5d710277",
+      "partNumber": "55353331",
+      "nameAr": "أويل سيل ماسورة",
+      "canonical": "https://mopc.store/ar/products/water-hose-oil-seal-gm-p-07d513d6-fead-4aa0-a030-d51f5d710277",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "0833f023-690c-4d9b-9bb3-1703d19097ec",
+      "partNumber": "OP-13251474",
+      "nameAr": "خرطوم قربة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-0833f023-690c-4d9b-9bb3-1703d19097ec",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم قربة مياه",
+      "newEnglishName": "Coolant Expansion Tank Hose"
+    },
+    {
+      "id": "08838885-11db-4b09-9275-c5cf55b84053",
+      "partNumber": "OP-455623",
+      "nameAr": "جوان طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-08838885-11db-4b09-9275-c5cf55b84053",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان طلمبة فاكيوم",
+      "newEnglishName": "Vacuum Pump Gasket"
+    },
+    {
+      "id": "08aa1bdf-d6cf-47e4-83cd-acf6e8f67ee3",
+      "partNumber": "23753283",
+      "nameAr": "سير دينامو",
+      "canonical": "https://mopc.store/ar/products/alternator-belt-gm-p-08aa1bdf-d6cf-47e4-83cd-acf6e8f67ee3",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "08c70512-aaf6-4ddc-a7a4-c7a20bec0f52",
+      "partNumber": "OP-9803389580",
+      "nameAr": "خرطوم سخن خروج",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-08c70512-aaf6-4ddc-a7a4-c7a20bec0f52",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم سخن خروج",
+      "newEnglishName": "Heater Outlet Hose"
+    },
+    {
+      "id": "09bf5027-7b1d-418c-93ba-fc3e89a61a24",
+      "partNumber": "23542930",
+      "nameAr": "تيش ميزان شمال",
+      "canonical": "https://mopc.store/ar/products/right-front-stabilizer-link-gm-p-09bf5027-7b1d-418c-93ba-fc3e89a61a24",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Right Front Stabilizer Link",
+      "newEnglishName": "Left Stabilizer Link"
+    },
+    {
+      "id": "0aec89f0-6ec5-45cd-a979-540d05732b1f",
+      "partNumber": "OP-22951845",
+      "nameAr": "مساعد امامي يمين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-0aec89f0-6ec5-45cd-a979-540d05732b1f",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مساعد امامي يمين",
+      "newEnglishName": "Front Right Shock Absorber"
+    },
+    {
+      "id": "0b45cae3-a006-42bb-b5b2-8116cf23d269",
+      "partNumber": "OP-1693587380",
+      "nameAr": "تيل خلفى",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-0b45cae3-a006-42bb-b5b2-8116cf23d269",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "تيل خلفى",
+      "newEnglishName": "Rear Brake Pads"
+    },
+    {
+      "id": "0c0b3da5-b40b-4062-a0ac-6b72d9041acb",
+      "partNumber": "24273971",
+      "nameAr": "اويل سيل كوبلن شمال",
+      "canonical": "https://mopc.store/ar/products/left-cv-joint-oil-seal-gm-p-0c0b3da5-b40b-4062-a0ac-6b72d9041acb",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "0c65ffdd-444e-4deb-a9c0-54772fea75f2",
+      "partNumber": "OP-9845406480",
+      "nameAr": "رادياتير",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-0c65ffdd-444e-4deb-a9c0-54772fea75f2",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "رادياتير",
+      "newEnglishName": "Radiator"
+    },
+    {
+      "id": "0c90699c-745d-4677-9f13-4f1d2fbfc641",
+      "partNumber": "95389383",
+      "nameAr": "خرطوم ردياتير علوي",
+      "canonical": "https://mopc.store/ar/products/upper-radiator-hose-gm-p-0c90699c-745d-4677-9f13-4f1d2fbfc641",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "0d9245ca-7474-4613-8d27-798e176b0591",
+      "partNumber": "20917577",
+      "nameAr": "سويتش زجاج امامى شمال رباعى",
+      "canonical": "https://mopc.store/ar/products/master-power-window-switch-gm-p-0d9245ca-7474-4613-8d27-798e176b0591",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "0dd75f1e-db07-46ba-84fc-919a45af45d7",
+      "partNumber": "OP-5038G6",
+      "nameAr": "بطاحة مساعد",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-0dd75f1e-db07-46ba-84fc-919a45af45d7",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بطاحة مساعد",
+      "newEnglishName": "Shock Absorber Mount"
+    },
+    {
+      "id": "0e00798b-4190-49b2-8cbe-99170e684052",
+      "partNumber": "25194222",
+      "nameAr": "أويل سيل ماسورة مبرد",
+      "canonical": "https://mopc.store/ar/products/oil-cooler-hose-seal-gm-p-0e00798b-4190-49b2-8cbe-99170e684052",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "0e8641d8-9bbc-4fa3-8d1e-9e8ebbe20dfd",
+      "partNumber": "25195119",
+      "nameAr": "طلمبة مياه",
+      "canonical": "https://mopc.store/ar/products/water-pump-gm-p-0e8641d8-9bbc-4fa3-8d1e-9e8ebbe20dfd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "0e9120a0-24c7-4791-aaf2-4749e8fd1495",
+      "partNumber": "13248554",
+      "nameAr": "قاعدة محرك شمال أوتوماتيك",
+      "canonical": "https://mopc.store/ar/products/left-automatic-transmission-mount-gm-p-0e9120a0-24c7-4791-aaf2-4749e8fd1495",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Left Automatic Transmission Mount",
+      "newEnglishName": "Left Engine Mount, Automatic Transmission"
+    },
+    {
+      "id": "0f85674b-711e-4dc4-8cf3-319e6fed3181",
+      "partNumber": "OP-95528305",
+      "nameAr": "فلتر هواء -15",
+      "canonical": "https://mopc.store/ar/products/15-genuine-parts-p-0f85674b-711e-4dc4-8cf3-319e6fed3181",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "10c53b63-d720-4ad0-92e2-70e5a5315c53",
+      "partNumber": "23740856",
+      "nameAr": "كوبلن يمين",
+      "canonical": "https://mopc.store/ar/products/right-cv-joint-gm-p-10c53b63-d720-4ad0-92e2-70e5a5315c53",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "11291feb-9036-4347-a538-00bc41befe2f",
+      "partNumber": "23577934",
+      "nameAr": "مساعد أمامي يمين",
+      "canonical": "https://mopc.store/ar/products/front-right-shock-absorber-gm-p-11291feb-9036-4347-a538-00bc41befe2f",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1266a614-207f-456a-a78e-c1529678a513",
+      "partNumber": "23794524",
+      "nameAr": "كمبيوتر فتيس LV3",
+      "canonical": "https://mopc.store/ar/products/transmission-control-unit-lv3-gm-p-1266a614-207f-456a-a78e-c1529678a513",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "13d69d46-fc65-43de-9165-ee52e6f9f7a4",
+      "partNumber": "23941780",
+      "nameAr": "جوان طلمبة بنزين",
+      "canonical": "https://mopc.store/ar/products/fuel-pump-seal-gm-p-13d69d46-fc65-43de-9165-ee52e6f9f7a4",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "146f8f18-7108-4776-b0a1-3925548b5520",
+      "partNumber": "25203483",
+      "nameAr": "فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/oil-filter-gm-p-146f8f18-7108-4776-b0a1-3925548b5520",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "17000474-cddf-4de1-bbe6-82b1d575d86e",
+      "partNumber": "55353328",
+      "nameAr": "أويل سيل ماسورة",
+      "canonical": "https://mopc.store/ar/products/water-hose-oil-seal-gm-p-17000474-cddf-4de1-bbe6-82b1d575d86e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "17156fff-33e9-43d9-969f-100c0cf9f6fd",
+      "partNumber": "23971405",
+      "nameAr": "طنابير خلفي LV3",
+      "canonical": "https://mopc.store/ar/products/rear-brake-discs-lv-3-gm-p-17156fff-33e9-43d9-969f-100c0cf9f6fd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "174de47b-f370-4fa6-8c3d-41e2b51c9a64",
+      "partNumber": "OP-55575503",
+      "nameAr": "بلف تحكم موتور",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-174de47b-f370-4fa6-8c3d-41e2b51c9a64",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "185d77fd-5729-4828-8781-b84509c752a3",
+      "partNumber": "25775833",
+      "nameAr": "حساس حرارة جو",
+      "canonical": "https://mopc.store/ar/products/ambient-air-temperature-sensor-gm-p-185d77fd-5729-4828-8781-b84509c752a3",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "18da3ce1-2604-4aab-af3f-4fe67cacde66",
+      "partNumber": "23753023",
+      "nameAr": "طلمبة مياه",
+      "canonical": "https://mopc.store/ar/products/water-pump-gm-p-18da3ce1-2604-4aab-af3f-4fe67cacde66",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "190424d6-2916-482b-b9a9-84c77ea30d8c",
+      "partNumber": "OP-9809802380",
+      "nameAr": "رشاش بنزين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-190424d6-2916-482b-b9a9-84c77ea30d8c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "رشاش بنزين",
+      "newEnglishName": "Fuel Injector"
+    },
+    {
+      "id": "191bee0b-b88a-454d-adaa-c7a0fd1353f5",
+      "partNumber": "OP-55596087",
+      "nameAr": "غطاء تاكيهات",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-191bee0b-b88a-454d-adaa-c7a0fd1353f5",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "غطاء تاكيهات",
+      "newEnglishName": "Valve Cover"
+    },
+    {
+      "id": "1b288c63-83e7-4247-bbfc-1c15dc9f51fb",
+      "partNumber": "23743485",
+      "nameAr": "طقم تيش دركسيون شمال",
+      "canonical": "https://mopc.store/ar/products/left-steering-tie-rod-kit-gm-p-1b288c63-83e7-4247-bbfc-1c15dc9f51fb",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1bb30892-8c36-41f5-963b-0c764fb9e838",
+      "partNumber": "OP-9801728380",
+      "nameAr": "جوان طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-1bb30892-8c36-41f5-963b-0c764fb9e838",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان طلمبة فاكيوم",
+      "newEnglishName": "Vacuum Pump Gasket"
+    },
+    {
+      "id": "1bc425c7-81f4-40bd-b167-fe953247d3fe",
+      "partNumber": "55555805",
+      "nameAr": "اويل سيل كرنك خلفي",
+      "canonical": "https://mopc.store/ar/products/crankshaft-rear-oil-seal-gm-p-1bc425c7-81f4-40bd-b167-fe953247d3fe",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1c4b6c53-98b3-40aa-966c-2c818dd73107",
+      "partNumber": "OP-39222047",
+      "nameAr": "بلف تحكم كمبرسور",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-1c4b6c53-98b3-40aa-966c-2c818dd73107",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بلف تحكم كمبرسور",
+      "newEnglishName": "A/C Compressor Control Valve"
+    },
+    {
+      "id": "1c4f8dde-7557-4822-bc3f-82ff2b82a46f",
+      "partNumber": "OP-9820978780",
+      "nameAr": "اويل سيل كرنك خلفي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-1c4f8dde-7557-4822-bc3f-82ff2b82a46f",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل كرنك خلفي",
+      "newEnglishName": "Rear Crankshaft Oil Seal"
+    },
+    {
+      "id": "1c6f4be9-6ea4-46e5-ac6c-485bd16986fc",
+      "partNumber": "23914818",
+      "nameAr": "طقم تيش اسكترا شمال",
+      "canonical": "https://mopc.store/ar/products/left-steering-tie-rod-gm-p-1c6f4be9-6ea4-46e5-ac6c-485bd16986fc",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1d046624-8650-49c5-af8d-dcc6400265fa",
+      "partNumber": "12674782",
+      "nameAr": "حساس بلف زيت 3.2 CC",
+      "canonical": "https://mopc.store/ar/products/oil-pressure-sensor-3-2-cc-gm-p-1d046624-8650-49c5-af8d-dcc6400265fa",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1dc174e8-bc12-4554-b3d8-39d531ce467b",
+      "partNumber": "24230708",
+      "nameAr": "مصفاة فتيس أوتوماتيك",
+      "canonical": "https://mopc.store/ar/products/automatic-transmission-filter-gm-p-1dc174e8-bc12-4554-b3d8-39d531ce467b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1df76f24-ea09-4a58-879d-3ea78811a85f",
+      "partNumber": "23971405",
+      "nameAr": "طنابير خلفي LV3",
+      "canonical": "https://mopc.store/ar/products/rear-brake-discs-lv-3-gm-p-1df76f24-ea09-4a58-879d-3ea78811a85f",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1e8931e2-2f42-4249-a9d4-0bbbcd53752f",
+      "partNumber": "OP-55576715",
+      "nameAr": "اويل سيل كرنك خلفي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-1e8931e2-2f42-4249-a9d4-0bbbcd53752f",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل كرنك خلفي",
+      "newEnglishName": "Rear Crankshaft Oil Seal"
+    },
+    {
+      "id": "1ea2ec9d-dc89-4feb-be21-61b2334a063c",
+      "partNumber": "13517845",
+      "nameAr": "طنابير امامية",
+      "canonical": "https://mopc.store/ar/products/front-brake-discs-gm-p-1ea2ec9d-dc89-4feb-be21-61b2334a063c",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1f840aa9-ea09-4d10-b996-2282152fb18a",
+      "partNumber": "23762061",
+      "nameAr": "مبرد تربو",
+      "canonical": "https://mopc.store/ar/products/turbo-intercooler-gm-p-1f840aa9-ea09-4d10-b996-2282152fb18a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1f84ac35-41f7-4d43-a32a-d434c8ca8bc1",
+      "partNumber": "13266524",
+      "nameAr": "قاعدة محرك أمامية أوتوماتيك",
+      "canonical": "https://mopc.store/ar/products/automatic-front-engine-mount-gm-p-1f84ac35-41f7-4d43-a32a-d434c8ca8bc1",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "1fe7ab58-cc68-4bec-9b5c-416f04aa5d18",
+      "partNumber": "OP-25200827",
+      "nameAr": "كرتيرة زيت موتورA14XER",
+      "canonical": "https://mopc.store/ar/products/a14xer-genuine-parts-p-1fe7ab58-cc68-4bec-9b5c-416f04aa5d18",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كرتيرة زيت موتورA14XER",
+      "newEnglishName": "Engine Oil Pan A14XER"
+    },
+    {
+      "id": "20512878-670c-4a8b-a0bd-abdd7392da8d",
+      "partNumber": "25775833",
+      "nameAr": "حساس حرارة جو",
+      "canonical": "https://mopc.store/ar/products/ambient-air-temperature-sensor-gm-p-20512878-670c-4a8b-a0bd-abdd7392da8d",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "215cc11e-d7e7-43f2-a510-a8d7f20b1c54",
+      "partNumber": "84358964",
+      "nameAr": "مساعد امامى شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-shock-absorber-gm-p-215cc11e-d7e7-43f2-a510-a8d7f20b1c54",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "216ec7da-b981-4cc3-afef-144a1c5799ea",
+      "partNumber": "23384198",
+      "nameAr": "شمعدان امامى يمين",
+      "canonical": "https://mopc.store/ar/products/front-right-steering-knuckle-gm-p-216ec7da-b981-4cc3-afef-144a1c5799ea",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "21ee256a-1e1b-40dd-bf0d-a65a0dccab1c",
+      "partNumber": "13399771",
+      "nameAr": "خرطوم فرامل امامي يمين",
+      "canonical": "https://mopc.store/ar/products/right-front-brake-hose-gm-p-21ee256a-1e1b-40dd-bf0d-a65a0dccab1c",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "23402240-5d04-4c65-80aa-22c05c830bcb",
+      "partNumber": "25189499",
+      "nameAr": "حساس عادم 1",
+      "canonical": "https://mopc.store/ar/products/o2-sensor-number-1-gm-p-23402240-5d04-4c65-80aa-22c05c830bcb",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "23b31c08-85f2-4da2-bc99-021852bb855d",
+      "partNumber": "23753925",
+      "nameAr": "قاعدة فتيس أمامية",
+      "canonical": "https://mopc.store/ar/products/front-transmission-mount-gm-p-23b31c08-85f2-4da2-bc99-021852bb855d",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "241cec8d-51d6-4314-80cb-aeaf68ac23c2",
+      "partNumber": "OP-9806658980",
+      "nameAr": "حمالة محرك شمال",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-241cec8d-51d6-4314-80cb-aeaf68ac23c2",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "حمالة محرك شمال",
+      "newEnglishName": "Left Engine Mount Bracket"
+    },
+    {
+      "id": "25ada5cc-3ed6-4b6e-ac08-ed40ddcc11d4",
+      "partNumber": "OP-9839689880",
+      "nameAr": "ديسك فرامل خلفى",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-25ada5cc-3ed6-4b6e-ac08-ed40ddcc11d4",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ديسك فرامل خلفى",
+      "newEnglishName": "Rear Brake Disc"
+    },
+    {
+      "id": "2753ae6d-4b9a-4af6-bc83-e300da2461c2",
+      "partNumber": "OP-9835304280",
+      "nameAr": "اويل سيل كرنك امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-2753ae6d-4b9a-4af6-bc83-e300da2461c2",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل كرنك امامي",
+      "newEnglishName": "Front Crankshaft Oil Seal"
+    },
+    {
+      "id": "2812cf1f-85d1-4a9a-8313-7e254cd93f5d",
+      "partNumber": "23866812",
+      "nameAr": "سير تكييف",
+      "canonical": "https://mopc.store/ar/products/a-c-belt-gm-p-2812cf1f-85d1-4a9a-8313-7e254cd93f5d",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "2879c38c-f631-4ffd-8fe2-fad472d38fe1",
+      "partNumber": "OP-55568031",
+      "nameAr": "ماسورة تربو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-2879c38c-f631-4ffd-8fe2-fad472d38fe1",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ماسورة تربو",
+      "newEnglishName": "Turbocharger Pipe"
+    },
+    {
+      "id": "2b89f78f-45ae-4f3e-8b3e-c5a47ab729ad",
+      "partNumber": "13334021",
+      "nameAr": "جلبة مقص امامي خلفية",
+      "canonical": "https://mopc.store/ar/products/front-lower-control-arm-rear-bushing-gm-p-2b89f78f-45ae-4f3e-8b3e-c5a47ab729ad",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "2bb9e069-d52d-48c5-95f9-16abef4c68f3",
+      "partNumber": "OP-25192230",
+      "nameAr": "ترموستات كاملة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-2bb9e069-d52d-48c5-95f9-16abef4c68f3",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ترموستات كاملة",
+      "newEnglishName": "Thermostat Assembly"
+    },
+    {
+      "id": "2c3c193c-f573-4a5b-98f2-f4e5b0b94ea9",
+      "partNumber": "55354068",
+      "nameAr": "أويل سيل ماسورة مبرد",
+      "canonical": "https://mopc.store/ar/products/cooler-hose-oil-seal-gm-p-2c3c193c-f573-4a5b-98f2-f4e5b0b94ea9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "2c480838-c7ee-44ae-bd7c-ad9ffe75781e",
+      "partNumber": "23866022",
+      "nameAr": "شداد سير دينامو",
+      "canonical": "https://mopc.store/ar/products/alternator-belt-tensioner-gm-p-2c480838-c7ee-44ae-bd7c-ad9ffe75781e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "2d33e3f0-5574-45a8-99ae-124bae6bde4a",
+      "partNumber": "OP-9804617380",
+      "nameAr": "جوان وش سلندر",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-2d33e3f0-5574-45a8-99ae-124bae6bde4a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان وش سلندر",
+      "newEnglishName": "Cylinder Head Gasket"
+    },
+    {
+      "id": "2dcce702-3608-4e76-9813-243556981959",
+      "partNumber": "OP-9837408880",
+      "nameAr": "طلمبة زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-2dcce702-3608-4e76-9813-243556981959",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طلمبة زيت",
+      "newEnglishName": "Oil Pump"
+    },
+    {
+      "id": "2ebcaa08-17b4-4a5d-9f66-8c20bce3a4a9",
+      "partNumber": "13465094",
+      "nameAr": "قربة مياة",
+      "canonical": "https://mopc.store/ar/products/coolant-overflow-tank-gm-p-2ebcaa08-17b4-4a5d-9f66-8c20bce3a4a9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "30330643-60c8-47b3-8be0-273318e693bc",
+      "partNumber": "OP-55569204",
+      "nameAr": "بستم STD",
+      "canonical": "https://mopc.store/ar/products/std-genuine-parts-p-30330643-60c8-47b3-8be0-273318e693bc",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بستم STD",
+      "newEnglishName": "Standard Size Piston"
+    },
+    {
+      "id": "30384995-1555-4cee-8fae-a952874caf6c",
+      "partNumber": "23762184",
+      "nameAr": "غطاء سربنتينة تيربو سفلي",
+      "canonical": "https://mopc.store/ar/products/lower-turbo-intercooler-cover-gm-p-30384995-1555-4cee-8fae-a952874caf6c",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "315add57-860c-4830-b191-a3d9a739d75f",
+      "partNumber": "OP-22987827",
+      "nameAr": "مساعد خلفى",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-315add57-860c-4830-b191-a3d9a739d75f",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مساعد خلفى",
+      "newEnglishName": "Rear Shock Absorber"
+    },
+    {
+      "id": "31f1c10c-ba16-41e7-a0c9-ef44692cbbc5",
+      "partNumber": "OP-9821291880",
+      "nameAr": "مقاومة مروحة بلاور",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-31f1c10c-ba16-41e7-a0c9-ef44692cbbc5",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مقاومة مروحة بلاور",
+      "newEnglishName": "Blower Motor Resistor"
+    },
+    {
+      "id": "32133d3a-baee-4f06-8b80-13a9ecdf0c32",
+      "partNumber": "84841961",
+      "nameAr": "قربة مياه",
+      "canonical": "https://mopc.store/ar/products/coolant-overflow-tank-gm-p-32133d3a-baee-4f06-8b80-13a9ecdf0c32",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "3438e9c3-c374-4d96-90ba-7f1a66cef9f7",
+      "partNumber": "23743485",
+      "nameAr": "طقم تيش دركسيون شمال",
+      "canonical": "https://mopc.store/ar/products/left-steering-tie-rod-kit-gm-p-3438e9c3-c374-4d96-90ba-7f1a66cef9f7",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "34e1c363-d0c9-4113-9e94-71049a77f6dc",
+      "partNumber": "OP-55595873",
+      "nameAr": "أويل سيل صباب",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-34e1c363-d0c9-4113-9e94-71049a77f6dc",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "أويل سيل صباب",
+      "newEnglishName": "Valve Stem Seal"
+    },
+    {
+      "id": "35cc7011-1362-44a0-8340-167009c85b28",
+      "partNumber": "OP-22951844",
+      "nameAr": "مساعد امامي  شمال",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-35cc7011-1362-44a0-8340-167009c85b28",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مساعد امامي  شمال",
+      "newEnglishName": "Front Left Shock Absorber"
+    },
+    {
+      "id": "36220d83-5256-49ec-9add-e1f2650f7e5a",
+      "partNumber": "OP-023533",
+      "nameAr": "بلف عدم رجوع زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-36220d83-5256-49ec-9add-e1f2650f7e5a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بلف عدم رجوع زيت",
+      "newEnglishName": "Oil Non-Return Valve"
+    },
+    {
+      "id": "365c9887-7217-4155-b54d-7e19afd9cdae",
+      "partNumber": "OP-55595073",
+      "nameAr": "سير دينامو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-365c9887-7217-4155-b54d-7e19afd9cdae",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "سير دينامو",
+      "newEnglishName": "Alternator Belt"
+    },
+    {
+      "id": "371a9b15-eab5-4fc2-adc5-df815f13f88d",
+      "partNumber": "OP-55569246",
+      "nameAr": "شداد كاتينة شمال",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-371a9b15-eab5-4fc2-adc5-df815f13f88d",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "شداد كاتينة شمال",
+      "newEnglishName": "Left Timing Tensioner"
+    },
+    {
+      "id": "37c7ac62-7754-47f1-9f2f-289f15bb94da",
+      "partNumber": "23928316",
+      "nameAr": "كاوتش ميزان خلفي",
+      "canonical": "https://mopc.store/ar/products/rear-stabilizer-bar-bushing-gm-p-37c7ac62-7754-47f1-9f2f-289f15bb94da",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "37e989e6-396e-440b-811b-15f161da2b2b",
+      "partNumber": "OP-55565348",
+      "nameAr": "جوان فرن شكمان",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-37e989e6-396e-440b-811b-15f161da2b2b",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان فرن شكمان",
+      "newEnglishName": "Exhaust Manifold Gasket"
+    },
+    {
+      "id": "38506f4f-72c2-447c-94f9-4d9f06305af9",
+      "partNumber": "25192904",
+      "nameAr": "ماسورة مياه",
+      "canonical": "https://mopc.store/ar/products/water-hose-gm-p-38506f4f-72c2-447c-94f9-4d9f06305af9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "3a021d38-99ad-4124-8abc-f4ba3b83f351",
+      "partNumber": "OP-9854108580",
+      "nameAr": "فلتر تكييف كربون",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-3a021d38-99ad-4124-8abc-f4ba3b83f351",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "فلتر تكييف كربون",
+      "newEnglishName": "Activated Carbon Cabin Air Filter"
+    },
+    {
+      "id": "3af5b576-5ecd-4bbd-b82c-1788e1f6b6e2",
+      "partNumber": "95390893",
+      "nameAr": "خرطوم ردياتير سفلي",
+      "canonical": "https://mopc.store/ar/products/lower-radiator-hose-gm-p-3af5b576-5ecd-4bbd-b82c-1788e1f6b6e2",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "3b9ddefc-284c-41be-b250-478179274471",
+      "partNumber": "OP-9804681980",
+      "nameAr": "قاعدة علبة فيوزات فبر",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-3b9ddefc-284c-41be-b250-478179274471",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "قاعدة علبة فيوزات فبر",
+      "newEnglishName": "Plastic Fuse Box Mount"
+    },
+    {
+      "id": "3c1ec1c7-7fd3-49b8-9f45-29a2847115a3",
+      "partNumber": "24563825",
+      "nameAr": "مبرد زيت محرك",
+      "canonical": "https://mopc.store/ar/products/engine-oil-cooler-gm-p-3c1ec1c7-7fd3-49b8-9f45-29a2847115a3",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "3c6a9936-e039-415c-ab64-c6ba9ee855ba",
+      "partNumber": "23753349",
+      "nameAr": "ثرموستات حرارة",
+      "canonical": "https://mopc.store/ar/products/thermostat-gm-p-3c6a9936-e039-415c-ab64-c6ba9ee855ba",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "3da6bbd0-afe4-4266-914e-c17dc68ab1a3",
+      "partNumber": "13502045",
+      "nameAr": "طنابير امامية",
+      "canonical": "https://mopc.store/ar/products/front-brake-discs-gm-p-3da6bbd0-afe4-4266-914e-c17dc68ab1a3",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "3f154ee7-b299-432d-a83b-326f24b0c1ed",
+      "partNumber": "OP-55570704",
+      "nameAr": "اويل سيل علبة بيئة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-3f154ee7-b299-432d-a83b-326f24b0c1ed",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "3f9626b0-adaf-4c40-886d-383664c9bd1a",
+      "partNumber": "OP-13450276",
+      "nameAr": "غطاء جنط اسود",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-3f9626b0-adaf-4c40-886d-383664c9bd1a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "غطاء جنط اسود",
+      "newEnglishName": "Black Wheel Cover"
+    },
+    {
+      "id": "404f1047-5a1d-4ac4-af04-6406d5aff9ad",
+      "partNumber": "OP-4249K1",
+      "nameAr": "ديسك فرامل امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-404f1047-5a1d-4ac4-af04-6406d5aff9ad",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ديسك فرامل امامي",
+      "newEnglishName": "Front Brake Disc"
+    },
+    {
+      "id": "40aa285f-4986-4f13-bffc-0e0dbfbf9ba4",
+      "partNumber": "24567806",
+      "nameAr": "جوان طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/vacuum-pump-gasket-gm-p-40aa285f-4986-4f13-bffc-0e0dbfbf9ba4",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "40baae50-e9ca-4def-8d2a-7a45e00c8358",
+      "partNumber": "25199828",
+      "nameAr": "كوعة ترموستات",
+      "canonical": "https://mopc.store/ar/products/thermostat-housing-gm-p-40baae50-e9ca-4def-8d2a-7a45e00c8358",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "41300a4d-22c5-4677-93dd-8c5b17faf486",
+      "partNumber": "13248630",
+      "nameAr": "قاعدة فتيس خلفية أوتوماتيك",
+      "canonical": "https://mopc.store/ar/products/rear-automatic-transmission-mount-gm-p-41300a4d-22c5-4677-93dd-8c5b17faf486",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "4202d5d3-9ddc-405e-a2a5-4ce0acbb5262",
+      "partNumber": "OP-39028913",
+      "nameAr": "سويتش - Outer Parking Frt",
+      "canonical": "https://mopc.store/ar/products/outer-parking-frt-genuine-parts-p-4202d5d3-9ddc-405e-a2a5-4ce0acbb5262",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "424f5ba0-185b-48d8-bdaa-5704bfd703c1",
+      "partNumber": "OP-9839253380",
+      "nameAr": "مبرد زيت متور",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-424f5ba0-185b-48d8-bdaa-5704bfd703c1",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مبرد زيت متور",
+      "newEnglishName": "Engine Oil Cooler"
+    },
+    {
+      "id": "42725f15-86e7-4bed-bf04-daf1c0526a93",
+      "partNumber": "23762061",
+      "nameAr": "مبرد تربو",
+      "canonical": "https://mopc.store/ar/products/turbo-intercooler-gm-p-42725f15-86e7-4bed-bf04-daf1c0526a93",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "42e1bd56-a4c3-4930-adb6-4c800c9264d1",
+      "partNumber": "OP-13251465",
+      "nameAr": "خرطوم سخن خروج-GTC",
+      "canonical": "https://mopc.store/ar/products/gtc-genuine-parts-p-42e1bd56-a4c3-4930-adb6-4c800c9264d1",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم سخن خروج-GTC",
+      "newEnglishName": "Heater Outlet Hose GTC"
+    },
+    {
+      "id": "43476569-9c29-4931-8be5-54ee584226a9",
+      "partNumber": "OP-11588811",
+      "nameAr": "مسمار عجل",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-43476569-9c29-4931-8be5-54ee584226a9",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مسمار عجل",
+      "newEnglishName": "Wheel Bolt"
+    },
+    {
+      "id": "434b7971-7c5c-43bd-8ef0-001f60c7f05b",
+      "partNumber": "OP-9670813780",
+      "nameAr": "خرطوم رادياتير دخول",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-434b7971-7c5c-43bd-8ef0-001f60c7f05b",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير دخول",
+      "newEnglishName": "Radiator Inlet Hose"
+    },
+    {
+      "id": "442bb5bf-3b62-42ab-9d41-0bc88d7a104e",
+      "partNumber": "84358964",
+      "nameAr": "مساعد امامى شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-shock-absorber-gm-p-442bb5bf-3b62-42ab-9d41-0bc88d7a104e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "44e8e971-c0d3-4578-a1aa-9dd7ef07d4fa",
+      "partNumber": "OP-1693580680",
+      "nameAr": "تيل فرامل امامى",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-44e8e971-c0d3-4578-a1aa-9dd7ef07d4fa",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "تيل فرامل امامى",
+      "newEnglishName": "Front Brake Pads"
+    },
+    {
+      "id": "4577d978-e7ae-4713-8650-d317be6cf34b",
+      "partNumber": "OP-9809090180",
+      "nameAr": "تيش ميزان",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-4577d978-e7ae-4713-8650-d317be6cf34b",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "تيش ميزان",
+      "newEnglishName": "Stabilizer Link"
+    },
+    {
+      "id": "45b5e76a-93c8-493c-9888-9aa5c610167d",
+      "partNumber": "24563770",
+      "nameAr": "اويل سيل كرنك خلفي بالقاعده",
+      "canonical": "https://mopc.store/ar/products/rear-crankshaft-seal-with-housing-gm-p-45b5e76a-93c8-493c-9888-9aa5c610167d",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "460e7eb5-160a-46c1-87df-34adc976e02b",
+      "partNumber": "OP-16074052XT",
+      "nameAr": "غطاء صامولة جنط",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-460e7eb5-160a-46c1-87df-34adc976e02b",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "غطاء صامولة جنط",
+      "newEnglishName": "Wheel Nut Cover"
+    },
+    {
+      "id": "46618a67-b81b-428d-a015-44f2f5824ebd",
+      "partNumber": "13502045",
+      "nameAr": "طنابير امامية",
+      "canonical": "https://mopc.store/ar/products/front-brake-discs-gm-p-46618a67-b81b-428d-a015-44f2f5824ebd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "46b00576-c39d-409f-ba4d-773b7bea3c63",
+      "partNumber": "42793717",
+      "nameAr": "تيل فرامل خلفى لقم",
+      "canonical": "https://mopc.store/ar/products/rear-brake-pads-gm-p-46b00576-c39d-409f-ba4d-773b7bea3c63",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "47b3d864-a4ba-4823-a578-8006bfac2e91",
+      "partNumber": "OP-YP00065680",
+      "nameAr": "زور قربة مساحات",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-47b3d864-a4ba-4823-a578-8006bfac2e91",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "زور قربة مساحات",
+      "newEnglishName": "Windscreen Washer Reservoir Filler Neck"
+    },
+    {
+      "id": "47bbb397-a9b8-4084-9184-244b1252a5b2",
+      "partNumber": "23577933",
+      "nameAr": "مساعد أمامي شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-shock-absorber-gm-p-47bbb397-a9b8-4084-9184-244b1252a5b2",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "47cacc61-0cb4-4cd1-b8e7-5f1868df778a",
+      "partNumber": "23871131",
+      "nameAr": "بلف غطاء تاكيهات",
+      "canonical": "https://mopc.store/ar/products/gm-p-47cacc61-0cb4-4cd1-b8e7-5f1868df778a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بلف غطاء تاكيهات",
+      "newEnglishName": "Valve Cover Valve"
+    },
+    {
+      "id": "483809c0-cdd7-40bf-ac08-ba901b288e49",
+      "partNumber": "23542931",
+      "nameAr": "تيش ميزان يمين",
+      "canonical": "https://mopc.store/ar/products/left-front-stabilizer-link-gm-p-483809c0-cdd7-40bf-ac08-ba901b288e49",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Left Front Stabilizer Link",
+      "newEnglishName": "Right Stabilizer Link"
+    },
+    {
+      "id": "48e03362-384b-4b64-a492-0962699d5bdd",
+      "partNumber": "23750331",
+      "nameAr": "كولر  فتيس",
+      "canonical": "https://mopc.store/ar/products/transmission-cooler-gm-p-48e03362-384b-4b64-a492-0962699d5bdd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "49d11851-11a7-4727-8c21-324d0cd33c4a",
+      "partNumber": "23577933",
+      "nameAr": "مساعد أمامي شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-shock-absorber-gm-p-49d11851-11a7-4727-8c21-324d0cd33c4a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "4a5ef2f4-a99c-4560-8455-8d2f574728e0",
+      "partNumber": "55354237",
+      "nameAr": "جوان غطاء تاكيهات",
+      "canonical": "https://mopc.store/ar/products/valve-cover-gasket-gm-p-4a5ef2f4-a99c-4560-8455-8d2f574728e0",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "4a779a22-6e53-4ff5-a497-98dd4992b75d",
+      "partNumber": "OP-55584594",
+      "nameAr": "سبيكة دليل كرنك STD",
+      "canonical": "https://mopc.store/ar/products/std-genuine-parts-p-4a779a22-6e53-4ff5-a497-98dd4992b75d",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "4ab2fea8-592c-4041-a6a8-17999806f107",
+      "partNumber": "OP-9814639380",
+      "nameAr": "جوان وش تقسيمة امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-4ab2fea8-592c-4041-a6a8-17999806f107",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان وش تقسيمة امامي",
+      "newEnglishName": "Front Timing Cover Gasket"
+    },
+    {
+      "id": "4c4ccca2-f7be-43cc-9524-9d62699fc76b",
+      "partNumber": "OP-55570690",
+      "nameAr": "اويل سيل ترموستات",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-4c4ccca2-f7be-43cc-9524-9d62699fc76b",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل ترموستات",
+      "newEnglishName": "Thermostat Seal"
+    },
+    {
+      "id": "4d8990b8-e6a2-438f-899e-dd931099b405",
+      "partNumber": "OP-55569245",
+      "nameAr": "ترس شدادة كرنك",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-4d8990b8-e6a2-438f-899e-dd931099b405",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "4de50bb5-55ac-4ddd-8b51-0ce6bc0561d8",
+      "partNumber": "OP-5033C3",
+      "nameAr": "عازل بطاحة مساعد امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-4de50bb5-55ac-4ddd-8b51-0ce6bc0561d8",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "عازل بطاحة مساعد امامي",
+      "newEnglishName": "Front Shock Absorber Mount Insulator"
+    },
+    {
+      "id": "4df8e878-7a0c-49a6-bf70-1a5d41536180",
+      "partNumber": "OP-24405911",
+      "nameAr": "جوان وش تقسيمة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-4df8e878-7a0c-49a6-bf70-1a5d41536180",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان وش تقسيمة",
+      "newEnglishName": "Timing Cover Gasket"
+    },
+    {
+      "id": "4ea2aab0-194a-481f-b1d2-c610bf8666ab",
+      "partNumber": "24567806",
+      "nameAr": "جوان طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/vacuum-pump-gasket-gm-p-4ea2aab0-194a-481f-b1d2-c610bf8666ab",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "4f8b464a-9a2c-4baf-93c3-913184c755f4",
+      "partNumber": "OP-6455HF",
+      "nameAr": "سربنتينة تكييف",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-4f8b464a-9a2c-4baf-93c3-913184c755f4",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "سربنتينة تكييف",
+      "newEnglishName": "A/C Condenser"
+    },
+    {
+      "id": "4fdca555-ed6c-4f1e-8fdb-fac9f845a215",
+      "partNumber": "23764762",
+      "nameAr": "مقص امامي يمين",
+      "canonical": "https://mopc.store/ar/products/front-right-control-arm-gm-p-4fdca555-ed6c-4f1e-8fdb-fac9f845a215",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "4fe11d66-6c2f-492b-bf50-5ac2780165d9",
+      "partNumber": "84315822",
+      "nameAr": "مساعد امامى يمين",
+      "canonical": "https://mopc.store/ar/products/front-right-shock-absorber-gm-p-4fe11d66-6c2f-492b-bf50-5ac2780165d9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "50bb4df8-1d0c-408e-9fdb-cbff878ce684",
+      "partNumber": "23623675",
+      "nameAr": "تيل فرامل امامى كابتيفا",
+      "canonical": "https://mopc.store/ar/products/front-brake-pad-kit-gm-p-50bb4df8-1d0c-408e-9fdb-cbff878ce684",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "50daaca5-1963-4fe5-b80f-1d65666fa717",
+      "partNumber": "13465094",
+      "nameAr": "قربة مياة",
+      "canonical": "https://mopc.store/ar/products/coolant-overflow-tank-gm-p-50daaca5-1963-4fe5-b80f-1d65666fa717",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "5133fe66-719a-4ea5-ac33-56e7de2ec345",
+      "partNumber": "13402938",
+      "nameAr": "مساعد امامي شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-shock-absorber-gm-p-5133fe66-719a-4ea5-ac33-56e7de2ec345",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "51a62284-a007-40b4-ac01-3edf9b52e0bd",
+      "partNumber": "OP-55597152",
+      "nameAr": "جوان طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-51a62284-a007-40b4-ac01-3edf9b52e0bd",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان طلمبة فاكيوم",
+      "newEnglishName": "Vacuum Pump Gasket"
+    },
+    {
+      "id": "528a49a6-250f-43db-a880-15913c3bf860",
+      "partNumber": "13248552",
+      "nameAr": "قاعدة موتور شمال",
+      "canonical": "https://mopc.store/ar/products/left-engine-mount-gm-p-528a49a6-250f-43db-a880-15913c3bf860",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "52bf403d-d6e4-4fe7-99a0-5371f206056e",
+      "partNumber": "95390893",
+      "nameAr": "خرطوم ردياتير سفلي",
+      "canonical": "https://mopc.store/ar/products/lower-radiator-hose-gm-p-52bf403d-d6e4-4fe7-99a0-5371f206056e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "52ebfa19-e644-4608-b2e4-bf0b64ea62bf",
+      "partNumber": "23794524",
+      "nameAr": "كمبيوتر فتيس LV3",
+      "canonical": "https://mopc.store/ar/products/transmission-control-unit-lv3-gm-p-52ebfa19-e644-4608-b2e4-bf0b64ea62bf",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "53192851-3349-4855-82ed-58f4f97d4700",
+      "partNumber": "23753283",
+      "nameAr": "سير دينامو",
+      "canonical": "https://mopc.store/ar/products/alternator-belt-gm-p-53192851-3349-4855-82ed-58f4f97d4700",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "533aff50-d28d-43b9-8e7a-58224e8c0114",
+      "partNumber": "25189499",
+      "nameAr": "حساس عادم 1",
+      "canonical": "https://mopc.store/ar/products/o2-sensor-number-1-gm-p-533aff50-d28d-43b9-8e7a-58224e8c0114",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "53a74243-785a-4e9b-8761-2c6ef6acb4c7",
+      "partNumber": "95459410",
+      "nameAr": "خرطوم ردياتير علوي",
+      "canonical": "https://mopc.store/ar/products/upper-radiator-hose-gm-p-53a74243-785a-4e9b-8761-2c6ef6acb4c7",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "546aabbe-3cf6-4f71-8092-6430b0b4d522",
+      "partNumber": "OP-9811909980",
+      "nameAr": "كوعة تربو دخول",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-546aabbe-3cf6-4f71-8092-6430b0b4d522",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كوعة تربو دخول",
+      "newEnglishName": "Turbocharger Inlet Elbow"
+    },
+    {
+      "id": "54c907f5-5846-42b7-b27f-9a4e14e28f72",
+      "partNumber": "23620652",
+      "nameAr": "مساعد شنطة شمال",
+      "canonical": "https://mopc.store/ar/products/left-trunk-strut-gm-p-54c907f5-5846-42b7-b27f-9a4e14e28f72",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "562056d0-2c0d-4b2a-b075-674d54051064",
+      "partNumber": "OP-YP00106580",
+      "nameAr": "وحدة تحكم فانوس",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-562056d0-2c0d-4b2a-b075-674d54051064",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "وحدة تحكم فانوس",
+      "newEnglishName": "Headlamp Control Module"
+    },
+    {
+      "id": "56655884-873c-4ef9-b30b-36492b20e61f",
+      "partNumber": "OP-9808155580",
+      "nameAr": "خرطوم قربة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-56655884-873c-4ef9-b30b-36492b20e61f",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم قربة",
+      "newEnglishName": "Expansion Tank Hose"
+    },
+    {
+      "id": "570cc6ba-6867-4a21-b873-d92f467d7c04",
+      "partNumber": "25199828",
+      "nameAr": "كوعة ترموستات",
+      "canonical": "https://mopc.store/ar/products/thermostat-housing-gm-p-570cc6ba-6867-4a21-b873-d92f467d7c04",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "5888314b-6525-4797-b60e-92629832a4d5",
+      "partNumber": "OP-9864385980",
+      "nameAr": "مساعد امامى",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-5888314b-6525-4797-b60e-92629832a4d5",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مساعد امامى",
+      "newEnglishName": "Front Shock Absorber"
+    },
+    {
+      "id": "58dd51b4-d5d8-40d8-bd1d-28ae4ae233a8",
+      "partNumber": "OP-95599870",
+      "nameAr": "مياه رادياتير-concentrated, 1 Liter",
+      "canonical": "https://mopc.store/ar/products/concentrated-1-liter-genuine-parts-p-58dd51b4-d5d8-40d8-bd1d-28ae4ae233a8",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مياه رادياتير-concentrated, 1 Liter",
+      "newEnglishName": "Concentrated Radiator Coolant, 1 Liter"
+    },
+    {
+      "id": "59831b2b-1372-400a-b42b-2ffe308b1d84",
+      "partNumber": "OP-55567067",
+      "nameAr": "ماسورة راجع  تربو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-59831b2b-1372-400a-b42b-2ffe308b1d84",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ماسورة راجع  تربو",
+      "newEnglishName": "Turbocharger Return Pipe"
+    },
+    {
+      "id": "5996f1ba-d0c8-4207-960f-84f27a3bdecd",
+      "partNumber": "23529464",
+      "nameAr": "موبينة",
+      "canonical": "https://mopc.store/ar/products/ignition-coil-gm-p-5996f1ba-d0c8-4207-960f-84f27a3bdecd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "59c4f9a2-4c69-46c1-ac72-6ab83d948679",
+      "partNumber": "24405967",
+      "nameAr": "ترس عامود كرنك",
+      "canonical": "https://mopc.store/ar/products/crankshaft-gear-gm-p-59c4f9a2-4c69-46c1-ac72-6ab83d948679",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "59dd4cb3-4c37-4efb-b281-58a1ab5a041e",
+      "partNumber": "13517845",
+      "nameAr": "طنابير امامية",
+      "canonical": "https://mopc.store/ar/products/front-brake-discs-gm-p-59dd4cb3-4c37-4efb-b281-58a1ab5a041e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "5bda3401-92fb-4b37-a5e9-40c366053d97",
+      "partNumber": "OP-55591401",
+      "nameAr": "حساس حرارة مياه ترموستات",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-5bda3401-92fb-4b37-a5e9-40c366053d97",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "حساس حرارة مياه ترموستات",
+      "newEnglishName": "Thermostat Coolant Temperature Sensor"
+    },
+    {
+      "id": "5c30a4a0-e797-4ced-bcf3-86738742a7da",
+      "partNumber": "25194222",
+      "nameAr": "أويل سيل ماسورة مبرد",
+      "canonical": "https://mopc.store/ar/products/oil-cooler-hose-seal-gm-p-5c30a4a0-e797-4ced-bcf3-86738742a7da",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "5d8bc0a6-70db-4c08-bd6e-3de8356a2396",
+      "partNumber": "OP-1693583880",
+      "nameAr": "تيل فرامل امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-5d8bc0a6-70db-4c08-bd6e-3de8356a2396",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "تيل فرامل امامي",
+      "newEnglishName": "Front Brake Pads"
+    },
+    {
+      "id": "5ea18caf-8d38-42a9-a9ff-e37fb49d7690",
+      "partNumber": "55556227",
+      "nameAr": "بلف عدم رجوع زيت",
+      "canonical": "https://mopc.store/ar/products/oil-check-valve-gm-p-5ea18caf-8d38-42a9-a9ff-e37fb49d7690",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "5ea8b06c-bed7-406f-954a-424d47556ae4",
+      "partNumber": "OP-13281784",
+      "nameAr": "كاوتش ميزان",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-5ea8b06c-bed7-406f-954a-424d47556ae4",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كاوتش ميزان",
+      "newEnglishName": "Stabilizer Bar Bushing"
+    },
+    {
+      "id": "5f2afdab-32d7-4f85-9f02-3f6c77cb31c5",
+      "partNumber": "20917577",
+      "nameAr": "سويتش زجاج امامى شمال رباعى",
+      "canonical": "https://mopc.store/ar/products/master-power-window-switch-gm-p-5f2afdab-32d7-4f85-9f02-3f6c77cb31c5",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "5fe4cfc9-e251-4ddf-8250-38ffba54bbfb",
+      "partNumber": "OP-9677186380",
+      "nameAr": "خرطوم مياة من القربة للردياتير",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-5fe4cfc9-e251-4ddf-8250-38ffba54bbfb",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم مياة من القربة للردياتير",
+      "newEnglishName": "Expansion Tank to Radiator Hose"
+    },
+    {
+      "id": "6059387a-89d3-476b-a9d4-497e38580c23",
+      "partNumber": "OP-9689038480",
+      "nameAr": "خرطوم مبرد تربو دخول",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-6059387a-89d3-476b-a9d4-497e38580c23",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم مبرد تربو دخول",
+      "newEnglishName": "Intercooler Inlet Hose"
+    },
+    {
+      "id": "608b03d3-d024-441c-a7e0-9ca17cfe4705",
+      "partNumber": "OP-6504759180",
+      "nameAr": "فلتر هواء",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-608b03d3-d024-441c-a7e0-9ca17cfe4705",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "فلتر هواء",
+      "newEnglishName": "Air Filter"
+    },
+    {
+      "id": "6176915a-0b39-4ce5-88d9-976f1f010f69",
+      "partNumber": "25195822",
+      "nameAr": "فلتر زيت كامل بالقاعدة",
+      "canonical": "https://mopc.store/ar/products/complete-oil-filter-with-housing-gm-p-6176915a-0b39-4ce5-88d9-976f1f010f69",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "61a9428b-c80d-4d4e-b1d1-ac6f95d5f5ef",
+      "partNumber": "OP-1609583080",
+      "nameAr": "طقم ديسكات خلفية",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-61a9428b-c80d-4d4e-b1d1-ac6f95d5f5ef",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طقم ديسكات خلفية",
+      "newEnglishName": "Rear Brake Disc Set"
+    },
+    {
+      "id": "62082eb4-13ef-4664-a49c-70da3d0ff237",
+      "partNumber": "OP-9678822280",
+      "nameAr": "خرطوم سخن دخول",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-62082eb4-13ef-4664-a49c-70da3d0ff237",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم سخن دخول",
+      "newEnglishName": "Heater Inlet Hose"
+    },
+    {
+      "id": "628c3f25-c21a-4844-a19b-3eed6f58f2ee",
+      "partNumber": "OP-55502363",
+      "nameAr": "بكرة سير دينامو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-628c3f25-c21a-4844-a19b-3eed6f58f2ee",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بكرة سير دينامو",
+      "newEnglishName": "Alternator Belt Pulley"
+    },
+    {
+      "id": "6314b25e-6e93-4546-a794-50f8e0baa345",
+      "partNumber": "OP-9678822580",
+      "nameAr": "خرطوم سخن خروج",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-6314b25e-6e93-4546-a794-50f8e0baa345",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم سخن خروج",
+      "newEnglishName": "Heater Outlet Hose"
+    },
+    {
+      "id": "638a82e0-2c14-4668-b787-99b7119be016",
+      "partNumber": "25203483",
+      "nameAr": "فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/oil-filter-gm-p-638a82e0-2c14-4668-b787-99b7119be016",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "639586e9-7307-4112-bf32-a2394c1ef42f",
+      "partNumber": "23730060",
+      "nameAr": "ردياتير",
+      "canonical": "https://mopc.store/ar/products/radiator-gm-p-639586e9-7307-4112-bf32-a2394c1ef42f",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "63cce354-efc9-414d-bcd4-44aa8f1b1992",
+      "partNumber": "25192904",
+      "nameAr": "ماسورة مياه",
+      "canonical": "https://mopc.store/ar/products/water-hose-gm-p-63cce354-efc9-414d-bcd4-44aa8f1b1992",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "64514748-c8f7-44d1-a8a3-6444080841b9",
+      "partNumber": "23871131",
+      "nameAr": "بلف غطاء تاكيهات",
+      "canonical": "https://mopc.store/ar/products/gm-p-64514748-c8f7-44d1-a8a3-6444080841b9",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بلف غطاء تاكيهات",
+      "newEnglishName": "Valve Cover Valve"
+    },
+    {
+      "id": "6515d273-2f73-41f8-ab43-9e993bd9148c",
+      "partNumber": "OP-9678126080",
+      "nameAr": "قربة مياة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-6515d273-2f73-41f8-ab43-9e993bd9148c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "قربة مياة",
+      "newEnglishName": "Coolant Expansion Tank"
+    },
+    {
+      "id": "65911681-5bcd-459a-81ec-f49239035d61",
+      "partNumber": "23939588",
+      "nameAr": "فلتر تكييف",
+      "canonical": "https://mopc.store/ar/products/cabin-air-filter-gm-p-65911681-5bcd-459a-81ec-f49239035d61",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "66bed1bc-b952-4e40-bc91-f92af2e94262",
+      "partNumber": "OP-39066025",
+      "nameAr": "قربه مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-66bed1bc-b952-4e40-bc91-f92af2e94262",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "قربه مياه",
+      "newEnglishName": "Coolant Expansion Tank"
+    },
+    {
+      "id": "66f3e2cb-83e3-4c5f-acb7-0c8c658b5c08",
+      "partNumber": "OP-55493557",
+      "nameAr": "كوعة ترموستات",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-66f3e2cb-83e3-4c5f-acb7-0c8c658b5c08",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كوعة ترموستات",
+      "newEnglishName": "Thermostat Housing"
+    },
+    {
+      "id": "69223d8e-aa5c-41e4-aac8-9f7aa6c25b8a",
+      "partNumber": "23618250",
+      "nameAr": "طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/vacuum-pump-gm-p-69223d8e-aa5c-41e4-aac8-9f7aa6c25b8a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "6ccea412-0c74-414c-9fea-548cf2827fc0",
+      "partNumber": "OP-95530020",
+      "nameAr": "تيل فرامل امامي -2015",
+      "canonical": "https://mopc.store/ar/products/2015-genuine-parts-p-6ccea412-0c74-414c-9fea-548cf2827fc0",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "6db74966-0447-4964-b123-f570b75396fd",
+      "partNumber": "23542931",
+      "nameAr": "تيش ميزان يمين",
+      "canonical": "https://mopc.store/ar/products/left-front-stabilizer-link-gm-p-6db74966-0447-4964-b123-f570b75396fd",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Left Front Stabilizer Link",
+      "newEnglishName": "Right Stabilizer Link"
+    },
+    {
+      "id": "6db754d0-069c-4f99-8a6e-e597a972cfed",
+      "partNumber": "OP-13105950",
+      "nameAr": "بلف تبخير بنزين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-6db754d0-069c-4f99-8a6e-e597a972cfed",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بلف تبخير بنزين",
+      "newEnglishName": "Fuel Vapor Valve"
+    },
+    {
+      "id": "6dc09a43-0191-41d4-b035-2338b3b573df",
+      "partNumber": "OP-1611187480",
+      "nameAr": "غطاء كرنك خلفي بالجوان",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-6dc09a43-0191-41d4-b035-2338b3b573df",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "غطاء كرنك خلفي بالجوان",
+      "newEnglishName": "Rear Crankshaft Cover with Gasket"
+    },
+    {
+      "id": "6eed4e15-a6c1-484f-bd9f-4180fbea4838",
+      "partNumber": "25199750",
+      "nameAr": "اويل سيل",
+      "canonical": "https://mopc.store/ar/products/oil-seal-gm-p-6eed4e15-a6c1-484f-bd9f-4180fbea4838",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "6f3178a8-3c8f-4ac5-ab16-1e05a3a89408",
+      "partNumber": "23753023",
+      "nameAr": "طلمبة مياه",
+      "canonical": "https://mopc.store/ar/products/water-pump-gm-p-6f3178a8-3c8f-4ac5-ab16-1e05a3a89408",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "704ee50e-0f61-4cad-99d6-1a86b5da42bd",
+      "partNumber": "23743486",
+      "nameAr": "طقم تيش دركسيون يمين",
+      "canonical": "https://mopc.store/ar/products/right-steering-tie-rod-kit-gm-p-704ee50e-0f61-4cad-99d6-1a86b5da42bd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "70b1e8f5-bf47-4ac1-846c-50be8db7d9fd",
+      "partNumber": "25194223",
+      "nameAr": "أويل سيل ماسورة مبرد",
+      "canonical": "https://mopc.store/ar/products/oil-cooler-hose-seal-gm-p-70b1e8f5-bf47-4ac1-846c-50be8db7d9fd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "71147932-9f44-4c0e-ab3c-3c1cedb4171d",
+      "partNumber": "OP-1341K4",
+      "nameAr": "ماسورة تربو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-71147932-9f44-4c0e-ab3c-3c1cedb4171d",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ماسورة تربو",
+      "newEnglishName": "Turbocharger Pipe"
+    },
+    {
+      "id": "71e21183-7b7e-4f33-aca3-89a0257f0a08",
+      "partNumber": "OP-55571977",
+      "nameAr": "حساس كرنك",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-71e21183-7b7e-4f33-aca3-89a0257f0a08",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "حساس كرنك",
+      "newEnglishName": "Crankshaft Position Sensor"
+    },
+    {
+      "id": "71e41cbe-01cf-4920-a7e2-79d1ae4ed326",
+      "partNumber": "OP-22986928",
+      "nameAr": "خرطوم رادياتير سفلي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-71e41cbe-01cf-4920-a7e2-79d1ae4ed326",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير سفلي",
+      "newEnglishName": "Lower Radiator Hose"
+    },
+    {
+      "id": "7245f0d4-1161-4faa-97f5-cc8e91e9ed4d",
+      "partNumber": "OP-55575674",
+      "nameAr": "جوان طلمبة زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-7245f0d4-1161-4faa-97f5-cc8e91e9ed4d",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان طلمبة زيت",
+      "newEnglishName": "Oil Pump Gasket"
+    },
+    {
+      "id": "7338bd80-4f09-4389-bf38-58f7a624198c",
+      "partNumber": "OP-YR00110280",
+      "nameAr": "صامولة عجل",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-7338bd80-4f09-4389-bf38-58f7a624198c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "صامولة عجل",
+      "newEnglishName": "Wheel Nut"
+    },
+    {
+      "id": "738cc487-9fe3-4965-99d4-f486697491a0",
+      "partNumber": "25189500",
+      "nameAr": "2 حساس عادم",
+      "canonical": "https://mopc.store/ar/products/o2-sensor-number-2-gm-p-738cc487-9fe3-4965-99d4-f486697491a0",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "738e76d8-a62d-4ff1-8186-4aa01985d830",
+      "partNumber": "13544913",
+      "nameAr": "غطاء قربة مياه",
+      "canonical": "https://mopc.store/ar/products/radiator-overflow-tank-gm-p-738e76d8-a62d-4ff1-8186-4aa01985d830",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Radiator Overflow Tank",
+      "newEnglishName": "Coolant Expansion Tank Cap"
+    },
+    {
+      "id": "745d8d3c-fc3c-4aef-ad75-d509733aa325",
+      "partNumber": "24349334",
+      "nameAr": "اويل سيل طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/vacuum-pump-oil-seal-gm-p-745d8d3c-fc3c-4aef-ad75-d509733aa325",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "75112cec-e9ef-4463-9d20-355fcc1bafcf",
+      "partNumber": "OP-55575673",
+      "nameAr": "اورينج طلمبة زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-75112cec-e9ef-4463-9d20-355fcc1bafcf",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اورينج طلمبة زيت",
+      "newEnglishName": "Oil Pump O-Ring"
+    },
+    {
+      "id": "75e47e12-a666-4c36-9a2a-e7c7b68f54c8",
+      "partNumber": "25195119",
+      "nameAr": "طلمبة مياه",
+      "canonical": "https://mopc.store/ar/products/water-pump-gm-p-75e47e12-a666-4c36-9a2a-e7c7b68f54c8",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "75e4f196-86cc-4a3c-9c21-a1510004b1c3",
+      "partNumber": "23753101",
+      "nameAr": "بوجيه",
+      "canonical": "https://mopc.store/ar/products/spark-plug-gm-p-75e4f196-86cc-4a3c-9c21-a1510004b1c3",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "76d011aa-bbbb-40c7-9d83-abf6aef2383f",
+      "partNumber": "13354419",
+      "nameAr": "قاعدة بطارية فبر",
+      "canonical": "https://mopc.store/ar/products/plastic-battery-tray-gm-p-76d011aa-bbbb-40c7-9d83-abf6aef2383f",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "78330861-8ad8-4a99-9406-bfa890256341",
+      "partNumber": "23866811",
+      "nameAr": "سير دينامو",
+      "canonical": "https://mopc.store/ar/products/alternator-belt-gm-p-78330861-8ad8-4a99-9406-bfa890256341",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "787a5248-64dd-40d7-ade8-ebb7d4b0c031",
+      "partNumber": "84315822",
+      "nameAr": "مساعد امامى يمين",
+      "canonical": "https://mopc.store/ar/products/front-right-shock-absorber-gm-p-787a5248-64dd-40d7-ade8-ebb7d4b0c031",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "79a442e2-5cf5-4a6e-a903-e5c10363ea6c",
+      "partNumber": "55563957",
+      "nameAr": "بلف زيت",
+      "canonical": "https://mopc.store/ar/products/pcv-valve-gm-p-79a442e2-5cf5-4a6e-a903-e5c10363ea6c",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "7ae502ab-77b7-4b69-bc79-a42aed43737c",
+      "partNumber": "OP-13251447",
+      "nameAr": "خرطوم مياةمن القربة لكوعة الثرموستات",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-7ae502ab-77b7-4b69-bc79-a42aed43737c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم مياةمن القربة لكوعة الثرموستات",
+      "newEnglishName": "Expansion Tank to Thermostat Housing Hose"
+    },
+    {
+      "id": "7b4fed4c-1f25-4e9c-816e-d426e8471eb1",
+      "partNumber": "55354068",
+      "nameAr": "أويل سيل ماسورة مبرد",
+      "canonical": "https://mopc.store/ar/products/cooler-hose-oil-seal-gm-p-7b4fed4c-1f25-4e9c-816e-d426e8471eb1",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "7b9f948c-fceb-48b7-a859-3c3c588a84a8",
+      "partNumber": "OP-55509122",
+      "nameAr": "خرطوم طلمبة مياه اضافية",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-7b9f948c-fceb-48b7-a859-3c3c588a84a8",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم طلمبة مياه اضافية",
+      "newEnglishName": "Auxiliary Water Pump Hose"
+    },
+    {
+      "id": "7ca02073-f43c-4db2-8988-4420406dc50f",
+      "partNumber": "25199750",
+      "nameAr": "اويل سيل",
+      "canonical": "https://mopc.store/ar/products/oil-seal-gm-p-7ca02073-f43c-4db2-8988-4420406dc50f",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "7cf5a6b0-ca48-4935-9acd-7ac87e8069da",
+      "partNumber": "OP-9803434080",
+      "nameAr": "بيضة مقص أمامى",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-7cf5a6b0-ca48-4935-9acd-7ac87e8069da",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بيضة مقص أمامى",
+      "newEnglishName": "Front Control Arm Ball Joint"
+    },
+    {
+      "id": "7dcaf935-57ab-4959-9afa-0125e72c13f1",
+      "partNumber": "OP-20843230",
+      "nameAr": "سويتش Parking نيكل",
+      "canonical": "https://mopc.store/ar/products/parking-genuine-parts-p-7dcaf935-57ab-4959-9afa-0125e72c13f1",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "7df34b98-ea13-4e80-b543-77575accf5df",
+      "partNumber": "25190255",
+      "nameAr": "بستم",
+      "canonical": "https://mopc.store/ar/products/piston-gm-p-7df34b98-ea13-4e80-b543-77575accf5df",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "7e9accee-e1e5-4746-a29d-aa532bbe1038",
+      "partNumber": "24349334",
+      "nameAr": "اويل سيل طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/vacuum-pump-oil-seal-gm-p-7e9accee-e1e5-4746-a29d-aa532bbe1038",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "7f2139ea-b97e-4ea6-a102-7e59e4ecd70b",
+      "partNumber": "42475593",
+      "nameAr": "رشاش بنزين",
+      "canonical": "https://mopc.store/ar/products/fuel-injectors-gm-p-7f2139ea-b97e-4ea6-a102-7e59e4ecd70b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "7fbd1157-5d3b-42ed-bfe5-b39de924efe4",
+      "partNumber": "13332639",
+      "nameAr": "مساعد خلفى",
+      "canonical": "https://mopc.store/ar/products/rear-shock-absorber-gm-p-7fbd1157-5d3b-42ed-bfe5-b39de924efe4",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "7fc61b72-b13f-4e2c-ae06-08e8f023eaa9",
+      "partNumber": "OP-9863013680",
+      "nameAr": "بوجيه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-7fc61b72-b13f-4e2c-ae06-08e8f023eaa9",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بوجيه",
+      "newEnglishName": "Spark Plug"
+    },
+    {
+      "id": "8029e013-1d57-4254-9c92-5a67c6688a12",
+      "partNumber": "OP-9800777280",
+      "nameAr": "قربة راياتير",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-8029e013-1d57-4254-9c92-5a67c6688a12",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "قربة راياتير",
+      "newEnglishName": "Coolant Expansion Tank"
+    },
+    {
+      "id": "80c288f6-b10f-4bea-a6bb-e1b861637e31",
+      "partNumber": "OP-25199813",
+      "nameAr": "لاكور ماسورة تربو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-80c288f6-b10f-4bea-a6bb-e1b861637e31",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "لاكور ماسورة تربو",
+      "newEnglishName": "Turbocharger Pipe Union"
+    },
+    {
+      "id": "81e5c8f0-c8a7-427a-9fe9-f8a9a2ae1bbf",
+      "partNumber": "OP-9678749180",
+      "nameAr": "كاوتش عازل مساعد علوى",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-81e5c8f0-c8a7-427a-9fe9-f8a9a2ae1bbf",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كاوتش عازل مساعد علوى",
+      "newEnglishName": "Upper Shock Absorber Insulator"
+    },
+    {
+      "id": "8217ec55-b3fe-46bf-8abe-b4a5cc6a28d2",
+      "partNumber": "24564744",
+      "nameAr": "رشاش بنزين",
+      "canonical": "https://mopc.store/ar/products/fuel-injectors-gm-p-8217ec55-b3fe-46bf-8abe-b4a5cc6a28d2",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "82347403-b148-414f-b51f-39919f45eec8",
+      "partNumber": "OP-13586321",
+      "nameAr": "طلمبة بنزين A16LET",
+      "canonical": "https://mopc.store/ar/products/a16let-genuine-parts-p-82347403-b148-414f-b51f-39919f45eec8",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طلمبة بنزين A16LET",
+      "newEnglishName": "Fuel Pump A16LET"
+    },
+    {
+      "id": "82c0e5b6-abf0-4224-91e2-df82d6a3e758",
+      "partNumber": "13354419",
+      "nameAr": "قاعدة بطارية فبر",
+      "canonical": "https://mopc.store/ar/products/plastic-battery-tray-gm-p-82c0e5b6-abf0-4224-91e2-df82d6a3e758",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "83076247-b04f-420c-9a8c-b73580bf7e07",
+      "partNumber": "23914818",
+      "nameAr": "طقم تيش اسكترا شمال",
+      "canonical": "https://mopc.store/ar/products/left-steering-tie-rod-gm-p-83076247-b04f-420c-9a8c-b73580bf7e07",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "83645610-6aeb-42a0-aa80-83a75808876d",
+      "partNumber": "23384198",
+      "nameAr": "شمعدان امامى يمين",
+      "canonical": "https://mopc.store/ar/products/front-right-steering-knuckle-gm-p-83645610-6aeb-42a0-aa80-83a75808876d",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8444c9c2-2fc5-43cb-a203-aca029daa998",
+      "partNumber": "24563750",
+      "nameAr": "جوان وش سلندر",
+      "canonical": "https://mopc.store/ar/products/cylinder-head-gasket-gm-p-8444c9c2-2fc5-43cb-a203-aca029daa998",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "86766f65-2b07-4240-b7dd-0ebeeebb23a9",
+      "partNumber": "OP-25193922",
+      "nameAr": "كوعة ترموستات علوية",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-86766f65-2b07-4240-b7dd-0ebeeebb23a9",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كوعة ترموستات علوية",
+      "newEnglishName": "Upper Thermostat Housing"
+    },
+    {
+      "id": "867713af-d436-4bb5-b487-9960ad068fce",
+      "partNumber": "OP-1674216980",
+      "nameAr": "طلمبة بنزين بالعوامة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-867713af-d436-4bb5-b487-9960ad068fce",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طلمبة بنزين بالعوامة",
+      "newEnglishName": "Fuel Pump with Level Sender"
+    },
+    {
+      "id": "8705724c-c961-4c14-816e-17bca0a7f6e5",
+      "partNumber": "OP-1806A6",
+      "nameAr": "حمالة محرك خلفية",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-8705724c-c961-4c14-816e-17bca0a7f6e5",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "حمالة محرك خلفية",
+      "newEnglishName": "Rear Engine Mount Bracket"
+    },
+    {
+      "id": "885a1352-25fd-4bb0-b388-1ad90e266363",
+      "partNumber": "42793717",
+      "nameAr": "تيل فرامل خلفى لقم",
+      "canonical": "https://mopc.store/ar/products/rear-brake-pads-gm-p-885a1352-25fd-4bb0-b388-1ad90e266363",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "88c6ef1a-8e0b-4a84-9324-46d65b2d8c53",
+      "partNumber": "55353319",
+      "nameAr": "اويل سيل",
+      "canonical": "https://mopc.store/ar/products/oil-seal-gm-p-88c6ef1a-8e0b-4a84-9324-46d65b2d8c53",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "893846ab-beac-456c-ac29-d3e151b8b4f1",
+      "partNumber": "OP-6447XG",
+      "nameAr": "فلتر تكييف",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-893846ab-beac-456c-ac29-d3e151b8b4f1",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "فلتر تكييف",
+      "newEnglishName": "Cabin Air Filter"
+    },
+    {
+      "id": "899a2753-8e37-4bf1-a6b4-46f65285b580",
+      "partNumber": "23951778",
+      "nameAr": "ساعة زيت",
+      "canonical": "https://mopc.store/ar/products/oil-pressure-sensor-gm-p-899a2753-8e37-4bf1-a6b4-46f65285b580",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8a5173ae-724e-42bf-9dbc-d364a3f2eefe",
+      "partNumber": "OP-55567827",
+      "nameAr": "اويل سيل ماسورة الى تربو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-8a5173ae-724e-42bf-9dbc-d364a3f2eefe",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل ماسورة الى تربو",
+      "newEnglishName": "Turbocharger Pipe Seal"
+    },
+    {
+      "id": "8a796072-32b1-4019-8251-fc350d6ea3a6",
+      "partNumber": "OP-9803391880",
+      "nameAr": "خرطوم سخن دخول",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-8a796072-32b1-4019-8251-fc350d6ea3a6",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم سخن دخول",
+      "newEnglishName": "Heater Inlet Hose"
+    },
+    {
+      "id": "8abbac01-8fff-4a8e-a174-fbd9d0290cc4",
+      "partNumber": "23743486",
+      "nameAr": "طقم تيش دركسيون يمين",
+      "canonical": "https://mopc.store/ar/products/right-steering-tie-rod-kit-gm-p-8abbac01-8fff-4a8e-a174-fbd9d0290cc4",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8afd5a8c-3627-4dc0-9dcb-deb8b1d46bf3",
+      "partNumber": "OP-9806874880",
+      "nameAr": "خرطوم كمبرسور دخول",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-8afd5a8c-3627-4dc0-9dcb-deb8b1d46bf3",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم كمبرسور دخول",
+      "newEnglishName": "A/C Compressor Inlet Hose"
+    },
+    {
+      "id": "8b6867f0-fbd3-48bf-98f7-421ebdd2413e",
+      "partNumber": "55355578",
+      "nameAr": "جوان وش سلندر",
+      "canonical": "https://mopc.store/ar/products/cylinder-head-gasket-gm-p-8b6867f0-fbd3-48bf-98f7-421ebdd2413e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8bc190fc-7f71-4c14-82fa-fcce5937cde9",
+      "partNumber": "23764761",
+      "nameAr": "مقص امامي شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-control-arm-gm-p-8bc190fc-7f71-4c14-82fa-fcce5937cde9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8be20ca6-f335-4e81-8620-212a67ef3518",
+      "partNumber": "OP-9844264780",
+      "nameAr": "تيش الميزان",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-8be20ca6-f335-4e81-8620-212a67ef3518",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "تيش الميزان",
+      "newEnglishName": "Stabilizer Link"
+    },
+    {
+      "id": "8c240f2c-1908-4c26-83da-42399f1e5368",
+      "partNumber": "OP-9848950880",
+      "nameAr": "بلية مساعد",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-8c240f2c-1908-4c26-83da-42399f1e5368",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بلية مساعد",
+      "newEnglishName": "Shock Absorber Bearing"
+    },
+    {
+      "id": "8c2b4858-f4b2-4897-a0d1-e1297443e3d9",
+      "partNumber": "95389382",
+      "nameAr": "خرطوم ردياتير سفلى",
+      "canonical": "https://mopc.store/ar/products/radiator-lower-hose-gm-p-8c2b4858-f4b2-4897-a0d1-e1297443e3d9",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "أو Radiator lower hose",
+      "newEnglishName": "Lower Radiator Hose"
+    },
+    {
+      "id": "8c48d966-a543-46b9-8c91-9f96ca4b14a2",
+      "partNumber": "12674782",
+      "nameAr": "حساس بلف زيت 3.2 CC",
+      "canonical": "https://mopc.store/ar/products/oil-pressure-sensor-3-2-cc-gm-p-8c48d966-a543-46b9-8c91-9f96ca4b14a2",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8cdcf170-019f-4981-9a21-351357db294a",
+      "partNumber": "OP-55490059",
+      "nameAr": "رشاش بنزين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-8cdcf170-019f-4981-9a21-351357db294a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "رشاش بنزين",
+      "newEnglishName": "Fuel Injector"
+    },
+    {
+      "id": "8d3e2388-1ab8-4b35-a51b-93d3547c71ce",
+      "partNumber": "24230708",
+      "nameAr": "مصفاة فتيس أوتوماتيك",
+      "canonical": "https://mopc.store/ar/products/automatic-transmission-filter-gm-p-8d3e2388-1ab8-4b35-a51b-93d3547c71ce",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8e44b8f7-6e90-49ae-88ef-56cffc5f513e",
+      "partNumber": "23914820",
+      "nameAr": "طقم تيش اسكترا يمين",
+      "canonical": "https://mopc.store/ar/products/right-steering-tie-rod-gm-p-8e44b8f7-6e90-49ae-88ef-56cffc5f513e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8e56a615-2e37-4700-b325-ea67466db96a",
+      "partNumber": "13544913",
+      "nameAr": "غطاء قربة مياه",
+      "canonical": "https://mopc.store/ar/products/radiator-overflow-tank-gm-p-8e56a615-2e37-4700-b325-ea67466db96a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Radiator Overflow Tank",
+      "newEnglishName": "Coolant Expansion Tank Cap"
+    },
+    {
+      "id": "8e6596e4-faf9-4ad1-990b-ad86054d5cb2",
+      "partNumber": "23547344",
+      "nameAr": "حساس ركنة",
+      "canonical": "https://mopc.store/ar/products/parking-sensor-gm-p-8e6596e4-faf9-4ad1-990b-ad86054d5cb2",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "8eee1771-2ff1-4a41-81f9-5e5b1ed65c21",
+      "partNumber": "23866022",
+      "nameAr": "شداد سير دينامو",
+      "canonical": "https://mopc.store/ar/products/alternator-belt-tensioner-gm-p-8eee1771-2ff1-4a41-81f9-5e5b1ed65c21",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "9023f8ba-42d9-444a-a840-faf7c6385104",
+      "partNumber": "OP-13393368",
+      "nameAr": "قربة رادياتير بدون حساس",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-9023f8ba-42d9-444a-a840-faf7c6385104",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "قربة رادياتير بدون حساس",
+      "newEnglishName": "Coolant Expansion Tank without Sensor"
+    },
+    {
+      "id": "902db730-a377-45e0-94a0-fa5ee59d0fff",
+      "partNumber": "OP-23270840",
+      "nameAr": "كابل نقلات فتيس 2016",
+      "canonical": "https://mopc.store/ar/products/2016-genuine-parts-p-902db730-a377-45e0-94a0-fa5ee59d0fff",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كابل نقلات فتيس 2016",
+      "newEnglishName": "Gear Shift Cable 2016"
+    },
+    {
+      "id": "903806c9-1043-4b6d-9d6e-264c4c5f21e2",
+      "partNumber": "OP-9831145480",
+      "nameAr": "صدادة مساعد",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-903806c9-1043-4b6d-9d6e-264c4c5f21e2",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "صدادة مساعد",
+      "newEnglishName": "Shock Absorber Bump Stop"
+    },
+    {
+      "id": "90d96e71-09c3-481e-8de1-4c3abd9b46e0",
+      "partNumber": "23328163",
+      "nameAr": "مقص خلفى شمال علوى",
+      "canonical": "https://mopc.store/ar/products/rear-left-upper-control-arm-gm-p-90d96e71-09c3-481e-8de1-4c3abd9b46e0",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "91f9c050-3312-412c-af7d-526976fa2b31",
+      "partNumber": "OP-55490061",
+      "nameAr": "رشاش",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-91f9c050-3312-412c-af7d-526976fa2b31",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "رشاش",
+      "newEnglishName": "Injector"
+    },
+    {
+      "id": "923044b9-2cc7-4f31-8239-674eeed88a0b",
+      "partNumber": "23384197",
+      "nameAr": "شمعدان امامى شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-steering-knuckle-gm-p-923044b9-2cc7-4f31-8239-674eeed88a0b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "92b74a4f-d6e8-4dc6-bcee-20a68fbe068a",
+      "partNumber": "OP-13470637",
+      "nameAr": "حساس عجل",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-92b74a4f-d6e8-4dc6-bcee-20a68fbe068a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "حساس عجل",
+      "newEnglishName": "Wheel Sensor"
+    },
+    {
+      "id": "9468333e-0c78-4728-be9b-bae8bf7bc369",
+      "partNumber": "23971417",
+      "nameAr": "طنابير امامية",
+      "canonical": "https://mopc.store/ar/products/front-brake-discs-gm-p-9468333e-0c78-4728-be9b-bae8bf7bc369",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "94d79840-6cfe-4d41-a1d9-d0aaf7ee6136",
+      "partNumber": "OP-1109ALR",
+      "nameAr": "فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-94d79840-6cfe-4d41-a1d9-d0aaf7ee6136",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "فلتر زيت",
+      "newEnglishName": "Oil Filter"
+    },
+    {
+      "id": "95ca4a02-e18c-4e5f-b8be-35298d957c89",
+      "partNumber": "23626948",
+      "nameAr": "صرة عجل أمامي",
+      "canonical": "https://mopc.store/ar/products/front-wheel-hub-gm-p-95ca4a02-e18c-4e5f-b8be-35298d957c89",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "96ac259c-e873-415c-928e-6f7d673d304f",
+      "partNumber": "OP-1698284480",
+      "nameAr": "شدادة سير دينامو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-96ac259c-e873-415c-928e-6f7d673d304f",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "شدادة سير دينامو",
+      "newEnglishName": "Alternator Belt Tensioner"
+    },
+    {
+      "id": "96c03ebf-69d0-48f4-9a27-cd83f47ba89a",
+      "partNumber": "24563750",
+      "nameAr": "جوان وش سلندر",
+      "canonical": "https://mopc.store/ar/products/cylinder-head-gasket-gm-p-96c03ebf-69d0-48f4-9a27-cd83f47ba89a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "97355f0d-9590-4ffe-8b5e-6511ec77f0c0",
+      "partNumber": "23761500",
+      "nameAr": "تيل فرامل امامي",
+      "canonical": "https://mopc.store/ar/products/front-brake-pads-gm-p-97355f0d-9590-4ffe-8b5e-6511ec77f0c0",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "97be555f-0328-4dda-bb96-eb623736e800",
+      "partNumber": "OP-9807654380",
+      "nameAr": "خرطوم رادياتير سفلي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-97be555f-0328-4dda-bb96-eb623736e800",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير سفلي",
+      "newEnglishName": "Lower Radiator Hose"
+    },
+    {
+      "id": "981870a6-ce68-49b4-8c3a-fdbef5702a01",
+      "partNumber": "OP-55575505",
+      "nameAr": "اويل سيل",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-981870a6-ce68-49b4-8c3a-fdbef5702a01",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل",
+      "newEnglishName": "Oil Seal"
+    },
+    {
+      "id": "9a169db1-affc-473d-8222-93af16a084a5",
+      "partNumber": "OP-9805264280",
+      "nameAr": "جوان غطاء تاكيه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-9a169db1-affc-473d-8222-93af16a084a5",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان غطاء تاكيه",
+      "newEnglishName": "Valve Cover Gasket"
+    },
+    {
+      "id": "9adad41c-38f2-4c09-80e9-417633efcaef",
+      "partNumber": "55559352",
+      "nameAr": "ماسورة سخن دخول",
+      "canonical": "https://mopc.store/ar/products/hot-water-inlet-pipe-gm-p-9adad41c-38f2-4c09-80e9-417633efcaef",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "9c31669f-1f17-498a-8022-daecbce441db",
+      "partNumber": "25195822",
+      "nameAr": "فلتر زيت كامل بالقاعدة",
+      "canonical": "https://mopc.store/ar/products/complete-oil-filter-with-housing-gm-p-9c31669f-1f17-498a-8022-daecbce441db",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "9d2b2a5b-548f-441d-b873-9ce952b42d8b",
+      "partNumber": "23939588",
+      "nameAr": "فلتر تكييف",
+      "canonical": "https://mopc.store/ar/products/cabin-air-filter-gm-p-9d2b2a5b-548f-441d-b873-9ce952b42d8b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "9d97acc3-ed73-484a-949b-8e82e874abd5",
+      "partNumber": "55353321",
+      "nameAr": "أويل سيل قاعدة فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/oil-filter-base-gasket-gm-p-9d97acc3-ed73-484a-949b-8e82e874abd5",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "9eada29c-2f6d-4326-8d06-8d4173b60368",
+      "partNumber": "OP-9678818780",
+      "nameAr": "خرطوم رادياتير علوي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-9eada29c-2f6d-4326-8d06-8d4173b60368",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير علوي",
+      "newEnglishName": "Upper Radiator Hose"
+    },
+    {
+      "id": "9ecf1f0b-0252-4e8a-b7ea-8161c2a0b13c",
+      "partNumber": "55574221",
+      "nameAr": "أويل سيل صباب",
+      "canonical": "https://mopc.store/ar/products/valve-stem-seal-gm-p-9ecf1f0b-0252-4e8a-b7ea-8161c2a0b13c",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "9f498ac4-60a1-49f1-a893-cb6c5e9c31a3",
+      "partNumber": "OP-9808647180",
+      "nameAr": "ترموستات",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-9f498ac4-60a1-49f1-a893-cb6c5e9c31a3",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ترموستات",
+      "newEnglishName": "Thermostat"
+    },
+    {
+      "id": "a0bb4b3d-7a00-4e8e-82c8-2206d944a4e5",
+      "partNumber": "OP-1696257480",
+      "nameAr": "تيل فرامل امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-a0bb4b3d-7a00-4e8e-82c8-2206d944a4e5",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "تيل فرامل امامي",
+      "newEnglishName": "Front Brake Pads"
+    },
+    {
+      "id": "a3143333-157e-4de0-a05e-58f170d3de77",
+      "partNumber": "13334021",
+      "nameAr": "جلبة مقص امامي خلفية",
+      "canonical": "https://mopc.store/ar/products/front-lower-control-arm-rear-bushing-gm-p-a3143333-157e-4de0-a05e-58f170d3de77",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a33dca16-78d4-4591-a640-95fc84a4fcfd",
+      "partNumber": "23941780",
+      "nameAr": "جوان طلمبة بنزين",
+      "canonical": "https://mopc.store/ar/products/fuel-pump-seal-gm-p-a33dca16-78d4-4591-a640-95fc84a4fcfd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a3916a1f-bdcb-4a19-99c1-42940a2309d1",
+      "partNumber": "OP-9685657480",
+      "nameAr": "جوان طلمبة بنزين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-a3916a1f-bdcb-4a19-99c1-42940a2309d1",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان طلمبة بنزين",
+      "newEnglishName": "Fuel Pump Gasket"
+    },
+    {
+      "id": "a3b45462-904d-4aab-8a01-94695986cacd",
+      "partNumber": "23620652",
+      "nameAr": "مساعد شنطة شمال",
+      "canonical": "https://mopc.store/ar/products/left-trunk-strut-gm-p-a3b45462-904d-4aab-8a01-94695986cacd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a3bd1452-8f1f-4dfa-9159-4c95ec62bb57",
+      "partNumber": "13332639",
+      "nameAr": "مساعد خلفى",
+      "canonical": "https://mopc.store/ar/products/rear-shock-absorber-gm-p-a3bd1452-8f1f-4dfa-9159-4c95ec62bb57",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a465e75d-f000-4c27-b3e6-96d1e51f55c2",
+      "partNumber": "OP-13338423",
+      "nameAr": "خرطوم رادياتير خروج",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-a465e75d-f000-4c27-b3e6-96d1e51f55c2",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير خروج",
+      "newEnglishName": "Radiator Outlet Hose"
+    },
+    {
+      "id": "a55fe9a1-9d17-477f-922d-d0892a8d5ae9",
+      "partNumber": "OP-9836476780",
+      "nameAr": "خرطوم عمة هواء",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-a55fe9a1-9d17-477f-922d-d0892a8d5ae9",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم عمة هواء",
+      "newEnglishName": "Air Cleaner Hose"
+    },
+    {
+      "id": "a5cab9fe-58aa-4912-b41a-61c2449a8fd8",
+      "partNumber": "96889998",
+      "nameAr": "غطاء تاكيهات  Z16XER",
+      "canonical": "https://mopc.store/ar/products/valve-cover-gm-p-a5cab9fe-58aa-4912-b41a-61c2449a8fd8",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Valve Cover",
+      "newEnglishName": "Valve Cover Z16XER"
+    },
+    {
+      "id": "a67db8f9-27d9-4df6-8546-63073438d6fc",
+      "partNumber": "13248630",
+      "nameAr": "قاعدة فتيس خلفية أوتوماتيك",
+      "canonical": "https://mopc.store/ar/products/rear-automatic-transmission-mount-gm-p-a67db8f9-27d9-4df6-8546-63073438d6fc",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a67e1eea-bd3d-41c9-aa6d-4d6e2faf2d3a",
+      "partNumber": "13399771",
+      "nameAr": "خرطوم فرامل امامي يمين",
+      "canonical": "https://mopc.store/ar/products/right-front-brake-hose-gm-p-a67e1eea-bd3d-41c9-aa6d-4d6e2faf2d3a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a6a81fe8-a11b-4a46-a720-edc6a07b2e51",
+      "partNumber": "55351449",
+      "nameAr": "جوان كوعة ترموستات",
+      "canonical": "https://mopc.store/ar/products/thermostat-gasket-gm-p-a6a81fe8-a11b-4a46-a720-edc6a07b2e51",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a6ca7393-0a00-4c0a-9fb5-6fa9c38dec63",
+      "partNumber": "23866812",
+      "nameAr": "سير تكييف",
+      "canonical": "https://mopc.store/ar/products/a-c-belt-gm-p-a6ca7393-0a00-4c0a-9fb5-6fa9c38dec63",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a6e84d6a-da26-437d-92fa-aa0882dafa40",
+      "partNumber": "23542930",
+      "nameAr": "تيش ميزان شمال",
+      "canonical": "https://mopc.store/ar/products/right-front-stabilizer-link-gm-p-a6e84d6a-da26-437d-92fa-aa0882dafa40",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Right Front Stabilizer Link",
+      "newEnglishName": "Left Stabilizer Link"
+    },
+    {
+      "id": "a75ddbb2-38cf-45f9-8b22-128bccbb3b2b",
+      "partNumber": "25199824",
+      "nameAr": "كوعة مياة ثرموستات",
+      "canonical": "https://mopc.store/ar/products/coolant-thermostat-housing-gm-p-a75ddbb2-38cf-45f9-8b22-128bccbb3b2b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "a7a05463-2d04-4720-9689-39cf792bda92",
+      "partNumber": "OP-55584592",
+      "nameAr": "سبيكة كرنك STD",
+      "canonical": "https://mopc.store/ar/products/std-genuine-parts-p-a7a05463-2d04-4720-9689-39cf792bda92",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "سبيكة كرنك STD",
+      "newEnglishName": "Standard Size Crankshaft Bearing"
+    },
+    {
+      "id": "a96fe493-5ab0-4a02-ad21-30ebf148e52b",
+      "partNumber": "23753101",
+      "nameAr": "بوجيه",
+      "canonical": "https://mopc.store/ar/products/spark-plug-gm-p-a96fe493-5ab0-4a02-ad21-30ebf148e52b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ab5bf2d8-0f3b-496e-914c-5e395731d2d6",
+      "partNumber": "55555805",
+      "nameAr": "اويل سيل كرنك خلفي",
+      "canonical": "https://mopc.store/ar/products/crankshaft-rear-oil-seal-gm-p-ab5bf2d8-0f3b-496e-914c-5e395731d2d6",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ab7e4239-6f16-4563-8752-b3fa417bd7b1",
+      "partNumber": "OP-55598682",
+      "nameAr": "مانيفولد تبريد",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-ab7e4239-6f16-4563-8752-b3fa417bd7b1",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مانيفولد تبريد",
+      "newEnglishName": "Coolant Manifold"
+    },
+    {
+      "id": "aba383f4-6dc7-4074-97c2-bdc6437b2ac1",
+      "partNumber": "23620653",
+      "nameAr": "مساعد شنطة يمين",
+      "canonical": "https://mopc.store/ar/products/rear-right-trunk-lid-lift-support-gm-p-aba383f4-6dc7-4074-97c2-bdc6437b2ac1",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "abf9e341-ab0e-48b3-af5c-f46309736ff3",
+      "partNumber": "23995320",
+      "nameAr": "عمة هواء كامله",
+      "canonical": "https://mopc.store/ar/products/air-cleaner-housing-gm-p-abf9e341-ab0e-48b3-af5c-f46309736ff3",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ac282e18-2560-4408-b407-33c42bc0792f",
+      "partNumber": "OP-55565619",
+      "nameAr": "جوان ترموستات-GTC",
+      "canonical": "https://mopc.store/ar/products/gtc-genuine-parts-p-ac282e18-2560-4408-b407-33c42bc0792f",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان ترموستات-GTC",
+      "newEnglishName": "Thermostat Gasket GTC"
+    },
+    {
+      "id": "ac2ba010-0308-478f-8382-383404afc846",
+      "partNumber": "OP-95516740",
+      "nameAr": "طقم كاتينة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-ac2ba010-0308-478f-8382-383404afc846",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طقم كاتينة",
+      "newEnglishName": "Timing Kit"
+    },
+    {
+      "id": "ade32b1e-7b8d-429f-b0fc-c443f23be16b",
+      "partNumber": "OP-23186422",
+      "nameAr": "ماسورة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-ade32b1e-7b8d-429f-b0fc-c443f23be16b",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ماسورة مياه",
+      "newEnglishName": "Coolant Pipe"
+    },
+    {
+      "id": "aed738ed-87e8-46e0-bbcf-b4ac0ac760b7",
+      "partNumber": "OP-9867990580",
+      "nameAr": "مقص امامى شمال",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-aed738ed-87e8-46e0-bbcf-b4ac0ac760b7",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مقص امامى شمال",
+      "newEnglishName": "Front Left Control Arm"
+    },
+    {
+      "id": "aff87162-9647-4c5d-9f82-e2e10986afa4",
+      "partNumber": "13248493",
+      "nameAr": "قاعدة فتيس أمامية",
+      "canonical": "https://mopc.store/ar/products/front-transmission-mount-gm-p-aff87162-9647-4c5d-9f82-e2e10986afa4",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "b1509a91-b650-4421-892d-0bc626bb5e76",
+      "partNumber": "OP-9834666880",
+      "nameAr": "طلمبة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b1509a91-b650-4421-892d-0bc626bb5e76",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طلمبة مياه",
+      "newEnglishName": "Water Pump"
+    },
+    {
+      "id": "b189170e-2646-43d7-b932-7dde94c241a6",
+      "partNumber": "OP-9678251480",
+      "nameAr": "قاعدة محرك يمين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b189170e-2646-43d7-b932-7dde94c241a6",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "قاعدة محرك يمين",
+      "newEnglishName": "Right Engine Mount"
+    },
+    {
+      "id": "b22bf1ab-c3ec-4065-84a6-6591dce061b4",
+      "partNumber": "OP-9824958980",
+      "nameAr": "مساعد خلفى",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b22bf1ab-c3ec-4065-84a6-6591dce061b4",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مساعد خلفى",
+      "newEnglishName": "Rear Shock Absorber"
+    },
+    {
+      "id": "b23cbde1-4a76-4fb2-83c5-3013fcf1de63",
+      "partNumber": "23753925",
+      "nameAr": "قاعدة فتيس أمامية",
+      "canonical": "https://mopc.store/ar/products/front-transmission-mount-gm-p-b23cbde1-4a76-4fb2-83c5-3013fcf1de63",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "b2af91c1-725f-46ad-9152-36372a18d884",
+      "partNumber": "OP-23186421",
+      "nameAr": "خرطوم رادياتير علوي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b2af91c1-725f-46ad-9152-36372a18d884",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير علوي",
+      "newEnglishName": "Upper Radiator Hose"
+    },
+    {
+      "id": "b370a278-0cec-4337-9387-bb54d0388533",
+      "partNumber": "OP-23117496",
+      "nameAr": "بطاحة مساعد امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b370a278-0cec-4337-9387-bb54d0388533",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بطاحة مساعد امامي",
+      "newEnglishName": "Front Shock Absorber Mount"
+    },
+    {
+      "id": "b41918a4-e0b3-4529-9217-307411862703",
+      "partNumber": "OP-V760401480",
+      "nameAr": "سير دينامو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b41918a4-e0b3-4529-9217-307411862703",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "سير دينامو",
+      "newEnglishName": "Alternator Belt"
+    },
+    {
+      "id": "b4e084f5-ba96-4fe2-a897-f715511a6816",
+      "partNumber": "23618250",
+      "nameAr": "طلمبة فاكيوم",
+      "canonical": "https://mopc.store/ar/products/vacuum-pump-gm-p-b4e084f5-ba96-4fe2-a897-f715511a6816",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "b5274449-9d43-4d2d-a31c-23aa1ddee82d",
+      "partNumber": "OP-9734R7",
+      "nameAr": "زيت فتيس",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b5274449-9d43-4d2d-a31c-23aa1ddee82d",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "زيت فتيس",
+      "newEnglishName": "Transmission Fluid"
+    },
+    {
+      "id": "b64ea32b-9dd2-49a3-8b97-deb3e1eea204",
+      "partNumber": "55556227",
+      "nameAr": "بلف عدم رجوع زيت",
+      "canonical": "https://mopc.store/ar/products/oil-check-valve-gm-p-b64ea32b-9dd2-49a3-8b97-deb3e1eea204",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "b72b3c64-43aa-46fd-8440-2402ec551ae2",
+      "partNumber": "OP-55569248",
+      "nameAr": "شداد كاتينة علوية",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b72b3c64-43aa-46fd-8440-2402ec551ae2",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "شداد كاتينة علوية",
+      "newEnglishName": "Upper Timing Tensioner"
+    },
+    {
+      "id": "b7e74065-7d22-4f45-beeb-71b69e1f7b06",
+      "partNumber": "OP-25192904",
+      "nameAr": "ماسورة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-b7e74065-7d22-4f45-beeb-71b69e1f7b06",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ماسورة مياه",
+      "newEnglishName": "Coolant Pipe"
+    },
+    {
+      "id": "b835532a-c518-4607-857b-827d4f87e145",
+      "partNumber": "13219141",
+      "nameAr": "مسمار ميزان",
+      "canonical": "https://mopc.store/ar/products/stabilizer-bar-link-gm-p-b835532a-c518-4607-857b-827d4f87e145",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "b928281f-d1ae-4303-926d-a610ca9b1255",
+      "partNumber": "23626948",
+      "nameAr": "صرة عجل أمامي",
+      "canonical": "https://mopc.store/ar/products/front-wheel-hub-gm-p-b928281f-d1ae-4303-926d-a610ca9b1255",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ba0e7047-d8b3-4c61-9070-587702dd6772",
+      "partNumber": "OP-9843633080",
+      "nameAr": "بطاحة مساعد",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-ba0e7047-d8b3-4c61-9070-587702dd6772",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بطاحة مساعد",
+      "newEnglishName": "Shock Absorber Mount"
+    },
+    {
+      "id": "ba1e90df-214d-4a91-9063-bef1d3eb1195",
+      "partNumber": "OP-9844405680",
+      "nameAr": "فلتر هواء",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-ba1e90df-214d-4a91-9063-bef1d3eb1195",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "فلتر هواء",
+      "newEnglishName": "Air Filter"
+    },
+    {
+      "id": "badcd1ae-9841-4cc4-8b28-1c653536a80e",
+      "partNumber": "25190255",
+      "nameAr": "بستم",
+      "canonical": "https://mopc.store/ar/products/piston-gm-p-badcd1ae-9841-4cc4-8b28-1c653536a80e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "baf8ae2b-1479-4d4a-a291-b42af0b9a702",
+      "partNumber": "24563823",
+      "nameAr": "فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/oil-filter-gm-p-baf8ae2b-1479-4d4a-a291-b42af0b9a702",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "bb34d1cc-805d-46fe-a208-07dc8b47149b",
+      "partNumber": "24563825",
+      "nameAr": "مبرد زيت محرك",
+      "canonical": "https://mopc.store/ar/products/engine-oil-cooler-gm-p-bb34d1cc-805d-46fe-a208-07dc8b47149b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "bcf3d7a6-6716-47d7-abf2-1d1d0d363df9",
+      "partNumber": "55559353",
+      "nameAr": "ماسورة مياه",
+      "canonical": "https://mopc.store/ar/products/water-hose-gm-p-bcf3d7a6-6716-47d7-abf2-1d1d0d363df9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "be0e70af-ba79-4f0c-9bdd-8c70f4aafe67",
+      "partNumber": "24273970",
+      "nameAr": "أويل سيل كوبل يمين",
+      "canonical": "https://mopc.store/ar/products/right-cv-joint-oil-seal-gm-p-be0e70af-ba79-4f0c-9bdd-8c70f4aafe67",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "bef2a015-8562-41a1-a0b8-0f1d07f4497a",
+      "partNumber": "23914820",
+      "nameAr": "طقم تيش اسكترا يمين",
+      "canonical": "https://mopc.store/ar/products/right-steering-tie-rod-gm-p-bef2a015-8562-41a1-a0b8-0f1d07f4497a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "bf0d0c89-fc74-4b7f-b878-b67d7245186a",
+      "partNumber": "OP-39074654",
+      "nameAr": "A/T رادياتير",
+      "canonical": "https://mopc.store/ar/products/a-t-genuine-parts-p-bf0d0c89-fc74-4b7f-b878-b67d7245186a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "A/T رادياتير",
+      "newEnglishName": "Automatic Transmission Radiator"
+    },
+    {
+      "id": "bfa3838a-c47a-4806-bcae-6c9e4b80277d",
+      "partNumber": "24273970",
+      "nameAr": "أويل سيل كوبل يمين",
+      "canonical": "https://mopc.store/ar/products/right-cv-joint-oil-seal-gm-p-bfa3838a-c47a-4806-bcae-6c9e4b80277d",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "bfa9353c-e6ed-47ad-9e6f-72941b3cbd67",
+      "partNumber": "13399770",
+      "nameAr": "خرطوم فرامل امامي شمال",
+      "canonical": "https://mopc.store/ar/products/left-front-brake-hose-gm-p-bfa9353c-e6ed-47ad-9e6f-72941b3cbd67",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "bfc7dd12-1444-4054-8384-5cb5bc5eb5cc",
+      "partNumber": "OP-25193550",
+      "nameAr": "A16LET بوجيه",
+      "canonical": "https://mopc.store/ar/products/a16let-genuine-parts-p-bfc7dd12-1444-4054-8384-5cb5bc5eb5cc",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "A16LET بوجيه",
+      "newEnglishName": "Spark Plug A16LET"
+    },
+    {
+      "id": "bff238dd-2de2-4cf1-ad3a-b0d81e47c247",
+      "partNumber": "OP-1696257380",
+      "nameAr": "تيل فرامل خلفي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-bff238dd-2de2-4cf1-ad3a-b0d81e47c247",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "تيل فرامل خلفي",
+      "newEnglishName": "Rear Brake Pads"
+    },
+    {
+      "id": "c08cd07d-d6d3-45e2-b18b-1cf481ced25b",
+      "partNumber": "23761250",
+      "nameAr": "تيل خلفي LV3",
+      "canonical": "https://mopc.store/ar/products/rear-brake-pad-kit-gm-p-c08cd07d-d6d3-45e2-b18b-1cf481ced25b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c0dc970c-09ec-440d-adc4-bbda44959604",
+      "partNumber": "23928316",
+      "nameAr": "كاوتش ميزان خلفي",
+      "canonical": "https://mopc.store/ar/products/rear-stabilizer-bar-bushing-gm-p-c0dc970c-09ec-440d-adc4-bbda44959604",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c1585f15-ff00-4936-a8af-313d88401987",
+      "partNumber": "55354237",
+      "nameAr": "جوان غطاء تاكيهات",
+      "canonical": "https://mopc.store/ar/products/valve-cover-gasket-gm-p-c1585f15-ff00-4936-a8af-313d88401987",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c159eb97-c266-4a70-9eb7-caadda82d027",
+      "partNumber": "84309092",
+      "nameAr": "شداد ميزان يمين علوى",
+      "canonical": "https://mopc.store/ar/products/right-upper-control-arm-gm-p-c159eb97-c266-4a70-9eb7-caadda82d027",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c1c18d2f-fd78-4f94-aca8-42d55e132175",
+      "partNumber": "23620709",
+      "nameAr": "اويل سيل طبة كارتيرة فتيس",
+      "canonical": "https://mopc.store/ar/products/transmission-drain-plug-gasket-gm-p-c1c18d2f-fd78-4f94-aca8-42d55e132175",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c22fe3b5-9481-438d-b9e4-66934a019674",
+      "partNumber": "23632160",
+      "nameAr": "قاعدة موتور",
+      "canonical": "https://mopc.store/ar/products/engine-mount-gm-p-c22fe3b5-9481-438d-b9e4-66934a019674",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c2f04835-134b-4e87-8776-bf0df00fe124",
+      "partNumber": "OP-55562235",
+      "nameAr": "شداد كاتينة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-c2f04835-134b-4e87-8776-bf0df00fe124",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "شداد كاتينة",
+      "newEnglishName": "Timing Tensioner"
+    },
+    {
+      "id": "c3071530-473a-448f-902b-fe6623bdfcb8",
+      "partNumber": "OP-6501634880",
+      "nameAr": "غطاء قربة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-c3071530-473a-448f-902b-fe6623bdfcb8",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "غطاء قربة",
+      "newEnglishName": "Expansion Tank Cap"
+    },
+    {
+      "id": "c385869e-332e-413a-b8c3-12e23a25dc32",
+      "partNumber": "OP-13312105",
+      "nameAr": "قاعدة شمال",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-c385869e-332e-413a-b8c3-12e23a25dc32",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c38f87ad-cfac-4af4-9460-dadef12a1214",
+      "partNumber": "OP-22940356",
+      "nameAr": "مقص خلفي شمال علوي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-c38f87ad-cfac-4af4-9460-dadef12a1214",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مقص خلفي شمال علوي",
+      "newEnglishName": "Rear Left Upper Control Arm"
+    },
+    {
+      "id": "c3b4da51-f182-4ff4-b52f-c785bd52713d",
+      "partNumber": "23620709",
+      "nameAr": "اويل سيل طبة كارتيرة فتيس",
+      "canonical": "https://mopc.store/ar/products/transmission-drain-plug-gasket-gm-p-c3b4da51-f182-4ff4-b52f-c785bd52713d",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c4c0ce8c-7060-4591-9e4e-64650dfc7f15",
+      "partNumber": "23731594",
+      "nameAr": "قربة مياه",
+      "canonical": "https://mopc.store/ar/products/coolant-overflow-tank-gm-p-c4c0ce8c-7060-4591-9e4e-64650dfc7f15",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c5067c70-19fa-4c78-a826-d416f19c0147",
+      "partNumber": "OP-13449176",
+      "nameAr": "خرطوم تبريد زيت فتيس -دخول",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-c5067c70-19fa-4c78-a826-d416f19c0147",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم تبريد زيت فتيس -دخول",
+      "newEnglishName": "Transmission Oil Cooler Inlet Hose"
+    },
+    {
+      "id": "c6205823-9c80-4030-a38e-ec720b2df822",
+      "partNumber": "OP-19258415",
+      "nameAr": "اويل سيل كوبلن يمين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-c6205823-9c80-4030-a38e-ec720b2df822",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل كوبلن يمين",
+      "newEnglishName": "Right CV Joint Oil Seal"
+    },
+    {
+      "id": "c6b62a19-f88e-4c41-a559-cc60e091db18",
+      "partNumber": "23547344",
+      "nameAr": "حساس ركنة",
+      "canonical": "https://mopc.store/ar/products/parking-sensor-gm-p-c6b62a19-f88e-4c41-a559-cc60e091db18",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c6d74820-01e1-433b-be48-9f187a956286",
+      "partNumber": "24564744",
+      "nameAr": "رشاش بنزين",
+      "canonical": "https://mopc.store/ar/products/fuel-injectors-gm-p-c6d74820-01e1-433b-be48-9f187a956286",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c77b4582-fa5c-4fd5-a54d-e86a7c5f3d52",
+      "partNumber": "OP-55566555",
+      "nameAr": "غطاء زيت موتور",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-c77b4582-fa5c-4fd5-a54d-e86a7c5f3d52",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "غطاء زيت موتور",
+      "newEnglishName": "Engine Oil Filler Cap"
+    },
+    {
+      "id": "c96a2aa6-e362-489a-8554-16b86b9a10b6",
+      "partNumber": "95459410",
+      "nameAr": "خرطوم ردياتير علوي",
+      "canonical": "https://mopc.store/ar/products/upper-radiator-hose-gm-p-c96a2aa6-e362-489a-8554-16b86b9a10b6",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "c9c1eefc-2b29-4d6f-9b16-4d6b01f65e94",
+      "partNumber": "13248554",
+      "nameAr": "قاعدة محرك شمال أوتوماتيك",
+      "canonical": "https://mopc.store/ar/products/left-automatic-transmission-mount-gm-p-c9c1eefc-2b29-4d6f-9b16-4d6b01f65e94",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Left Automatic Transmission Mount",
+      "newEnglishName": "Left Engine Mount, Automatic Transmission"
+    },
+    {
+      "id": "ca952d44-fa00-4638-ab40-46623e1274c3",
+      "partNumber": "23623675",
+      "nameAr": "تيل فرامل امامى كابتيفا",
+      "canonical": "https://mopc.store/ar/products/front-brake-pad-kit-gm-p-ca952d44-fa00-4638-ab40-46623e1274c3",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "cb95c960-3906-44b2-9cd2-638b3fbd97a2",
+      "partNumber": "OP-9806642780",
+      "nameAr": "كاوتش عازل مساعد سفلي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-cb95c960-3906-44b2-9cd2-638b3fbd97a2",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كاوتش عازل مساعد سفلي",
+      "newEnglishName": "Lower Shock Absorber Insulator"
+    },
+    {
+      "id": "cbbcc592-ea21-4394-aca9-f84e86d1f337",
+      "partNumber": "23971417",
+      "nameAr": "طنابير امامية",
+      "canonical": "https://mopc.store/ar/products/front-brake-discs-gm-p-cbbcc592-ea21-4394-aca9-f84e86d1f337",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "cc2707d7-1e0d-4203-8dfd-c798d6482b27",
+      "partNumber": "23866811",
+      "nameAr": "سير دينامو",
+      "canonical": "https://mopc.store/ar/products/alternator-belt-gm-p-cc2707d7-1e0d-4203-8dfd-c798d6482b27",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "cca1d960-75ab-409e-8098-c0336c4ab28c",
+      "partNumber": "OP-13597227",
+      "nameAr": "دينامو - GTC",
+      "canonical": "https://mopc.store/ar/products/gtc-genuine-parts-p-cca1d960-75ab-409e-8098-c0336c4ab28c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "دينامو - GTC",
+      "newEnglishName": "Alternator GTC"
+    },
+    {
+      "id": "ce51480d-80ee-40ec-a9bf-ee4216d9b2f0",
+      "partNumber": "OP-55569992",
+      "nameAr": "حساس ضغط حرارة هواء",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-ce51480d-80ee-40ec-a9bf-ee4216d9b2f0",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "حساس ضغط حرارة هواء",
+      "newEnglishName": "Air Pressure and Temperature Sensor"
+    },
+    {
+      "id": "cfc8111e-058b-4701-90ad-5afa582b351a",
+      "partNumber": "55351449",
+      "nameAr": "جوان كوعة ترموستات",
+      "canonical": "https://mopc.store/ar/products/thermostat-gasket-gm-p-cfc8111e-058b-4701-90ad-5afa582b351a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "cfd2367c-74a2-48ca-afb2-273b1736dbf7",
+      "partNumber": "55353328",
+      "nameAr": "أويل سيل ماسورة",
+      "canonical": "https://mopc.store/ar/products/water-hose-oil-seal-gm-p-cfd2367c-74a2-48ca-afb2-273b1736dbf7",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "d035be58-27e8-49b4-bcd7-8da9147ec613",
+      "partNumber": "OP-55583125",
+      "nameAr": "سير دينامو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-d035be58-27e8-49b4-bcd7-8da9147ec613",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "سير دينامو",
+      "newEnglishName": "Alternator Belt"
+    },
+    {
+      "id": "d05269b2-41ee-41ac-8f2a-903e0431a240",
+      "partNumber": "OP-9819962380",
+      "nameAr": "افيز ميزان",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-d05269b2-41ee-41ac-8f2a-903e0431a240",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "افيز ميزان",
+      "newEnglishName": "Stabilizer Bar Clamp"
+    },
+    {
+      "id": "d0930086-2d5e-4480-a7bd-1cc09b774835",
+      "partNumber": "09152245",
+      "nameAr": "حساس حرارة جو",
+      "canonical": "https://mopc.store/ar/products/ambient-air-temperature-sensor-gm-p-d0930086-2d5e-4480-a7bd-1cc09b774835",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "d0ff72e1-2499-4a6a-be4b-b7da8f78e4c1",
+      "partNumber": "OP-9816364580",
+      "nameAr": "خرطوم رادياتير خروج",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-d0ff72e1-2499-4a6a-be4b-b7da8f78e4c1",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير خروج",
+      "newEnglishName": "Radiator Outlet Hose"
+    },
+    {
+      "id": "d120f5e5-be87-421e-85f5-bfbab93ce80b",
+      "partNumber": "23920824",
+      "nameAr": "سير تكييف",
+      "canonical": "https://mopc.store/ar/products/a-c-belt-gm-p-d120f5e5-be87-421e-85f5-bfbab93ce80b",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "d1483e07-1453-4502-9099-6399a5f86856",
+      "partNumber": "55559353",
+      "nameAr": "ماسورة مياه",
+      "canonical": "https://mopc.store/ar/products/water-hose-gm-p-d1483e07-1453-4502-9099-6399a5f86856",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "d4fd54d3-0383-4c52-9456-caf62aa51f7e",
+      "partNumber": "55355578",
+      "nameAr": "جوان وش سلندر",
+      "canonical": "https://mopc.store/ar/products/cylinder-head-gasket-gm-p-d4fd54d3-0383-4c52-9456-caf62aa51f7e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "d530786f-19e1-4a13-818f-d1864d1df16f",
+      "partNumber": "42475593",
+      "nameAr": "رشاش بنزين",
+      "canonical": "https://mopc.store/ar/products/fuel-injectors-gm-p-d530786f-19e1-4a13-818f-d1864d1df16f",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "d7c0cea2-5e14-413e-b076-7b0f84dfbcbc",
+      "partNumber": "55559352",
+      "nameAr": "ماسورة سخن دخول",
+      "canonical": "https://mopc.store/ar/products/hot-water-inlet-pipe-gm-p-d7c0cea2-5e14-413e-b076-7b0f84dfbcbc",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "d8650e0c-c105-491b-95ba-668e2f52c51c",
+      "partNumber": "OP-55566665",
+      "nameAr": "جوان",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-d8650e0c-c105-491b-95ba-668e2f52c51c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان",
+      "newEnglishName": "Gasket"
+    },
+    {
+      "id": "d87cdcd0-66fd-48c9-b29c-5adeb7d3c81e",
+      "partNumber": "OP-13251476",
+      "nameAr": "خرطوم تفريغ قربة رادياتير",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-d87cdcd0-66fd-48c9-b29c-5adeb7d3c81e",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم تفريغ قربة رادياتير",
+      "newEnglishName": "Coolant Expansion Tank Drain Hose"
+    },
+    {
+      "id": "d8b9f556-1d0d-439a-bb52-c0526fde08cd",
+      "partNumber": "OP-4249J6",
+      "nameAr": "ديسك فرامل امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-d8b9f556-1d0d-439a-bb52-c0526fde08cd",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ديسك فرامل امامي",
+      "newEnglishName": "Front Brake Disc"
+    },
+    {
+      "id": "d8bb0bc9-9283-42a2-8ae2-4869c41ad6d0",
+      "partNumber": "OP-22987828",
+      "nameAr": "مساعد خلفي يمين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-d8bb0bc9-9283-42a2-8ae2-4869c41ad6d0",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مساعد خلفي يمين",
+      "newEnglishName": "Rear Right Shock Absorber"
+    },
+    {
+      "id": "da0d134b-2392-4432-aadc-f9f2ff394796",
+      "partNumber": "23940497",
+      "nameAr": "كرتيرة زيت سفلية",
+      "canonical": "https://mopc.store/ar/products/oil-pan-gm-p-da0d134b-2392-4432-aadc-f9f2ff394796",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "da5c9917-0212-41bc-b89e-3ef0d3617288",
+      "partNumber": "OP-9670815680",
+      "nameAr": "خرطوم قربة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-da5c9917-0212-41bc-b89e-3ef0d3617288",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم قربة مياه",
+      "newEnglishName": "Coolant Expansion Tank Hose"
+    },
+    {
+      "id": "dadf5c61-499e-45f5-a597-cb1da423f9df",
+      "partNumber": "OP-1695249780",
+      "nameAr": "تيل فرامل أمامي 21",
+      "canonical": "https://mopc.store/ar/products/21-genuine-parts-p-dadf5c61-499e-45f5-a597-cb1da423f9df",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "db5e2cb2-ea75-43b4-a204-5d6cea22d26f",
+      "partNumber": "23951778",
+      "nameAr": "ساعة زيت",
+      "canonical": "https://mopc.store/ar/products/oil-pressure-sensor-gm-p-db5e2cb2-ea75-43b4-a204-5d6cea22d26f",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "db7b097f-cfff-422c-855a-4e7cb6e8ddbf",
+      "partNumber": "23529464",
+      "nameAr": "موبينة",
+      "canonical": "https://mopc.store/ar/products/ignition-coil-gm-p-db7b097f-cfff-422c-855a-4e7cb6e8ddbf",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "dcbb4f4a-0630-49d0-9bbf-24e45f026bd9",
+      "partNumber": "23940497",
+      "nameAr": "كرتيرة زيت سفلية",
+      "canonical": "https://mopc.store/ar/products/oil-pan-gm-p-dcbb4f4a-0630-49d0-9bbf-24e45f026bd9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "dcbbfbba-85ed-48ba-aee1-72aa12939a96",
+      "partNumber": "OP-25193473",
+      "nameAr": "بوجية",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-dcbbfbba-85ed-48ba-aee1-72aa12939a96",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بوجية",
+      "newEnglishName": "Spark Plug"
+    },
+    {
+      "id": "dd15ae03-6343-4eef-b93d-c82b952f0127",
+      "partNumber": "23384197",
+      "nameAr": "شمعدان امامى شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-steering-knuckle-gm-p-dd15ae03-6343-4eef-b93d-c82b952f0127",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "dd33f9e5-f912-4b77-b474-5114fb4c4192",
+      "partNumber": "23753349",
+      "nameAr": "ثرموستات حرارة",
+      "canonical": "https://mopc.store/ar/products/thermostat-gm-p-dd33f9e5-f912-4b77-b474-5114fb4c4192",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "dd57654c-0390-4437-ab32-c85e62181fbf",
+      "partNumber": "13399770",
+      "nameAr": "خرطوم فرامل امامي شمال",
+      "canonical": "https://mopc.store/ar/products/left-front-brake-hose-gm-p-dd57654c-0390-4437-ab32-c85e62181fbf",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "dddfa7b4-a7fe-48d2-96b1-027e52bebb06",
+      "partNumber": "23764761",
+      "nameAr": "مقص امامي شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-control-arm-gm-p-dddfa7b4-a7fe-48d2-96b1-027e52bebb06",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "def690b6-dcf3-4f50-824c-bce9e211568c",
+      "partNumber": "OP-55578715",
+      "nameAr": "جوان قاعدة فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-def690b6-dcf3-4f50-824c-bce9e211568c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان قاعدة فلتر زيت",
+      "newEnglishName": "Oil Filter Housing Gasket"
+    },
+    {
+      "id": "df010c05-d177-4bcd-b603-da83bd03c1da",
+      "partNumber": "OP-13441116",
+      "nameAr": "خرطوم رادياتير علوي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-df010c05-d177-4bcd-b603-da83bd03c1da",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير علوي",
+      "newEnglishName": "Upper Radiator Hose"
+    },
+    {
+      "id": "dfe2c997-b7de-40cf-80e3-a0c71aac0b2c",
+      "partNumber": "OP-080739",
+      "nameAr": "اويل سيل كامة",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-dfe2c997-b7de-40cf-80e3-a0c71aac0b2c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل كامة",
+      "newEnglishName": "Camshaft Oil Seal"
+    },
+    {
+      "id": "e143db15-3b8a-4303-8a56-d2a9aa612f90",
+      "partNumber": "OP-6503318580",
+      "nameAr": "سير طلمبة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-e143db15-3b8a-4303-8a56-d2a9aa612f90",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "سير طلمبة مياه",
+      "newEnglishName": "Water Pump Belt"
+    },
+    {
+      "id": "e178e04b-432c-46e5-9823-90c648b39563",
+      "partNumber": "84841961",
+      "nameAr": "قربة مياه",
+      "canonical": "https://mopc.store/ar/products/coolant-overflow-tank-gm-p-e178e04b-432c-46e5-9823-90c648b39563",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "e225d498-229b-4570-87b7-efa283dcd63f",
+      "partNumber": "23620653",
+      "nameAr": "مساعد شنطة يمين",
+      "canonical": "https://mopc.store/ar/products/rear-right-trunk-lid-lift-support-gm-p-e225d498-229b-4570-87b7-efa283dcd63f",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "e26a5937-fc4c-42b9-ac7c-969ae71c7f5a",
+      "partNumber": "OP-13281782",
+      "nameAr": "كاوتش ميزان - A20NFT",
+      "canonical": "https://mopc.store/ar/products/a20nft-genuine-parts-p-e26a5937-fc4c-42b9-ac7c-969ae71c7f5a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كاوتش ميزان - A20NFT",
+      "newEnglishName": "Stabilizer Bar Bushing A20NFT"
+    },
+    {
+      "id": "e2f097cf-5c0b-4ffa-bbaa-92e570d3aeae",
+      "partNumber": "OP-95526685",
+      "nameAr": "فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-e2f097cf-5c0b-4ffa-bbaa-92e570d3aeae",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "فلتر زيت",
+      "newEnglishName": "Oil Filter"
+    },
+    {
+      "id": "e39d616c-05ca-4146-a357-1baf0581df8e",
+      "partNumber": "23328163",
+      "nameAr": "مقص خلفى شمال علوى",
+      "canonical": "https://mopc.store/ar/products/rear-left-upper-control-arm-gm-p-e39d616c-05ca-4146-a357-1baf0581df8e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "e4791fc0-2396-48d5-a457-14e30adb6c9a",
+      "partNumber": "OP-93191224",
+      "nameAr": "طقم بلف مانيفولد",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-e4791fc0-2396-48d5-a457-14e30adb6c9a",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طقم بلف مانيفولد",
+      "newEnglishName": "Manifold Valve Kit"
+    },
+    {
+      "id": "e56a2f68-1e20-4230-8b09-e677769d1bfc",
+      "partNumber": "55574221",
+      "nameAr": "أويل سيل صباب",
+      "canonical": "https://mopc.store/ar/products/valve-stem-seal-gm-p-e56a2f68-1e20-4230-8b09-e677769d1bfc",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "e5b2ee83-b4fd-4cee-9e16-4d4d81aa7664",
+      "partNumber": "OP-1614085980",
+      "nameAr": "اويل سيل كرنك امامي",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-e5b2ee83-b4fd-4cee-9e16-4d4d81aa7664",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "اويل سيل كرنك امامي",
+      "newEnglishName": "Front Crankshaft Oil Seal"
+    },
+    {
+      "id": "e6e9362c-ca06-406a-be48-206ddcac42bb",
+      "partNumber": "55353321",
+      "nameAr": "أويل سيل قاعدة فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/oil-filter-base-gasket-gm-p-e6e9362c-ca06-406a-be48-206ddcac42bb",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "e755125c-9c00-4bb0-b805-8b624e6646dc",
+      "partNumber": "96889998",
+      "nameAr": "غطاء تاكيهات  Z16XER",
+      "canonical": "https://mopc.store/ar/products/valve-cover-gm-p-e755125c-9c00-4bb0-b805-8b624e6646dc",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "Valve Cover",
+      "newEnglishName": "Valve Cover Z16XER"
+    },
+    {
+      "id": "e78f178d-014d-4fb3-9cdb-59cc7aa906d3",
+      "partNumber": "23730060",
+      "nameAr": "ردياتير",
+      "canonical": "https://mopc.store/ar/products/radiator-gm-p-e78f178d-014d-4fb3-9cdb-59cc7aa906d3",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "e8386050-711e-446f-82b5-10dee1835475",
+      "partNumber": "OP-9830150380",
+      "nameAr": "سير طلمبة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-e8386050-711e-446f-82b5-10dee1835475",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "سير طلمبة مياه",
+      "newEnglishName": "Water Pump Belt"
+    },
+    {
+      "id": "eb00a4b9-48e4-409e-90f7-f091952efdad",
+      "partNumber": "13402939",
+      "nameAr": "مساعد امامي يمين",
+      "canonical": "https://mopc.store/ar/products/right-front-shock-absorber-gm-p-eb00a4b9-48e4-409e-90f7-f091952efdad",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "eb85c3a7-8e82-4449-8fdb-37465827be02",
+      "partNumber": "09152245",
+      "nameAr": "حساس حرارة جو",
+      "canonical": "https://mopc.store/ar/products/ambient-air-temperature-sensor-gm-p-eb85c3a7-8e82-4449-8fdb-37465827be02",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "edd41f9c-eb51-4522-afa4-e1d8a9133a9e",
+      "partNumber": "23731594",
+      "nameAr": "قربة مياه",
+      "canonical": "https://mopc.store/ar/products/coolant-overflow-tank-gm-p-edd41f9c-eb51-4522-afa4-e1d8a9133a9e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ee8a508d-1f95-4d35-b8f0-9916071f6dff",
+      "partNumber": "23997344",
+      "nameAr": "ماسورة راجع تربو",
+      "canonical": "https://mopc.store/ar/products/turbocharger-oil-return-pipe-gm-p-ee8a508d-1f95-4d35-b8f0-9916071f6dff",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "eea73f6c-7297-4b66-8604-8d87938c3717",
+      "partNumber": "13402938",
+      "nameAr": "مساعد امامي شمال",
+      "canonical": "https://mopc.store/ar/products/front-left-shock-absorber-gm-p-eea73f6c-7297-4b66-8604-8d87938c3717",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "eec07e2b-eca3-44e2-9187-a1e267740ed9",
+      "partNumber": "23761500",
+      "nameAr": "تيل فرامل امامي",
+      "canonical": "https://mopc.store/ar/products/front-brake-pads-gm-p-eec07e2b-eca3-44e2-9187-a1e267740ed9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "eed14394-7809-4cee-8b15-dc77b1d0900a",
+      "partNumber": "55353319",
+      "nameAr": "اويل سيل",
+      "canonical": "https://mopc.store/ar/products/oil-seal-gm-p-eed14394-7809-4cee-8b15-dc77b1d0900a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ef174ec5-0518-4b40-981b-0085597f0c21",
+      "partNumber": "23997344",
+      "nameAr": "ماسورة راجع تربو",
+      "canonical": "https://mopc.store/ar/products/turbocharger-oil-return-pipe-gm-p-ef174ec5-0518-4b40-981b-0085597f0c21",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ef9a2160-3348-42af-9017-d2e40f2fa2e9",
+      "partNumber": "OP-13235283",
+      "nameAr": "عطاء مسمار جنط رمادي 21",
+      "canonical": "https://mopc.store/ar/products/21-genuine-parts-p-ef9a2160-3348-42af-9017-d2e40f2fa2e9",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f06ee0ce-5943-49cb-a377-5abd182a8969",
+      "partNumber": "13266524",
+      "nameAr": "قاعدة محرك أمامية أوتوماتيك",
+      "canonical": "https://mopc.store/ar/products/automatic-front-engine-mount-gm-p-f06ee0ce-5943-49cb-a377-5abd182a8969",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f08d21fe-d9a4-449f-bee9-788da403ec7e",
+      "partNumber": "23762184",
+      "nameAr": "غطاء سربنتينة تيربو سفلي",
+      "canonical": "https://mopc.store/ar/products/lower-turbo-intercooler-cover-gm-p-f08d21fe-d9a4-449f-bee9-788da403ec7e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f09f2dd1-43d8-4c3b-a179-9b84723225d7",
+      "partNumber": "OP-55570687",
+      "nameAr": "جوان مبرد زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f09f2dd1-43d8-4c3b-a179-9b84723225d7",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان مبرد زيت",
+      "newEnglishName": "Oil Cooler Gasket"
+    },
+    {
+      "id": "f0f529eb-00fb-4960-b85d-20e6a34d0737",
+      "partNumber": "25199824",
+      "nameAr": "كوعة مياة ثرموستات",
+      "canonical": "https://mopc.store/ar/products/coolant-thermostat-housing-gm-p-f0f529eb-00fb-4960-b85d-20e6a34d0737",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f1154c2b-47ed-4233-9213-f468f4e1f635",
+      "partNumber": "OP-1640098880",
+      "nameAr": "طقم اويل  سيل صباب",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f1154c2b-47ed-4233-9213-f468f4e1f635",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "طقم اويل  سيل صباب",
+      "newEnglishName": "Valve Stem Seal Set"
+    },
+    {
+      "id": "f1941da1-3515-45c5-8527-ffa1883f6388",
+      "partNumber": "OP-13398387",
+      "nameAr": "كانستر",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f1941da1-3515-45c5-8527-ffa1883f6388",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "كانستر",
+      "newEnglishName": "Fuel Vapor Canister"
+    },
+    {
+      "id": "f1e01c20-eca2-49e0-a331-d312b9879dbd",
+      "partNumber": "OP-031338",
+      "nameAr": "وردة طبة زيت",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f1e01c20-eca2-49e0-a331-d312b9879dbd",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "وردة طبة زيت",
+      "newEnglishName": "Oil Drain Plug Washer"
+    },
+    {
+      "id": "f1f3e5a5-7e31-4222-9eb7-62ffd5ca788c",
+      "partNumber": "OP-13476927",
+      "nameAr": "ماسورة راجع مياه تربو",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f1f3e5a5-7e31-4222-9eb7-62ffd5ca788c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ماسورة راجع مياه تربو",
+      "newEnglishName": "Turbocharger Coolant Return Pipe"
+    },
+    {
+      "id": "f322bd90-092c-4256-918c-af22f4a8b990",
+      "partNumber": "OP-9805572080",
+      "nameAr": "بلية بطاحة مساعد",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f322bd90-092c-4256-918c-af22f4a8b990",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "بلية بطاحة مساعد",
+      "newEnglishName": "Shock Absorber Mount Bearing"
+    },
+    {
+      "id": "f373fa72-08e8-4492-ad20-387bbc26d0da",
+      "partNumber": "OP-13594914",
+      "nameAr": "عوامة بنزين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f373fa72-08e8-4492-ad20-387bbc26d0da",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "عوامة بنزين",
+      "newEnglishName": "Fuel Level Sender"
+    },
+    {
+      "id": "f422adfb-409f-423c-b4df-412e07aa0777",
+      "partNumber": "84309092",
+      "nameAr": "شداد ميزان يمين علوى",
+      "canonical": "https://mopc.store/ar/products/right-upper-control-arm-gm-p-f422adfb-409f-423c-b4df-412e07aa0777",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f436d943-69e3-44d7-ba4c-cf5e1357c0e1",
+      "partNumber": "OP-9595179",
+      "nameAr": "مسمار عجل",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f436d943-69e3-44d7-ba4c-cf5e1357c0e1",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مسمار عجل",
+      "newEnglishName": "Wheel Bolt"
+    },
+    {
+      "id": "f457be45-f601-4c90-b0a9-563580fedf68",
+      "partNumber": "OP-1684934280",
+      "nameAr": "2015-تيل فرامل خلفي",
+      "canonical": "https://mopc.store/ar/products/2015-genuine-parts-p-f457be45-f601-4c90-b0a9-563580fedf68",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f4db492b-3262-4c74-826d-f906fb3922cd",
+      "partNumber": "24273971",
+      "nameAr": "اويل سيل كوبلن شمال",
+      "canonical": "https://mopc.store/ar/products/left-cv-joint-oil-seal-gm-p-f4db492b-3262-4c74-826d-f906fb3922cd",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f4f3e4d1-5611-445a-bb4a-2ad19986651a",
+      "partNumber": "23764762",
+      "nameAr": "مقص امامي يمين",
+      "canonical": "https://mopc.store/ar/products/front-right-control-arm-gm-p-f4f3e4d1-5611-445a-bb4a-2ad19986651a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f4fed04b-3d07-4b52-835c-6684482abdf6",
+      "partNumber": "OP-55569247",
+      "nameAr": "شداد كاتينة يمين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f4fed04b-3d07-4b52-835c-6684482abdf6",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "شداد كاتينة يمين",
+      "newEnglishName": "Right Timing Tensioner"
+    },
+    {
+      "id": "f5151fa8-fb52-4695-ab23-fde265209dc9",
+      "partNumber": "OP-22953219",
+      "nameAr": "قربة رادياتير",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f5151fa8-fb52-4695-ab23-fde265209dc9",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "قربة رادياتير",
+      "newEnglishName": "Coolant Expansion Tank"
+    },
+    {
+      "id": "f6a664fe-b0aa-4ea6-b088-aefd8871124b",
+      "partNumber": "OP-9867990480",
+      "nameAr": "مقص امامى يمين",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f6a664fe-b0aa-4ea6-b088-aefd8871124b",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "مقص امامى يمين",
+      "newEnglishName": "Front Right Control Arm"
+    },
+    {
+      "id": "f6b1bd6f-ad25-4953-ac62-9330e72369b2",
+      "partNumber": "23920824",
+      "nameAr": "سير تكييف",
+      "canonical": "https://mopc.store/ar/products/a-c-belt-gm-p-f6b1bd6f-ad25-4953-ac62-9330e72369b2",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f7b56d1d-4866-4a26-a89f-1b4385068200",
+      "partNumber": "13402939",
+      "nameAr": "مساعد امامي يمين",
+      "canonical": "https://mopc.store/ar/products/right-front-shock-absorber-gm-p-f7b56d1d-4866-4a26-a89f-1b4385068200",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f7bcebd8-665a-43a8-951f-1ccf71875146",
+      "partNumber": "13219141",
+      "nameAr": "مسمار ميزان",
+      "canonical": "https://mopc.store/ar/products/stabilizer-bar-link-gm-p-f7bcebd8-665a-43a8-951f-1ccf71875146",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f866a09f-1ab5-4297-9bae-6ac27c80eb3e",
+      "partNumber": "24563823",
+      "nameAr": "فلتر زيت",
+      "canonical": "https://mopc.store/ar/products/oil-filter-gm-p-f866a09f-1ab5-4297-9bae-6ac27c80eb3e",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f8c87926-c6e0-4122-af34-e9b2853d0d8d",
+      "partNumber": "OP-55559353",
+      "nameAr": "ماسورة مياه",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f8c87926-c6e0-4122-af34-e9b2853d0d8d",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "ماسورة مياه",
+      "newEnglishName": "Coolant Pipe"
+    },
+    {
+      "id": "f8d560e3-6b7a-4f70-9e95-f60cf74eacf0",
+      "partNumber": "23577934",
+      "nameAr": "مساعد أمامي يمين",
+      "canonical": "https://mopc.store/ar/products/front-right-shock-absorber-gm-p-f8d560e3-6b7a-4f70-9e95-f60cf74eacf0",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "f94e2939-cfe2-49df-9075-bef20257c05c",
+      "partNumber": "OP-0606AF",
+      "nameAr": "سبيكة بيل",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-f94e2939-cfe2-49df-9075-bef20257c05c",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "سبيكة بيل",
+      "newEnglishName": "Connecting Rod Bearing"
+    },
+    {
+      "id": "f9a3d364-4751-4bdd-a801-0aef0f9714bb",
+      "partNumber": "OP-13291779",
+      "nameAr": "خرطوم رادياتير دخول-GTC",
+      "canonical": "https://mopc.store/ar/products/gtc-genuine-parts-p-f9a3d364-4751-4bdd-a801-0aef0f9714bb",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم رادياتير دخول-GTC",
+      "newEnglishName": "Radiator Inlet Hose GTC"
+    },
+    {
+      "id": "f9cbd60b-3dc0-457b-b40a-e03818fa7335",
+      "partNumber": "25194223",
+      "nameAr": "أويل سيل ماسورة مبرد",
+      "canonical": "https://mopc.store/ar/products/oil-cooler-hose-seal-gm-p-f9cbd60b-3dc0-457b-b40a-e03818fa7335",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "fb599d05-cc4f-4766-aa0a-dfa6dd5dfa77",
+      "partNumber": "OP-9803673380",
+      "nameAr": "جوان وش سيلندر",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-fb599d05-cc4f-4766-aa0a-dfa6dd5dfa77",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "جوان وش سيلندر",
+      "newEnglishName": "Cylinder Head Gasket"
+    },
+    {
+      "id": "fb891821-ad6b-4d7d-b9d9-e029f978ddde",
+      "partNumber": "95389383",
+      "nameAr": "خرطوم ردياتير علوي",
+      "canonical": "https://mopc.store/ar/products/upper-radiator-hose-gm-p-fb891821-ad6b-4d7d-b9d9-e029f978ddde",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "fd1100fd-4b31-4658-9a26-c51670abf826",
+      "partNumber": "55353331",
+      "nameAr": "أويل سيل ماسورة",
+      "canonical": "https://mopc.store/ar/products/water-hose-oil-seal-gm-p-fd1100fd-4b31-4658-9a26-c51670abf826",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "fd795ac4-db32-4e17-9d13-9f1448e5e5d4",
+      "partNumber": "OP-22794870",
+      "nameAr": "خرطوم سخن دخول",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-fd795ac4-db32-4e17-9d13-9f1448e5e5d4",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "خرطوم سخن دخول",
+      "newEnglishName": "Heater Inlet Hose"
+    },
+    {
+      "id": "fd8fdc3f-5fd2-4469-bccf-837b8625ef14",
+      "partNumber": "13248552",
+      "nameAr": "قاعدة موتور شمال",
+      "canonical": "https://mopc.store/ar/products/left-engine-mount-gm-p-fd8fdc3f-5fd2-4469-bccf-837b8625ef14",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "fe768697-e8b2-4a05-bba2-59a68cc60695",
+      "partNumber": "95389382",
+      "nameAr": "خرطوم ردياتير سفلى",
+      "canonical": "https://mopc.store/ar/products/radiator-lower-hose-gm-p-fe768697-e8b2-4a05-bba2-59a68cc60695",
+      "fields": [
+        "name",
+        "description",
+        "seo",
+        "specs"
+      ],
+      "oldEnglishName": "أو Radiator lower hose",
+      "newEnglishName": "Lower Radiator Hose"
+    },
+    {
+      "id": "ff0bc9c4-ff16-4fe1-9d41-22879925b41a",
+      "partNumber": "OP-95527030",
+      "nameAr": "طقم ديسك",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-ff0bc9c4-ff16-4fe1-9d41-22879925b41a",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ff324b68-8b9d-49cf-95d4-6591f0dea8a1",
+      "partNumber": "13248493",
+      "nameAr": "قاعدة فتيس أمامية",
+      "canonical": "https://mopc.store/ar/products/front-transmission-mount-gm-p-ff324b68-8b9d-49cf-95d4-6591f0dea8a1",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ff3b6a8c-204e-41eb-aa84-07a2b58520b5",
+      "partNumber": "24405967",
+      "nameAr": "ترس عامود كرنك",
+      "canonical": "https://mopc.store/ar/products/crankshaft-gear-gm-p-ff3b6a8c-204e-41eb-aa84-07a2b58520b5",
+      "fields": [
+        "specs"
+      ]
+    },
+    {
+      "id": "ffe6c08d-9c1c-4e7c-beb5-97fc59791525",
+      "partNumber": "23750331",
+      "nameAr": "كولر  فتيس",
+      "canonical": "https://mopc.store/ar/products/transmission-cooler-gm-p-ffe6c08d-9c1c-4e7c-beb5-97fc59791525",
+      "fields": [
+        "specs"
+      ]
+    }
+  ]
+}
