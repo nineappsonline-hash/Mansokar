@@ -1,0 +1,415 @@
+{
+  "capturedAt": "2026-11-11T11:21:36.046Z",
+  "origin": "https://mopc.store",
+  "sitemaps": {
+    "products": 658,
+    "vehicles": 26,
+    "guides": 8,
+    "pages": 20
+  },
+  "pages": [
+    {
+      "route": "/ar",
+      "status": 200,
+      "title": "قطع غيار سيارات أصلية بضمان في مصر | موبِك",
+      "description": "قطع غيار أصلية لأوبل وشيفروليه وبيجو وستروين وإم جي في مصر من موبِك، بضمان الوكيل أو المورد حسب المنتج. راجع توافق القطعة وأسعارها بالجنيه المصري.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar",
+      "h1Count": 1,
+      "ogTitle": "قطع غيار سيارات أصلية بضمان في مصر | موبِك",
+      "structuredTypes": [
+        "Organization",
+        "WebSite"
+      ]
+    },
+    {
+      "route": "/ar/brands/chevrolet",
+      "status": 200,
+      "title": "قطع غيار شيفروليه في مصر | موبِك",
+      "description": "استعرض قطع غيار شيفروليه وحدد سنة الصنع والموتور للتحقق من التوافق.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/brands/chevrolet",
+      "h1Count": 1,
+      "ogTitle": "قطع غيار شيفروليه في مصر",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/brands/chevrolet/captiva",
+      "status": 200,
+      "title": "قطع غيار شيفروليه كابتيفا في مصر | موبِك",
+      "description": "استعرض قطع غيار شيفروليه كابتيفا وحدد سنة الصنع والموتور للتحقق من التوافق.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/brands/chevrolet/captiva",
+      "h1Count": 1,
+      "ogTitle": "قطع غيار شيفروليه كابتيفا في مصر",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/brands/chevrolet/cruze",
+      "status": 200,
+      "title": "قطع غيار شيفروليه كروز في مصر | موبِك",
+      "description": "استعرض قطع غيار شيفروليه كروز وحدد سنة الصنع والموتور للتحقق من التوافق.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/brands/chevrolet/cruze",
+      "h1Count": 1,
+      "ogTitle": "قطع غيار شيفروليه كروز في مصر",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/cart",
+      "status": 200,
+      "headerRobots": "noindex, follow",
+      "title": "السلة | موبِك",
+      "robots": "noindex, nofollow",
+      "canonical": "https://mopc.store/ar/cart",
+      "h1Count": 1,
+      "ogTitle": "السلة",
+      "structuredTypes": [
+        "Organization",
+        "WebSite"
+      ]
+    },
+    {
+      "route": "/ar/catalog?q=filter",
+      "status": 200,
+      "title": "تسوق قطع الغيار | موبِك",
+      "robots": "noindex, follow",
+      "canonical": "https://mopc.store/ar/catalog",
+      "h1Count": 1,
+      "ogTitle": "تسوق قطع الغيار",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/checkout",
+      "status": 200,
+      "headerRobots": "noindex, follow",
+      "title": "كمّل الطلب | موبِك",
+      "robots": "noindex, nofollow",
+      "canonical": "https://mopc.store/ar/checkout",
+      "h1Count": 1,
+      "ogTitle": "كمّل الطلب",
+      "structuredTypes": [
+        "Organization",
+        "WebSite"
+      ]
+    },
+    {
+      "route": "/ar/guides/check-part-compatibility",
+      "status": 200,
+      "title": "إزاي تتأكد إن قطعة الغيار تناسب عربيتك؟ | موبِك",
+      "description": "خطوات مطابقة رقم القطعة وسنة الصنع والجيل والموتور قبل شراء قطع الغيار في مصر.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/guides/check-part-compatibility",
+      "h1Count": 1,
+      "ogTitle": "إزاي تتأكد إن قطعة الغيار تناسب عربيتك؟",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Article"
+      ]
+    },
+    {
+      "route": "/ar/guides/compare-spare-part-prices",
+      "status": 200,
+      "title": "إزاي تقارن أسعار قطع الغيار في مصر؟ | موبِك",
+      "description": "قارن سعر القطعة بالجنيه المصري والكمية والتوافق والشحن وإجمالي تكلفة التقسيط قبل اتخاذ القرار.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/guides/compare-spare-part-prices",
+      "h1Count": 1,
+      "ogTitle": "إزاي تقارن أسعار قطع الغيار في مصر؟",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Article"
+      ]
+    },
+    {
+      "route": "/ar/guides/item-brand-and-country-of-origin",
+      "status": 200,
+      "title": "ماركة قطعة الغيار وبلد المنشأ: إيه الفرق؟ | موبِك",
+      "description": "افهم الفرق بين ماركة العربية وماركة القطعة وبلد التصنيع، وإيه البيانات اللي تراجعها قبل الشراء.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/guides/item-brand-and-country-of-origin",
+      "h1Count": 1,
+      "ogTitle": "ماركة قطعة الغيار وبلد المنشأ: إيه الفرق؟",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Article"
+      ]
+    },
+    {
+      "route": "/ar/policies/returns",
+      "status": 200,
+      "title": "سياسة الاستبدال والاسترجاع | موبِك",
+      "description": "شروط استبدال أو استرجاع قطع الغيار والزيوت، والعيوب المصنعية، وطريقة رد الأموال.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/policies/returns",
+      "h1Count": 1,
+      "ogTitle": "سياسة الاستبدال والاسترجاع",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/policies/shipping",
+      "status": 200,
+      "title": "سياسة الشحن والتوصيل | موبِك",
+      "description": "مواعيد التوصيل داخل مصر، وتكلفة الشحن حسب المحافظة، وفحص الشحنة عند الاستلام.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/policies/shipping",
+      "h1Count": 1,
+      "ogTitle": "سياسة الشحن والتوصيل",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/policies/warranty",
+      "status": 200,
+      "title": "سياسة الضمان | موبِك",
+      "description": "ضمان قطع الغيار من الوكيل أو المورد، وما يغطيه الضمان، وطريقة رفع طلب ضمان.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/policies/warranty",
+      "h1Count": 1,
+      "ogTitle": "سياسة الضمان",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/products/does-not-exist",
+      "status": 404,
+      "title": "قطع غيار سيارات أصلية بضمان في مصر | موبِك",
+      "description": "قطع غيار أصلية لأوبل وشيفروليه وبيجو وستروين وإم جي في مصر من موبِك، بضمان الوكيل أو المورد حسب المنتج. راجع توافق القطعة وأسعارها بالجنيه المصري.",
+      "robots": "noindex",
+      "h1Count": 0,
+      "ogTitle": "قطع غيار سيارات أصلية بضمان في مصر | موبِك",
+      "structuredTypes": []
+    },
+    {
+      "route": "/ar/products/genuine-parts-p-00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "status": 200,
+      "title": "طلمبة مياه Genuine Parts | أوبل جراند لاند 2017–2022 | OP-9826619080 | موبِك",
+      "description": "طلمبة مياه من ماركة Genuine Parts لعربيات أوبل جراند لاند 2017–2022. رقم القطعة OP-9826619080. قطعة غيار أصلية بضمان الوكيل أو المورد حسب المنتج، وتقدر تطلبها من موبِك في مصر.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/products/genuine-parts-p-00dfa981-39ff-4d51-a1aa-acb1c5877afe",
+      "h1Count": 1,
+      "ogTitle": "طلمبة مياه Genuine Parts | أوبل جراند لاند 2017–2022 | OP-9826619080",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Product",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/products/pcv-valve-gm-p-01ce432f-187f-47c6-9b1b-6e94df4ab452",
+      "status": 200,
+      "title": "بلف زيت GM | شيفروليه كروز 2014–2017 | 55563957 | موبِك",
+      "description": "بلف زيت من ماركة GM لعربيات شيفروليه كروز 2014–2017. رقم القطعة 55563957. قطعة غيار أصلية بضمان الوكيل أو المورد حسب المنتج، وتقدر تطلبها من موبِك في مصر.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/products/pcv-valve-gm-p-01ce432f-187f-47c6-9b1b-6e94df4ab452",
+      "h1Count": 1,
+      "ogTitle": "بلف زيت GM | شيفروليه كروز 2014–2017 | 55563957",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Product",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/ar/products/rear-brake-pad-kit-gm-p-0182b757-b427-457f-b28d-e49f0190a6a7",
+      "status": 200,
+      "title": "تيل خلفي LV3 GM | شيفروليه كابتيفا 2019–2023 | 23761250 | موبِك",
+      "description": "تيل خلفي LV3 من ماركة GM لعربيات شيفروليه كابتيفا 2019–2023. رقم القطعة 23761250. قطعة غيار أصلية بضمان الوكيل أو المورد حسب المنتج، وتقدر تطلبها من موبِك في مصر.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/ar/products/rear-brake-pad-kit-gm-p-0182b757-b427-457f-b28d-e49f0190a6a7",
+      "h1Count": 1,
+      "ogTitle": "تيل خلفي LV3 GM | شيفروليه كابتيفا 2019–2023 | 23761250",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Product",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/en",
+      "status": 200,
+      "title": "Genuine Car Parts with Warranty in Egypt | MOPC",
+      "description": "Shop genuine Opel, Chevrolet, Peugeot, Citroën and MG spare parts in Egypt at MOPC, with agent or supplier warranties. Check fitment and prices in EGP.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en",
+      "h1Count": 1,
+      "ogTitle": "Genuine Car Parts with Warranty in Egypt | MOPC",
+      "structuredTypes": [
+        "Organization",
+        "WebSite"
+      ]
+    },
+    {
+      "route": "/en/brands/chevrolet",
+      "status": 200,
+      "title": "Chevrolet spare parts in Egypt | MOPC",
+      "description": "Browse Chevrolet parts and select your year and engine to check compatibility.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/brands/chevrolet",
+      "h1Count": 1,
+      "ogTitle": "Chevrolet spare parts in Egypt",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/en/brands/chevrolet/captiva",
+      "status": 200,
+      "title": "Chevrolet Captiva spare parts in Egypt | MOPC",
+      "description": "Browse Chevrolet Captiva parts and select your year and engine to check compatibility.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/brands/chevrolet/captiva",
+      "h1Count": 1,
+      "ogTitle": "Chevrolet Captiva spare parts in Egypt",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/en/brands/chevrolet/cruze",
+      "status": 200,
+      "title": "Chevrolet Cruze spare parts in Egypt | MOPC",
+      "description": "Browse Chevrolet Cruze parts and select your year and engine to check compatibility.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/brands/chevrolet/cruze",
+      "h1Count": 1,
+      "ogTitle": "Chevrolet Cruze spare parts in Egypt",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/en/guides/check-part-compatibility",
+      "status": 200,
+      "title": "How to check whether a spare part fits your car | MOPC",
+      "description": "Match part number, vehicle year, generation and engine before buying spare parts in Egypt.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/guides/check-part-compatibility",
+      "h1Count": 1,
+      "ogTitle": "How to check whether a spare part fits your car",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Article"
+      ]
+    },
+    {
+      "route": "/en/guides/compare-spare-part-prices",
+      "status": 200,
+      "title": "How to compare spare-part prices in Egypt | MOPC",
+      "description": "Compare EGP price, quantity, compatibility, shipping and total installment cost before deciding.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/guides/compare-spare-part-prices",
+      "h1Count": 1,
+      "ogTitle": "How to compare spare-part prices in Egypt",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Article"
+      ]
+    },
+    {
+      "route": "/en/guides/item-brand-and-country-of-origin",
+      "status": 200,
+      "title": "Spare-part brand and country of origin: what is the difference? | MOPC",
+      "description": "Understand vehicle make, item brand and manufacturing country, and which details to check before buying.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/guides/item-brand-and-country-of-origin",
+      "h1Count": 1,
+      "ogTitle": "Spare-part brand and country of origin: what is the difference?",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Article"
+      ]
+    },
+    {
+      "route": "/en/products/pcv-valve-gm-p-01ce432f-187f-47c6-9b1b-6e94df4ab452",
+      "status": 200,
+      "title": "PCV Valve GM | Chevrolet Cruze 2014–2017 | 55563957 | MOPC",
+      "description": "PCV Valve by GM for Chevrolet Cruze 2014–2017. Part number 55563957. Genuine spare parts with an agent or supplier warranty according to the product, available to order in Egypt.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/products/pcv-valve-gm-p-01ce432f-187f-47c6-9b1b-6e94df4ab452",
+      "h1Count": 1,
+      "ogTitle": "PCV Valve GM | Chevrolet Cruze 2014–2017 | 55563957",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Product",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/en/products/rear-brake-pad-kit-gm-p-0182b757-b427-457f-b28d-e49f0190a6a7",
+      "status": 200,
+      "title": "Rear Brake Pad Kit GM | Chevrolet Captiva 2019–2023 | 23761250 | MOPC",
+      "description": "Rear Brake Pad Kit by GM for Chevrolet Captiva 2019–2023. Part number 23761250. Genuine spare parts with an agent or supplier warranty according to the product, available to order in Egypt.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/products/rear-brake-pad-kit-gm-p-0182b757-b427-457f-b28d-e49f0190a6a7",
+      "h1Count": 1,
+      "ogTitle": "Rear Brake Pad Kit GM | Chevrolet Captiva 2019–2023 | 23761250",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Product",
+        "BreadcrumbList"
+      ]
+    },
+    {
+      "route": "/en/products/rear-crankshaft-seal-with-housing-gm-p-034761d1-acdf-4918-93f7-80dd8b078ab0",
+      "status": 200,
+      "title": "Rear Crankshaft Seal with Housing GM | Chevrolet Captiva 2019–2023 | 24563770 | MOPC",
+      "description": "Rear Crankshaft Seal with Housing by GM for Chevrolet Captiva 2019–2023. Part number 24563770. Genuine spare parts with an agent or supplier warranty according to the product, available to order in Egypt.",
+      "robots": "index, follow",
+      "canonical": "https://mopc.store/en/products/rear-crankshaft-seal-with-housing-gm-p-034761d1-acdf-4918-93f7-80dd8b078ab0",
+      "h1Count": 1,
+      "ogTitle": "Rear Crankshaft Seal with Housing GM | Chevrolet Captiva 2019–2023 | 24563770",
+      "structuredTypes": [
+        "Organization",
+        "WebSite",
+        "Product",
+        "BreadcrumbList"
+      ]
+    }
+  ],
+  "issues": [],
+  "robots": "User-Agent: *\nAllow: /\nAllow: /api/merchant-feed\nDisallow: /admin\nDisallow: /api/\nDisallow: /auth/\n\nUser-Agent: GPTBot\nUser-Agent: Google-Extended\nDisallow: /\n\nSitemap: https://mopc.store/sitemap.xml\n"
+}
