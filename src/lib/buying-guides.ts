@@ -2,6 +2,59 @@ import type { Text } from "./catalog";
 const text = (ar: string, en: string): Text => ({ ar, en });
 export const buyingGuides = [
   {
+    slug: "genuine-parts-and-warranty",
+    title: text(
+      "قطع الغيار الأصلية وضمانها في مصر: إزاي تراجع بيانات القطعة؟",
+      "Genuine spare parts and warranty in Egypt: what to check",
+    ),
+    description: text(
+      "اعرف معنى «أصلي» في كتالوج موبِك، وإزاي تراجع رقم القطعة والتوافق ومدة الضمان وشروطه قبل الشراء.",
+      "Understand the genuine-part label at MOPC and check the part number, vehicle fitment and product-specific warranty terms before buying.",
+    ),
+    sections: [
+      {
+        heading: text(
+          "إيه معنى «أصلي» في صفحة المنتج؟",
+          "What does “genuine” mean on a product page?",
+        ),
+        body: text(
+          "موبِك بتعرض قطع غيار أصلية بضمان حسب المنتج. لو اسم الماركة ظاهر «أصلي»، ده معناه إن اسم الشركة المصنعة مش متسجل عندنا، مش إن «أصلي» اسم شركة أو بلد منشأ. رقم القطعة والماركة لو مذكورة وصورة العبوة الفعلية لو متاحة بيساعدوك تراجع القطعة؛ ولو صورة المنتج مش متاحة هنوضح ده بدل ما نعرض صورة قطعة تانية.",
+          "MOPC lists genuine spare parts with a product-specific warranty. If the brand field says “أصلي” (“Genuine”), the manufacturer's name has not been recorded; that label is neither a company name nor a country of manufacture. Check the saved part number, any named item brand and a real package photo where available. A labeled placeholder means no product photo is available.",
+        ),
+      },
+      {
+        heading: text(
+          "هل الأصلي معناه إنه مناسب لعربيتي؟",
+          "Does genuine mean the part fits my car?",
+        ),
+        body: text(
+          "لأ. اتأكد من رقم القطعة والماركة والموديل والسنة، وبعدها راجع الموتور والجيل ومكان تركيب القطعة. السنوات المسجلة للموديل مش تأكيد لكل نسخة أو موتور. لو التوافق مش واضح، ابعتلنا رقم القطعة وبيانات العربية للمراجعة قبل الطلب.",
+          "No. Match the part number, make, model and recorded years, then check engine, generation and fitting position. A saved model-year application does not confirm every trim or engine. If fitment is unclear, send the part number and vehicle details for review before ordering.",
+        ),
+      },
+      {
+        heading: text(
+          "مين بيقدم الضمان ومدته كام؟",
+          "Who provides the warranty, and how long is it?",
+        ),
+        body: text(
+          "الضمان من الوكيل أو المورد حسب القطعة. مدة الضمان ونطاقه بيتحددوا في صفحة المنتج أو مستند الضمان المرفق؛ مفيش مدة واحدة تنطبق على كل القطع. راجع الشروط واحتفظ بالفاتورة لأنها بتثبت تاريخ الشراء.",
+          "The agent or supplier provides the warranty according to the product. Its period and coverage are stated on the product page or accompanying warranty document; one period does not apply to every item. Read the terms and keep your invoice as proof of purchase date.",
+        ),
+      },
+      {
+        heading: text(
+          "إيه اللي بيغطيه الضمان وإزاي أطلب مراجعة؟",
+          "What is covered, and how do I request a review?",
+        ),
+        body: text(
+          "الضمان بيغطي عيوب الصناعة حسب شروط الوكيل أو المورد. الضرر الناتج عن تركيب غلط أو سوء استخدام أو تعديل أو استهلاك طبيعي أو تركيب القطعة على عربية غير مناسبة مش مشمول. لو ظهرت مشكلة، تواصل معانا برقم الطلب أو الفاتورة ورقم القطعة ووصف العيب؛ ونوضحلك خطوات الفحص. تفاصيل الاسترجاع والعيوب المصنعية موجودة في سياسات المتجر.",
+          "The warranty covers manufacturing defects under the agent's or supplier's terms. Damage from incorrect installation, misuse, modification, normal wear or fitting an incompatible vehicle is excluded. For a problem, contact us with the order or invoice number, part number and fault description so we can explain the review process. See the store policies for returns and manufacturing defects.",
+        ),
+      },
+    ],
+  },
+  {
     slug: "check-part-compatibility",
     title: text(
       "إزاي تتأكد إن قطعة الغيار تناسب عربيتك؟",

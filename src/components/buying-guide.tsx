@@ -61,6 +61,24 @@ export async function BuyingGuide({
           <p className="prose">{section.body[locale]}</p>
         </section>
       ))}
+      {guide.slug === "genuine-parts-and-warranty" && (
+        <nav
+          className="admin-nav"
+          aria-label={
+            locale === "ar" ? "السياسات المرتبطة" : "Related policies"
+          }
+        >
+          <Link href={`/${locale}/policies/warranty`}>
+            {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
+          </Link>
+          <Link href={`/${locale}/policies/returns`}>
+            {locale === "ar" ? "الاسترجاع والاستبدال" : "Returns and exchanges"}
+          </Link>
+          <Link href={`/${locale}/guides/check-part-compatibility`}>
+            {locale === "ar" ? "دليل التوافق" : "Fitment guide"}
+          </Link>
+        </nav>
+      )}
       <section className="stack">
         <h2>
           {locale === "ar"

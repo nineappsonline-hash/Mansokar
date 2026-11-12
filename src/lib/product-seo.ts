@@ -78,12 +78,28 @@ export function productStructuredData(
 export function productAnswers(p: Product, locale: Locale) {
   const ar = locale === "ar";
   const restrictions = p.specs[`fitment_notes_${locale}`];
+  const brandUnknown = p.manufacturer.trim() === "أصلي";
+  const months = Number(p.specs.warranty_months);
+  const recordedWarranty =
+    Number.isInteger(months) && months > 0 && months <= 600
+      ? ar
+        ? `مدة الضمان المسجلة ${months} ${months === 1 ? "شهر" : "شهور"}. `
+        : `The recorded warranty period is ${months} ${months === 1 ? "month" : "months"}. `
+      : "";
   return [
     {
       question: ar ? `سعر ${p.name.ar} كام؟` : `How much is ${p.name.en}?`,
       answer: ar
         ? `السعر المعروض ${money(p.sale ?? p.price, locale)}. تكلفة التوصيل بتتحدد حسب المحافظة وبتظهر وقت تأكيد الطلب.`
         : `The displayed price is ${money(p.sale ?? p.price, locale)}. Delivery charges depend on your area and are shown when ordering.`,
+    },
+    {
+      question: ar
+        ? "هل القطعة أصلية وإيه شروط ضمانها؟"
+        : "Is this a genuine part, and what warranty applies?",
+      answer: ar
+        ? `قطع الغيار في موبِك أصلية بضمان الوكيل أو المورد حسب المنتج. ${recordedWarranty}تفاصيل الضمان بتظهر في بيانات القطعة أو مستند الضمان؛ واحتفظ بالفاتورة وراجع سياسة الضمان قبل الطلب.`
+        : `MOPC lists genuine spare parts with an agent or supplier warranty according to the product. ${recordedWarranty}Check the product details or warranty document for coverage, keep the invoice, and review the warranty policy before ordering.`,
     },
     {
       question: ar
@@ -108,8 +124,8 @@ export function productAnswers(p: Product, locale: Locale) {
         ? "ماركة القطعة وبلد المنشأ إيه؟"
         : "What are the item brand and country of origin?",
       answer: ar
-        ? `ماركة القطعة: ${p.manufacturer}. بلد المنشأ: ${countryOfOrigin(p.specs.country_of_origin) || "مش موضح؛ اسألنا قبل الشراء"}. بلد الماركة مش شرط يكون هو بلد تصنيع القطعة.`
-        : `Item brand: ${p.manufacturer}. Country of origin: ${countryOfOrigin(p.specs.country_of_origin) || "not specified; request confirmation before buying"}. Brand nationality does not determine where the item was manufactured.`,
+        ? `${brandUnknown ? "مكتوب «أصلي» لما اسم الشركة المصنعة مش متسجل؛ اسألنا لو محتاج تعرف الشركة." : `ماركة القطعة: ${p.manufacturer}.`} بلد المنشأ: ${countryOfOrigin(p.specs.country_of_origin) || "مش موضح؛ اسألنا قبل الشراء"}. «أصلي» وصف للقطعة، مش اسم بلد تصنيعها.`
+        : `${brandUnknown ? "The brand field shows “أصلي” (“Genuine”) because the maker’s name is not recorded; contact us if you need it confirmed." : `Item brand: ${p.manufacturer}.`} Country of origin: ${countryOfOrigin(p.specs.country_of_origin) || "not specified; request confirmation before buying"}. Genuine describes the part, not its manufacturing country.`,
     },
     {
       question: ar

@@ -177,12 +177,39 @@ test("stable product media URLs are included in product schema and sitemap entri
 test("visible answers reflect the SKU and current payment methods in both languages", () => {
   for (const locale of ["ar", "en"] as const) {
     const answers = productAnswers(p, locale);
-    assert.equal(answers.length, 4);
+    assert.equal(answers.length, 5);
     assert.ok(answers.some((a) => a.answer.includes(p.partNumber)));
     assert.ok(answers.some((a) => a.answer.includes("Germany")));
-    assert.match(answers[3].answer, /Valu/);
+    assert.ok(answers.some((a) => /Valu/.test(a.answer)));
+    assert.ok(
+      answers.some((a) =>
+        locale === "ar"
+          ? a.answer.includes("ضمان الوكيل أو المورد")
+          : a.answer.includes("agent or supplier warranty"),
+      ),
+    );
     assert.ok(!JSON.stringify(answers).includes("9000"));
   }
+});
+
+test("product answers explain genuine brand fallback and use only recorded warranty periods", () => {
+  const generic = {
+    ...p,
+    manufacturer: "أصلي",
+    specs: { ...p.specs, warranty_months: "6" },
+  };
+  const ar = productAnswers(generic, "ar");
+  const en = productAnswers(generic, "en");
+  assert.ok(ar.some((item) => item.answer.includes("6 شهور")));
+  assert.ok(en.some((item) => item.answer.includes("6 months")));
+  assert.ok(
+    ar.some((item) => item.answer.includes("اسم الشركة المصنعة مش متسجل")),
+  );
+  assert.ok(
+    en.some((item) => item.answer.includes("maker’s name is not recorded")),
+  );
+  const unknown = productAnswers({ ...generic, specs: {} }, "en");
+  assert.ok(!unknown.some((item) => item.answer.includes("6 months")));
 });
 
 test("deleted makes and models stay absent from navigation and SEO inventory for every make", async () => {
