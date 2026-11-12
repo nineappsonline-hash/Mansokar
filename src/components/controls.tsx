@@ -677,11 +677,14 @@ export function Gallery({
   if (!media.length && !demo)
     return (
       <div className="product-art large">
-        <p>
-          {locale === "ar"
-            ? "صورة المنتج غير متاحة"
-            : "Product photo unavailable"}
-        </p>
+        <img
+          src="/images/part-placeholder.svg"
+          alt={
+            locale === "ar"
+              ? "صورة توضيحية عامة؛ صورة المنتج غير متاحة"
+              : "Generic placeholder; product photo unavailable"
+          }
+        />
       </div>
     );
   const next = (direction: number) =>

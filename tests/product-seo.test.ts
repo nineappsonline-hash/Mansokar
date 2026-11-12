@@ -521,6 +521,16 @@ test("customer specs label warranty months and never present a part type as a co
   );
   assert.equal(en.find((r) => r.key === "warranty_months")!.value, "6 months");
   assert.equal(
+    productSpecifications(
+      {
+        ...item,
+        specs: { ...item.specs, stock_status: "in_stock", stock_quantity: "0" },
+      },
+      "en",
+    ).find((r) => r.key === "stock_status")!.value,
+    "Out of stock",
+  );
+  assert.equal(
     ar.find((r) => r.key === "country_of_origin")!.value,
     "غير محدد",
   );

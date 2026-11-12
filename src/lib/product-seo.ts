@@ -37,8 +37,12 @@ export function productStructuredData(
     description: p.description[locale],
     sku: p.sku,
     ...(p.partNumber?.trim() ? { mpn: p.partNumber } : {}),
-    brand: { "@type": "Brand", name: p.manufacturer },
-    manufacturer: { "@type": "Organization", name: p.manufacturer },
+    ...(/^أصلي$/u.test(p.manufacturer.trim())
+      ? {}
+      : {
+          brand: { "@type": "Brand", name: p.manufacturer },
+          manufacturer: { "@type": "Organization", name: p.manufacturer },
+        }),
     ...(images.length
       ? { image: images.map((src) => new URL(src, base).href) }
       : {}),

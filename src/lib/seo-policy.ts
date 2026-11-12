@@ -42,6 +42,13 @@ export function verifiedAvailability(p: Pick<Product, "specs">) {
     preorder: "PreOrder",
     backorder: "BackOrder",
   };
+  const quantity = p.specs?.stock_quantity;
+  if (
+    quantity !== undefined &&
+    quantity !== "" &&
+    (!/^\d+$/.test(quantity) || Number(quantity) === 0)
+  )
+    return quantity === "0" ? "https://schema.org/OutOfStock" : undefined;
   return statuses[p.specs?.stock_status]
     ? `https://schema.org/${statuses[p.specs.stock_status]}`
     : undefined;

@@ -1,6 +1,6 @@
 import { PurchaseButtons } from "./purchase-buttons";
 import Link from "next/link";
-import { ArrowUpRight, Globe2, Tag, Package, CarFront } from "lucide-react";
+import { ArrowUpRight, Globe2, Tag, CarFront } from "lucide-react";
 import {
   fitmentLabel,
   money,
@@ -112,10 +112,15 @@ export async function SpecialOffers({
                         loading="lazy"
                       />
                     ) : (
-                      <div className="offer-image-placeholder">
-                        <Package size={80} strokeWidth={1} />
-                        <span>{w.view}</span>
-                      </div>
+                      <img
+                        src="/images/part-placeholder.svg"
+                        alt={
+                          locale === "ar"
+                            ? "صورة توضيحية عامة؛ صورة المنتج غير متاحة"
+                            : "Generic placeholder; product photo unavailable"
+                        }
+                        loading="lazy"
+                      />
                     )}
                     <span className="offer-percentage">
                       <bdi>−{percentage}</bdi>

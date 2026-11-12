@@ -5,7 +5,7 @@ import {
 import styles from "./product-card.module.css";
 import { FavoriteButton } from "./favorites";
 import Link from "next/link";
-import { ArrowUpRight, Globe2, Package } from "lucide-react";
+import { ArrowUpRight, Globe2 } from "lucide-react";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -105,14 +105,16 @@ export async function ProductCard({
             className="product-card-image"
           />
         ) : (
-          <div className="offer-image-placeholder">
-            <Package size={70} aria-hidden="true" />
-            <span>
-              {locale === "ar"
-                ? "صورة المنتج غير متاحة"
-                : "Product photo unavailable"}
-            </span>
-          </div>
+          <img
+            src="/images/part-placeholder.svg"
+            alt={
+              locale === "ar"
+                ? "صورة توضيحية عامة؛ صورة المنتج غير متاحة"
+                : "Generic placeholder; product photo unavailable"
+            }
+            loading="lazy"
+            className="product-card-image"
+          />
         )}
         {p.demo && <span>{w.demoProduct}</span>}
         {p.sale !== null && p.price > 0 && (

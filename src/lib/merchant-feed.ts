@@ -24,6 +24,7 @@ export function feedExclusionReasons(
   return [
     ...(!merchantPriceReady(p) ? ["fractional_price_review"] : []),
     ...(!eligibleProduct(p, locale) ? ["not_eligible_for_locale"] : []),
+    ...(/^أصلي$/u.test(p.manufacturer.trim()) ? ["brand_unverified"] : []),
     ...(!p.orderable ? ["not_orderable"] : []),
     ...(!images.length ? ["missing_photo"] : []),
     ...(!verifiedAvailability(p) ? ["unknown_availability"] : []),

@@ -29,7 +29,7 @@ export function SimpleProductEditor({
       ? initial
       : {
           name: { ar: "", en: "" },
-          manufacturer: "",
+          manufacturer: "أصلي",
           price: 0,
           cost: null,
           sale: null,
@@ -38,7 +38,12 @@ export function SimpleProductEditor({
           status: "draft",
           demo: false,
           orderable: true,
-          specs: {},
+          specs: {
+            country_of_origin: "أصلي",
+            authenticity: "أصلي",
+            stock_quantity: "1000",
+            stock_status: "in_stock",
+          },
         },
   );
   const [ids, setIds] = useState(selected);
@@ -254,9 +259,24 @@ export function SimpleProductEditor({
             <details className="stack">
               <summary>Optional: verified stock and SEO overrides</summary>
               <p>
-                Search copy is automatic. Leave stock unknown until verified;
-                this setting does not change checkout orderability.
+                Search copy is automatic. The starting stock is 1,000 and can be
+                changed here; checkout orderability is controlled separately.
               </p>
+              <label>
+                Stock quantity
+                <input
+                  type="number"
+                  min="0"
+                  step="1"
+                  value={value.specs?.stock_quantity ?? ""}
+                  onChange={(e) =>
+                    setValue({
+                      ...value,
+                      specs: { ...value.specs, stock_quantity: e.target.value },
+                    })
+                  }
+                />
+              </label>
               <label>
                 Verified stock
                 <select

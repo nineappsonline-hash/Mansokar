@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">MOPC product image placeholder</title>
+  <desc id="desc">A neutral illustration shown when a product has no photograph</desc>
+  <rect width="640" height="640" fill="#f4f7fa"/>
+  <rect x="34" y="34" width="572" height="572" rx="28" fill="#fff" stroke="#dce5ed" stroke-width="2"/>
+  <path d="M230 235l90-50 90 50v104l-90 52-90-52V235z" fill="#eaf1f6" stroke="#8da8bb" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M230 235l90 52 90-52m-90 52v104" fill="none" stroke="#8da8bb" stroke-width="6" stroke-linejoin="round"/>
+  <path d="M292 215l90 52" fill="none" stroke="#8da8bb" stroke-width="6"/>
+  <circle cx="320" cy="288" r="28" fill="#fff" stroke="#8da8bb" stroke-width="5"/>
+  <path d="M307 288l9 9 18-19" fill="none" stroke="#007fa7" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="320" y="461" text-anchor="middle" fill="#0a2940" font-family="Arial,sans-serif" font-size="29" font-weight="700">صورة المنتج غير متاحة</text>
+  <text x="320" y="498" text-anchor="middle" fill="#708397" font-family="Arial,sans-serif" font-size="19">Product photo unavailable</text>
+  <path d="M250 535h140" stroke="#00a6d0" stroke-width="5" stroke-linecap="round"/>
+</svg>

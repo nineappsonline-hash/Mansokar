@@ -103,6 +103,18 @@ test("partitioned XML escapes URLs, emits only actual translations and never inv
 });
 test("merchant discovery excludes unknown stock and emits only verified identifiers and consistent EGP prices", () => {
   assert.equal(verifiedAvailability(product), undefined);
+  assert.equal(
+    verifiedAvailability({
+      specs: { stock_status: "in_stock", stock_quantity: "1000" },
+    }),
+    "https://schema.org/InStock",
+  );
+  assert.equal(
+    verifiedAvailability({
+      specs: { stock_status: "in_stock", stock_quantity: "0" },
+    }),
+    "https://schema.org/OutOfStock",
+  );
   assert.ok(
     feedExclusionReasons(product, "ar", ["/part.jpg"]).includes(
       "unknown_availability",
@@ -213,6 +225,24 @@ test("fractional legacy prices are withheld from merchant offers instead of disa
   assert.ok(
     feedExclusionReasons(p, "ar", ["/image.jpg"]).includes(
       "fractional_price_review",
+    ),
+  );
+});
+
+test("genuine fallback remains visible copy without claiming a verified manufacturer in product data or feed", async () => {
+  const { productStructuredData } = await import("../src/lib/product-seo");
+  const generic = { ...product, manufacturer: "أصلي" };
+  const structured = productStructuredData(
+    generic,
+    "ar",
+    "https://mopc.store",
+    [],
+  );
+  assert.equal(structured?.brand, undefined);
+  assert.equal(structured?.manufacturer, undefined);
+  assert.ok(
+    feedExclusionReasons(generic, "ar", ["/image.jpg"]).includes(
+      "brand_unverified",
     ),
   );
 });

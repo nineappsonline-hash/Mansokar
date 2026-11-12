@@ -569,9 +569,25 @@ export function ProductEditor({
         <fieldset className="stack">
           <legend>Verified listing data · optional</legend>
           <p className="muted">
-            Use confirmed inventory data only. Unknown stock is excluded from
-            merchant feeds; this does not change checkout orderability.
+            Stock quantity starts at 1,000 for current catalog products. Update
+            it here when your count changes; checkout orderability is controlled
+            separately.
           </p>
+          <label>
+            Stock quantity
+            <input
+              type="number"
+              min="0"
+              step="1"
+              value={value.specs?.stock_quantity ?? ""}
+              onChange={(e) =>
+                setValue({
+                  ...value,
+                  specs: { ...value.specs, stock_quantity: e.target.value },
+                })
+              }
+            />
+          </label>
           <label>
             Stock status
             <select

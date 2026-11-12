@@ -41,6 +41,12 @@ export function productSpecifications(
       value: origin || (ar ? "غير محدد" : "Not specified"),
     },
   ];
+  if (p.specs.authenticity === "أصلي")
+    rows.unshift({
+      key: "authenticity",
+      label: ar ? "أصالة القطعة" : "Authenticity",
+      value: ar ? "أصلي" : "Genuine",
+    });
   const condition = p.specs.product_condition || p.condition;
   const conditions: Record<string, string> = ar
     ? { new: "جديدة", used: "مستعملة", refurbished: "مجددة" }
@@ -64,11 +70,13 @@ export function productSpecifications(
         preorder: "Preorder",
         backorder: "Backorder",
       };
-  if (stock[p.specs.stock_status])
+  const stockStatus =
+    p.specs.stock_quantity === "0" ? "out_of_stock" : p.specs.stock_status;
+  if (stock[stockStatus])
     rows.push({
       key: "stock_status",
       label: ar ? "حالة المخزون المسجلة" : "Recorded stock status",
-      value: stock[p.specs.stock_status],
+      value: stock[stockStatus],
     });
   for (const [key, value] of Object.entries(p.specs)) {
     if (
@@ -76,9 +84,14 @@ export function productSpecifications(
       key === "country_of_origin" ||
       key.startsWith("car_years:") ||
       key.startsWith("seo_") ||
-      ["public_slug", "stock_status", "product_condition", "gtin"].includes(
-        key,
-      ) ||
+      [
+        "public_slug",
+        "stock_status",
+        "stock_quantity",
+        "authenticity",
+        "product_condition",
+        "gtin",
+      ].includes(key) ||
       (key.startsWith("fitment_notes_") && key !== `fitment_notes_${locale}`)
     )
       continue;
