@@ -18,8 +18,8 @@ export const buyingGuides = [
           "What does “genuine” mean on a product page?",
         ),
         body: text(
-          "موبِك بتعرض قطع غيار أصلية بضمان حسب المنتج. لو اسم الماركة ظاهر «أصلي»، ده معناه إن اسم الشركة المصنعة مش متسجل عندنا، مش إن «أصلي» اسم شركة أو بلد منشأ. رقم القطعة والماركة لو مذكورة وصورة العبوة الفعلية لو متاحة بيساعدوك تراجع القطعة؛ ولو صورة المنتج مش متاحة هنوضح ده بدل ما نعرض صورة قطعة تانية.",
-          "MOPC lists genuine spare parts with a product-specific warranty. If the brand field says “أصلي” (“Genuine”), the manufacturer's name has not been recorded; that label is neither a company name nor a country of manufacture. Check the saved part number, any named item brand and a real package photo where available. A labeled placeholder means no product photo is available.",
+          "موبِك بتعرض قطع غيار أصلية بضمان حسب المنتج. الماركة بتظهر GM لو كانت غير مسجلة أو مكتوب بدلها «أصلي» في بيانات الكتالوج. «أصلي» وصف للقطعة، مش بلد المنشأ. راجع رقم القطعة وماركتها وصورة العبوة الفعلية لو متاحة؛ ولو صورة المنتج مش متاحة هنوضح ده بدل ما نعرض صورة قطعة تانية.",
+          "MOPC lists genuine spare parts with a product-specific warranty. The brand field defaults to GM when it was missing or previously said “أصلي” (“Genuine”) in the catalog. “Genuine” describes the part, not its country of manufacture. Check the saved part number, item brand and a real package photo where available. A labeled placeholder means no product photo is available.",
         ),
       },
       {

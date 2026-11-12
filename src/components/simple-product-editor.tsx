@@ -29,7 +29,7 @@ export function SimpleProductEditor({
       ? initial
       : {
           name: { ar: "", en: "" },
-          manufacturer: "أصلي",
+          manufacturer: "GM",
           price: 0,
           cost: null,
           sale: null,
