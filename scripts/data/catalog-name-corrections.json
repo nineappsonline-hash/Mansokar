@@ -1,0 +1,23 @@
+{
+  "OP-95528305": { "ar": "فلتر هواء", "en": "Air Filter" },
+  "OP-55575503": { "ar": "بلف تحكم موتور", "en": "Engine Control Valve" },
+  "OP-39028913": {
+    "ar": "حساس ركن أمامي خارجي",
+    "en": "Front Outer Parking Sensor"
+  },
+  "OP-55584594": {
+    "ar": "سبيكة دليل كرنك STD",
+    "en": "Standard Size Crankshaft Guide Bearing"
+  },
+  "OP-55569245": { "ar": "ترس شدادة كرنك", "en": "Crankshaft Tensioner Gear" },
+  "OP-95530020": { "ar": "تيل فرامل أمامي", "en": "Front Brake Pads" },
+  "OP-20843230": { "ar": "سويتش Parking نيكل", "en": "Nickel Parking Switch" },
+  "OP-13312105": { "ar": "قاعدة محرك شمال", "en": "Left Engine Mount" },
+  "OP-1695249780": { "ar": "تيل فرامل أمامي", "en": "Front Brake Pads" },
+  "OP-13235283": {
+    "ar": "غطاء مسمار جنط رمادي",
+    "en": "Grey Wheel Bolt Cover"
+  },
+  "OP-1684934280": { "ar": "تيل فرامل خلفي", "en": "Rear Brake Pads" },
+  "OP-95527030": { "ar": "طقم ديسكات فرامل", "en": "Brake Disc Set" }
+}

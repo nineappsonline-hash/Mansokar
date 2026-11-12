@@ -1,19 +1,23 @@
-# Product names needing clarification
+# Resolved catalog names — 12 November 2026
 
-These 13 Arabic labels had no reliable English name. Send a corrected Arabic and/or English name using the part number, especially for unclear suffixes.
+The merchant clarified these 13 records. Twelve names were corrected in both Arabic and English; one product was unpublished. Existing canonical URLs were preserved for corrected products.
 
-| Part number | Current Arabic name | What is unclear |
-| --- | --- | --- |
-| OP-95528305 | فلتر هواء -15 | Does “-15” mean before 2015 or another specification? |
-| OP-55575503 | بلف تحكم موتور | Which engine control valve is this? |
-| OP-55570704 | اويل سيل علبة بيئة | What component is “علبة بيئة” in this seal? |
-| OP-39028913 | سويتش - Outer Parking Frt | Is this a front outer parking sensor or another switch? |
-| OP-55584594 | سبيكة دليل كرنك STD | Which crankshaft bearing position does “دليل” mean? |
-| OP-55569245 | ترس شدادة كرنك | Which crankshaft/timing-tensioner gear is it? |
-| OP-95530020 | تيل فرامل امامي -2015 | Does “-2015” mean up to model year 2015? |
-| OP-20843230 | سويتش Parking نيكل | What is the nickel “Parking” switch/sensor? |
-| OP-13312105 | قاعدة شمال | Is this an engine mount, transmission mount, or another left mount? |
-| OP-1695249780 | تيل فرامل أمامي 21 | Does “21” mean model year 2021, size or a catalog code? |
-| OP-13235283 | عطاء مسمار جنط رمادي 21 | Confirm that “عطاء” means “غطاء”; what does “21” mean? |
-| OP-1684934280 | 2015-تيل فرامل خلفي | Does “2015-” mean from 2015 onward? |
-| OP-95527030 | طقم ديسك | Which disc set: front/rear brakes or clutch? |
+| Part number | Arabic name | English name | Result |
+| --- | --- | --- | --- |
+| OP-13235283 | غطاء مسمار جنط رمادي | Grey Wheel Bolt Cover | Updated |
+| OP-13312105 | قاعدة محرك شمال | Left Engine Mount | Updated |
+| OP-1684934280 | تيل فرامل خلفي | Rear Brake Pads | Updated |
+| OP-1695249780 | تيل فرامل أمامي | Front Brake Pads | Updated |
+| OP-20843230 | سويتش Parking نيكل | Nickel Parking Switch | Updated |
+| OP-39028913 | حساس ركن أمامي خارجي | Front Outer Parking Sensor | Updated |
+| OP-55569245 | ترس شدادة كرنك | Crankshaft Tensioner Gear | Updated |
+| OP-55570704 | اويل سيل علبة بيئة | — | Removed from storefront; retained as draft |
+| OP-55575503 | بلف تحكم موتور | Engine Control Valve | Updated |
+| OP-55584594 | سبيكة دليل كرنك STD | Standard Size Crankshaft Guide Bearing | Updated |
+| OP-95527030 | طقم ديسكات فرامل | Brake Disc Set | Updated |
+| OP-95528305 | فلتر هواء | Air Filter | Updated |
+| OP-95530020 | تيل فرامل أمامي | Front Brake Pads | Updated |
+
+For OP-55584594, the generic name leaves the number of bearing positions unspecified because the available information does not confirm it.
+
+The draft product remains in the database for history and can be reviewed in admin. Its old public URL returns HTTP 404.

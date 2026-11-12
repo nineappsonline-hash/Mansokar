@@ -1,0 +1,174 @@
+{
+  "verifiedAt": "2026-11-12T11:17:16.352Z",
+  "corrected": 12,
+  "unpublished": 1,
+  "verified": 13,
+  "backup": "/home/jimmy/.local/state/mopc-catalog/name-corrections-before-1794482206335.json",
+  "changes": [
+    {
+      "partNumber": "OP-95527030",
+      "before": {
+        "ar": "طقم ديسك",
+        "en": "طقم ديسك"
+      },
+      "after": {
+        "ar": "طقم ديسكات فرامل",
+        "en": "Brake Disc Set"
+      },
+      "status": "published",
+      "canonical": "/ar/products/spare-part-p-ff0bc9c4-ff16-4fe1-9d41-22879925b41a"
+    },
+    {
+      "partNumber": "OP-95530020",
+      "before": {
+        "ar": "تيل فرامل امامي -2015",
+        "en": "تيل فرامل امامي -2015"
+      },
+      "after": {
+        "ar": "تيل فرامل أمامي",
+        "en": "Front Brake Pads"
+      },
+      "status": "published",
+      "canonical": "/ar/products/2015-p-6ccea412-0c74-414c-9fea-548cf2827fc0"
+    },
+    {
+      "partNumber": "OP-39028913",
+      "before": {
+        "ar": "سويتش - Outer Parking Frt",
+        "en": "سويتش - Outer Parking Frt"
+      },
+      "after": {
+        "ar": "حساس ركن أمامي خارجي",
+        "en": "Front Outer Parking Sensor"
+      },
+      "status": "published",
+      "canonical": "/ar/products/outer-parking-frt-p-4202d5d3-9ddc-405e-a2a5-4ce0acbb5262"
+    },
+    {
+      "partNumber": "OP-20843230",
+      "before": {
+        "ar": "سويتش Parking نيكل",
+        "en": "سويتش Parking نيكل"
+      },
+      "after": {
+        "ar": "سويتش Parking نيكل",
+        "en": "Nickel Parking Switch"
+      },
+      "status": "published",
+      "canonical": "/ar/products/parking-p-7dcaf935-57ab-4959-9afa-0125e72c13f1"
+    },
+    {
+      "partNumber": "OP-55570704",
+      "before": {
+        "ar": "اويل سيل علبة بيئة",
+        "en": "اويل سيل علبة بيئة"
+      },
+      "status": "draft",
+      "canonical": "/ar/products/spare-part-p-3f154ee7-b299-432d-a83b-326f24b0c1ed"
+    },
+    {
+      "partNumber": "OP-55584594",
+      "before": {
+        "ar": "سبيكة دليل كرنك STD",
+        "en": "سبيكة دليل كرنك STD"
+      },
+      "after": {
+        "ar": "سبيكة دليل كرنك STD",
+        "en": "Standard Size Crankshaft Guide Bearing"
+      },
+      "status": "published",
+      "canonical": "/ar/products/std-p-4a779a22-6e53-4ff5-a497-98dd4992b75d"
+    },
+    {
+      "partNumber": "OP-13235283",
+      "before": {
+        "ar": "عطاء مسمار جنط رمادي 21",
+        "en": "عطاء مسمار جنط رمادي 21"
+      },
+      "after": {
+        "ar": "غطاء مسمار جنط رمادي",
+        "en": "Grey Wheel Bolt Cover"
+      },
+      "status": "published",
+      "canonical": "/ar/products/21-p-ef9a2160-3348-42af-9017-d2e40f2fa2e9"
+    },
+    {
+      "partNumber": "OP-95528305",
+      "before": {
+        "ar": "فلتر هواء -15",
+        "en": "فلتر هواء -15"
+      },
+      "after": {
+        "ar": "فلتر هواء",
+        "en": "Air Filter"
+      },
+      "status": "published",
+      "canonical": "/ar/products/15-p-0f85674b-711e-4dc4-8cf3-319e6fed3181"
+    },
+    {
+      "partNumber": "OP-55575503",
+      "before": {
+        "ar": "بلف تحكم موتور",
+        "en": "بلف تحكم موتور"
+      },
+      "after": {
+        "ar": "بلف تحكم موتور",
+        "en": "Engine Control Valve"
+      },
+      "status": "published",
+      "canonical": "/ar/products/spare-part-p-174de47b-f370-4fa6-8c3d-41e2b51c9a64"
+    },
+    {
+      "partNumber": "OP-55569245",
+      "before": {
+        "ar": "ترس شدادة كرنك",
+        "en": "ترس شدادة كرنك"
+      },
+      "after": {
+        "ar": "ترس شدادة كرنك",
+        "en": "Crankshaft Tensioner Gear"
+      },
+      "status": "published",
+      "canonical": "/ar/products/spare-part-p-4d8990b8-e6a2-438f-899e-dd931099b405"
+    },
+    {
+      "partNumber": "OP-1695249780",
+      "before": {
+        "ar": "تيل فرامل أمامي 21",
+        "en": "تيل فرامل أمامي 21"
+      },
+      "after": {
+        "ar": "تيل فرامل أمامي",
+        "en": "Front Brake Pads"
+      },
+      "status": "published",
+      "canonical": "/ar/products/21-p-dadf5c61-499e-45f5-a597-cb1da423f9df"
+    },
+    {
+      "partNumber": "OP-1684934280",
+      "before": {
+        "ar": "2015-تيل فرامل خلفي",
+        "en": "2015-تيل فرامل خلفي"
+      },
+      "after": {
+        "ar": "تيل فرامل خلفي",
+        "en": "Rear Brake Pads"
+      },
+      "status": "published",
+      "canonical": "/ar/products/2015-p-f457be45-f601-4c90-b0a9-563580fedf68"
+    },
+    {
+      "partNumber": "OP-13312105",
+      "before": {
+        "ar": "قاعدة شمال",
+        "en": "قاعدة شمال"
+      },
+      "after": {
+        "ar": "قاعدة محرك شمال",
+        "en": "Left Engine Mount"
+      },
+      "status": "published",
+      "canonical": "/ar/products/spare-part-p-c385869e-332e-413a-b8c3-12e23a25dc32"
+    }
+  ]
+}
