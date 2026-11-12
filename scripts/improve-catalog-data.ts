@@ -76,6 +76,7 @@ async function main() {
       next.name.en = translation;
     if (
       p.specs.country_of_origin &&
+      p.specs.country_of_origin !== "أصلي" &&
       !countryOfOrigin(p.specs.country_of_origin)
     )
       delete next.specs.country_of_origin;

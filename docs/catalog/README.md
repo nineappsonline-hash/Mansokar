@@ -20,7 +20,7 @@ The vehicle metadata audit is rerun for all 424 published products (848 localize
 
 ## Remaining verified gaps
 
-- 13 English names still require clarification. Ambiguous part descriptions/suffixes were not guessed.
+- At the time of this audit, 13 English names required clarification. The merchant clarified them on 12 November; see [the resolved names](ambiguous-names.md). This report and its supplier worksheet are historical snapshots.
 - 74 published products have no saved photograph.
 - 186 products use the generic manufacturer value “Genuine Parts”; an actual manufacturer needs supplier evidence.
 - 424 products lack recorded stock and country of origin. Stock must come from inventory, and origin from packaging/manufacturer documentation.
