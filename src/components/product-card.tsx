@@ -86,7 +86,7 @@ export async function ProductCard({
     >
       <div className={`product-card-identity ${styles.cardIdentity}`}>
         <BrandLogo className={`product-card-mopc-logo ${styles.mopcLogo}`} alt="MOPC" />
-        {makeLogo && <img className={`product-card-make-logo ${styles.makeLogo}`} src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}
+
       </div>
       <FavoriteButton id={p.id} locale={locale} />
       <Link
@@ -170,7 +170,7 @@ export async function ProductCard({
           <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
           <bdi dir="ltr">{p.partNumber}</bdi>
         </div>
-        <div className="product-card-fitment-heading">{locale === "ar" ? "التوافق مع العربية" : "Vehicle compatibility"}</div>
+        <div className="product-card-fitment-heading">{makeLogo && <img className="product-card-fitment-logo" src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}{locale === "ar" ? "التوافق مع العربية" : "Vehicle compatibility"}</div>
         {vehicleRows.length > 0 ? (
           <div
             className={styles.vehicles}
