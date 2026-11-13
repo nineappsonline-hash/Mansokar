@@ -6,6 +6,8 @@ import styles from "./product-card.module.css";
 import { FavoriteButton } from "./favorites";
 import Link from "next/link";
 import { ArrowUpRight, Globe2 } from "lucide-react";
+import { BrandLogo } from "./brand-logo";
+import { vehicleBrandLogo } from "@/lib/vehicle-brand-logo";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -74,11 +76,18 @@ export async function ProductCard({
     /* A missing photo does not conceal the product. */
   }
   const w = t(locale);
+  const primaryModel = carCatalog.models.find((m) => m.id === vehicleRows[0]?.id);
+  const primaryBrand = carCatalog.brands.find((b) => b.slug === (vehicleContext?.make ?? primaryModel?.brand));
+  const makeLogo = vehicleBrandLogo(primaryBrand?.slug);
   return (
     <article
-      className={`product-card product-card-animate ${styles.card}`}
+      className={`product-card product-card-animate ${styles.card} ${styles.referenceCard}`}
       aria-label={p.name[locale]}
     >
+      <div className={styles.cardIdentity}>
+        <BrandLogo className={styles.mopcLogo} alt="MOPC" />
+        {makeLogo && <img className={styles.makeLogo} src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}
+      </div>
       <FavoriteButton id={p.id} locale={locale} />
       <Link
         href={href}
