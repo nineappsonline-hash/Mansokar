@@ -255,9 +255,16 @@ export async function CyanHome({
         </div>
       </section>
       {cardPayments && (
-        <section className="shell cyan-payments-promo" aria-label={ar ? "طرق الدفع" : "Payment options"}>
-          <div><CreditCard size={34} aria-hidden="true" /><div><h2>{ar ? "ادفع بالطريقة اللي تناسبك" : "Pay your way"}</h2><p>{ar ? "متاح الدفع بالفيزا أو من خلال شركات التقسيط المتاحة. راجع الشروط قبل إتمام الطلب." : "Pay by card or explore available installment providers. Check terms before ordering."}</p></div></div>
-          <Link href={`/${locale}/installments`}>{ar ? "اعرف طرق الدفع" : "Explore payment options"} <ArrowUpRight size={18} /></Link>
+        <section className="shell cyan-payments-banner" aria-label={ar ? "طرق الدفع والتقسيط" : "Payment and installment options"}>
+          <Link href={`/${locale}/installments`} aria-label={ar ? "اعرف المزيد عن طرق الدفع والتقسيط" : "Learn more about payment and installment options"}>
+            <img
+              src="/images/Flexible%20Payment%20Options%20Banner.png"
+              alt={ar ? "طرق الدفع والتقسيط المتاحة: فاليو، أمان، سهولة، كونتاكت، Apple Pay، Vodafone Cash، Visa، وInstaPay" : "Available payment and installment options: valU, Aman, Souhoola, Contact, Apple Pay, Vodafone Cash, Visa and InstaPay"}
+              loading="lazy"
+              decoding="async"
+              style={{ display: "block", width: "100%", height: "auto", borderRadius: "18px" }}
+            />
+          </Link>
         </section>
       )}
       <section className="shell cyan-why">
