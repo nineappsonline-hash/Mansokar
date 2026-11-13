@@ -1481,3 +1481,79 @@
 @media (prefers-reduced-motion: reduce) {
   .theme:global(.mopc-cyan) :global(.cyan-brand-tile) { transition: none; }
 }
+
+
+/* Premium visual language across every public storefront route (not homepage-only). */
+.theme:global(.mopc-cyan) {
+  :global(main) { background: #fafaf8; color: #101b2a; }
+  :global(main > .shell) { padding-block-start: 28px; }
+  :global(main h1), :global(main h2), :global(main h3) {
+    color: #101b2a; letter-spacing: -.015em;
+  }
+  :global(main .muted), :global(main .small.muted) { color: #52687a; }
+  :global(main .lead) { color: #425a6d; }
+  :global(main .breadcrumbs) { color: #607487; }
+  :global(main .breadcrumbs a) { color: #006f8d; }
+  :global(main .section-heading) { gap: 16px; }
+  :global(main .section-heading h1), :global(main .section-heading h2) { font-weight: 800; }
+  :global(main .product-card),
+  :global(main .model-card),
+  :global(main .offer-card),
+  :global(main .catalog-filters),
+  :global(main .purchase-panel),
+  :global(main .accordion),
+  :global(main .favorites-empty) {
+    border: 1px solid #dbe5ec;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 12px 30px -25px #17334b;
+  }
+  :global(main .product-card:hover),
+  :global(main .model-card:hover),
+  :global(main .offer-card:hover) {
+    border-color: #86c4d1;
+    box-shadow: 0 18px 38px -25px #17334b;
+  }
+  :global(main .product-art) { background: #f7fafb; }
+  :global(main .product-info h3) { font-weight: 800; line-height: 1.55; }
+  :global(main .product-price) { color: #101b2a; font-weight: 850; }
+  :global(main .catalog-filters) { padding: 18px; }
+  :global(main .catalog-filters input),
+  :global(main .catalog-filters select),
+  :global(main input:not([type="checkbox"]):not([type="radio"])),
+  :global(main select),
+  :global(main textarea) {
+    border-color: #ccdbe4; border-radius: 10px; background-color: #fff;
+  }
+  :global(main input:focus-visible),
+  :global(main select:focus-visible),
+  :global(main textarea:focus-visible) {
+    outline: 3px solid #8ad6e3; outline-offset: 1px;
+  }
+  :global(main .button:not(.secondary)) {
+    background: #07314a; border-color: #07314a; color: #fff;
+    border-radius: 10px; box-shadow: none;
+  }
+  :global(main .button:not(.secondary):hover) {
+    background: #006f8d; border-color: #006f8d;
+  }
+  :global(main .button.secondary) {
+    background: #fff; color: #07314a; border: 1px solid #c7d9e3;
+    border-radius: 10px;
+  }
+  :global(main .pagination a), :global(main .pagination button) {
+    border-radius: 9px;
+  }
+  :global(.footer) { background: #101b2a; color: #dce9f0; }
+  :global(.footer h3) { color: #fff; }
+  :global(.footer a) { color: #dce9f0; }
+  :global(.footer a:hover) { color: #79e0ee; }
+}
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan) {
+    :global(main > .shell) { padding-block-start: 18px; }
+    :global(main .catalog-filters) { padding: 12px; }
+    :global(main .product-card), :global(main .model-card),
+    :global(main .offer-card), :global(main .purchase-panel) { border-radius: 13px; }
+  }
+}
