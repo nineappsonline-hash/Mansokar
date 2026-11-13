@@ -6236,3 +6236,173 @@ table {
     gap: 16px;
   }
 }
+
+
+/* MOPC product-card v2: explicit, stable global selectors override legacy homepage
+   and catalog rules. Product images and make logos remain database-driven. */
+.product-grid:has(> .product-card-reference),
+.cyan-featured .product-grid:has(> .product-card-reference) {
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  overflow: visible !important;
+  gap: 22px !important;
+}
+.product-grid > .product-card-reference {
+  box-sizing: border-box;
+  display: grid !important;
+  grid-template-columns: minmax(0, 56%) minmax(0, 44%) !important;
+  grid-template-rows: minmax(0,1fr);
+  grid-template-areas: "info image" !important;
+  direction: rtl;
+  width: 100%;
+  min-width: 0;
+  min-height: 420px;
+  position: relative;
+  border-radius: 22px !important;
+  background: #fff !important;
+  border: 1px solid #dfe5eb !important;
+  overflow: hidden;
+  box-shadow: 0 12px 35px #10283d15 !important;
+}
+.product-grid > .product-card-reference > .product-art {
+  grid-area: image !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 420px !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  background: linear-gradient(150deg,#fafbfc,#eef2f5) !important;
+  border: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+.product-grid > .product-card-reference > .product-art > img {
+  width: 92% !important;
+  height: 80% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 14px 12px #10243818);
+}
+.product-grid > .product-card-reference > .product-info {
+  grid-area: info !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 88px 22px 22px !important;
+  gap: 10px !important;
+  text-align: right;
+}
+.product-card-reference > .product-card-identity {
+  display: flex !important;
+  align-items: center !important;
+  position: absolute !important;
+  z-index: 5;
+  top: 18px !important;
+  right: 20px !important;
+  left: auto !important;
+  width: auto !important;
+  height: 48px !important;
+  max-width: 55% !important;
+  gap: 12px !important;
+}
+.product-card-reference .product-card-mopc-logo {
+  display: inline-flex !important;
+  width: 100px !important;
+  max-width: 100px !important;
+  height: 40px !important;
+  overflow: visible !important;
+}
+.product-card-reference .product-card-mopc-logo img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+.product-card-reference .product-card-make-logo {
+  display: block !important;
+  width: 65px !important;
+  height: 40px !important;
+  object-fit: contain !important;
+}
+.product-card-reference .product-info h3 {
+  font-size: clamp(19px,1.55vw,26px) !important;
+  line-height: 1.5 !important;
+  min-height: 0 !important;
+  color: #101b2a !important;
+  overflow-wrap: break-word !important;
+}
+.product-card-reference .product-info .product-brand { color: #4b5b6c !important; }
+.product-card-reference .product-info .product-price {
+  margin-top: auto !important;
+  color: #c8102e !important;
+  font-size: clamp(25px,2.1vw,34px) !important;
+  border-top: 1px solid #e3e8ed !important;
+  padding-top: 12px !important;
+}
+.product-card-reference .product-info .product-price span { color: #c8102e !important; }
+.product-card-reference .product-info .purchase-buttons .button {
+  min-height: 48px !important;
+  border-radius: 11px !important;
+  background: #101b2a !important;
+  border-color: #101b2a !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+.product-card-reference .product-info .purchase-buttons .button:hover { background: #29445b !important; }
+.product-card-reference .product-info .product-details-link { align-self: flex-start; }
+@media (max-width: 1250px) {
+  .product-grid:has(> .product-card-reference),
+  .cyan-featured .product-grid:has(> .product-card-reference) {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+}
+@media (max-width: 700px) {
+  .product-grid > .product-card-reference {
+    grid-template-columns: minmax(0,1fr) !important;
+    grid-template-rows: 255px auto !important;
+    grid-template-areas: "image" "info" !important;
+    min-height: 0 !important;
+    border-radius: 18px !important;
+  }
+  .product-grid > .product-card-reference > .product-art {
+    height: 255px !important;
+    min-height: 255px !important;
+    max-height: 255px !important;
+  }
+  .product-grid > .product-card-reference > .product-art > img {
+    width: 85% !important;
+    height: 83% !important;
+  }
+  .product-grid > .product-card-reference > .product-info {
+    padding: 17px 18px 20px !important;
+    gap: 10px !important;
+  }
+  .product-card-reference > .product-card-identity {
+    top: 14px !important;
+    right: 14px !important;
+    max-width: 70% !important;
+    height: 34px !important;
+  }
+  .product-card-reference .product-card-mopc-logo {
+    width: 85px !important;
+    height: 32px !important;
+  }
+  .product-card-reference .product-card-make-logo {
+    width: 51px !important;
+    height: 32px !important;
+  }
+  .product-card-reference .product-info h3 {
+    font-size: 21px !important;
+  }
+  .product-card-reference .product-info .product-price {
+    font-size: 29px !important;
+  }
+  .product-grid:has(> .product-card-reference),
+  .cyan-featured .product-grid:has(> .product-card-reference) {
+    overflow: visible !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 17px !important;
+  }
+}
