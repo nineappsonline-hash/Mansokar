@@ -1557,3 +1557,140 @@
     :global(main .offer-card), :global(main .purchase-panel) { border-radius: 13px; }
   }
 }
+
+
+/* Mobile header: override later desktop premium rules which previously forced
+   a three-column 240px-min search grid on narrow iPhone viewports. */
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan) {
+    :global(.header .shell),
+    :global(.header-inner) {
+      width: calc(100% - 28px);
+      max-width: calc(100% - 28px);
+      min-width: 0;
+      box-sizing: border-box;
+      margin-inline: auto;
+    }
+    :global(.header-inner) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, auto);
+      grid-template-rows: auto auto;
+      column-gap: 8px;
+      row-gap: 9px;
+      min-height: 0;
+      padding-block: 10px;
+    }
+    :global(.header .logo) { grid-column: 1; grid-row: 1; min-width: 0; }
+    :global(.header .store-logo-image) { width: 95px; max-width: 100%; height: 34px; }
+    :global(.header .store-name-ar) { font-size: 16px; }
+    :global(.header-tools) {
+      grid-column: 2;
+      grid-row: 1;
+      min-width: 0;
+      max-width: 100%;
+      gap: 8px;
+      flex-wrap: nowrap;
+    }
+    :global(.header-tools > *) { flex-shrink: 0; }
+    :global(.header-search-box) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+    }
+    :global(.header-search-box .search-widget),
+    :global(.header-search-box .hero-search) {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    :global(.header-search-box .hero-search input) { min-width: 0; width: 100%; }
+  }
+}
+
+
+/* Arabic mobile header: brand on physical right, tools on physical left. */
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan)[dir="rtl"] {
+    :global(.header-inner) { direction: rtl; }
+    :global(.header .logo) {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+      justify-self: start !important;
+      min-width: 0;
+    }
+    :global(.header-tools) {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+      justify-self: end !important;
+    }
+  }
+}
+
+
+/* Larger, easier-to-tap car selector on phones; maintain two-column model/year. */
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan) {
+    :global(.cyan-vehicle-finder) {
+      padding: 15px !important;
+      gap: 12px !important;
+    }
+    :global(.cyan-vehicle-finder > label) {
+      min-height: 58px !important;
+      border-radius: 12px !important;
+      padding-inline: 11px !important;
+      gap: 7px !important;
+    }
+    :global(.cyan-vehicle-finder select) {
+      width: 100% !important;
+      min-width: 0 !important;
+      min-height: 56px !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
+      padding: 9px 7px !important;
+    }
+    :global(.cyan-vehicle-finder label svg) {
+      width: 22px !important;
+      height: 22px !important;
+      flex-shrink: 0;
+    }
+  }
+}
+
+
+/* Refine vehicle finder after mobile review: avoid clipped year labels and
+   excessive heavy borders, while preserving accessible touch targets. */
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan) {
+    :global(.cyan-vehicle-finder) {
+      padding: 12px !important;
+      gap: 9px !important;
+    }
+    :global(.cyan-vehicle-finder > label) {
+      min-height: 50px !important;
+      border-radius: 10px !important;
+      padding-inline: 9px !important;
+      gap: 5px !important;
+      border-width: 1px !important;
+    }
+    :global(.cyan-vehicle-finder select) {
+      min-height: 48px !important;
+      font-size: 14px !important;
+      font-weight: 650 !important;
+      padding: 6px 2px !important;
+      text-overflow: ellipsis;
+    }
+    :global(.cyan-vehicle-finder label svg) {
+      width: 19px !important;
+      height: 19px !important;
+    }
+  }
+}
+@media (max-width: 420px) {
+  .theme:global(.mopc-cyan) {
+    :global(.cyan-vehicle-finder select) { font-size: 13px !important; }
+    :global(.cyan-vehicle-finder > label) { padding-inline: 6px !important; }
+  }
+}
