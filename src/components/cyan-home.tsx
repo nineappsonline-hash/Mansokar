@@ -258,7 +258,7 @@ export async function CyanHome({
         <section className="shell cyan-payments-banner" aria-label={ar ? "طرق الدفع والتقسيط" : "Payment and installment options"}>
           <Link href={`/${locale}/installments`} aria-label={ar ? "اعرف المزيد عن طرق الدفع والتقسيط" : "Learn more about payment and installment options"}>
             <img
-              src="/images/Flexible%20Payment%20Options%20Banner.png"
+              src="/images/%D8%A7%D8%AF%D9%81%D8%B9%20%D8%A8%D8%A7%D9%84%D8%B7%D8%B1%D9%8A%D9%82%D8%A9%20%D8%A7%D9%84%D8%AA%D9%8A%20%D8%AA%D9%86%D8%A7%D8%B3%D8%A8%D9%83.png"
               alt={ar ? "طرق الدفع والتقسيط المتاحة: فاليو، أمان، سهولة، كونتاكت، Apple Pay، Vodafone Cash، Visa، وInstaPay" : "Available payment and installment options: valU, Aman, Souhoola, Contact, Apple Pay, Vodafone Cash, Visa and InstaPay"}
               loading="lazy"
               decoding="async"
