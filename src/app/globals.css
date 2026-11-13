@@ -6985,3 +6985,39 @@ body {
     border-radius: 10px !important;
   }
 }
+
+
+/* Wider, shallower payment banner directly before featured products. */
+.shell.cyan-payments-banner.home-promo-compact {
+  width: min(calc(100% - 32px), 1280px) !important;
+  max-width: 1280px !important;
+  margin: 20px auto 24px !important;
+}
+.cyan-payments-banner.home-promo-compact > a {
+  display: block;
+  width: 100%;
+  aspect-ratio: 5 / 1;
+  overflow: hidden;
+  border-radius: 14px;
+}
+.cyan-payments-banner.home-promo-compact > a > img {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  object-fit: fill !important;
+  border-radius: 14px !important;
+}
+@media (max-width: 700px) {
+  .shell.cyan-payments-banner.home-promo-compact {
+    width: calc(100% - 24px) !important;
+    margin: 14px auto 18px !important;
+  }
+  .cyan-payments-banner.home-promo-compact > a {
+    aspect-ratio: 3 / 1;
+    border-radius: 10px;
+  }
+  .cyan-payments-banner.home-promo-compact > a > img {
+    border-radius: 10px !important;
+  }
+}
