@@ -6505,3 +6505,112 @@ table {
     font-size: 16px !important;
   }
 }
+
+
+/* Card density and contrast fixes based on actual iPhone production screenshot. */
+.product-card-reference .product-card-fitment-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: #34485a !important;
+}
+.product-card-reference .product-card-fitment-logo {
+  display: block !important;
+  width: 40px !important;
+  height: 28px !important;
+  object-fit: contain !important;
+  flex-shrink: 0;
+}
+.product-card-reference .product-info .product-brand {
+  color: #102a3c !important;
+  background: #e9f2f7 !important;
+  border: 1px solid #d0e1eb !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1.4 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+.product-card-reference .product-info .product-meta {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+.product-card-reference .product-info h3 {
+  margin: 0 !important;
+  min-height: 0 !important;
+}
+.product-card-reference .product-info .product-price {
+  margin-top: 0 !important;
+  line-height: 1.25 !important;
+}
+.product-card-reference .product-info .purchase-controls { margin: 0 !important; }
+.product-card-reference .product-info > p.small.muted:empty { display: none !important; }
+.product-card-reference .product-info .product-card-fitment-unlisted { padding: 8px 10px !important; }
+@media (max-width: 700px) {
+  .product-grid > .product-card-reference {
+    grid-template-rows: 205px auto !important;
+    min-height: 0 !important;
+  }
+  .product-grid > .product-card-reference > .product-art {
+    height: 205px !important;
+    min-height: 205px !important;
+    max-height: 205px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .product-grid > .product-card-reference > .product-art > img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    padding: 4px !important;
+    margin: 0 !important;
+    filter: none !important;
+  }
+  .product-grid > .product-card-reference > .product-info {
+    padding: 12px 15px 15px !important;
+    gap: 7px !important;
+    justify-content: flex-start !important;
+    min-height: 0 !important;
+  }
+  .product-card-reference > .product-info > .original-badge {
+    margin: 0 !important;
+    align-self: flex-start;
+  }
+  .product-card-reference > .product-info > h3 {
+    font-size: 20px !important;
+    line-height: 1.35 !important;
+  }
+  .product-card-reference > .product-info > div[class*="partNumber"] {
+    padding: 5px 8px !important;
+    margin: 0 !important;
+  }
+  .product-card-reference > .product-info > div[class*="vehicles"] {
+    gap: 4px !important;
+    margin: 0 !important;
+  }
+  .product-card-reference > .product-info > .product-price {
+    font-size: 27px !important;
+    padding-top: 9px !important;
+  }
+  .product-card-reference .product-info .purchase-buttons .button {
+    min-height: 46px !important;
+  }
+  .product-card-reference > .product-card-identity {
+    top: 9px !important;
+    right: 10px !important;
+    height: 30px !important;
+  }
+  .product-card-reference .product-card-mopc-logo {
+    width: 74px !important;
+    height: 28px !important;
+  }
+  .product-card-reference .product-card-fitment-logo {
+    width: 35px !important;
+    height: 24px !important;
+  }
+}
