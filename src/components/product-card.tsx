@@ -170,7 +170,8 @@ export async function ProductCard({
           <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
           <bdi dir="ltr">{p.partNumber}</bdi>
         </div>
-        {vehicleRows.length > 0 && (
+        <div className="product-card-fitment-heading">{locale === "ar" ? "التوافق مع العربية" : "Vehicle compatibility"}</div>
+        {vehicleRows.length > 0 ? (
           <div
             className={styles.vehicles}
             aria-label={
@@ -207,6 +208,8 @@ export async function ProductCard({
               </Link>
             )}
           </div>
+        ) : (
+          <div className="product-card-fitment-unlisted">{locale === "ar" ? "لم يتم تحديد الماركة والموديل والسنوات لهذا المنتج بعد" : "Make, model and years have not been specified for this product"}</div>
         )}
 
         <p className="small muted">
