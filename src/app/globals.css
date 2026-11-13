@@ -6236,3 +6236,234 @@ table {
     gap: 16px;
   }
 }
+
+
+/* MOPC product-card v2: explicit, stable global selectors override legacy homepage
+   and catalog rules. Product images and make logos remain database-driven. */
+.product-grid:has(> .product-card-reference),
+.cyan-featured .product-grid:has(> .product-card-reference) {
+  grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  overflow: visible !important;
+  gap: 22px !important;
+}
+.product-grid > .product-card-reference {
+  box-sizing: border-box;
+  display: grid !important;
+  grid-template-columns: minmax(0, 56%) minmax(0, 44%) !important;
+  grid-template-rows: minmax(0,1fr);
+  grid-template-areas: "info image" !important;
+  direction: rtl;
+  width: 100%;
+  min-width: 0;
+  min-height: 420px;
+  position: relative;
+  border-radius: 22px !important;
+  background: #fff !important;
+  border: 1px solid #dfe5eb !important;
+  overflow: hidden;
+  box-shadow: 0 12px 35px #10283d15 !important;
+}
+.product-grid > .product-card-reference > .product-art {
+  grid-area: image !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 420px !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  background: linear-gradient(150deg,#fafbfc,#eef2f5) !important;
+  border: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+.product-grid > .product-card-reference > .product-art > img {
+  width: 92% !important;
+  height: 80% !important;
+  max-width: 100% !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 14px 12px #10243818);
+}
+.product-grid > .product-card-reference > .product-info {
+  grid-area: info !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 88px 22px 22px !important;
+  gap: 10px !important;
+  text-align: right;
+}
+.product-card-reference > .product-card-identity {
+  display: flex !important;
+  align-items: center !important;
+  position: absolute !important;
+  z-index: 5;
+  top: 18px !important;
+  right: 20px !important;
+  left: auto !important;
+  width: auto !important;
+  height: 48px !important;
+  max-width: 55% !important;
+  gap: 12px !important;
+}
+.product-card-reference .product-card-mopc-logo {
+  display: inline-flex !important;
+  width: 100px !important;
+  max-width: 100px !important;
+  height: 40px !important;
+  overflow: visible !important;
+}
+.product-card-reference .product-card-mopc-logo img {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+}
+.product-card-reference .product-card-make-logo {
+  display: block !important;
+  width: 65px !important;
+  height: 40px !important;
+  object-fit: contain !important;
+}
+.product-card-reference .product-info h3 {
+  font-size: clamp(19px,1.55vw,26px) !important;
+  line-height: 1.5 !important;
+  min-height: 0 !important;
+  color: #101b2a !important;
+  overflow-wrap: break-word !important;
+}
+.product-card-reference .product-info .product-brand { color: #4b5b6c !important; }
+.product-card-reference .product-info .product-price {
+  margin-top: auto !important;
+  color: #c8102e !important;
+  font-size: clamp(25px,2.1vw,34px) !important;
+  border-top: 1px solid #e3e8ed !important;
+  padding-top: 12px !important;
+}
+.product-card-reference .product-info .product-price span { color: #c8102e !important; }
+.product-card-reference .product-info .purchase-buttons .button {
+  min-height: 48px !important;
+  border-radius: 11px !important;
+  background: #101b2a !important;
+  border-color: #101b2a !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+.product-card-reference .product-info .purchase-buttons .button:hover { background: #29445b !important; }
+.product-card-reference .product-info .product-details-link { align-self: flex-start; }
+@media (max-width: 1250px) {
+  .product-grid:has(> .product-card-reference),
+  .cyan-featured .product-grid:has(> .product-card-reference) {
+    grid-template-columns: minmax(0,1fr) !important;
+  }
+}
+@media (max-width: 700px) {
+  .product-grid > .product-card-reference {
+    grid-template-columns: minmax(0,1fr) !important;
+    grid-template-rows: 255px auto !important;
+    grid-template-areas: "image" "info" !important;
+    min-height: 0 !important;
+    border-radius: 18px !important;
+  }
+  .product-grid > .product-card-reference > .product-art {
+    height: 255px !important;
+    min-height: 255px !important;
+    max-height: 255px !important;
+  }
+  .product-grid > .product-card-reference > .product-art > img {
+    width: 85% !important;
+    height: 83% !important;
+  }
+  .product-grid > .product-card-reference > .product-info {
+    padding: 17px 18px 20px !important;
+    gap: 10px !important;
+  }
+  .product-card-reference > .product-card-identity {
+    top: 14px !important;
+    right: 14px !important;
+    max-width: 70% !important;
+    height: 34px !important;
+  }
+  .product-card-reference .product-card-mopc-logo {
+    width: 85px !important;
+    height: 32px !important;
+  }
+  .product-card-reference .product-card-make-logo {
+    width: 51px !important;
+    height: 32px !important;
+  }
+  .product-card-reference .product-info h3 {
+    font-size: 21px !important;
+  }
+  .product-card-reference .product-info .product-price {
+    font-size: 29px !important;
+  }
+  .product-grid:has(> .product-card-reference),
+  .cyan-featured .product-grid:has(> .product-card-reference) {
+    overflow: visible !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    gap: 17px !important;
+  }
+}
+
+
+/* Reference fidelity: prominent car fitment, compact original branding and mobile hierarchy. */
+.product-card-reference .product-card-fitment-heading {
+  color: #516174; font-weight: 800; font-size: 14px;
+  margin-top: 6px;
+}
+.product-card-reference .product-card-fitment-unlisted {
+  padding: 12px 14px; border: 1px dashed #cad5df; border-radius: 12px;
+  background: #f7f9fb; color: #607286; font-size: 13px; line-height: 1.6;
+}
+.product-card-reference .product-info .product-meta {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+}
+.product-card-reference .product-info .product-brand {
+  background: #edf3f6; color: #233d53 !important;
+  border-radius: 9px; padding: 7px 12px;
+  font-weight: 800; font-size: 14px;
+}
+.product-card-reference .product-info .product-price {
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.product-card-reference .product-info .product-price del { color: #8b929a !important; font-size: 16px; }
+.product-card-reference .product-info .product-details-link { color: #29445b; }
+.product-card-reference .product-info .product-price,
+.product-card-reference .product-info .product-price span { direction: ltr; text-align: right; }
+@media (max-width:700px) {
+  .product-grid > .product-card-reference {
+    grid-template-rows: 285px auto !important;
+    border: 1px solid #e0e6ec !important;
+    box-shadow: 0 9px 24px #10283d13 !important;
+  }
+  .product-grid > .product-card-reference > .product-art {
+    height: 285px !important; min-height: 285px !important;
+    max-height: 285px !important;
+    background: #f7f9fb !important;
+  }
+  .product-grid > .product-card-reference > .product-info {
+    padding: 18px 20px 22px !important;
+    gap: 12px !important;
+  }
+  .product-card-reference .product-info .product-meta { order: 0; }
+  .product-card-reference .product-info h3 { order: 1; font-size: 23px !important; }
+  .product-card-reference .product-info .product-card-fitment-heading { order: 2; }
+  .product-card-reference .product-info .product-card-fitment-unlisted,
+  .product-card-reference .product-info .product-card-fitment-heading + div { order: 3; }
+  .product-card-reference .product-info .product-price { order: 6; }
+  .product-card-reference .product-info .purchase-buttons { order: 7; }
+  .product-card-reference .product-info .product-details-link { order: 8; }
+  .product-card-reference .product-info .product-price {
+    font-size: 32px !important; padding-top: 17px !important;
+  }
+  .product-card-reference .product-info .purchase-buttons .button {
+    min-height: 58px !important; font-size: 17px !important;
+  }
+  .product-card-reference .product-info .product-meta + .eyebrow { order: 0; }
+  .product-card-reference .product-info .product-card-fitment-heading ~ .small.muted { order: 5; }
+  .product-card-reference .product-info .product-card-fitment-heading ~ div[class*="partNumber"] { order: 4; }
+  .product-card-reference .product-info .product-card-fitment-heading ~ div[class*="vehicles"] { order: 3; }
+  .product-card-reference .product-info > div[class*="partNumber"] { order: 4; }
+}

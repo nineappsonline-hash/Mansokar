@@ -81,12 +81,12 @@ export async function ProductCard({
   const makeLogo = vehicleBrandLogo(primaryBrand?.slug);
   return (
     <article
-      className={`product-card product-card-animate ${styles.card} ${styles.referenceCard}`}
+      className={`product-card product-card-animate product-card-reference ${styles.card} ${styles.referenceCard}`}
       aria-label={p.name[locale]}
     >
-      <div className={styles.cardIdentity}>
-        <BrandLogo className={styles.mopcLogo} alt="MOPC" />
-        {makeLogo && <img className={styles.makeLogo} src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}
+      <div className={`product-card-identity ${styles.cardIdentity}`}>
+        <BrandLogo className={`product-card-mopc-logo ${styles.mopcLogo}`} alt="MOPC" />
+        {makeLogo && <img className={`product-card-make-logo ${styles.makeLogo}`} src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}
       </div>
       <FavoriteButton id={p.id} locale={locale} />
       <Link
@@ -170,7 +170,8 @@ export async function ProductCard({
           <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
           <bdi dir="ltr">{p.partNumber}</bdi>
         </div>
-        {vehicleRows.length > 0 && (
+        <div className="product-card-fitment-heading">{locale === "ar" ? "التوافق مع العربية" : "Vehicle compatibility"}</div>
+        {vehicleRows.length > 0 ? (
           <div
             className={styles.vehicles}
             aria-label={
@@ -207,6 +208,8 @@ export async function ProductCard({
               </Link>
             )}
           </div>
+        ) : (
+          <div className="product-card-fitment-unlisted">{locale === "ar" ? "لم يتم تحديد الماركة والموديل والسنوات لهذا المنتج بعد" : "Make, model and years have not been specified for this product"}</div>
         )}
 
         <p className="small muted">
