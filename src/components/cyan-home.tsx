@@ -10,6 +10,7 @@ import {
   CreditCard,
   Headset,
   Send,
+  Search,
 } from "lucide-react";
 import type { Locale, Product, Text, Vehicle } from "@/lib/catalog";
 import { ProductCard } from "./product-card";
@@ -138,12 +139,16 @@ export async function CyanHome({
                     ? "اختار عربيتك واعرف قطع الغيار الأصلية المناسبة ليها، بضمان الوكيل أو المورد حسب المنتج. راجع التوافق والأسعار واطلب بثقة."
                     : "Find genuine parts for your car, backed by agent or supplier warranties according to the product. Check fitment, compare prices and order with confidence.")}
               </p>
+              <div className="cyan-hero-actions">
+                <a className="button cyan-hero-primary" href="#vehicle-finder">{ar ? "اختار عربيتك" : "Find your car"} <CarFront size={20} /></a>
+                <Link className="cyan-hero-secondary" href={`/${locale}/catalog`}>{ar ? "ابحث عن قطعة غيار" : "Search parts"} <Search size={19} /></Link>
+              </div>
             </div>
-            <HomeVehicleFinder
+            <div id="vehicle-finder" className="cyan-finder-region"><HomeVehicleFinder
               locale={locale}
               brands={brands}
               models={models}
-            />
+            /></div>
           </div>
         </HeroSlideshow>
       </section>
@@ -255,6 +260,12 @@ export async function CyanHome({
           </div>
         </div>
       </section>
+      {cardPayments && (
+        <section className="shell cyan-payments-promo" aria-label={ar ? "طرق الدفع" : "Payment options"}>
+          <div><CreditCard size={34} aria-hidden="true" /><div><h2>{ar ? "ادفع بالطريقة اللي تناسبك" : "Pay your way"}</h2><p>{ar ? "متاح الدفع بالفيزا أو من خلال شركات التقسيط المتاحة. راجع الشروط قبل إتمام الطلب." : "Pay by card or explore available installment providers. Check terms before ordering."}</p></div></div>
+          <Link href={`/${locale}/installments`}>{ar ? "اعرف طرق الدفع" : "Explore payment options"} <ArrowUpRight size={18} /></Link>
+        </section>
+      )}
       <section className="shell cyan-why">
         <h2 className="cyan-section-title">
           {ar ? "ليه تختار موبِك؟" : "Why choose MOPC?"}
