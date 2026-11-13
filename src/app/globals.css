@@ -6677,3 +6677,30 @@ table {
     min-width: 0 !important;
   }
 }
+
+
+/* Site-wide mobile viewport containment: the black strip was visible along
+   the full page, not only the product grid. Prevent offscreen RTL descendants
+   from expanding the document's scrollable width. */
+html {
+  max-width: 100%;
+  overflow-x: clip;
+}
+body {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
+}
+@media (max-width: 700px) {
+  html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+  body > * {
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+}
