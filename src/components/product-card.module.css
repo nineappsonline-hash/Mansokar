@@ -126,3 +126,125 @@
   .card.card :global(.product-info) { padding: 11px; }
   .card.card :global(.product-price) { font-size: 21px; }
 }
+
+
+/* MOPC reference card: image-led horizontal layout, original assets preserved. */
+.referenceCard.referenceCard:global(.product-card) {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 41%);
+  grid-template-areas: "details photo";
+  direction: rtl;
+  min-height: 370px;
+  border: 1px solid #e0e6ec;
+  border-radius: 24px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 12px 30px #10283d13;
+}
+:global(.product-grid):has(> .referenceCard) {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.referenceCard.referenceCard :global(.product-art) {
+  grid-area: photo;
+  height: 100%;
+  min-height: 370px;
+  width: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(140deg, #f8fafc 0%, #eef2f5 100%);
+}
+.referenceCard.referenceCard :global(.product-art img) {
+  width: 92%;
+  height: 83%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 14px #10243820);
+}
+.referenceCard.referenceCard :global(.product-info) {
+  grid-area: details;
+  padding: 82px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  min-width: 0;
+}
+.cardIdentity {
+  position: absolute;
+  top: 17px;
+  inset-inline-start: 18px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: calc(59% - 34px);
+  height: 42px;
+}
+.mopcLogo { width: 100px; max-width: 100px; }
+.mopcLogo img { width: 100%; max-height: 39px; object-fit: contain; }
+.makeLogo { display: block; width: 68px; height: 38px; object-fit: contain; }
+.referenceCard.referenceCard :global(.favorite-button) { z-index: 3; }
+.referenceCard.referenceCard :global(.product-info h3) {
+  min-height: 0;
+  font-size: clamp(17px, 1.5vw, 24px);
+  font-weight: 850;
+  line-height: 1.45;
+  color: #101b2a;
+}
+.referenceCard.referenceCard :global(.product-meta) { gap: 9px; }
+.referenceCard.referenceCard :global(.product-brand) { color: #344b60; }
+.referenceCard.referenceCard :global(.product-price) {
+  margin-top: auto;
+  border-top: 1px solid #e0e6ec;
+  padding-top: 12px;
+  color: #cb0924;
+  font-size: clamp(23px, 2.2vw, 32px);
+  font-weight: 850;
+}
+.referenceCard.referenceCard :global(.purchase-buttons) {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.referenceCard.referenceCard :global(.purchase-buttons .button) {
+  flex: 1 1 120px;
+  min-width: 0;
+  border-radius: 11px;
+  font-weight: 800;
+}
+.referenceCard.referenceCard :global(.purchase-add) {
+  background: #101b2a;
+  border-color: #101b2a;
+}
+.referenceCard.referenceCard .partNumber {
+  border-radius: 9px;
+  background: #f7f9fb;
+  padding: 7px 10px;
+}
+.referenceCard.referenceCard .vehicles { gap: 6px; }
+.referenceCard.referenceCard :global(.product-details-link) { align-self: flex-start; }
+@media (max-width: 1200px) {
+  :global(.product-grid):has(> .referenceCard) { grid-template-columns: 1fr; }
+  .referenceCard.referenceCard:global(.product-card) { min-height: 350px; }
+}
+@media (max-width: 650px) {
+  .referenceCard.referenceCard:global(.product-card) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "photo" "details";
+    min-height: 0;
+    border-radius: 17px;
+  }
+  .referenceCard.referenceCard :global(.product-art) {
+    min-height: 0;
+    height: 235px;
+  }
+  .referenceCard.referenceCard :global(.product-art img) { height: 86%; width: 90%; }
+  .referenceCard.referenceCard :global(.product-info) { padding: 14px; }
+  .cardIdentity { top: 12px; inset-inline-start: 12px; max-width: 65%; }
+  .mopcLogo { width: 83px; }
+  .makeLogo { width: 54px; height: 31px; }
+  .referenceCard.referenceCard :global(.product-info h3) { font-size: 19px; }
+  .referenceCard.referenceCard :global(.product-price) { font-size: 25px; }
+}
