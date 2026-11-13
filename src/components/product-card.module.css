@@ -101,3 +101,28 @@
 .card.card :global(.purchase-add) {
   display: flex;
 }
+
+
+/* Premium catalog cards: shared across home, vehicle results and catalog. */
+.card.card:global(.product-card) {
+  border: 1px solid #dbe5ec;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 30px -25px #17334b;
+}
+.card.card:global(.product-card):hover,
+.card.card:global(.product-card):focus-within {
+  border-color: #87c5d2;
+  box-shadow: 0 20px 38px -24px #17334b;
+}
+.card.card :global(.product-info) { padding: 15px; gap: 9px; }
+.card.card :global(.product-info h3) { color: #101b2a; font-size: 16px; line-height: 1.5; font-weight: 800; }
+.card.card :global(.product-price) { font-size: 24px; color: #101b2a; font-weight: 850; border-top-color: #e7edf1; }
+.card.card :global(.purchase-buttons .button) { background: #07314a; border-color: #07314a; color: #fff; border-radius: 10px; min-height: 45px; }
+.card.card :global(.purchase-buttons .button:hover) { background: #006f8d; color: #fff; }
+.partNumber { border-radius: 8px; padding: 6px 0; }
+.partNumber bdi { color: #25465c; font-weight: 700; }
+@media (max-width: 640px) {
+  .card.card :global(.product-info) { padding: 11px; }
+  .card.card :global(.product-price) { font-size: 21px; }
+}
