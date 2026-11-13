@@ -229,30 +229,16 @@ export async function CyanHome({
           ))}
         </div>
       </section>
-      <section className="shell">
-        <div className="cyan-part-banner">
-          <div className="cyan-part-banner-copy">
-            <h2>
-              {ar
-                ? "مش لاقي القطعة اللي محتاجها؟"
-                : "Can’t find the part you need?"}
-            </h2>
-            <div>
-              <p>
-                {ar
-                  ? "ابعتلنا بياناتها ونساعدك تلاقي القطعة المناسبة"
-                  : "Send us the details and we’ll help you find the right part."}
-              </p>
-              <Link
-                className="button cyan-button"
-                href={`/${locale}/request-part`}
-              >
-                {ar ? "طلب قطعة الآن" : "Request a part"}
-                <Send size={22} />
-              </Link>
-            </div>
-          </div>
-        </div>
+      <section className="shell cyan-request-image-banner" aria-label={ar ? "اطلب قطعة غيار" : "Request an auto part"}>
+        <Link href={`/${locale}/request-part`} aria-label={ar ? "اطلب قطعة غيار الآن" : "Request an auto part now"}>
+          <img
+            src="/images/Arabic%20Auto%20Parts%20Promo%20Banner.png"
+            alt={ar ? "مش لاقي القطعة اللي محتاجها؟ ابعتلنا بياناتها وهنساعدك تلاقي القطعة المناسبة" : "Can't find the part you need? Send us the details and we'll help."}
+            loading="lazy"
+            decoding="async"
+            style={{ display: "block", width: "100%", height: "auto", borderRadius: "18px" }}
+          />
+        </Link>
       </section>
       {cardPayments && (
         <section className="shell cyan-payments-banner" aria-label={ar ? "طرق الدفع والتقسيط" : "Payment and installment options"}>
