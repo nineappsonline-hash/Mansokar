@@ -133,12 +133,6 @@ export async function CyanHome({
                   </>
                 )}
               </h1>
-              <p>
-                {heroIntro ??
-                  (ar
-                    ? "اختار عربيتك واعرف قطع الغيار الأصلية المناسبة ليها، بضمان الوكيل أو المورد حسب المنتج. راجع التوافق والأسعار واطلب بثقة."
-                    : "Find genuine parts for your car, backed by agent or supplier warranties according to the product. Check fitment, compare prices and order with confidence.")}
-              </p>
               <div className="cyan-hero-actions">
                 <a className="button cyan-hero-primary" href="#vehicle-finder">{ar ? "اختار عربيتك" : "Find your car"} <CarFront size={20} /></a>
                 <Link className="cyan-hero-secondary" href={`/${locale}/catalog`}>{ar ? "ابحث عن قطعة غيار" : "Search parts"} <Search size={19} /></Link>
