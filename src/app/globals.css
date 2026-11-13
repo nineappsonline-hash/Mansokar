@@ -6722,3 +6722,75 @@ body {
     height: 28px !important;
   }
 }
+
+
+/* Desktop product card repair — remove the grey L-shaped empty image well.
+   The uploaded product images have white backgrounds: match the well to white
+   and let the real image occupy the full image region. */
+@media (min-width: 701px) {
+  .product-grid > .product-card-reference {
+    grid-template-columns: minmax(0, 55%) minmax(0, 45%) !important;
+    min-height: 0 !important;
+    grid-template-rows: auto !important;
+    align-items: stretch !important;
+  }
+  .product-grid > .product-card-reference > .product-art {
+    position: relative !important;
+    align-self: stretch !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    background: #fff !important;
+    padding: 54px 8px 12px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  .product-grid > .product-card-reference > .product-art > img {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 300px !important;
+    min-height: 0 !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    filter: none !important;
+  }
+  .product-grid > .product-card-reference > .product-info {
+    padding: 45px 16px 16px !important;
+    gap: 7px !important;
+    justify-content: flex-start !important;
+  }
+  .product-grid > .product-card-reference > .product-info > h3 {
+    font-size: clamp(17px, 1.3vw, 23px) !important;
+    line-height: 1.35 !important;
+  }
+  .product-grid > .product-card-reference > .product-info > .product-price {
+    margin-top: auto !important;
+    padding-top: 9px !important;
+    font-size: clamp(23px, 1.85vw, 30px) !important;
+  }
+  .product-grid > .product-card-reference > .product-info > div[class*="vehicles"] {
+    margin: 0 !important;
+  }
+  .product-grid > .product-card-reference > .product-card-identity {
+    left: 14px !important;
+    top: 58px !important;
+    height: 30px !important;
+    max-width: 37% !important;
+  }
+  .product-card-reference .product-card-mopc-logo {
+    width: 76px !important;
+    height: 29px !important;
+  }
+  .product-grid > .product-card-reference .product-info .purchase-buttons .button {
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+}
