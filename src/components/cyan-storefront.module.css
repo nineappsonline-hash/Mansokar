@@ -1609,3 +1609,22 @@
     :global(.header-search-box .hero-search input) { min-width: 0; width: 100%; }
   }
 }
+
+
+/* Arabic mobile header: brand on physical right, tools on physical left. */
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan)[dir="rtl"] {
+    :global(.header-inner) { direction: rtl; }
+    :global(.header .logo) {
+      grid-column: 1 !important;
+      grid-row: 1 !important;
+      justify-self: start !important;
+      min-width: 0;
+    }
+    :global(.header-tools) {
+      grid-column: 2 !important;
+      grid-row: 1 !important;
+      justify-self: end !important;
+    }
+  }
+}
