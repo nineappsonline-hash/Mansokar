@@ -1359,3 +1359,125 @@
     }
   }
 }
+
+
+/* MOPC 2026 premium light redesign: shared storefront + homepage. */
+.theme:global(.mopc-cyan) {
+  --bg: #fafaf8;
+  --surface: #fff;
+  --elevated: #eef4f7;
+  --light: #101b2a;
+  --muted: #52687a;
+  --border: #dbe5ec;
+  --amber: #008eac;
+  background: #fafaf8;
+  color: #101b2a;
+  :global(.shell) { width: min(1380px, calc(100% - 72px)); }
+  :global(.header) { background: #101b2a; }
+  :global(.header-inner) {
+    min-height: 78px;
+    gap: 22px;
+    grid-template-columns: max-content minmax(240px, 1fr) max-content;
+  }
+  :global(.store-logo-image) { width: 152px; height: 52px; object-fit: contain; }
+  :global(.header .store-name-ar) { font-size: 20px; }
+  :global(.header-tools) { gap: 17px; }
+  :global(.header-tool) { font-size: 12px; }
+  :global(.header-tool svg) { width: 24px; height: 24px; }
+  :global(.header-search-box .hero-search) {
+    height: 48px; border-radius: 12px; background: #fff; box-shadow: none;
+  }
+  :global(.header-search-box .hero-search input) { font-size: 15px; }
+  :global(.cyan-subnav) { background: #fff; border-bottom-color: #e0e8ed; }
+  :global(.cyan-subnav > nav) { min-height: 48px; gap: 16px; }
+  :global(.cyan-subnav nav > a), :global(.brand-nav-menu > summary) {
+    font-size: 15px; padding: 7px 15px; border-radius: 9px; font-weight: 700;
+  }
+  :global(.cyan-subnav .nav-active) { background: #e7f4f7; color: #075772; box-shadow: none; }
+  :global(.cyan-home) { background: #fafaf8; }
+  :global(.cyan-hero) { background: #071d31; }
+  :global(.cyan-hero .hero-slideshow-region) { min-height: 490px; }
+  :global(.cyan-hero .cinematic-backdrop > img) { object-position: 30% 50%; }
+  :global(.cyan-hero .cinematic-backdrop::after) {
+    background: linear-gradient(90deg, #061a2b40 0%, #061a2b80 52%, #061a2be8 100%);
+  }
+  :global(.cyan-hero-content) { padding-top: 65px; padding-bottom: 35px; }
+  :global(.cyan-hero-copy) {
+    width: min(590px, 54%);
+    margin-inline-start: 0;
+    margin-inline-end: auto;
+    padding: 0;
+    text-align: start;
+  }
+  &[dir="ltr"] :global(.cyan-hero-copy) { margin-inline-start: 0; margin-inline-end: auto; text-align: start; }
+  :global(.cyan-hero h1) { font-size: clamp(36px, 3.8vw, 62px); line-height: 1.3; margin-bottom: 18px; font-weight: 850; }
+  :global(.cyan-hero h1 > em) { color: #70e0ed; font-style: normal; margin-inline-start: 0; margin-inline-end: auto; padding-bottom: 0; }
+  :global(.cyan-hero h1 > em::after) { display: none; }
+  :global(.cyan-hero-copy > p) { font-size: clamp(15px, 1.25vw, 18px); font-weight: 500; line-height: 1.85; color: #e2edf3; }
+  :global(.cyan-hero-actions) { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+  :global(.cyan-hero-primary) { background: #00a5c2; border-color: #00a5c2; color: #fff; }
+  :global(.cyan-hero-secondary) { display: inline-flex; gap: 9px; align-items: center; border: 1px solid #a5c1d0; border-radius: 11px; padding: 12px 19px; color: #fff; font-weight: 700; }
+  :global(.cyan-hero-secondary:hover) { background: #ffffff1a; color: #fff; }
+  :global(.cyan-finder-region) { margin-top: 36px; scroll-margin-top: 110px; }
+  :global(.cyan-vehicle-finder) { margin-top: 0; gap: 12px; padding: 14px; background: #fff; border: 1px solid #dbe5ec; border-radius: 17px; box-shadow: 0 14px 45px #001c3340; }
+  :global(.cyan-vehicle-finder > label) { border: 1px solid #d1dee6; border-radius: 11px; background: #f7fafb; }
+  :global(.cyan-vehicle-finder select) { font-size: 15px; min-height: 49px; }
+  :global(.cyan-vehicle-finder > button) { background: #007f9e; border-color: #007f9e; border-radius: 11px; font-size: 16px; box-shadow: none; }
+  :global(.cyan-section-title) { font-size: clamp(25px, 2.1vw, 33px); font-weight: 800; padding-bottom: 12px; }
+  :global(.cyan-section-title::after) { height: 4px; width: 54px; background: #00a6c3; }
+  :global(.cyan-brands) { padding-top: 52px; padding-bottom: 35px; }
+  :global(.cyan-brand-tile) { border-radius: 18px; box-shadow: 0 14px 28px -22px #102d49; overflow: hidden; }
+  :global(.cyan-featured) { background: #f0f5f7; border: 1px solid #e1eaf0; border-radius: 24px; padding: 30px; }
+  :global(.cyan-featured .product-card) { background: #fff; border: 1px solid #dbe5ec; border-radius: 16px; box-shadow: 0 12px 30px -25px #17334b; }
+  :global(.cyan-featured .product-card:hover) { border-color: #85c4d1; box-shadow: 0 22px 35px -25px #17334b; }
+  :global(.cyan-featured .product-art) { background: #fff; }
+  :global(.cyan-featured .purchase-add) { background: #07314a; border-color: #07314a; }
+  :global(.cyan-trust-strip) { border-radius: 17px; border: 1px solid #dce8ee; background: #fff; }
+  :global(.cyan-benefits > div) { border: 1px solid #e0e9ee; background: #fff; border-radius: 16px; }
+  :global(.cyan-benefits .cyan-benefit-accent) { background: #e8f6f8; color: #007e9a; }
+  :global(.cyan-part-banner) { border-radius: 20px; }
+  :global(.cyan-payments-promo) {
+    margin-top: 30px; margin-bottom: 42px; padding: 25px 32px;
+    display: flex; justify-content: space-between; align-items: center; gap: 24px;
+    background: #102c43; color: #fff; border-radius: 20px;
+  }
+  :global(.cyan-payments-promo > div) { display: flex; align-items: center; gap: 20px; }
+  :global(.cyan-payments-promo h2) { color: #fff; margin: 0 0 5px; font-size: 24px; }
+  :global(.cyan-payments-promo p) { margin: 0; color: #dceaf0; font-size: 15px; }
+  :global(.cyan-payments-promo a) { display: inline-flex; align-items: center; gap: 8px; color: #7ee3ee; white-space: nowrap; font-weight: 700; }
+  :global(a:focus-visible), :global(button:focus-visible), :global(select:focus-visible) { outline: 3px solid #00a6c3; outline-offset: 3px; }
+}
+@media (max-width: 900px) {
+  .theme:global(.mopc-cyan) {
+    :global(.shell) { width: min(100% - 36px, 1380px); }
+    :global(.cyan-hero-copy) { width: min(620px, 78%); }
+    :global(.cyan-hero-content) { padding-top: 45px; }
+    :global(.cyan-payments-promo) { flex-direction: column; align-items: stretch; }
+  }
+}
+@media (max-width: 640px) {
+  .theme:global(.mopc-cyan) {
+    :global(.shell) { width: calc(100% - 28px); }
+    :global(.header-inner) { min-height: 66px; gap: 10px; }
+    :global(.store-logo-image) { width: 120px; height: 43px; }
+    :global(.cyan-hero .hero-slideshow-region) { min-height: 0; }
+    :global(.cyan-hero .cinematic-backdrop::after) { background: linear-gradient(180deg, #071d31a8, #071d31ed 78%); }
+    :global(.cyan-hero-content) { padding-top: 38px; padding-bottom: 28px; }
+    :global(.cyan-hero-copy) { width: 100%; }
+    :global(.cyan-hero h1) { font-size: clamp(30px, 8vw, 42px); }
+    :global(.cyan-hero-copy > p) { font-size: 14px; }
+    :global(.cyan-hero-actions) { gap: 8px; }
+    :global(.cyan-hero-actions > a) { font-size: 13px; padding: 10px 12px; }
+    :global(.cyan-finder-region) { margin-top: 25px; }
+    :global(.cyan-vehicle-finder) { padding: 12px; gap: 10px; border-radius: 14px; }
+    :global(.cyan-brands) { padding-top: 32px; }
+    :global(.cyan-featured) { padding: 18px 12px; border-radius: 17px; }
+    :global(.cyan-payments-promo) { padding: 20px; border-radius: 15px; }
+    :global(.cyan-payments-promo > div) { align-items: flex-start; gap: 12px; }
+    :global(.cyan-payments-promo h2) { font-size: 20px; }
+    :global(.cyan-payments-promo a) { white-space: normal; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme:global(.mopc-cyan) :global(.cyan-brand-tile) { transition: none; }
+}
