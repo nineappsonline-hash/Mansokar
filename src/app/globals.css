@@ -6408,62 +6408,209 @@ table {
 }
 
 
-/* Reference fidelity: prominent car fitment, compact original branding and mobile hierarchy. */
+/* Product card mobile hotfix: maintain DOM reading order.
+   Prior CSS assigned order to purchase-buttons (grandchild), not purchase-controls
+   (direct flex child), making Add to Cart appear before the product title. */
 .product-card-reference .product-card-fitment-heading {
-  color: #516174; font-weight: 800; font-size: 14px;
-  margin-top: 6px;
+  color: #516174;
+  font-weight: 800;
+  font-size: 14px;
+  margin-top: 4px;
 }
 .product-card-reference .product-card-fitment-unlisted {
-  padding: 12px 14px; border: 1px dashed #cad5df; border-radius: 12px;
-  background: #f7f9fb; color: #607286; font-size: 13px; line-height: 1.6;
+  padding: 12px 14px;
+  border: 1px dashed #cad5df;
+  border-radius: 12px;
+  background: #f7f9fb;
+  color: #607286;
+  font-size: 13px;
+  line-height: 1.6;
 }
 .product-card-reference .product-info .product-meta {
-  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 .product-card-reference .product-info .product-brand {
-  background: #edf3f6; color: #233d53 !important;
-  border-radius: 9px; padding: 7px 12px;
-  font-weight: 800; font-size: 14px;
+  background: #edf3f6;
+  color: #233d53 !important;
+  border-radius: 9px;
+  padding: 7px 12px;
+  font-weight: 800;
+  font-size: 14px;
 }
 .product-card-reference .product-info .product-price {
-  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
 }
-.product-card-reference .product-info .product-price del { color: #8b929a !important; font-size: 16px; }
+.product-card-reference .product-info .product-price del {
+  color: #8b929a !important;
+  font-size: 16px;
+}
 .product-card-reference .product-info .product-details-link { color: #29445b; }
-.product-card-reference .product-info .product-price,
-.product-card-reference .product-info .product-price span { direction: ltr; text-align: right; }
-@media (max-width:700px) {
+.product-card-reference .product-info .product-price span { direction: ltr; }
+@media (max-width: 700px) {
   .product-grid > .product-card-reference {
-    grid-template-rows: 285px auto !important;
+    grid-template-rows: 265px auto !important;
     border: 1px solid #e0e6ec !important;
     box-shadow: 0 9px 24px #10283d13 !important;
   }
   .product-grid > .product-card-reference > .product-art {
-    height: 285px !important; min-height: 285px !important;
-    max-height: 285px !important;
+    height: 265px !important;
+    min-height: 265px !important;
+    max-height: 265px !important;
     background: #f7f9fb !important;
   }
   .product-grid > .product-card-reference > .product-info {
+    display: flex !important;
+    flex-direction: column !important;
     padding: 18px 20px 22px !important;
     gap: 12px !important;
   }
-  .product-card-reference .product-info .product-meta { order: 0; }
-  .product-card-reference .product-info h3 { order: 1; font-size: 23px !important; }
-  .product-card-reference .product-info .product-card-fitment-heading { order: 2; }
-  .product-card-reference .product-info .product-card-fitment-unlisted,
-  .product-card-reference .product-info .product-card-fitment-heading + div { order: 3; }
-  .product-card-reference .product-info .product-price { order: 6; }
-  .product-card-reference .product-info .purchase-buttons { order: 7; }
-  .product-card-reference .product-info .product-details-link { order: 8; }
-  .product-card-reference .product-info .product-price {
-    font-size: 32px !important; padding-top: 17px !important;
+  /* Only direct children receive ordering. Keep original badge, manufacturer,
+     name, part number, fitment, price, and CTA in predictable sequence. */
+  .product-card-reference > .product-info > .original-badge { order: 0 !important; }
+  .product-card-reference > .product-info > .product-meta { order: 1 !important; }
+  .product-card-reference > .product-info > .eyebrow { order: 1 !important; }
+  .product-card-reference > .product-info > h3 {
+    order: 2 !important;
+    font-size: 23px !important;
+  }
+  .product-card-reference > .product-info > div[class*="partNumber"] { order: 3 !important; }
+  .product-card-reference > .product-info > .product-card-fitment-heading { order: 4 !important; }
+  .product-card-reference > .product-info > div[class*="vehicles"],
+  .product-card-reference > .product-info > .product-card-fitment-unlisted { order: 5 !important; }
+  .product-card-reference > .product-info > p.small { order: 6 !important; }
+  .product-card-reference > .product-info > .product-price {
+    order: 7 !important;
+    margin-top: 0 !important;
+    font-size: 30px !important;
+    padding-top: 16px !important;
+  }
+  .product-card-reference > .product-info > .purchase-controls {
+    order: 8 !important;
+    width: 100% !important;
+  }
+  .product-card-reference > .product-info > .product-details-link { order: 9 !important; }
+  .product-card-reference .product-info .purchase-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
   }
   .product-card-reference .product-info .purchase-buttons .button {
-    min-height: 58px !important; font-size: 17px !important;
+    min-height: 54px !important;
+    font-size: 16px !important;
   }
-  .product-card-reference .product-info .product-meta + .eyebrow { order: 0; }
-  .product-card-reference .product-info .product-card-fitment-heading ~ .small.muted { order: 5; }
-  .product-card-reference .product-info .product-card-fitment-heading ~ div[class*="partNumber"] { order: 4; }
-  .product-card-reference .product-info .product-card-fitment-heading ~ div[class*="vehicles"] { order: 3; }
-  .product-card-reference .product-info > div[class*="partNumber"] { order: 4; }
+}
+
+
+/* Card density and contrast fixes based on actual iPhone production screenshot. */
+.product-card-reference .product-card-fitment-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  color: #34485a !important;
+}
+.product-card-reference .product-card-fitment-logo {
+  display: block !important;
+  width: 40px !important;
+  height: 28px !important;
+  object-fit: contain !important;
+  flex-shrink: 0;
+}
+.product-card-reference .product-info .product-brand {
+  color: #102a3c !important;
+  background: #e9f2f7 !important;
+  border: 1px solid #d0e1eb !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1.4 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+.product-card-reference .product-info .product-meta {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+}
+.product-card-reference .product-info h3 {
+  margin: 0 !important;
+  min-height: 0 !important;
+}
+.product-card-reference .product-info .product-price {
+  margin-top: 0 !important;
+  line-height: 1.25 !important;
+}
+.product-card-reference .product-info .purchase-controls { margin: 0 !important; }
+.product-card-reference .product-info > p.small.muted:empty { display: none !important; }
+.product-card-reference .product-info .product-card-fitment-unlisted { padding: 8px 10px !important; }
+@media (max-width: 700px) {
+  .product-grid > .product-card-reference {
+    grid-template-rows: 205px auto !important;
+    min-height: 0 !important;
+  }
+  .product-grid > .product-card-reference > .product-art {
+    height: 205px !important;
+    min-height: 205px !important;
+    max-height: 205px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .product-grid > .product-card-reference > .product-art > img {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain !important;
+    padding: 4px !important;
+    margin: 0 !important;
+    filter: none !important;
+  }
+  .product-grid > .product-card-reference > .product-info {
+    padding: 12px 15px 15px !important;
+    gap: 7px !important;
+    justify-content: flex-start !important;
+    min-height: 0 !important;
+  }
+  .product-card-reference > .product-info > .original-badge {
+    margin: 0 !important;
+    align-self: flex-start;
+  }
+  .product-card-reference > .product-info > h3 {
+    font-size: 20px !important;
+    line-height: 1.35 !important;
+  }
+  .product-card-reference > .product-info > div[class*="partNumber"] {
+    padding: 5px 8px !important;
+    margin: 0 !important;
+  }
+  .product-card-reference > .product-info > div[class*="vehicles"] {
+    gap: 4px !important;
+    margin: 0 !important;
+  }
+  .product-card-reference > .product-info > .product-price {
+    font-size: 27px !important;
+    padding-top: 9px !important;
+  }
+  .product-card-reference .product-info .purchase-buttons .button {
+    min-height: 46px !important;
+  }
+  .product-card-reference > .product-card-identity {
+    top: 9px !important;
+    right: 10px !important;
+    height: 30px !important;
+  }
+  .product-card-reference .product-card-mopc-logo {
+    width: 74px !important;
+    height: 28px !important;
+  }
+  .product-card-reference .product-card-fitment-logo {
+    width: 35px !important;
+    height: 24px !important;
+  }
 }
