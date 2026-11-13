@@ -1658,3 +1658,39 @@
     }
   }
 }
+
+
+/* Refine vehicle finder after mobile review: avoid clipped year labels and
+   excessive heavy borders, while preserving accessible touch targets. */
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan) {
+    :global(.cyan-vehicle-finder) {
+      padding: 12px !important;
+      gap: 9px !important;
+    }
+    :global(.cyan-vehicle-finder > label) {
+      min-height: 50px !important;
+      border-radius: 10px !important;
+      padding-inline: 9px !important;
+      gap: 5px !important;
+      border-width: 1px !important;
+    }
+    :global(.cyan-vehicle-finder select) {
+      min-height: 48px !important;
+      font-size: 14px !important;
+      font-weight: 650 !important;
+      padding: 6px 2px !important;
+      text-overflow: ellipsis;
+    }
+    :global(.cyan-vehicle-finder label svg) {
+      width: 19px !important;
+      height: 19px !important;
+    }
+  }
+}
+@media (max-width: 420px) {
+  .theme:global(.mopc-cyan) {
+    :global(.cyan-vehicle-finder select) { font-size: 13px !important; }
+    :global(.cyan-vehicle-finder > label) { padding-inline: 6px !important; }
+  }
+}
