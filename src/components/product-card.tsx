@@ -136,6 +136,10 @@ export async function ProductCard({
           </b>
         )}
       </Link>
+      <div className={`product-card-part-below-image ${styles.partNumber}`}>
+        <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
+        <bdi dir="ltr">{p.partNumber}</bdi>
+      </div>
       <div className="product-info">
         {p.type === "oem" && <OriginalBadge locale={locale} />}
         <div className="product-meta">
@@ -166,10 +170,6 @@ export async function ProductCard({
             {p.name[locale]}
           </Link>
         </h3>
-        <div className={styles.partNumber}>
-          <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
-          <bdi dir="ltr">{p.partNumber}</bdi>
-        </div>
         <div className="product-card-fitment-heading">{makeLogo && <img className="product-card-fitment-logo" src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}{locale === "ar" ? "التوافق مع العربية" : "Vehicle compatibility"}</div>
         {vehicleRows.length > 0 ? (
           <div
