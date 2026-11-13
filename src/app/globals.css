@@ -6704,3 +6704,21 @@ body {
     box-sizing: border-box;
   }
 }
+
+
+/* Keep MOPC identity under the favourite heart, never overlapping it. */
+.product-grid > .product-card-reference > .product-card-identity {
+  left: 14px !important;
+  right: auto !important;
+  top: 66px !important;
+  z-index: 3 !important;
+  pointer-events: none;
+}
+@media (max-width: 700px) {
+  .product-grid > .product-card-reference > .product-card-identity {
+    left: 12px !important;
+    right: auto !important;
+    top: 61px !important;
+    height: 28px !important;
+  }
+}
