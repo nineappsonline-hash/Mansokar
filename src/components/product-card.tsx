@@ -81,12 +81,12 @@ export async function ProductCard({
   const makeLogo = vehicleBrandLogo(primaryBrand?.slug);
   return (
     <article
-      className={`product-card product-card-animate ${styles.card} ${styles.referenceCard}`}
+      className={`product-card product-card-animate product-card-reference ${styles.card} ${styles.referenceCard}`}
       aria-label={p.name[locale]}
     >
-      <div className={styles.cardIdentity}>
-        <BrandLogo className={styles.mopcLogo} alt="MOPC" />
-        {makeLogo && <img className={styles.makeLogo} src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}
+      <div className={`product-card-identity ${styles.cardIdentity}`}>
+        <BrandLogo className={`product-card-mopc-logo ${styles.mopcLogo}`} alt="MOPC" />
+        {makeLogo && <img className={`product-card-make-logo ${styles.makeLogo}`} src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}
       </div>
       <FavoriteButton id={p.id} locale={locale} />
       <Link
