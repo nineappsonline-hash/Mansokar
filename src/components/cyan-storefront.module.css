@@ -1628,3 +1628,33 @@
     }
   }
 }
+
+
+/* Larger, easier-to-tap car selector on phones; maintain two-column model/year. */
+@media (max-width: 760px) {
+  .theme:global(.mopc-cyan) {
+    :global(.cyan-vehicle-finder) {
+      padding: 15px !important;
+      gap: 12px !important;
+    }
+    :global(.cyan-vehicle-finder > label) {
+      min-height: 58px !important;
+      border-radius: 12px !important;
+      padding-inline: 11px !important;
+      gap: 7px !important;
+    }
+    :global(.cyan-vehicle-finder select) {
+      width: 100% !important;
+      min-width: 0 !important;
+      min-height: 56px !important;
+      font-size: 16px !important;
+      font-weight: 700 !important;
+      padding: 9px 7px !important;
+    }
+    :global(.cyan-vehicle-finder label svg) {
+      width: 22px !important;
+      height: 22px !important;
+      flex-shrink: 0;
+    }
+  }
+}
