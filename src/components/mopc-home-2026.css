@@ -1,0 +1,76 @@
+/* MOPC 2026 Figma-inspired storefront skin. Scoped to the homepage. */
+.cyan-home {
+  --mopc-ink: #18232b;
+  --mopc-navy: #101d29;
+  --mopc-hero: #142838;
+  --mopc-lime: #c9e86d;
+  --mopc-canvas: #f5f7f8;
+  --mopc-soft: #e9f0f0;
+  background: var(--mopc-canvas);
+  color: var(--mopc-ink);
+  overflow: clip;
+}
+.cyan-home .cyan-hero { background: var(--mopc-hero); }
+.cyan-home .cyan-hero::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(90deg, rgba(16,29,41,.9), rgba(20,40,56,.8));
+}
+.cyan-home .cyan-hero-content { position: relative; z-index: 2; }
+.cyan-home .cyan-hero-copy h1 { color: #fff; font-weight: 800; line-height: 1.18; letter-spacing: -.035em; }
+.cyan-home .cyan-hero-copy h1 em { color: var(--mopc-lime); font-style: normal; }
+.cyan-home .cyan-hero-primary, .cyan-home .cyan-button {
+  background: var(--mopc-lime); color: var(--mopc-ink);
+  border: 0; border-radius: 12px; font-weight: 800;
+}
+.cyan-home .cyan-hero-primary:hover, .cyan-home .cyan-button:hover {
+  background: #d9f48d; color: var(--mopc-ink);
+}
+.cyan-home .cyan-hero-secondary { color: #fff; }
+.cyan-home .cyan-finder-region {
+  background: #fff; border: 1px solid #e5eded; border-radius: 22px;
+  padding: clamp(18px,2.4vw,34px);
+  box-shadow: 0 24px 64px rgba(5,17,25,.2);
+}
+.cyan-home .cyan-vehicle-finder label {
+  background: #f2f5f5; border-radius: 12px;
+  border: 1px solid #e3eaea; color: #344e57;
+}
+.cyan-home .cyan-vehicle-finder select {
+  background: transparent; color: #223b45; border: 0;
+}
+.cyan-home .cyan-vehicle-finder select option { background: #fff; color: #18232b; }
+.cyan-home .cyan-section-title { color: var(--mopc-ink); font-weight: 800; }
+.cyan-home .cyan-brands, .cyan-home .cyan-featured, .cyan-home .cyan-why { padding-block: clamp(42px,5vw,80px); }
+.cyan-home .cyan-brand-grid { gap: 22px; }
+.cyan-home .cyan-brand-tile {
+  border-radius: 18px; overflow: hidden; background: #223b4a;
+  border: 1px solid rgba(16,29,41,.08);
+  box-shadow: 0 12px 28px rgba(16,29,41,.08);
+}
+.cyan-home .cyan-brand-tile::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(0deg, rgba(16,29,41,.7), transparent 60%);
+}
+.cyan-home .cyan-brand-logo, .cyan-home .cyan-brand-cta { z-index: 1; }
+.cyan-home .cyan-brand-cta { color: var(--mopc-lime); }
+.cyan-home .cyan-trust-strip {
+  background: #fff; color: #253b45; border: 1px solid #e4ecee;
+  border-radius: 18px; padding: 20px; box-shadow: 0 10px 24px rgba(16,29,41,.04);
+}
+.cyan-home .cyan-trust-strip svg, .cyan-home .cyan-benefits svg { color: #6d8f36; }
+.cyan-home .cyan-all-products { color: #2c5861; }
+.cyan-home .cyan-featured .product-card { background: #fff; border-radius: 18px; overflow: hidden; }
+.cyan-home .cyan-featured .product-info { padding: 16px; }
+.cyan-home .cyan-benefits > div {
+  background: #fff; color: var(--mopc-ink); border: 1px solid #e4ecee; border-radius: 18px;
+}
+.cyan-home .home-promo-compact img { border-radius: 18px !important; }
+@media (max-width: 768px) {
+  .cyan-home .cyan-hero::before { background: linear-gradient(0deg,rgba(16,29,41,.94),rgba(20,40,56,.68)); }
+  .cyan-home .cyan-hero-copy h1 { font-size: clamp(30px,8vw,43px); }
+  .cyan-home .cyan-finder-region { padding: 18px; border-radius: 18px; }
+  .cyan-home .cyan-brand-grid { gap: 12px; }
+  .cyan-home .cyan-brand-tile { border-radius: 14px; }
+  .cyan-home .cyan-trust-strip { padding: 12px; }
+  .cyan-home .cyan-featured .product-info { padding: 12px; }
+}
