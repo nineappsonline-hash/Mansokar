@@ -1,8 +1,9 @@
 import { enforceRate } from "@/lib/rate-limit";
 import { cookies } from "next/headers";
-import { catalog, configured, fitmentFlags, productImages, service, vehicleCatalog } from "@/lib/db";
+import { catalog, fitmentFlags, productImages, vehicleCatalog } from "@/lib/db";
 import { fitmentLabel, type Locale } from "@/lib/catalog";
 import { publicProduct, carContext } from "@/lib/public-product";
+import { readApplications } from "@/lib/product-applications";
 export async function GET(request: Request) {
   try {
     await enforceRate(request, "products", 90);
@@ -26,21 +27,21 @@ export async function GET(request: Request) {
   const { vehicles, models, brands } = await vehicleCatalog();
   const vehicle = vehicles.find((v) => v.id === id);
   const flags = await fitmentFlags(ids, vehicle?.id);
-  // Actual fitment records, not guessed from the selected vehicle or model name.
-  const fitmentRows = configured() && ids.length
-    ? await service().from("product_fitments")
-        .select("product_id,vehicle_config_id")
-        .in("product_id", ids)
-    : { data: [] as { product_id: string; vehicle_config_id: string }[] };
-  if ("error" in fitmentRows && fitmentRows.error) throw fitmentRows.error;
-  const vehicleMap = new Map(vehicles.map((v) => [v.id, v]));
+  // Canonical storefront compatibility lives in specs.car_years:<model_id>.
+  // The legacy product_fitments table is empty for this catalog.
+  const modelMap = new Map(models.map((model) => [model.id, model]));
   const compatibleVehicles: Record<string, { brand: string; model: string; year: number }[]> = {};
-  for (const row of fitmentRows.data ?? []) {
-    const match = vehicleMap.get(row.vehicle_config_id);
-    if (!match) continue;
-    (compatibleVehicles[row.product_id] ??= []).push({
-      brand: match.brand, model: match.model, year: match.year,
-    });
+  for (const product of products) {
+    compatibleVehicles[product.id] = readApplications(product.specs)
+      .flatMap((application) => {
+        const model = modelMap.get(application.model_id);
+        if (!model) return [];
+        return application.years.map((year) => ({
+          brand: model.brand,
+          model: model.name[locale] || model.slug,
+          year,
+        }));
+      });
   }
   return Response.json(
     {
