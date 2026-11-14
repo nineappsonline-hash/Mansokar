@@ -7021,3 +7021,75 @@ body {
     border-radius: 10px !important;
   }
 }
+
+
+/* MOPC checkout typography: commercial Arabic, legible across desktop/mobile */
+[lang="ar"] .checkout-page,
+[dir="rtl"] .checkout-page {
+  font-family: "MOPC Arabic", "IBM Plex Sans Arabic", Tahoma, sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  font-weight: 500;
+}
+.checkout-page .checkout-panel-title,
+.checkout-page .checkout-summary-head h2 {
+  font-size: clamp(22px, 2.1vw, 26px);
+  font-weight: 800;
+  line-height: 1.45;
+}
+.checkout-page .checkout-panel-sub,
+.checkout-page .checkout-label,
+.checkout-page .payment-method-sub,
+.checkout-page .checkout-assurance small,
+.checkout-page .order-item-detail,
+.checkout-page .order-line,
+.checkout-page .checkout-hint {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.checkout-page .checkout-panel-kicker,
+.checkout-page .checkout-step-label,
+.checkout-page .checkout-saved-label,
+.checkout-page .checkout-summary-empty,
+.checkout-page .checkout-cta-note {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.checkout-page .checkout-label > span,
+.checkout-page .payment-method-title,
+.checkout-page .order-item-name,
+.checkout-page .checkout-assurance strong,
+.checkout-page .order-line.total,
+.checkout-page .checkout-button {
+  font-weight: 750;
+}
+.checkout-page .payment-method-title,
+.checkout-page .order-item-name {
+  font-size: 17px;
+  line-height: 1.6;
+}
+.checkout-page .checkout-input,
+.checkout-page .checkout-select,
+.checkout-page .checkout-textarea {
+  font-size: 16px;
+  line-height: 1.65;
+}
+.checkout-page .order-item-price,
+.checkout-page .order-line.total {
+  font-size: 19px;
+  font-weight: 800;
+}
+.checkout-page .checkout-button {
+  font-size: 17px;
+  min-height: 50px;
+}
+@media (max-width: 640px) {
+  .checkout-page .checkout-panel-title,
+  .checkout-page .checkout-summary-head h2 { font-size: 22px; }
+  .checkout-page .checkout-panel-sub,
+  .checkout-page .checkout-label,
+  .checkout-page .payment-method-sub,
+  .checkout-page .order-item-detail,
+  .checkout-page .order-line { font-size: 14.5px; }
+  .checkout-page .checkout-summary { padding: 20px; }
+}
