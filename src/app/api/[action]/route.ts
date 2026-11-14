@@ -19,6 +19,7 @@ import {
   requireAdmin,
   service,
   vehicleCatalog,
+  productImages,
   allRows,
 } from "@/lib/db";
 import { checkoutInput, productInput } from "@/lib/validation";
@@ -438,6 +439,12 @@ export async function POST(
         const productMap = new Map(
           (productResult.data ?? []).map((p) => [p.id, p]),
         );
+        const imageResults = await Promise.all(
+          ids.map(async (id) => ({ id, images: await productImages(id) })),
+        );
+        const imageMap = new Map(
+          imageResults.map(({ id, images }) => [id, images[0]?.url ?? null]),
+        );
         const fitments = fitmentResult.data ?? [];
         const configIds = [...new Set(fitments.map((f) => f.vehicle_config_id))];
         const configs = configIds.length
@@ -471,6 +478,7 @@ export async function POST(
             manufacturer: product?.manufacturer ?? null,
             type: product?.type ?? null,
             partNumber: product?.part_number ?? null,
+            imageUrl: imageMap.get(item.id) ?? null,
             vehicles,
           };
         });
