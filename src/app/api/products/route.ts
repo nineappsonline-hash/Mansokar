@@ -1,6 +1,6 @@
 import { enforceRate } from "@/lib/rate-limit";
 import { cookies } from "next/headers";
-import { catalog, fitmentFlags, productImages, vehicleCatalog } from "@/lib/db";
+import { catalog, configured, fitmentFlags, productImages, service, vehicleCatalog } from "@/lib/db";
 import { fitmentLabel, type Locale } from "@/lib/catalog";
 import { publicProduct, carContext } from "@/lib/public-product";
 export async function GET(request: Request) {
@@ -26,6 +26,22 @@ export async function GET(request: Request) {
   const { vehicles, models, brands } = await vehicleCatalog();
   const vehicle = vehicles.find((v) => v.id === id);
   const flags = await fitmentFlags(ids, vehicle?.id);
+  // Actual fitment records, not guessed from the selected vehicle or model name.
+  const fitmentRows = configured() && ids.length
+    ? await service().from("product_fitments")
+        .select("product_id,vehicle_config_id")
+        .in("product_id", ids)
+    : { data: [] as { product_id: string; vehicle_config_id: string }[] };
+  if ("error" in fitmentRows && fitmentRows.error) throw fitmentRows.error;
+  const vehicleMap = new Map(vehicles.map((v) => [v.id, v]));
+  const compatibleVehicles: Record<string, { brand: string; model: string; year: number }[]> = {};
+  for (const row of fitmentRows.data ?? []) {
+    const match = vehicleMap.get(row.vehicle_config_id);
+    if (!match) continue;
+    (compatibleVehicles[row.product_id] ??= []).push({
+      brand: match.brand, model: match.model, year: match.year,
+    });
+  }
   return Response.json(
     {
       products: products.map((p) => ({
@@ -46,6 +62,7 @@ export async function GET(request: Request) {
         ),
         imageUrl: imageMap.get(p.id) ?? null,
       })),
+      compatibleVehicles,
       fitments: Object.fromEntries(
         products.map((p) => [
           p.id,
