@@ -422,6 +422,59 @@ export async function POST(
           process.env.ALLOW_DEMO_CHECKOUT === "true",
       });
       if (error) throw Error(error.message);
+      // Add real catalog metadata to the quote without changing trusted pricing.
+      // Fitments are read from the product's actual vehicle configuration links.
+      const quoted = data as { items?: Array<{ id: string; [key: string]: unknown }> };
+      if (Array.isArray(quoted?.items) && quoted.items.length) {
+        const ids = quoted.items.map((item) => item.id);
+        const [productResult, fitmentResult] = await Promise.all([
+          db.from("products")
+            .select("id,sku,manufacturer,type,part_number")
+            .in("id", ids),
+          db.from("product_fitments")
+            .select("product_id,vehicle_config_id")
+            .in("product_id", ids),
+        ]);
+        const productMap = new Map(
+          (productResult.data ?? []).map((p) => [p.id, p]),
+        );
+        const fitments = fitmentResult.data ?? [];
+        const configIds = [...new Set(fitments.map((f) => f.vehicle_config_id))];
+        const configs = configIds.length
+          ? await db.from("vehicle_configs")
+              .select("id,model_id,year")
+              .in("id", configIds)
+          : { data: [] as Array<{ id: string; model_id: string; year: number }> };
+        const modelIds = [...new Set((configs.data ?? []).map((c) => c.model_id))];
+        const models = modelIds.length
+          ? await db.from("vehicle_models")
+              .select("id,brand,slug,name")
+              .in("id", modelIds)
+          : { data: [] as Array<{ id: string; brand: string; slug: string; name: unknown }> };
+        const configMap = new Map((configs.data ?? []).map((c) => [c.id, c]));
+        const modelMap = new Map((models.data ?? []).map((m) => [m.id, m]));
+        quoted.items = quoted.items.map((item) => {
+          const product = productMap.get(item.id);
+          const vehicles = fitments
+            .filter((fit) => fit.product_id === item.id)
+            .map((fit) => {
+              const config = configMap.get(fit.vehicle_config_id);
+              const model = config ? modelMap.get(config.model_id) : null;
+              return config && model
+                ? { brand: model.brand, model: model.name, year: config.year }
+                : null;
+            })
+            .filter((v) => v !== null);
+          return {
+            ...item,
+            sku: product?.sku ?? null,
+            manufacturer: product?.manufacturer ?? null,
+            type: product?.type ?? null,
+            partNumber: product?.part_number ?? null,
+            vehicles,
+          };
+        });
+      }
       return NextResponse.json(data, {
         headers: { "Cache-Control": "no-store" },
       });
