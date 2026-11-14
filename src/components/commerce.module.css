@@ -634,3 +634,61 @@
   .checkout.checkout :global(.checkout-select),
   .checkout.checkout :global(.checkout-textarea) { min-height: 52px; }
 }
+
+
+/* Full checkout line-item information from verified catalog/fitment data. */
+.checkout.checkout :global(.order-item) {
+  align-items: start;
+  gap: 14px;
+  padding-block: 18px;
+}
+.checkout.checkout :global(.order-item-image) {
+  width: 92px;
+  min-width: 92px;
+  height: 98px;
+  background: #f0f4f3;
+  border-radius: 12px;
+}
+.checkout.checkout :global(.order-item-info) { min-width: 0; }
+.checkout.checkout :global(.order-item-name) {
+  color: #18232b;
+  font-weight: 800;
+  line-height: 1.6;
+}
+.checkout.checkout :global(.order-item-full-details) {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 8px;
+  color: #405962;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.checkout.checkout :global(.order-item-fitments) {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 11px;
+  background: #e9f1df;
+  border-radius: 9px;
+  color: #385c39;
+}
+.checkout.checkout :global(.order-item-price) {
+  font-weight: 800;
+  color: #18232b;
+}
+@media (max-width: 600px) {
+  .checkout.checkout :global(.order-item) {
+    display: grid;
+    grid-template-columns: 84px minmax(0,1fr);
+    gap: 12px;
+  }
+  .checkout.checkout :global(.order-item-image) {
+    width: 84px;
+    min-width: 84px;
+    height: 92px;
+  }
+  .checkout.checkout :global(.order-item-price) {
+    grid-column: 2;
+  }
+}
