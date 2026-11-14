@@ -523,3 +523,114 @@
     margin-inline-start: 25px;
   }
 }
+
+
+/* MOPC Figma 05 — responsive cart and checkout visual system.
+   Existing payment, delivery and order logic is intentionally unchanged. */
+.commerce.commerce {
+  --amber: #63832d;
+  color: #18232b;
+  max-width: 1280px;
+}
+.header { border-bottom-color: #e3eaea; }
+.header h1 { color: #18232b; font-weight: 800; }
+.eyebrow { color: #63832d; }
+.cartLayout { grid-template-columns: minmax(0,1fr) 410px; gap: 28px; }
+.items,
+.summary {
+  border: 1px solid #e3eaea;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 30px #101d290c;
+}
+.itemsHeading { border-bottom-color: #e3eaea; }
+.itemsHeading > span { background: #e9f1df; color: #3b6235; }
+.cart.cart :global(.cart-row) { padding: 22px; gap: 18px; }
+.cart.cart :global(.cart-row + .cart-row) { border-top-color: #e3eaea; }
+.cart.cart :global(.cart-row-image) {
+  background: #f0f4f3;
+  border-color: #e3eaea;
+  border-radius: 12px;
+}
+.cart.cart :global(.cart-row-info a) { color: #18232b; font-weight: 750; }
+.cart.cart :global(.cart-row-info .muted) { color: #3f5961; }
+.cart.cart :global(.cart-vehicle) { background: #e9f1df; color: #385c39; }
+.checkout.checkout :global(.checkout-header h1) { color: #18232b; font-weight: 800; }
+.checkout.checkout :global(.checkout-header) { border-bottom-color: #e3eaea; }
+.checkout.checkout :global(.checkout-stepper) {
+  border-color: #e3eaea;
+  border-radius: 14px;
+}
+.checkout.checkout :global(.checkout-step.active .checkout-step-number) {
+  background: #233b4a;
+  border-color: #233b4a;
+  color: #fff;
+  box-shadow: 0 0 0 4px #e9f1df;
+}
+.checkout.checkout :global(.checkout-layout) {
+  grid-template-columns: minmax(0,1fr) 410px;
+  gap: 28px;
+}
+.checkout.checkout :global(.checkout-panel),
+.checkout.checkout :global(.checkout-summary) {
+  border: 1px solid #e3eaea;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 12px 30px #101d290c;
+}
+.checkout.checkout :global(.checkout-panel-head) { border-bottom-color: #e3eaea; }
+.checkout.checkout :global(.checkout-panel-icon),
+.checkout.checkout :global(.checkout-summary-icon) {
+  background: #e9f1df;
+  border-color: #d9e8c8;
+  color: #3b6235;
+}
+.checkout.checkout :global(.checkout-panel-title),
+.checkout.checkout :global(.checkout-summary-head h2) { color: #18232b; font-weight: 800; }
+.checkout.checkout :global(.checkout-panel-kicker) { color: #63832d; }
+.checkout.checkout :global(.checkout-input),
+.checkout.checkout :global(.checkout-select),
+.checkout.checkout :global(.checkout-textarea) {
+  background: #f5f7f8;
+  border: 1px solid #e3eaea;
+  border-radius: 11px;
+  min-height: 52px;
+}
+.checkout.checkout :global(.checkout-input:focus),
+.checkout.checkout :global(.checkout-select:focus),
+.checkout.checkout :global(.checkout-textarea:focus) {
+  border-color: #91b45b;
+  box-shadow: 0 0 0 3px #c9e86d55;
+}
+.checkout.checkout :global(.payment-method-card.selected),
+.commerce.commerce .deliverySelected {
+  background: #e9f1df;
+  border-color: #9fc36e;
+  box-shadow: 0 0 0 1px #9fc36e;
+}
+.checkout.checkout :global(.checkout-summary-empty),
+.checkout.checkout :global(.checkout-assurances) {
+  background: #f5f7f8;
+  border-color: #e3eaea;
+}
+.commerce.commerce .deliveryOption:hover { border-color: #9fc36e; }
+.deliveryOption input { accent-color: #63832d; }
+.commerce a:focus-visible,
+.commerce button:focus-visible { outline-color: #63832d; }
+@media (max-width: 960px) {
+  .cartLayout,
+  .checkout.checkout :global(.checkout-layout) { grid-template-columns: minmax(0,1fr); }
+}
+@media (max-width: 600px) {
+  .cartLayout { gap: 18px; }
+  .cart.cart :global(.cart-row) { gap: 12px; padding: 16px 12px; }
+  .summary,
+  .checkout.checkout :global(.checkout-panel),
+  .checkout.checkout :global(.checkout-summary) {
+    border-radius: 15px;
+    padding: 20px 16px;
+  }
+  .checkout.checkout :global(.checkout-input),
+  .checkout.checkout :global(.checkout-select),
+  .checkout.checkout :global(.checkout-textarea) { min-height: 52px; }
+}
