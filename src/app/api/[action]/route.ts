@@ -25,7 +25,7 @@ import {
 import { checkoutInput, productInput } from "@/lib/validation";
 import { isProductImagePath, isRemoteImageUrl } from "@/lib/image-links";
 import { automaticProduct } from "@/lib/product-automation";
-import { applicationSpecs } from "@/lib/product-applications";
+import { applicationSpecs, readApplications } from "@/lib/product-applications";
 import { planImportVehicles } from "@/lib/import-vehicles";
 import { prepareItemRows } from "@/lib/prepare-item-import";
 import { importFeedback } from "@/lib/import-feedback";
@@ -428,16 +428,10 @@ export async function POST(
       const quoted = data as { items?: Array<{ id: string; [key: string]: unknown }> };
       if (Array.isArray(quoted?.items) && quoted.items.length) {
         const ids = quoted.items.map((item) => item.id);
-        const [productResult, fitmentResult] = await Promise.all([
-          db.from("products")
-            .select("id,sku,manufacturer,type,partNumber")
-            .in("id", ids),
-          db.from("product_fitments")
-            .select("product_id,vehicle_config_id")
-            .in("product_id", ids),
-        ]);
+        const productResult = await db.from("products")
+          .select("id,sku,manufacturer,type,partNumber,specs")
+          .in("id", ids);
         if (productResult.error) throw productResult.error;
-        if (fitmentResult.error) throw fitmentResult.error;
         const productMap = new Map(
           (productResult.data ?? []).map((p) => [p.id, p]),
         );
@@ -447,35 +441,28 @@ export async function POST(
         const imageMap = new Map(
           imageResults.map(({ id, images }) => [id, images[0]?.url ?? null]),
         );
-        const fitments = fitmentResult.data ?? [];
-        const configIds = [...new Set(fitments.map((f) => f.vehicle_config_id))];
-        const configs = configIds.length
-          ? await db.from("vehicle_configs")
-              .select("id,model_id,year")
-              .in("id", configIds)
-          : { data: [] as Array<{ id: string; model_id: string; year: number }> };
-        const modelIds = [...new Set((configs.data ?? []).map((c) => c.model_id))];
+        const modelIds = [...new Set(
+          (productResult.data ?? []).flatMap((p) =>
+            readApplications(p.specs ?? {}).map((app) => app.model_id),
+          ),
+        )];
         const models = modelIds.length
           ? await db.from("vehicle_models")
               .select("id,brand,slug,name")
               .in("id", modelIds)
-          : { data: [] as Array<{ id: string; brand: string; slug: string; name: unknown }> };
-        if ("error" in configs && configs.error) throw configs.error;
+          : { data: [] as Array<{ id: string; brand: string; slug: string; name: { ar: string; en: string } }> };
         if ("error" in models && models.error) throw models.error;
-        const configMap = new Map((configs.data ?? []).map((c) => [c.id, c]));
         const modelMap = new Map((models.data ?? []).map((m) => [m.id, m]));
         quoted.items = quoted.items.map((item) => {
           const product = productMap.get(item.id);
-          const vehicles = fitments
-            .filter((fit) => fit.product_id === item.id)
-            .map((fit) => {
-              const config = configMap.get(fit.vehicle_config_id);
-              const model = config ? modelMap.get(config.model_id) : null;
-              return config && model
-                ? { brand: model.brand, model: model.name, year: config.year }
-                : null;
-            })
-            .filter((v) => v !== null);
+          const vehicles = readApplications(product?.specs ?? {})
+            .flatMap((app) => {
+              const model = modelMap.get(app.model_id);
+              if (!model) return [];
+              return app.years.map((year) => ({
+                brand: model.brand, model: model.name, year,
+              }));
+            });
           return {
             ...item,
             sku: product?.sku ?? null,
