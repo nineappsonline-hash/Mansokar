@@ -394,14 +394,37 @@ export function Cart({
                             ? "المنتج غير متاح — احذفه من السلة"
                             : "Product unavailable — please remove it")}
                     </a>
-                    {line.make && (
-                      <span className="cart-vehicle">
-                        {line.make} {line.model} {line.year}
-                      </span>
+                    {p && (
+                      <div className="cart-product-details">
+                        <span>
+                          {locale === "ar" ? "النوع" : "Type"}:{" "}
+                          {p.type === "oem"
+                            ? (locale === "ar" ? "أصلي OEM" : "Original OEM")
+                            : (locale === "ar" ? "بديل Aftermarket" : "Aftermarket")}
+                        </span>
+                        {p.manufacturer && (
+                          <span>{locale === "ar" ? "الشركة المصنعة" : "Manufacturer"}: {p.manufacturer}</span>
+                        )}
+                        {(p.partNumber || p.sku) && (
+                          <span>{locale === "ar" ? "رقم القطعة" : "Part number"}: {p.partNumber || p.sku}</span>
+                        )}
+                        {line.make && (
+                          <span className="cart-vehicle">
+                            {locale === "ar" ? "العربية المختارة" : "Selected vehicle"}:{" "}
+                            {line.make} {line.model} {line.year}
+                          </span>
+                        )}
+                        {!line.make && (
+                          <span className="cart-fitment-note">
+                            {locale === "ar"
+                              ? "راجع السيارات المتوافقة من صفحة القطعة قبل الشراء"
+                              : "Review compatible vehicles on the product page before ordering"}
+                          </span>
+                        )}
+                        <span>{locale === "ar" ? "سعر الوحدة" : "Unit price"}: {money(p.sale ?? p.price, locale)}</span>
+                        <strong>{locale === "ar" ? "إجمالي القطعة" : "Line total"}: {money((p.sale ?? p.price) * line.qty, locale)}</strong>
+                      </div>
                     )}
-                    <p className="muted">
-                      {p && money(p.sale ?? p.price, locale)}
-                    </p>
                   </div>
                   <label>
                     {t(locale).quantity}
