@@ -7,7 +7,6 @@ import { FavoriteButton } from "./favorites";
 import Link from "next/link";
 import { ArrowUpRight, Globe2 } from "lucide-react";
 import { BrandLogo } from "./brand-logo";
-import { vehicleBrandLogo } from "@/lib/vehicle-brand-logo";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -76,9 +75,6 @@ export async function ProductCard({
     /* A missing photo does not conceal the product. */
   }
   const w = t(locale);
-  const primaryModel = carCatalog.models.find((m) => m.id === vehicleRows[0]?.id);
-  const primaryBrand = carCatalog.brands.find((b) => b.slug === (vehicleContext?.make ?? primaryModel?.brand));
-  const makeLogo = vehicleBrandLogo(primaryBrand?.slug);
   return (
     <article
       className={`product-card product-card-animate product-card-reference ${styles.card} ${styles.referenceCard}`}
@@ -141,8 +137,9 @@ export async function ProductCard({
         <bdi dir="ltr">{p.partNumber}</bdi>
       </div>
       <div className="product-info">
-        {p.type === "oem" && <OriginalBadge locale={locale} />}
-        <div className="product-meta">
+        <div className="product-card-badge-row">
+          {p.type === "oem" && <OriginalBadge locale={locale} />}
+          <div className="product-meta">
           <strong
             className="product-brand"
             dir="auto"
@@ -157,6 +154,7 @@ export async function ProductCard({
             </span>
           )}
         </div>
+        </div>
         {p.type !== "oem" && (
           <span className="eyebrow muted">After Market</span>
         )}
@@ -170,7 +168,6 @@ export async function ProductCard({
             {p.name[locale]}
           </Link>
         </h3>
-        <div className="product-card-fitment-heading">{makeLogo && <img className="product-card-fitment-logo" src={makeLogo} alt={primaryBrand?.name ?? ""} loading="lazy" />}{locale === "ar" ? "التوافق مع العربية" : "Vehicle compatibility"}</div>
         {vehicleRows.length > 0 ? (
           <div
             className={styles.vehicles}

@@ -248,3 +248,25 @@
   .referenceCard.referenceCard :global(.product-info h3) { font-size: 19px; }
   .referenceCard.referenceCard :global(.product-price) { font-size: 25px; }
 }
+
+/* Keep the OEM indicator and manufacturer label together, without an extra compatibility heading. */
+.referenceCard.referenceCard :global(.product-card-badge-row) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.referenceCard.referenceCard :global(.product-card-badge-row .product-meta) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  min-width: 0;
+}
+.referenceCard.referenceCard :global(.product-card-badge-row .original-badge) {
+  position: static;
+  inset: auto;
+  margin: 0;
+}
