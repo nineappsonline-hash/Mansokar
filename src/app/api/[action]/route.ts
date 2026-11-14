@@ -430,7 +430,7 @@ export async function POST(
         const ids = quoted.items.map((item) => item.id);
         const [productResult, fitmentResult] = await Promise.all([
           db.from("products")
-            .select("id,sku,manufacturer,type,part_number")
+            .select("id,sku,manufacturer,type,partNumber")
             .in("id", ids),
           db.from("product_fitments")
             .select("product_id,vehicle_config_id")
@@ -477,7 +477,7 @@ export async function POST(
             sku: product?.sku ?? null,
             manufacturer: product?.manufacturer ?? null,
             type: product?.type ?? null,
-            partNumber: product?.part_number ?? null,
+            partNumber: product?.partNumber ?? null,
             imageUrl: imageMap.get(item.id) ?? null,
             vehicles,
           };
