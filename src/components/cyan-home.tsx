@@ -245,7 +245,7 @@ export async function CyanHome({
       <section className="shell cyan-request-image-banner home-promo-compact" aria-label={ar ? "اطلب قطعة غيار" : "Request an auto part"}>
         <Link href={`/${locale}/request-part`} aria-label={ar ? "اطلب قطعة غيار الآن" : "Request an auto part now"}>
           <img
-            src="/images/Arabic%20Auto%20Parts%20Promo%20Banner.png"
+            src="/images/Neon%20Brake%20Parts%20Advertisement.webp"
             alt={ar ? "مش لاقي القطعة اللي محتاجها؟ ابعتلنا بياناتها وهنساعدك تلاقي القطعة المناسبة" : "Can't find the part you need? Send us the details and we'll help."}
             loading="lazy"
             decoding="async"
