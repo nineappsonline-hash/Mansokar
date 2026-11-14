@@ -329,3 +329,104 @@
 .page.page :global(.purchase-panel .fit-card small) {
   margin-top: 7px;
 }
+
+
+/* Figma 04: product details — clearer information hierarchy. */
+.page.page:global(.product-detail) {
+  padding-block: 30px 55px;
+}
+.page.page :global(.product-layout) {
+  grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+  gap: 28px;
+}
+.page.page :global(.product-gallery),
+.page.page :global(.purchase-panel) {
+  background: #fff;
+  border: 1px solid #e3eaea;
+  border-radius: 20px;
+  box-shadow: 0 12px 30px #101d290c;
+}
+.page.page :global(.product-gallery) {
+  padding: 18px;
+}
+.page.page :global(.product-art.large) {
+  height: clamp(340px,33vw,480px);
+  border-radius: 14px;
+  background: #f0f4f3;
+}
+.page.page :global(.gallery-thumbs) {
+  gap: 10px;
+  margin-top: 14px;
+}
+.page.page :global(.gallery-thumbs button) {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+}
+.page.page :global(.purchase-panel) {
+  padding: 28px;
+}
+.page.page :global(.purchase-panel h1) {
+  font-size: clamp(25px,2.4vw,36px);
+  line-height: 1.5;
+  color: #18232b;
+}
+.page.page :global(.detail-price .price) {
+  font-size: clamp(30px,3vw,40px);
+  color: #18232b;
+}
+.page.page :global(.purchase-panel .fit-card) {
+  padding: 16px;
+  margin-block: 14px;
+  background: #e9f1df;
+  border: 1px solid #d9e8c8;
+  border-radius: 14px;
+}
+.page.page :global(.purchase-panel .fit-card li) {
+  background: #fff;
+  border-color: #d9e8c8;
+}
+.page.page :global(.product-actions .button) {
+  min-height: 54px;
+  border-radius: 12px;
+}
+.page.page :global(.product-actions .purchase-add),
+.page.page :global(.product-actions .button:first-of-type) {
+  background: #c9e86d;
+  border-color: #c9e86d;
+  color: #18232b;
+}
+.page.page :global(.product-actions .purchase-add:hover) {
+  background: #d9f48d;
+}
+.disclosure {
+  border-color: #e3eaea;
+  border-radius: 12px;
+}
+.disclosure > summary:focus-visible {
+  outline-color: #8cae42;
+}
+@media (max-width: 980px) {
+  .page.page :global(.product-layout) {
+    grid-template-columns: minmax(0,1fr);
+  }
+}
+@media (max-width: 600px) {
+  .page.page:global(.product-detail) {
+    padding-block: 14px 30px;
+  }
+  .page.page :global(.product-gallery) {
+    padding: 10px;
+    border-radius: 16px;
+  }
+  .page.page :global(.product-art.large) {
+    height: 290px;
+  }
+  .page.page :global(.purchase-panel) {
+    padding: 18px;
+    border-radius: 16px;
+  }
+  .page.page :global(.purchase-panel h1) {
+    font-size: 25px;
+  }
+}
