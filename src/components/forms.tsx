@@ -358,6 +358,7 @@ export function Checkout({
   const governorateOptions = shippingGovernorates(areas, locale);
   const deliveryOptions =
     governorateOptions.find((g) => g.value === governorate)?.areas ?? [];
+  const selectedShipping = areas.find((item) => item.id === area);
   const [method, setMethod] = useState<PaymentMethod>(methods[0] ?? "cod");
   const [quote, setQuote] = useState<{
     items: {
@@ -658,6 +659,7 @@ export function Checkout({
                         const savedGovernorate = governorateOptions.find((g) =>
                           g.areas.some((a) => a.id === addr.area_id),
                         );
+                        setQuoteInput((current) => ({ ...current, phone: addr.phone.trim() }));
                         setGovernorate(savedGovernorate?.value ?? "");
                         setArea(savedGovernorate ? addr.area_id! : "");
                         setMessage("");
@@ -1252,7 +1254,13 @@ export function Checkout({
                 </div>
                 <div className="order-breakdown">
                   <div className="order-line"><span className="label">{t(locale).subtotal}</span><span>{money(cartPreview.subtotal, locale)}</span></div>
-                  <p className="checkout-cta-note">{locale === "ar" ? "الإجمالي النهائي والتوصيل والخصم هيظهروا بعد مراجعة الأسعار والتوصيل." : "Final total, shipping and discounts appear after reviewing prices and delivery."}</p>
+                  {selectedShipping && (
+                    <div className="order-line">
+                      <span className="label">{locale === "ar" ? "التوصيل (تقديري)" : "Delivery (estimate)"}</span>
+                      <span>{money(selectedShipping.amount, locale)}</span>
+                    </div>
+                  )}
+                  <p className="checkout-cta-note">{locale === "ar" ? "الإجمالي النهائي بيتحدث تلقائيًا بعد إدخال رقم موبايل صحيح. مصاريف التوصيل بتظهر بمجرد اختيار طريقة الشحن." : "Final total updates automatically once a valid phone number is entered. Delivery charges appear when a shipping option is selected."}</p>
                 </div>
               </div>
             ) : (
