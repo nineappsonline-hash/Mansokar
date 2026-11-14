@@ -5,7 +5,7 @@ import {
   shippingWindow,
   type ShippingArea,
 } from "@/lib/shipping";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale, Vehicle } from "@/lib/catalog";
 import { money } from "@/lib/catalog";
@@ -378,6 +378,35 @@ export function Checkout({
     shipping: number;
     total: number;
   } | null>(null);
+  const [cartPreview, setCartPreview] = useState<{
+    items: { id: string; name: Record<Locale, string>; quantity: number; price: number; imageUrl?: string | null }[];
+    subtotal: number;
+  } | null>(null);
+  const [cartPreviewError, setCartPreviewError] = useState(false);
+  useEffect(() => {
+    const controller = new AbortController();
+    const lines: { id: string; qty: number }[] = JSON.parse(localStorage.getItem("cart") || "[]");
+    if (!lines.length) {
+      setCartPreview({ items: [], subtotal: 0 });
+      return;
+    }
+    fetch("/api/products?ids=" + encodeURIComponent(lines.map((line) => line.id).join(",")) + "&locale=" + locale, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw Error("Products unavailable");
+        return response.json();
+      })
+      .then((data) => {
+        const products = data.products as Array<{ id: string; name: Record<Locale, string>; price: number; sale?: number | null; imageUrl?: string | null }>;
+        if (lines.some((line) => !products.some((product) => product.id === line.id))) throw Error("Cart product missing");
+        const items = lines.map((line) => {
+          const product = products.find((p) => p.id === line.id)!;
+          return { id: line.id, name: product.name, quantity: line.qty, price: product.sale ?? product.price, imageUrl: product.imageUrl };
+        });
+        setCartPreview({ items, subtotal: items.reduce((sum, item) => sum + item.price * item.quantity, 0) });
+      })
+      .catch((error) => { if (error.name !== "AbortError") setCartPreviewError(true); });
+    return () => controller.abort();
+  }, [locale]);
   const [reviewed, setReviewed] = useState(false);
   const router = useRouter();
   const step = reviewed ? 3 : area ? 2 : 1;
@@ -1178,11 +1207,33 @@ export function Checkout({
                   </div>
                 </div>
               </div>
+            ) : cartPreview?.items.length ? (
+              <div aria-live="polite">
+                <div className="order-items">
+                  {cartPreview.items.map((item) => (
+                    <div key={item.id} className="order-item">
+                      <div className="order-item-image">
+                        {item.imageUrl ? <img src={item.imageUrl} alt={item.name[locale]} loading="lazy" /> : <Package size={24} />}
+                      </div>
+                      <div className="order-item-info">
+                        <p className="order-item-name">{item.name[locale]}</p>
+                        <span className="order-item-detail">{locale === "ar" ? "العدد" : "Quantity"}: {item.quantity}</span>
+                        <span className="order-item-detail">{locale === "ar" ? "سعر الوحدة" : "Unit price"}: {money(item.price, locale)}</span>
+                      </div>
+                      <span className="order-item-price">{money(item.price * item.quantity, locale)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="order-breakdown">
+                  <div className="order-line"><span className="label">{t(locale).subtotal}</span><span>{money(cartPreview.subtotal, locale)}</span></div>
+                  <p className="checkout-cta-note">{locale === "ar" ? "الإجمالي النهائي والتوصيل والخصم هيظهروا بعد مراجعة الأسعار والتوصيل." : "Final total, shipping and discounts appear after reviewing prices and delivery."}</p>
+                </div>
+              </div>
             ) : (
               <div className="checkout-summary-empty">
                 <ReceiptText size={18} strokeWidth={1.8} />
                 <p>
-                  {locale === "ar"
+                  {cartPreviewError ? (locale === "ar" ? "تعذر تحميل منتجات السلة. ارجع للسلة وتأكد من المنتجات." : "Could not load cart products. Please check your cart.") : locale === "ar"
                     ? "إجمالي المنتجات والتوصيل والخصم هيظهر هنا بعد مراجعة الطلب."
                     : "Your item totals, delivery and discounts will appear here after you review your order."}
                 </p>
