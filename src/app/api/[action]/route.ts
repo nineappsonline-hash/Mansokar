@@ -436,6 +436,8 @@ export async function POST(
             .select("product_id,vehicle_config_id")
             .in("product_id", ids),
         ]);
+        if (productResult.error) throw productResult.error;
+        if (fitmentResult.error) throw fitmentResult.error;
         const productMap = new Map(
           (productResult.data ?? []).map((p) => [p.id, p]),
         );
@@ -458,6 +460,8 @@ export async function POST(
               .select("id,brand,slug,name")
               .in("id", modelIds)
           : { data: [] as Array<{ id: string; brand: string; slug: string; name: unknown }> };
+        if ("error" in configs && configs.error) throw configs.error;
+        if ("error" in models && models.error) throw models.error;
         const configMap = new Map((configs.data ?? []).map((c) => [c.id, c]));
         const modelMap = new Map((models.data ?? []).map((m) => [m.id, m]));
         quoted.items = quoted.items.map((item) => {
