@@ -1694,3 +1694,47 @@
     :global(.cyan-vehicle-finder > label) { padding-inline: 6px !important; }
   }
 }
+
+
+/* MOPC 2026 — shared chrome; retains all existing layout and navigation behavior. */
+.theme:global(.mopc-cyan) {
+  --bg: #f5f7f8;
+  --surface: #fff;
+  --elevated: #e9f0f0;
+  --light: #18232b;
+  --muted: #587078;
+  --border: #e3eaea;
+  --amber: #8cae42;
+  color: #18232b;
+  background: #f5f7f8;
+}
+.theme:global(.mopc-cyan) :global(.header) { background: #101d29; }
+.theme:global(.mopc-cyan) :global(.cyan-subnav) { background: #fff; border-bottom-color: #e3eaea; }
+.theme:global(.mopc-cyan) :global(.cyan-subnav .nav-active) { background: #233b4a; box-shadow: none; color: #fff; }
+.theme:global(.mopc-cyan) :global(.cyan-subnav nav > a:hover),
+.theme:global(.mopc-cyan) :global(.brand-nav-menu > summary:hover) { color: #63832d; }
+.theme:global(.mopc-cyan) :global(.header-search-box .hero-search) { border-radius: 13px; background: #fff; border-color: #e3eaea; }
+.theme:global(.mopc-cyan) :global(.cart-count) { background: #c9e86d; border-color: #c9e86d; color: #18232b; }
+.theme:global(.mopc-cyan) :global(.button) { background: #233b4a; border-color: #233b4a; color: #fff; }
+.theme:global(.mopc-cyan) :global(.button:hover) { background: #365869; border-color: #365869; color: #fff; }
+.theme:global(.mopc-cyan) :global(.cyan-home) { background: #f5f7f8; }
+.theme:global(.mopc-cyan) :global(.cyan-hero) { background: #142838; }
+.theme:global(.mopc-cyan) :global(.cyan-hero h1 > em) { color: #c9e86d; font-style: normal; }
+.theme:global(.mopc-cyan) :global(.cyan-hero h1 > em::after) { border-color: #c9e86d; }
+.theme:global(.mopc-cyan) :global(.cyan-vehicle-finder) { background: #fff; box-shadow: 0 18px 45px #101d2929; }
+.theme:global(.mopc-cyan) :global(.cyan-vehicle-finder > label) { background: #f2f5f5; border-color: #e3eaea; }
+.theme:global(.mopc-cyan) :global(.cyan-vehicle-finder > button),
+.theme:global(.mopc-cyan) :global(.cyan-button) { background: #c9e86d; color: #18232b; border-color: #c9e86d; box-shadow: none; }
+.theme:global(.mopc-cyan) :global(.cyan-vehicle-finder > button:hover) { background: #d9f48d; color: #18232b; }
+.theme:global(.mopc-cyan) :global(.cyan-section-title::after) { background: #c9e86d; }
+.theme:global(.mopc-cyan) :global(.cyan-trust-strip) { background: #fff; border: 1px solid #e3eaea; }
+.theme:global(.mopc-cyan) :global(.cyan-trust-strip svg) { color: #63832d; }
+.theme:global(.mopc-cyan) :global(.cyan-trust-strip > div:not(:last-child)) { border-color: #dce6e4; }
+.theme:global(.mopc-cyan) :global(.cyan-featured) { background: #fff; border-color: #e3eaea; }
+.theme:global(.mopc-cyan) :global(.product-card:hover) { border-color: #c9e86d; }
+.theme:global(.mopc-cyan) :global(.product-card .product-brand) { background: #233b4a; border-color: #233b4a; }
+.theme:global(.mopc-cyan) :global(.cyan-benefits > div) { background: #fff; border: 1px solid #e3eaea; }
+.theme:global(.mopc-cyan) :global(.cyan-benefits .cyan-benefit-accent) { background: #e7f1d6; color: #2d5138; }
+.theme:global(.mopc-cyan) :global(.footer) { background: #101d29; }
+.theme:global(.mopc-cyan) :global(.cyan-newsletter) { background-color: #142838; }
+.theme:global(.mopc-cyan) :global(.footer a:hover) { color: #c9e86d; }
