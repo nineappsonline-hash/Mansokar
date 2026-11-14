@@ -370,6 +370,7 @@ export function Checkout({
       manufacturer?: string | null;
       type?: "oem" | "aftermarket" | null;
       partNumber?: string | null;
+      imageUrl?: string | null;
       vehicles?: { brand: string; model: { ar: string; en: string } | string; year: number }[];
     }[];
     subtotal: number;
@@ -1097,9 +1098,9 @@ export function Checkout({
                   {quote.items.map((item) => (
                     <div key={item.id} className="order-item">
                       <div className="order-item-image">
-                        {item.id ? (
+                        {item.imageUrl ? (
                           <img
-                            src={`/product-media/${item.id}`}
+                            src={item.imageUrl}
                             alt={item.name[locale]}
                             loading="lazy"
                           />
