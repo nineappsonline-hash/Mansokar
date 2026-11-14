@@ -5,7 +5,7 @@ import {
   shippingWindow,
   type ShippingArea,
 } from "@/lib/shipping";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale, Vehicle } from "@/lib/catalog";
 import { money } from "@/lib/catalog";
@@ -408,7 +408,50 @@ export function Checkout({
     return () => controller.abort();
   }, [locale]);
   const [reviewed, setReviewed] = useState(false);
+  const checkoutFormRef = useRef<HTMLFormElement>(null);
+  const [quoteInput, setQuoteInput] = useState({ phone: "", coupon: "" });
+  const [quoteBusy, setQuoteBusy] = useState(false);
   const router = useRouter();
+  useEffect(() => {
+    setQuote(null);
+    setReviewed(false);
+    if (!area || !/^01[0125][0-9]{8}$/.test(quoteInput.phone)) {
+      setQuoteBusy(false);
+      return;
+    }
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setQuoteBusy(true);
+      try {
+        const response = await fetch("/api/checkout-quote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            phone: quoteInput.phone,
+            area,
+            coupon: quoteInput.coupon,
+            items: JSON.parse(localStorage.getItem("cart") || "[]"),
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw Error(data.error || "Unable to calculate order");
+        setQuote(data);
+        setReviewed(true);
+        setMessage("");
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setMessageTone("error");
+        setMessage(error instanceof Error ? error.message : "Unable to calculate order");
+      } finally {
+        if (!controller.signal.aborted) setQuoteBusy(false);
+      }
+    }, 350);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [area, quoteInput.phone, quoteInput.coupon]);
   const step = reviewed ? 3 : area ? 2 : 1;
   const steps = [
     locale === "ar" ? "التوصيل" : "Delivery",
@@ -474,6 +517,7 @@ export function Checkout({
 
       <form
         className="checkout-layout"
+        ref={checkoutFormRef}
         onChange={(e) => {
           const target = e.target as unknown as { name?: string };
           if (
@@ -496,28 +540,8 @@ export function Checkout({
             const fields = Object.fromEntries(formData);
             if (!methods.length)
               throw Error("No payment method has been enabled");
-            if (!reviewed || !quote) {
-              const response = await fetch("/api/checkout-quote", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  ...fields,
-                  locale,
-                  items: JSON.parse(localStorage.getItem("cart") || "[]"),
-                }),
-              });
-              const data = await response.json();
-              if (!response.ok) throw Error(data.error);
-              setQuote(data);
-              setReviewed(true);
-              setMessageTone("success");
-              setMessage(
-                locale === "ar"
-                  ? "راجع إجمالي الطلب ثم أكد الطلب."
-                  : "Review the totals, then confirm your order.",
-              );
-              return;
-            }
+            if (!reviewed || !quote || quoteBusy)
+              throw Error(locale === "ar" ? "استنى لحظة لحد ما نحسب الإجمالي النهائي." : "Please wait for the final total to be calculated.");
             let imageToken: string | undefined;
             if (isManualPayment(method)) {
               if (!(proof instanceof File) || !proof.size)
@@ -677,6 +701,7 @@ export function Checkout({
                 </span>
                 <input
                   name="phone"
+                  onChange={(e) => setQuoteInput((current) => ({ ...current, phone: e.target.value.trim() }))}
                   required
                   pattern="01[0125][0-9]{8}"
                   dir="ltr"
@@ -839,6 +864,7 @@ export function Checkout({
               </span>
               <input
                 name="coupon"
+                onChange={(e) => setQuoteInput((current) => ({ ...current, coupon: e.target.value.trim() }))}
                 maxLength={40}
                 className="checkout-input"
                 placeholder={
@@ -1298,24 +1324,18 @@ export function Checkout({
 
             <button
               className="checkout-button"
-              disabled={busy || !methods.length || !area}
+              disabled={busy || quoteBusy || !methods.length || !area || !quote}
             >
-              {busy
+              {busy || quoteBusy
                 ? "…"
-                : reviewed
-                  ? locale === "ar"
-                    ? "تأكيد الطلب"
-                    : "Confirm order"
-                  : locale === "ar"
-                    ? "مراجعة الأسعار والتوصيل"
-                    : "Review prices & delivery"}
+                : locale === "ar" ? "تأكيد الطلب" : "Confirm order"}
               {!busy && <ArrowRight size={17} strokeWidth={2.2} />}
             </button>
             {!quote && !busy && (
               <p className="checkout-cta-note">
                 <Lock size={12} strokeWidth={2} />
                 {locale === "ar"
-                  ? "راجع الإجمالي قبل تأكيد طلبك."
+                  ? "الإجمالي النهائي بيتحسب تلقائيًا بعد اختيار التوصيل وإدخال رقم الموبايل."
                   : "Review your final total before placing your order."}
               </p>
             )}
