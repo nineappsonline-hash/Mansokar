@@ -1,3 +1,4 @@
+import "./mopc-home-2026.css";
 import { productImages } from "@/lib/db";
 import Image from "next/image";
 import Link from "next/link";
@@ -124,11 +125,11 @@ export async function CyanHome({
                   <>
                     <span>
                       {ar
-                        ? "قطع غيار أصلية لعربيتك…"
-                        : "Genuine parts for your car…"}
+                        ? "قطع الغيار المناسبة لعربيتك…"
+                        : "The right parts for your car…"}
                     </span>
                     <em>
-                      {ar ? "بضمان وراحة بال." : "Warranty. Peace of mind."}
+                      {ar ? "بثقة وراحة بال." : "Warranty. Peace of mind."}
                     </em>
                   </>
                 )}
@@ -255,7 +256,7 @@ export async function CyanHome({
       </section>
       <section className="shell cyan-why">
         <h2 className="cyan-section-title">
-          {ar ? "ليه تختار موبِك؟" : "Why choose MOPC?"}
+          {ar ? "ليه تختار MOPC؟" : "Why choose MOPC?"}
         </h2>
         <div className="cyan-benefits">
           {[
