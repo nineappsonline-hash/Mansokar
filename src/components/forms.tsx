@@ -366,6 +366,11 @@ export function Checkout({
       quantity: number;
       unit_price: number;
       total: number;
+      sku?: string | null;
+      manufacturer?: string | null;
+      type?: "oem" | "aftermarket" | null;
+      partNumber?: string | null;
+      vehicles?: { brand: string; model: { ar: string; en: string } | string; year: number }[];
     }[];
     subtotal: number;
     discount: number;
@@ -1104,10 +1109,42 @@ export function Checkout({
                       </div>
                       <div className="order-item-info">
                         <p className="order-item-name">{item.name[locale]}</p>
-                        <p className="order-item-meta">
-                          {locale === "ar" ? "الكمية" : "Qty"}:{" "}
-                          <span>{item.quantity}</span>
-                        </p>
+                        <div className="order-item-full-details">
+                          {item.type && (
+                            <span className="order-item-detail">
+                              {locale === "ar" ? "النوع" : "Type"}:{" "}
+                              {item.type === "oem"
+                                ? (locale === "ar" ? "أصلي OEM" : "Original OEM")
+                                : (locale === "ar" ? "بديل Aftermarket" : "Aftermarket")}
+                            </span>
+                          )}
+                          {item.manufacturer && (
+                            <span className="order-item-detail">
+                              {locale === "ar" ? "الشركة المصنعة" : "Manufacturer"}: {item.manufacturer}
+                            </span>
+                          )}
+                          {(item.partNumber || item.sku) && (
+                            <span className="order-item-detail">
+                              {locale === "ar" ? "رقم القطعة" : "Part number"}: {item.partNumber || item.sku}
+                            </span>
+                          )}
+                          {item.vehicles && item.vehicles.length > 0 && (
+                            <div className="order-item-fitments">
+                              <strong>{locale === "ar" ? "السيارات المتوافقة" : "Compatible vehicles"}</strong>
+                              {item.vehicles.map((vehicle, index) => (
+                                <span key={index}>
+                                  {vehicle.brand} · {typeof vehicle.model === "string" ? vehicle.model : vehicle.model[locale]} · {vehicle.year}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          <span className="order-item-detail">
+                            {locale === "ar" ? "العدد" : "Quantity"}: {item.quantity}
+                          </span>
+                          <span className="order-item-detail">
+                            {locale === "ar" ? "سعر الوحدة" : "Unit price"}: {money(item.unit_price, locale)}
+                          </span>
+                        </div>
                       </div>
                       <span className="order-item-price">
                         {money(item.total, locale)}
