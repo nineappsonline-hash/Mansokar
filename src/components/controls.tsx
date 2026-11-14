@@ -276,6 +276,7 @@ export function Cart({
   const [loadError, setLoadError] = useState(false);
   const [products, setProducts] = useState(initialProducts);
   const [lines, setLines] = useState<CartLine[]>([]);
+  const [compatibleVehicles, setCompatibleVehicles] = useState<Record<string, { brand: string; model: string; year: number }[]>>({});
   useEffect(() => {
     const refresh = () => setLines(read("cart", []));
     refresh();
@@ -303,6 +304,7 @@ export function Cart({
       })
       .then((data) => {
         setProducts(data.products);
+        setCompatibleVehicles(data.compatibleVehicles ?? {});
         setLoading(false);
       })
       .catch((error) => {
@@ -414,11 +416,18 @@ export function Cart({
                             {line.make} {line.model} {line.year}
                           </span>
                         )}
-                        {!line.make && (
+                        {(compatibleVehicles[line.id] ?? []).length > 0 ? (
+                          <div className="cart-compatible-vehicles">
+                            <strong>{locale === "ar" ? "السيارات المتوافقة" : "Compatible vehicles"}</strong>
+                            {(compatibleVehicles[line.id] ?? []).map((v, index) => (
+                              <span key={index}>{v.brand} · {v.model} · {v.year}</span>
+                            ))}
+                          </div>
+                        ) : (
                           <span className="cart-fitment-note">
                             {locale === "ar"
-                              ? "راجع السيارات المتوافقة من صفحة القطعة قبل الشراء"
-                              : "Review compatible vehicles on the product page before ordering"}
+                              ? "لا توجد بيانات توافق مؤكدة للعرض؛ راجع تفاصيل القطعة قبل الشراء"
+                              : "No verified compatibility details available; review the product before ordering"}
                           </span>
                         )}
                         <span>{locale === "ar" ? "سعر الوحدة" : "Unit price"}: {money(p.sale ?? p.price, locale)}</span>
