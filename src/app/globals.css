@@ -7329,3 +7329,16 @@ body {
 .admin-product-editor input[dir="ltr"] { text-align:left; }
 .admin-product-editor details { border:1px solid #e5eaf0; padding:14px; border-radius:12px; }
 @media(max-width:640px) { .admin-product-editor { padding:16px; } .admin-product-editor h2 { font-size:21px; } }
+
+/* MOPC vehicle fitment editor */
+.admin-product-applications { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; font-size:15px; line-height:1.85; }
+.admin-product-applications > h2 { font-size:23px; font-weight:800; color:#142838; }
+.admin-product-applications > p { font-size:15px; color:#5d6d7b; }
+.admin-product-applications fieldset { min-width:0; background:#fff; border:1px solid #e5eaf0; border-radius:14px; padding:20px; }
+.admin-product-applications legend { font-size:17px; font-weight:800; color:#142838; padding:0 9px; }
+.admin-product-applications label { font-size:14px; font-weight:600; }
+.admin-product-applications input,.admin-product-applications select { font-family:inherit; font-size:14px; min-height:42px; }
+.admin-product-applications button { font-family:inherit; font-size:14px; border-radius:9px; }
+.admin-product-applications details { background:#f5f7f8; border-radius:12px; padding:16px; }
+.admin-product-applications summary { font-weight:700; cursor:pointer; }
+@media(max-width:600px) { .admin-product-applications fieldset { padding:13px; } .admin-product-applications > h2 { font-size:20px; } }
