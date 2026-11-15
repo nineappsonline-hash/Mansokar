@@ -42,13 +42,13 @@ export async function AdminOverview() {
   ];
   const priority = cards.filter((card) => card.count > 0 && card.label !== "رسائل العملاء");
   return (
-    <div className="stack" lang="ar" dir="rtl">
-      <section className="panel stack">
+    <div className="stack admin-overview-redesign" lang="ar" dir="rtl">
+      <section className="panel stack admin-overview-section">
         <h2>نظرة عامة على المتجر</h2>
         <p className="muted">تابع الطلبات والمدفوعات واستفسارات العملاء من مكان واحد. الأرقام من بيانات المتجر الحالية، وليست بيانات تجريبية.</p>
-        <div className="three-col">
+        <div className="admin-overview-metrics">
           {cards.map((card) => (
-            <Link className="panel" key={card.label} href={card.href} style={{ textDecoration: "none", color: "inherit" }}>
+            <Link className="panel admin-overview-metric" key={card.label} href={card.href} style={{ textDecoration: "none", color: "inherit" }}>
               <span className="muted">{card.label}</span>
               <strong style={{ display: "block", fontSize: "2rem", marginTop: 8 }}>{card.count.toLocaleString("ar-EG")}</strong>
               <span>عرض التفاصيل ←</span>
