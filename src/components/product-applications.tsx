@@ -92,9 +92,9 @@ export function ProductApplications({
             .filter(
               (m) =>
                 (!makes.length || makes.includes(m.brand)) &&
-                `${m.name.en} ${m.name.ar || ""}`
-                  .toLowerCase()
-                  .includes(search.toLowerCase()),
+                `${m.name.en} ${m.name.ar || ""} ${makeLabel(m.brand)} ${m.slug}`
+                  .toLocaleLowerCase()
+                  .includes(search.trim().toLocaleLowerCase()),
             )
             .map((m) => (
               <label className="check" key={m.id}>
