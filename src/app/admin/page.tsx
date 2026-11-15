@@ -44,6 +44,7 @@ const orderStatusLabels: Record<string, string> = {
   returned: "Returned",
 };
 const paymentStatusLabels: Record<string, string> = {
+  unpaid: "لم يتم الدفع",
   pending: "Awaiting payment",
   paid: "Paid",
   failed: "Payment failed",
@@ -666,6 +667,10 @@ export default async function Admin({
           .order("created_at", { ascending: false })
       : { data: [], error: null };
     if (transferError) throw transferError;
+    const { data: statusHistory, error: statusHistoryError } = id
+      ? await db.from("order_status_events").select("id,order_id,status,created_at,note").eq("order_id", id).order("created_at", { ascending: false }).limit(50)
+      : { data: [], error: null };
+    if (statusHistoryError) throw statusHistoryError;
     content = (
       <div className="stack">
         {!data?.length && (
@@ -789,6 +794,20 @@ export default async function Admin({
                   )}
                 </div>
               ))}
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>سجل حالات الطلب</h3>
+                  {statusHistory?.length ? (
+                    <ol className="admin-order-timeline">
+                      {statusHistory.map((event) => (
+                        <li key={event.id}>
+                          <strong>{humanStatus(event.status, orderStatusLabels)}</strong>
+                          <time dateTime={event.created_at}>{new Intl.DateTimeFormat("ar-EG", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Cairo" }).format(new Date(event.created_at))}</time>
+                          {event.note && <p>{event.note}</p>}
+                        </li>
+                      ))}
+                    </ol>
+                  ) : <p>لا توجد تغييرات مسجلة لحالة الطلب حتى الآن.</p>}
                 </section>
                 <section className="admin-order-detail-card">
                   <h3>تحديث الطلب والشحن</h3>
