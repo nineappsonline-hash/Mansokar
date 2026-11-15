@@ -5,7 +5,7 @@
 create or replace function public.guard_product_image_cleanup_path()
 returns trigger language plpgsql set search_path to '' as $function$
 begin
-  if new.path is distinct from old.path or tg_op='INSERT' then
+  if tg_op='INSERT' or new.path is distinct from old.path then
     if new.path ~ '^[a-f0-9-]+\\.jpg$' then
       perform pg_advisory_xact_lock(hashtextextended('catalog-images:'||new.path,0));
       if exists (
