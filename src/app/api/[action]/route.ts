@@ -642,6 +642,20 @@ export async function POST(
             status: z.enum(["new", "read", "replied", "closed"]),
           })
           .parse(b);
+        if (process.env.ADMIN_ATOMIC_MESSAGE_ENABLED === "true") {
+          // Staged RPC updates message status and writes audit in one transaction.
+          // Do not fall back to the legacy non-atomic path on RPC errors.
+          const { error: rpcError } = await db.rpc(
+            "admin_update_message_atomic",
+            { p_actor: admin.id, p_message: input.id, p_status: input.status },
+          );
+          if (rpcError) {
+            if (rpcError.message.includes("Message not found"))
+              return NextResponse.json({ error: "Message not found" }, { status: 404 });
+            throw rpcError;
+          }
+          details = input;
+        } else {
         const { data, error } = await db
           .from("contact_messages")
           .update({ status: input.status })
@@ -657,6 +671,7 @@ export async function POST(
         });
         if (auditError) throw auditError;
         details = input;
+        }
       } else if (action === "admin-hero-slides") {
         const input = z
           .object({
