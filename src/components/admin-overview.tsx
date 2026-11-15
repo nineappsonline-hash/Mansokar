@@ -40,7 +40,7 @@ export async function AdminOverview() {
     { label: "رسائل العملاء", count: openMessages.count ?? 0, href: "/admin?module=messages" },
     { label: "استفسارات قطع الغيار الجديدة", count: openInquiries.count ?? 0, href: "/admin?module=inquiries" },
   ];
-  const priority = cards.filter((card) => card.count > 0);
+  const priority = cards.filter((card) => card.count > 0 && card.label !== "رسائل العملاء");
   return (
     <div className="stack" lang="ar" dir="rtl">
       <section className="panel stack">
@@ -67,7 +67,7 @@ export async function AdminOverview() {
             ))}
           </div>
         ) : <p className="notice">مفيش طلبات أو تحويلات أو استفسارات جديدة في القوائم المتابعة حاليًا.</p>}
-        <p className="muted">عدد رسائل العملاء يشمل كل الرسائل المسجلة، لأننا لسه ما تحققناش من وجود حالة «مقروء/غير مقروء» لها.</p>
+        <p className="muted">عدد رسائل العملاء يشمل كل الرسائل المسجلة، ولا يُعتبر تلقائيًا مهامًا مفتوحة؛ لم يتم التحقق بعد من وجود حالة «مقروء/غير مقروء» لها.</p>
       </section>
       <section className="panel stack">
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 12 }}>
