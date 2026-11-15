@@ -29,9 +29,8 @@ export function ProductApplications({
   const [makes, setMakes] = useState<string[]>([]),
     [search, setSearch] = useState("");
   const years = Array.from(
-    { length: new Date().getFullYear() + 2 - 1950 },
-    (_, i) => new Date().getFullYear() + 1 - i,
-  );
+    new Set([...vehicles.map((vehicle) => vehicle.year), ...applications.flatMap((application) => application.years)]),
+  ).sort((a, b) => b - a);
   const setYears = (id: string, next: number[]) =>
     onChange(
       applications.map((a) =>
@@ -54,15 +53,13 @@ export function ProductApplications({
     return ar && ar !== en ? `${en} — ${ar}` : en;
   };
   return (
-    <div className="stack">
-      <h2>Cars & years this part suits</h2>
+    <div className="stack admin-product-applications" lang="ar" dir="rtl">
+      <h2>العربيات والسنين المتوافقة مع القطعة</h2>
       <p>
-        Select one or more models, then enter a start and end year or tick
-        individual years. You can combine different makes and models in the same
-        product.
+        اختار موديل واحد أو أكتر، وبعدها حدد السنوات من وإلى أو اختار كل سنة بشكل منفصل. تقدر تربط نفس القطعة بأكتر من ماركة وموديل.
       </p>
       <fieldset className="stack">
-        <legend>1. Find the car models</legend>
+        <legend>١. اختار الماركة والموديل</legend>
         <div className={styles.makes}>
           {brands.map((b) => (
             <button
@@ -82,9 +79,9 @@ export function ProductApplications({
           ))}
         </div>
         <label>
-          Search car models
+          ابحث عن موديل العربية
           <input
-            placeholder="Astra, Cruze, MG…"
+            placeholder="أسترا، كورسا، MG…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -117,8 +114,8 @@ export function ProductApplications({
         </div>
       </fieldset>
       <p>
-        {applications.length} models selected ·{" "}
-        {applications.reduce((n, a) => n + a.years.length, 0)} model years
+        {applications.length} موديلات مختارة ·{" "}
+        {applications.reduce((n, a) => n + a.years.length, 0)} سنة توافق
       </p>
       {applications.map((a) => {
         const model = models.find((m) => m.id === a.model_id);
@@ -136,23 +133,20 @@ export function ProductApplications({
                 onChange(applications.filter((x) => x.model_id !== a.model_id))
               }
             >
-              Remove this model
+              إزالة الموديل
             </button>
           </fieldset>
         );
       })}
       {!applications.length && (
         <p>
-          Choose a model above to see its years. Years are available even if no
-          engine versions have been registered yet.
+          اختار موديل من فوق علشان تحدد السنين المتوافقة مع القطعة.
         </p>
       )}
       <details>
-        <summary>Optional: exact engine versions</summary>
+        <summary>اختياري: تحديد نسخة المحرك بدقة</summary>
         <p>
-          Model-year selection records the cars you specify. To show an
-          engine-specific compatibility match in the storefront, select the
-          verified version below.
+          اختيار الموديل والسنة بيسجل التوافق العام. لو القطعة مخصصة لمحرك معين، اختار النسخة المتحقق منها تحت.
         </p>
         <div className={styles.models}>
           {vehicles
@@ -204,18 +198,18 @@ function YearPicker({
     <>
       <div className={styles.range}>
         <label>
-          Start year
+          من سنة
           <select value={from} onChange={(e) => setFrom(e.target.value)}>
-            <option value="">Choose</option>
+            <option value="">اختار</option>
             {years.map((y) => (
               <option key={y}>{y}</option>
             ))}
           </select>
         </label>
         <label>
-          End year
+          إلى سنة
           <select value={to} onChange={(e) => setTo(e.target.value)}>
-            <option value="">Choose</option>
+            <option value="">اختار</option>
             {years.map((y) => (
               <option key={y}>{y}</option>
             ))}
@@ -232,18 +226,17 @@ function YearPicker({
             ])
           }
         >
-          Add year range
+          إضافة الفترة
         </button>
       </div>
       <p>
-        Both years are included. A range of 2015–2020 selects 2015, 2016, 2017,
-        2018, 2019 and 2020 individually.
+        الفترة بتشمل سنة البداية والنهاية، مثلًا من 2015 إلى 2020 تشمل كل السنين بينهم.
       </p>
       <label>
-        Find a year
+        ابحث عن سنة
         <input
           inputMode="numeric"
-          placeholder="e.g. 2021"
+          placeholder="مثال: 2021"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
@@ -269,13 +262,13 @@ function YearPicker({
           ))}
       </div>
       <p>
-        Selected years:{" "}
+        السنين المختارة:{" "}
         {selected.length
           ? [...selected].sort((a, b) => a - b).join(", ")
-          : "None yet"}
+          : "لسه مفيش"}
       </p>
       <button type="button" onClick={() => onChange([])}>
-        Clear years
+        مسح السنين
       </button>
     </>
   );
