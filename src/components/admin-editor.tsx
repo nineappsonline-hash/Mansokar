@@ -3,6 +3,7 @@ import { useState } from "react";
 import { emptyImportMessage, importFeedback } from "@/lib/import-feedback";
 import { ApiForm } from "./forms";
 import uploadStyles from "./product-upload.module.css";
+import { moveProductPhoto, validateProductPhotos } from "@/lib/product-photo-order";
 export function JsonEditor({
   action,
   initial,
@@ -1201,10 +1202,13 @@ export function ImageManager({
         </label>
       </div>
       <p role="status">{message}</p>
+      {images.length > 0 && validateProductPhotos(images) && (
+        <p role="alert" className="notice">لازم تكتب وصف عربي وإنجليزي لكل صورة قبل الحفظ.</p>
+      )}
       <ApiForm
         action="admin-images"
         label="حفظ الصور وترتيبها"
-        disabled={busy || !product}
+        disabled={busy || !product || Boolean(validateProductPhotos(images))}
         extra={{
           json: JSON.stringify({
             product,
@@ -1250,12 +1254,7 @@ export function ImageManager({
                 <button
                   type="button"
                   disabled={busy}
-                  onClick={() => setImages((current) => {
-                    const next = [...current];
-                    const [cover] = next.splice(index, 1);
-                    next.unshift(cover);
-                    return next;
-                  })}
+                  onClick={() => setImages((current) => moveProductPhoto(current, index, 0))}
                 >
                   تعيين كصورة أساسية
                 </button>
@@ -1264,14 +1263,7 @@ export function ImageManager({
                 type="button"
                 disabled={busy || index === 0}
                 onClick={() =>
-                  setImages((current) => {
-                    const next = [...current];
-                    [next[index - 1], next[index]] = [
-                      next[index],
-                      next[index - 1],
-                    ];
-                    return next;
-                  })
+                  setImages((current) => moveProductPhoto(current, index, index - 1))
                 }
               >
                 تحريك للأمام
@@ -1280,14 +1272,7 @@ export function ImageManager({
                 type="button"
                 disabled={busy || index === images.length - 1}
                 onClick={() =>
-                  setImages((current) => {
-                    const next = [...current];
-                    [next[index], next[index + 1]] = [
-                      next[index + 1],
-                      next[index],
-                    ];
-                    return next;
-                  })
+                  setImages((current) => moveProductPhoto(current, index, index + 1))
                 }
               >
                 تحريك للخلف
