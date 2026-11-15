@@ -69,6 +69,7 @@ export default async function Admin({
     page?: string;
     view?: string;
     tab?: string;
+    status?: string;
   }>;
 }) {
   let admin;
@@ -95,6 +96,7 @@ export default async function Admin({
     page,
     view,
     tab,
+    status,
   } = await searchParams;
   if (["images", "fitments", "taxonomy", "import"].includes(module)) {
     const destination = new URLSearchParams({ module: "products" });
@@ -645,11 +647,10 @@ export default async function Admin({
       </div>
     );
   } else if (module === "orders") {
-    let orderQuery = db.from("orders");
+    const allowedOrderStatuses = ["pending_confirmation", "confirmed", "processing", "shipped", "delivered", "cancelled", "returned"];
+    let orderQuery = db.from("orders").select("id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)");
+    if (!id && status && allowedOrderStatuses.includes(status)) orderQuery = orderQuery.eq("status", status);
     const { data, error } = await orderQuery
-      .select(
-        "id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)",
-      )
       .order("created_at", { ascending: false })
       .match(id ? { id } : {})
       .limit(100);
@@ -682,7 +683,30 @@ export default async function Admin({
             )}
           </section>
         )}
-        {data?.map((o) => (
+        {!id && (
+          <section className="panel admin-orders-list" lang="ar" dir="rtl">
+            <div className="admin-orders-list-head"><div><h2>قائمة الطلبات</h2><p>ابحث وتابع الطلبات، وافتح أي طلب لتعديل بياناته أو مراجعة الدفع.</p></div><strong>{data?.length ?? 0} طلب في النتائج</strong></div>
+            <form method="get" action="/admin" className="admin-orders-filters">
+              <input type="hidden" name="module" value="orders" />
+              <label>بحث في النتائج<input type="search" name="q" defaultValue={q ?? ""} placeholder="رقم الطلب أو اسم العميل أو الهاتف" /></label>
+              <label>حالة الطلب<select name="status" defaultValue={status ?? ""}><option value="">كل الحالات</option>{allowedOrderStatuses.map((v) => <option key={v} value={v}>{humanStatus(v, orderStatusLabels)}</option>)}</select></label>
+              <button type="submit">تطبيق الفلاتر</button>
+            </form>
+            <p className="admin-orders-hint">البحث النصي داخل أحدث 100 طلب في الحالة المحددة؛ استخدم فلتر الحالة لتضييق النتائج.</p>
+            <div className="admin-orders-rows">
+              {data?.filter((o) => !q || [o.order_number, o.customer?.name, o.customer?.phone].some((v) => String(v ?? "").toLowerCase().includes(q.trim().toLowerCase()))).map((o) => (
+                <Link className="admin-order-row" href={`/admin?module=orders&id=${o.id}`} key={o.id}>
+                  <span className="admin-order-row-primary"><strong>#{o.order_number}</strong><small>{o.customer?.name ?? "عميل"}</small></span>
+                  <span className="admin-order-status">{humanStatus(o.status, orderStatusLabels)}</span>
+                  <span className="admin-order-payment">{humanStatus(o.payment_status, paymentStatusLabels)}</span>
+                  <strong className="admin-order-total">{money(o.total, "ar")}</strong>
+                  <span className="admin-order-open">عرض التفاصيل ←</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+        {id && data?.map((o) => (
           <article key={o.id} className="panel">
             <h2>Order {o.order_number}</h2>
             <p>
