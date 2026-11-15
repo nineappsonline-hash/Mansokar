@@ -70,6 +70,10 @@ export async function POST(
       return NextResponse.json({ error: "Request too large" }, { status: 413 });
     const b = JSON.parse(raw);
     responseLocale = (b.ui_locale ?? b.locale) === "ar" ? "ar" : "en";
+    // Authenticate privileged requests before loading the vehicle catalog or
+    // executing any privileged database operation. A client-supplied action
+    // name never grants access by itself.
+    const adminActor = action.startsWith("admin-") ? await requireAdmin() : null;
     const db = service();
     const { vehicles } = await vehicleCatalog();
     if (action === "analytics") {
@@ -622,7 +626,8 @@ export async function POST(
       }
     }
     if (action.startsWith("admin-")) {
-      const admin = await requireAdmin();
+      if (!adminActor) throw Error("Forbidden");
+      const admin = adminActor;
       let details: unknown = {};
       const commit = (payload: unknown) =>
         db.rpc("admin_commit", {
