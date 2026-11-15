@@ -7369,3 +7369,17 @@ body {
 .admin-customer-inbox select,.admin-customer-inbox textarea,.admin-customer-inbox input { font:inherit; min-height:44px; border-radius:10px; }
 .admin-customer-inbox .prose { white-space:pre-wrap; background:#f5f7f8; border-radius:12px; padding:15px; }
 @media(max-width:640px){.admin-customer-inbox > article {padding:15px;} .admin-customer-inbox h2 {font-size:19px;}}
+
+/* Arabic customer management */
+.admin-customers-redesign { font-family:"Almarai",Tahoma,sans-serif; font-size:15px; line-height:1.8; }
+.admin-customers-redesign .filters { background:#fff; border:1px solid #e3eaf0; border-radius:15px; padding:20px; }
+.admin-customers-redesign .two-col { align-items:start; }
+.admin-customers-redesign .two-col > .panel { min-width:0; border:1px solid #e3eaf0; border-radius:15px; background:#fff; padding:20px; }
+.admin-customers-redesign h2 { color:#142838; font-size:23px; font-weight:800; overflow-wrap:anywhere; }
+.admin-customers-redesign h3 { color:#142838; font-size:17px; font-weight:800; margin-top:12px; }
+.admin-customers-redesign label { font-size:14px; font-weight:700; }
+.admin-customers-redesign input,.admin-customers-redesign select,.admin-customers-redesign textarea { font:inherit; border-radius:10px; min-height:44px; }
+.admin-customers-redesign a { overflow-wrap:anywhere; }
+.admin-customers-redesign .accordion { background:#f5f7f8; border-radius:11px; padding:13px; }
+.admin-customers-redesign .prose { white-space:pre-wrap; }
+@media(max-width:760px) { .admin-customers-redesign .two-col { display:flex; flex-direction:column; } .admin-customers-redesign .two-col > .panel { width:100%; padding:15px; } .admin-customers-redesign h2 { font-size:20px; } }
