@@ -7154,3 +7154,21 @@ body {
  .admin-overview-redesign .admin-metric-label { font-size: 12px; }
  .admin-overview-redesign .admin-metric-link { font-size: 11px; }
 }
+
+/* Dashboard composition — aligned with MOPC Admin Figma */
+.admin-dashboard-heading { margin-bottom: 18px; }
+.admin-dashboard-heading h1 { font-size: clamp(25px, 2.3vw, 32px); letter-spacing: -.025em; }
+.admin-dashboard-heading p { max-width: 700px; }
+.admin-overview-redesign .admin-dashboard-metrics-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.admin-overview-redesign .admin-dashboard-metrics-heading h2 { margin: 0 0 4px; }
+.admin-overview-redesign .admin-dashboard-metrics-heading p { margin: 0; font-size: 13px; }
+.admin-dashboard-live { border: 1px solid #dce8bd; background: #f4f9e6; color: #426025; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.admin-overview-redesign .admin-dashboard-priority,
+.admin-overview-redesign .admin-dashboard-orders { border-radius: 16px; padding: 24px; }
+.admin-overview-redesign .admin-dashboard-priority .notice { border-radius: 10px; padding: 14px 16px; }
+@media(max-width: 640px) {
+ .admin-dashboard-heading { margin-bottom: 12px; }
+ .admin-overview-redesign .admin-dashboard-priority,
+ .admin-overview-redesign .admin-dashboard-orders { padding: 16px; }
+ .admin-dashboard-live { padding: 5px 9px; font-size: 10px; }
+}
