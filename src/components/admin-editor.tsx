@@ -1133,7 +1133,7 @@ export function ImageManager({
       }
     }
     setMessage(
-      `${uploaded} photo${uploaded === 1 ? "" : "s"} uploaded. Add descriptions and save.${files.length > remaining ? " Only the first " + remaining + " files were accepted (10 photos maximum)." : ""} ${errors.join(" ")}`,
+      `${uploaded} صورة اترفعت. اكتب وصف الصور واضغط حفظ.${files.length > remaining ? " تم قبول أول " + remaining + " صور فقط (الحد الأقصى 10)." : ""} ${errors.join(" ")}`,
     );
     setBusy(false);
   }
@@ -1204,7 +1204,7 @@ export function ImageManager({
       <ApiForm
         action="admin-images"
         label="حفظ الصور وترتيبها"
-        disabled={busy}
+        disabled={busy || !product}
         extra={{
           json: JSON.stringify({
             product,
@@ -1247,11 +1247,22 @@ export function ImageManager({
             ))}
             <div className="admin-nav admin-product-image-actions">
               {index !== 0 && (
-                <button type="button" onClick={() => setImages((current) => { const next = [...current]; const [cover] = next.splice(index, 1); next.unshift(cover); return next; })}>تعيين كصورة أساسية</button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => setImages((current) => {
+                    const next = [...current];
+                    const [cover] = next.splice(index, 1);
+                    next.unshift(cover);
+                    return next;
+                  })}
+                >
+                  تعيين كصورة أساسية
+                </button>
               )}
               <button
                 type="button"
-                disabled={index === 0}
+                disabled={busy || index === 0}
                 onClick={() =>
                   setImages((current) => {
                     const next = [...current];
@@ -1267,7 +1278,7 @@ export function ImageManager({
               </button>
               <button
                 type="button"
-                disabled={index === images.length - 1}
+                disabled={busy || index === images.length - 1}
                 onClick={() =>
                   setImages((current) => {
                     const next = [...current];
@@ -1283,6 +1294,7 @@ export function ImageManager({
               </button>
               <button
                 type="button"
+                disabled={busy}
                 onClick={() =>
                   setImages((current) => current.filter((_, i) => i !== index))
                 }
