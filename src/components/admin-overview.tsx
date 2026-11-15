@@ -49,9 +49,9 @@ export async function AdminOverview() {
         <div className="admin-overview-metrics">
           {cards.map((card) => (
             <Link className="panel admin-overview-metric" key={card.label} href={card.href} style={{ textDecoration: "none", color: "inherit" }}>
-              <span className="muted">{card.label}</span>
-              <strong style={{ display: "block", fontSize: "2rem", marginTop: 8 }}>{card.count.toLocaleString("ar-EG")}</strong>
-              <span>عرض التفاصيل ←</span>
+              <span className="admin-metric-accent" aria-hidden="true" /><span className="admin-metric-label">{card.label}</span>
+              <strong className="admin-metric-value">{card.count.toLocaleString("ar-EG")}</strong>
+              <span className="admin-metric-link">عرض التفاصيل ←</span>
             </Link>
           ))}
         </div>
