@@ -100,6 +100,35 @@ test("rejecting one of multiple proofs preserves pending order until last proof"
   }
 });
 
+test("rejecting the last remaining proof fails the order only after all proofs are reviewed", async () => {
+  const db = new PGlite();
+  const actor = "00000000-0000-4000-8000-000000000041";
+  const order = "00000000-0000-4000-8000-000000000042";
+  const first = "00000000-0000-4000-8000-000000000043";
+  const second = "00000000-0000-4000-8000-000000000044";
+  try {
+    await db.exec(`
+      create table public.admins(user_id uuid primary key,enabled boolean not null);
+      create table public.orders(id uuid primary key,total bigint,payment_status text,payment_method text);
+      create table public.manual_transfers(id uuid primary key,order_id uuid,amount bigint,method text,status text,reference text);
+      create table public.payments(order_id uuid,provider text,reference text,amount bigint,status text,idempotency_key text unique);
+      create table public.admin_audit_logs(user_id uuid,action text,details jsonb);
+    `);
+    await db.exec(readFileSync("docs/sql/staged-verify-manual-transfer-hardening.sql", "utf8"));
+    await db.query("insert into public.admins values($1,true)", [actor]);
+    await db.query("insert into public.orders values($1,10000,'pending','wallet')", [order]);
+    await db.query("insert into public.manual_transfers values($1,$2,10000,'wallet','pending','proof-1'),($3,$2,10000,'wallet','pending','proof-2')", [first,order,second]);
+    await db.query("select public.verify_manual_transfer($1::uuid,$2::uuid,'rejected')", [actor,first]);
+    assert.equal((await db.query<{payment_status:string}>("select payment_status from public.orders where id=$1",[order])).rows[0].payment_status,"pending");
+    await db.query("select public.verify_manual_transfer($1::uuid,$2::uuid,'rejected')", [actor,second]);
+    assert.equal((await db.query<{payment_status:string}>("select payment_status from public.orders where id=$1",[order])).rows[0].payment_status,"failed");
+    assert.equal((await db.query("select * from public.payments")).rows.length,0);
+    assert.equal((await db.query("select * from public.admin_audit_logs")).rows.length,2);
+  } finally {
+    await db.close();
+  }
+});
+
 test("existing paid payment blocks approval even when order status is stale", async () => {
   const db = new PGlite();
   const actor = "00000000-0000-4000-8000-000000000031";
