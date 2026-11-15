@@ -884,14 +884,14 @@ export default async function Admin({
       .limit(200);
     if (error) throw error;
     content = (
-      <div className="stack">
+      <div className="stack admin-customer-inbox" lang="ar" dir="rtl">
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "Message not found" : "No messages yet"}</h2>
-            <p>Messages sent through the storefront chat appear here.</p>
+            <h2>{id ? "الرسالة مش موجودة" : "مفيش رسائل لسه"}</h2>
+            <p>هنا هتظهر رسائل العملاء اللي بعتوها من الموقع.</p>
             {id && (
               <Link className="button secondary" href="/admin?module=messages">
-                View all messages
+                عرض كل الرسائل
               </Link>
             )}
           </section>
@@ -902,13 +902,13 @@ export default async function Admin({
               <h2>{m.name}</h2>
               <p>
                 <time dateTime={m.created_at}>
-                  {new Intl.DateTimeFormat("en-GB", {
+                  {new Intl.DateTimeFormat("ar-EG", {
                     dateStyle: "medium",
                     timeStyle: "short",
                     timeZone: "Africa/Cairo",
                   }).format(new Date(m.created_at))}
                 </time>{" "}
-                · Cairo time · {m.status}
+                · بتوقيت القاهرة · {({ new: "جديدة", read: "مقروءة", replied: "تم الرد", closed: "مغلقة" } as Record<string, string>)[m.status] ?? m.status}
               </p>
             </div>
             <p>
@@ -920,13 +920,13 @@ export default async function Admin({
             <ApiForm
               action="admin-message"
               extra={{ id: m.id }}
-              label="Update message"
+              label="حفظ حالة الرسالة"
             >
               <label>
-                Message status
+                حالة الرسالة
                 <select name="status" defaultValue={m.status}>
                   {["new", "read", "replied", "closed"].map((s) => (
-                    <option key={s}>{s}</option>
+                    <option key={s} value={s}>{({ new: "جديدة", read: "مقروءة", replied: "تم الرد", closed: "مغلقة", pending: "قيد المراجعة", quoted: "تم عرض السعر", resolved: "تم الحل" } as Record<string, string>)[s] ?? s}</option>
                   ))}
                 </select>
               </label>
@@ -944,14 +944,14 @@ export default async function Admin({
       .limit(100);
     if (error) throw error;
     content = (
-      <div className="stack">
+      <div className="stack admin-customer-inbox" lang="ar" dir="rtl">
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "Inquiry not found" : "No inquiries yet"}</h2>
-            <p>Customer callbacks and spare-part requests appear here.</p>
+            <h2>{id ? "الطلب مش موجود" : "مفيش طلبات استفسار لسه"}</h2>
+            <p>هنا هتظهر طلبات التواصل والاستفسارات عن قطع الغيار.</p>
             {id && (
               <Link className="button secondary" href="/admin?module=inquiries">
-                View all inquiries
+                عرض كل الطلبات
               </Link>
             )}
           </section>
@@ -961,26 +961,25 @@ export default async function Admin({
             <h2>{r.contact}</h2>
             <p>
               <time dateTime={r.created_at}>
-                {new Intl.DateTimeFormat("en-GB", {
+                {new Intl.DateTimeFormat("ar-EG", {
                   dateStyle: "medium",
                   timeStyle: "short",
                   timeZone: "Africa/Cairo",
                 }).format(new Date(r.created_at))}
               </time>{" "}
-              · Cairo time
+              · بتوقيت القاهرة
             </p>
             <p>{r.description}</p>
             <p>
               {r.vehicle_details?.request_type === "contact"
-                ? `Callback request · ${r.vehicle_details.topic}`
+                ? `طلب تواصل · ${r.vehicle_details.topic}`
                 : (r.vehicle_config_id ??
                   Object.values(r.vehicle_details ?? {}).join(" · "))}
             </p>
             {!r.vehicle_config_id &&
               r.vehicle_details?.request_type !== "contact" && (
                 <p className="notice">
-                  Customer-described vehicle; exact fitment requires manual
-                  verification.
+                  العميل كتب بيانات العربية بنفسه؛ لازم نراجع التوافق يدويًا قبل تأكيد القطعة.
                 </p>
               )}
             {r.image_path && (
@@ -989,16 +988,16 @@ export default async function Admin({
                 target="_blank"
                 rel="noreferrer"
               >
-                View private inquiry photo ↗
+                عرض صورة الطلب الخاصة ↗
               </a>
             )}
             <ApiForm
               action="admin-inquiry"
               extra={{ id: r.id }}
-              label="Update inquiry"
+              label="حفظ بيانات الطلب"
             >
               <label>
-                Quoted amount · EGP (whole pounds)
+                السعر المعروض · جنيه مصري
                 <input
                   name="quoted_amount_egp"
                   type="number"
@@ -1010,7 +1009,7 @@ export default async function Admin({
                 />
               </label>
               <label>
-                Private staff notes
+                ملاحظات داخلية للفريق
                 <textarea
                   name="staff_notes"
                   maxLength={5000}
@@ -1018,7 +1017,7 @@ export default async function Admin({
                 />
               </label>
               <label>
-                Inquiry status
+                حالة الطلب
                 <select name="status" defaultValue={r.status}>
                   {["pending", "quoted", "resolved", "closed"].map((s) => (
                     <option key={s}>{s}</option>
