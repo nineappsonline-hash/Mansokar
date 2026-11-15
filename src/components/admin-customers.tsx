@@ -69,25 +69,25 @@ export async function AdminCustomers({
     ]);
     if (account.user)
       detail = (
-        <section className="panel stack">
-          <h2>{profile?.name || account.user.email || "Member"}</h2>
+        <section className="panel stack admin-customer-profile">
+          <h2>{profile?.name || account.user.email || "عميل"}</h2>
           <p>
             {account.user.email} · {profile?.phone} · {profile?.locale}
           </p>
           <p>
             {account.user.email_confirmed_at
-              ? "Email verified"
-              : "Email not verified"}
+              ? "البريد الإلكتروني مؤكد"
+              : "البريد الإلكتروني غير مؤكد"}
           </p>
           <details>
-            <summary>Edit customer profile</summary>
+            <summary>تعديل بيانات العميل</summary>
             <ApiForm
               action="admin-customer-profile"
               extra={{ user_id: id }}
-              label="Save customer profile"
+              label="حفظ بيانات العميل"
             >
               <label>
-                Name
+                الاسم
                 <input
                   name="name"
                   required
@@ -97,7 +97,7 @@ export async function AdminCustomers({
                 />
               </label>
               <label>
-                Egyptian mobile
+                رقم الموبايل المصري
                 <input
                   name="phone"
                   required
@@ -106,7 +106,7 @@ export async function AdminCustomers({
                 />
               </label>
               <label>
-                Preferred language
+                اللغة المفضلة
                 <select name="locale" defaultValue={profile?.locale ?? "ar"}>
                   <option value="ar">العربية</option>
                   <option value="en">English</option>
@@ -114,40 +114,37 @@ export async function AdminCustomers({
               </label>
             </ApiForm>
           </details>
-          <h3>Recent orders (up to 100)</h3>
+          <h3>آخر الطلبات (حتى 100 طلب)</h3>
           {orders?.map((o) => (
             <Link key={o.id} href={"/admin?module=orders&id=" + o.id}>
-              {o.order_number} · {o.status} · {money(o.total, "en")}
+              {o.order_number} · {o.status} · {money(o.total, "ar")}
             </Link>
           ))}
-          <h3>Recent inquiries (up to 100)</h3>
+          <h3>آخر الاستفسارات (حتى 100 طلب)</h3>
           {requests?.map((r) => (
             <article key={r.id}>
               <p>{r.description}</p>
               <p>
                 {r.status}
                 {r.quoted_amount !== null
-                  ? " · " + money(r.quoted_amount, "en")
+                  ? " · " + money(r.quoted_amount, "ar")
                   : ""}
               </p>
               <Link href={"/admin?module=inquiries&id=" + r.id}>
-                Manage inquiry
+                إدارة الاستفسار
               </Link>
             </article>
           ))}
-          <h3>Private support notes</h3>
+          <h3>ملاحظات خدمة العملاء الخاصة</h3>
           <p className="muted">
-            Visible to enabled administrators only. Never place passwords or
-            payment credentials in notes.
+            الملاحظات دي متاحة للمسؤولين المصرّح لهم فقط. ممنوع كتابة كلمات السر أو بيانات الدفع فيها.
           </p>
           {notes?.map((n) => (
             <article key={n.id} className="accordion">
               <time>
                 {new Date(n.created_at)
-                  .toISOString()
-                  .slice(0, 16)
-                  .replace("T", " ")}{" "}
-                UTC
+                  .toLocaleString("ar-EG", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Cairo" })}{" "}
+                بتوقيت القاهرة
               </time>
               <p className="prose">{n.body}</p>
             </article>
@@ -155,10 +152,10 @@ export async function AdminCustomers({
           <ApiForm
             action="admin-customer-note"
             extra={{ user_id: id }}
-            label="Add support note"
+            label="إضافة ملاحظة داخلية"
           >
             <label>
-              Note
+              الملاحظة
               <textarea name="body" required minLength={1} maxLength={3000} />
             </label>
           </ApiForm>
@@ -166,19 +163,18 @@ export async function AdminCustomers({
       );
   }
   return (
-    <div className="stack">
+    <div className="stack admin-customers-redesign" lang="ar" dir="rtl">
       <form className="panel filters">
         <input type="hidden" name="module" value="customers" />
         <label>
-          Find account by email, name or phone
+          ابحث بالبريد الإلكتروني أو الاسم أو الموبايل
           <input name="q" maxLength={100} defaultValue={q} />
         </label>
-        <button className="button">Search</button>
+        <button className="button">بحث</button>
       </form>
       <p className="muted">
-        All registered accounts are included, even without a saved profile.
-        Guest contacts are available in Orders and Inquiries. {count ?? 0}{" "}
-        matching accounts.
+        النتائج بتشمل الحسابات المسجلة حتى لو بيانات الملف الشخصي ناقصة. بيانات العملاء الضيوف موجودة في الطلبات والاستفسارات. {count ?? 0}{" "}
+        حساب مطابق.
       </p>
       <div className="two-col">
         <div className="panel stack">
@@ -187,23 +183,23 @@ export async function AdminCustomers({
               key={m.user_id}
               href={`/admin?module=customers&id=${m.user_id}&q=${encodeURIComponent(q)}`}
             >
-              {m.name || m.email} · {m.email} · {m.phone || "No phone supplied"}
+              {m.name || m.email} · {m.email} · {m.phone || "رقم الموبايل غير متوفر"}
             </Link>
           ))}
-          {!members?.length && <p>No matching profiles.</p>}
+          {!members?.length && <p>مفيش حسابات مطابقة للبحث.</p>}
           <div className="admin-nav">
             {offset > 0 && (
               <Link
                 href={`/admin?module=customers&q=${encodeURIComponent(q)}&page=${offset / 50}`}
               >
-                Previous
+                السابق
               </Link>
             )}
             {offset + 50 < (count ?? 0) && (
               <Link
                 href={`/admin?module=customers&q=${encodeURIComponent(q)}&page=${offset / 50 + 2}`}
               >
-                Next
+                التالي
               </Link>
             )}
           </div>
