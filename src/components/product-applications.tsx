@@ -29,8 +29,9 @@ export function ProductApplications({
   const [makes, setMakes] = useState<string[]>([]),
     [search, setSearch] = useState("");
   const years = Array.from(
-    new Set([...vehicles.map((vehicle) => vehicle.year), ...applications.flatMap((application) => application.years)]),
-  ).sort((a, b) => b - a);
+    { length: new Date().getFullYear() + 2 - 1950 },
+    (_, i) => new Date().getFullYear() + 1 - i,
+  );
   const setYears = (id: string, next: number[]) =>
     onChange(
       applications.map((a) =>
