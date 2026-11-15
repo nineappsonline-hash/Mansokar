@@ -99,37 +99,33 @@ export function AdminSignIn({ children }: { children: React.ReactNode }) {
   return (
     <main
       className={`${styles.workspace} ${styles.signIn}`}
-      lang="en"
-      dir="ltr"
+      lang="ar"
+      dir="rtl"
     >
       <div className={styles.signInIntro}>
-        <Link className={styles.brand} href="/en">
+        <Link className={styles.brand} href="/ar">
           <span>
             <BrandLogo className={styles.brandLogo} />
             <small>إدارة المتجر</small>
           </span>
         </Link>
         <div>
-          <span className={styles.eyebrow}>WELCOME TO YOUR WORKSPACE</span>
+          <span className={styles.eyebrow}>أهلًا بك في لوحة الإدارة</span>
           <h1>
-            Everything your
-            <br />
-            store needs.
-            <br />
-            <span>One place.</span>
+            إدارة متجرك\n            <br />\n            <span>في مكان واحد.</span>
           </h1>
           <p>
             Manage your catalog, orders and customer experience from your MOPC
             workspace.
           </p>
         </div>
-        <small>Built for the road ahead.</small>
+        <small>كل أدوات الإدارة في مكان واحد.</small>
       </div>
       <section className={`${styles.module} ${styles.signInForm}`}>
         {children}
         <p className={styles.signInNote}>
           <ShieldCheck size={15} />
-          Access is reserved for authorized administrators.
+          الدخول متاح لمديري المتجر المصرح لهم فقط.
         </p>
       </section>
     </main>
