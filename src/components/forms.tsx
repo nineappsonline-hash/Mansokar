@@ -384,6 +384,17 @@ export function Checkout({
     subtotal: number;
   } | null>(null);
   const [cartPreviewError, setCartPreviewError] = useState(false);
+  const [cartVersion, setCartVersion] = useState(0);
+  useEffect(() => {
+    const onCartChange = () => setCartVersion((value) => value + 1);
+    window.addEventListener("store-change", onCartChange);
+    window.addEventListener("storage", onCartChange);
+    return () => {
+      window.removeEventListener("store-change", onCartChange);
+      window.removeEventListener("storage", onCartChange);
+    };
+  }, []);
+
   useEffect(() => {
     const controller = new AbortController();
     let lines: { id: string; qty: number }[];
@@ -414,16 +425,6 @@ export function Checkout({
   const checkoutFormRef = useRef<HTMLFormElement>(null);
   const [quoteInput, setQuoteInput] = useState({ phone: "", coupon: "" });
   const [quoteBusy, setQuoteBusy] = useState(false);
-  const [cartVersion, setCartVersion] = useState(0);
-  useEffect(() => {
-    const onCartChange = () => setCartVersion((value) => value + 1);
-    window.addEventListener("store-change", onCartChange);
-    window.addEventListener("storage", onCartChange);
-    return () => {
-      window.removeEventListener("store-change", onCartChange);
-      window.removeEventListener("storage", onCartChange);
-    };
-  }, []);
   const router = useRouter();
   useEffect(() => {
     setQuote(null);
