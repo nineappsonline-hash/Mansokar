@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { PGlite } from "@electric-sql/pglite";
 async function fixture(){
   const db=new PGlite();
+  await db.exec("create role anon; create role authenticated; create role service_role;");
   await db.exec(`
     create table public.admins(user_id uuid primary key,enabled boolean);
     create table public.products(id text primary key,sku text);
