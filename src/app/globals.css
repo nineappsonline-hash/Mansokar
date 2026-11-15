@@ -7126,3 +7126,31 @@ body {
  .admin-overview-metric { min-height: 110px; padding: 16px !important; }
  .admin-overview-redesign .admin-overview-section h2 { font-size: 19px; }
 }
+
+/* Figma KPI refinement — 5 compact cards, clear value hierarchy */
+.admin-overview-redesign .admin-overview-metrics {
+  display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px;
+}
+.admin-overview-redesign .admin-overview-metric {
+  min-width: 0; min-height: 164px; padding: 18px !important;
+  gap: 10px; align-items: flex-start; justify-content: flex-start;
+  border-radius: 14px !important; box-shadow: 0 3px 12px rgba(16,29,41,.025);
+}
+.admin-overview-redesign .admin-metric-accent {
+  display: block; width: 38px; height: 6px; flex: 0 0 6px; border-radius: 10px; background: #d7e9b0;
+}
+.admin-overview-redesign .admin-overview-metric:nth-child(2) .admin-metric-accent { background: #cfe5f7; }
+.admin-overview-redesign .admin-overview-metric:nth-child(3) .admin-metric-accent { background: #ffe4b8; }
+.admin-overview-redesign .admin-overview-metric:nth-child(4) .admin-metric-accent { background: #d9eee8; }
+.admin-overview-redesign .admin-overview-metric:nth-child(5) .admin-metric-accent { background: #e5ddf7; }
+.admin-overview-redesign .admin-metric-label { font-size: 13px; font-weight: 700; line-height: 1.5; color: #344453; }
+.admin-overview-redesign .admin-metric-value { display: block; font-size: 38px; font-weight: 800; line-height: 1.1; color: #101d29; font-variant-numeric: tabular-nums; }
+.admin-overview-redesign .admin-metric-link { font-size: 12px; font-weight: 600; color: #687785; margin-top: auto; }
+@media (max-width: 1250px) { .admin-overview-redesign .admin-overview-metrics { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width: 750px) {
+ .admin-overview-redesign .admin-overview-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+ .admin-overview-redesign .admin-overview-metric { min-height: 122px; padding: 13px !important; gap: 7px; }
+ .admin-overview-redesign .admin-metric-value { font-size: 28px; }
+ .admin-overview-redesign .admin-metric-label { font-size: 12px; }
+ .admin-overview-redesign .admin-metric-link { font-size: 11px; }
+}
