@@ -1101,18 +1101,18 @@ export function ImageManager({
     if (busy || !product || !files.length) return;
     const remaining = 10 - images.length;
     if (remaining <= 0) {
-      setMessage("Maximum 10 photos per product.");
+      setMessage("الحد الأقصى 10 صور لكل منتج.");
       return;
     }
     setBusy(true);
-    setMessage("Uploading photos…");
+    setMessage("جاري رفع الصور…");
     let uploaded = 0;
     const errors: string[] = [];
     for (const file of files.slice(0, remaining)) {
       try {
         if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
-          throw Error("Choose JPG, PNG or WebP images.");
-        if (file.size > 5_000_000) throw Error("Maximum image size is 5 MB.");
+          throw Error("اختار صور JPG أو PNG أو WebP.");
+        if (file.size > 5_000_000) throw Error("الحد الأقصى لحجم الصورة 5 ميجابايت.");
         const form = new FormData();
         form.append("image", file);
         const response = await fetch("/api/upload?kind=catalog", {
@@ -1128,7 +1128,7 @@ export function ImageManager({
         uploaded++;
       } catch (error) {
         errors.push(
-          `${file.name}: ${error instanceof Error ? error.message : "Upload failed"}`,
+          `${file.name}: ${error instanceof Error ? error.message : "فشل رفع الصورة"}`,
         );
       }
     }
@@ -1138,11 +1138,11 @@ export function ImageManager({
     setBusy(false);
   }
   return (
-    <section className="panel stack">
-      <h2>Product photos</h2>
+    <section className="panel stack admin-product-images" lang="ar" dir="rtl">
+      <h2>صور المنتج</h2>
       {!fixedProduct && (
         <label>
-          Product
+          المنتج
           <select
             value={product}
             onChange={(e) => {
@@ -1160,8 +1160,7 @@ export function ImageManager({
         </label>
       )}
       <p>
-        The first image is the cover. Add bilingual descriptions and save to
-        publish this image order.
+        أول صورة هي الصورة الأساسية اللي بتظهر للعميل. اكتب وصف الصورة بالعربي والإنجليزي، وبعدها احفظ الترتيب.
       </p>
       <div
         className={
@@ -1180,16 +1179,15 @@ export function ImageManager({
         }}
       >
         <strong>
-          {busy ? "Uploading photos…" : "Drag & drop product photos here"}
+          {busy ? "جاري رفع الصور…" : "اسحب صور المنتج هنا أو اختارها من جهازك"}
         </strong>
         <p>
-          Drop several pictures at once, or choose files below. JPG, PNG or WebP
-          · 5 MB each · up to 10 photos.
+          تقدر ترفع أكتر من صورة مرة واحدة. JPG أو PNG أو WebP، بحد أقصى 5 ميجابايت للصورة و10 صور للمنتج.
         </p>
         <label>
-          Choose product photos
+          اختيار صور المنتج
           <input
-            aria-label="Upload product photo"
+            aria-label="رفع صور المنتج"
             type="file"
             multiple
             accept="image/jpeg,image/png,image/webp"
@@ -1205,7 +1203,7 @@ export function ImageManager({
       <p role="status">{message}</p>
       <ApiForm
         action="admin-images"
-        label="Save image order and descriptions"
+        label="حفظ الصور وترتيبها"
         disabled={busy}
         extra={{
           json: JSON.stringify({
@@ -1215,7 +1213,7 @@ export function ImageManager({
         }}
       >
         {images.map((image, index) => (
-          <article className="panel stack" key={image.path}>
+          <article className="panel stack admin-product-image-card" key={image.path}>
             {image.url && (
               <img
                 src={image.url}
@@ -1225,10 +1223,10 @@ export function ImageManager({
                 style={{ objectFit: "contain" }}
               />
             )}
-            <h3>{index === 0 ? "Cover photo" : `Photo ${index + 1}`}</h3>
+            <h3>{index === 0 ? "الصورة الأساسية" : `صورة ${index + 1}`}</h3>
             {(["ar", "en"] as const).map((lang) => (
               <label key={lang}>
-                Image description · {lang}
+                وصف الصورة · {lang}
                 <input
                   required
                   minLength={1}
@@ -1247,7 +1245,10 @@ export function ImageManager({
                 />
               </label>
             ))}
-            <div className="admin-nav">
+            <div className="admin-nav admin-product-image-actions">
+              {index !== 0 && (
+                <button type="button" onClick={() => setImages((current) => { const next = [...current]; const [cover] = next.splice(index, 1); next.unshift(cover); return next; })}>تعيين كصورة أساسية</button>
+              )}
               <button
                 type="button"
                 disabled={index === 0}
@@ -1262,7 +1263,7 @@ export function ImageManager({
                   })
                 }
               >
-                Move earlier
+                تحريك للأمام
               </button>
               <button
                 type="button"
@@ -1278,7 +1279,7 @@ export function ImageManager({
                   })
                 }
               >
-                Move later
+                تحريك للخلف
               </button>
               <button
                 type="button"
@@ -1286,12 +1287,12 @@ export function ImageManager({
                   setImages((current) => current.filter((_, i) => i !== index))
                 }
               >
-                Remove from product
+                إزالة من المنتج
               </button>
             </div>
           </article>
         ))}
-        {!images.length && <p>No product photos attached.</p>}
+        {!images.length && <p>مفيش صور مضافة للمنتج.</p>}
       </ApiForm>
     </section>
   );
