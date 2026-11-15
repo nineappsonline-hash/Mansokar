@@ -7342,3 +7342,19 @@ body {
 .admin-product-applications details { background:#f5f7f8; border-radius:12px; padding:16px; }
 .admin-product-applications summary { font-weight:700; cursor:pointer; }
 @media(max-width:600px) { .admin-product-applications fieldset { padding:13px; } .admin-product-applications > h2 { font-size:20px; } }
+
+/* Product media management — RTL responsive cards */
+.admin-product-images { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; background:#fff; border:1px solid #e5eaf0; border-radius:16px; padding:24px; }
+.admin-product-images h2 { color:#142838; font-size:24px; font-weight:800; }
+.admin-product-images > p { color:#5b6d79; font-size:15px; line-height:1.85; }
+.admin-product-images label { font-size:15px; font-weight:600; }
+.admin-product-images input { font-family:inherit; font-size:15px; min-height:43px; border-radius:10px; }
+.admin-product-images [data-testid="product-photo-dropzone"] { border:2px dashed #b6ce84; background:#f8fbf1; border-radius:15px; padding:22px; text-align:center; }
+.admin-product-images [data-testid="product-photo-dropzone"] strong { font-size:17px; color:#142838; }
+.admin-product-image-card { border:1px solid #e3eaf0; border-radius:14px; background:#fff; padding:18px; }
+.admin-product-image-card img { border-radius:11px; background:#f5f7f8; width:180px; height:150px; max-width:100%; }
+.admin-product-image-card h3 { font-size:17px; color:#142838; }
+.admin-product-image-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.admin-product-image-actions button { border:1px solid #dce5ea; border-radius:9px; padding:9px 13px; font-family:inherit; font-size:13px; background:#f5f7f8; }
+.admin-product-image-actions button:disabled { opacity:.45; cursor:not-allowed; }
+@media(max-width:640px) { .admin-product-images { padding:15px; } .admin-product-images h2 { font-size:21px; } .admin-product-image-actions button { flex:1 1 43%; } }
