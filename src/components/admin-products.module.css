@@ -310,3 +310,40 @@
     margin-top: 12px;
   }
 }
+
+/* MOPC Admin products refresh — larger Arabic typography, calmer panels */
+:global(.admin-products-redesign) { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; font-size:15px; line-height:1.8; }
+:global(.admin-products-redesign) .tabs,
+:global(.admin-products-redesign) .productTabs { gap:10px; }
+:global(.admin-products-redesign) .tabs button,
+:global(.admin-products-redesign) .productTabs button { font-family:inherit; font-size:15px; font-weight:700; padding:13px 17px; border-radius:11px; }
+:global(.admin-products-redesign) .tabs button[aria-current="page"] { background:#142838; border-color:#142838; }
+:global(.admin-products-redesign) .layout { grid-template-columns:minmax(340px,.9fr) minmax(0,1.5fr); gap:22px; }
+:global(.admin-products-redesign) .listHeading h2 { font-size:23px; font-weight:800; color:#142838; }
+:global(.admin-products-redesign) .count { font-size:14px; }
+:global(.admin-products-redesign) .search input { min-height:48px; font-family:inherit; font-size:15px; padding-right:42px; padding-left:12px !important; }
+:global(.admin-products-redesign) .search svg { right:14px; left:auto; top:16px; }
+:global(.admin-products-redesign) .filters { gap:10px; }
+:global(.admin-products-redesign) .filters select { min-height:46px; font-family:inherit; font-size:14px; border-radius:10px; padding:10px; }
+:global(.admin-products-redesign) .clearFilters { font-size:14px; color:#47672b; }
+:global(.admin-products-redesign) .products { max-height:720px; gap:11px; }
+:global(.admin-products-redesign) .products > a { border-radius:13px; padding:15px; gap:14px; align-items:center; text-decoration:none; }
+:global(.admin-products-redesign) .products > a[aria-current="page"] { background:#f7faef; border-color:#b7d47a; box-shadow:0 0 0 1px #dcebbb; }
+:global(.admin-products-redesign) .thumb { width:66px; height:66px; flex-basis:66px; border-radius:10px; }
+:global(.admin-products-redesign) .products strong { font-family:inherit; font-size:16px; line-height:1.65; color:#142838; }
+:global(.admin-products-redesign) .products small { font-family:inherit; font-size:13px; text-align:right; direction:ltr; color:#647483; }
+:global(.admin-products-redesign) .productMeta { font-size:13px; gap:12px; }
+:global(.admin-products-redesign) .published,
+:global(.admin-products-redesign) .draft { border-radius:8px; padding:5px 9px; }
+:global(.admin-products-redesign) .context h2 { font-size:25px !important; }
+:global(.admin-products-redesign) .context p { font-size:15px; line-height:1.8; }
+:global(.admin-products-redesign) .productTabs button[aria-current="page"] { background:#eff6df; color:#3f6024; border-color:#c9e86d; }
+@media(max-width:1050px) { :global(.admin-products-redesign) .layout { grid-template-columns:1fr; } }
+@media(max-width:600px) {
+ :global(.admin-products-redesign) .tabs button,
+ :global(.admin-products-redesign) .productTabs button { font-size:13px; padding:10px; }
+ :global(.admin-products-redesign) .products { max-height:480px; }
+ :global(.admin-products-redesign) .products strong { font-size:15px; }
+ :global(.admin-products-redesign) .thumb { width:56px; height:56px; flex-basis:56px; }
+ :global(.admin-products-redesign) .filters { grid-template-columns:1fr 1fr; }
+}
