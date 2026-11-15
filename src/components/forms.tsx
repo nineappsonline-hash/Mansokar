@@ -397,6 +397,8 @@ export function Checkout({
 
   useEffect(() => {
     const controller = new AbortController();
+    setCartPreview(null);
+    setCartPreviewError(false);
     let lines: { id: string; qty: number }[];
     try { lines = JSON.parse(localStorage.getItem("cart") || "[]"); }
     catch { setCartPreviewError(true); return; }
