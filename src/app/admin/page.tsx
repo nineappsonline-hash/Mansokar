@@ -673,11 +673,14 @@ export default async function Admin({
         `order_number.ilike.%${term}%,customer->>name.ilike.%${term}%,customer->>phone.ilike.%${term}%`,
       );
     }
-    const { data, error, count: orderCount } = await orderQuery
-      .order("created_at", { ascending: false })
-      .order("id", { ascending: false })
-      .match(id ? { id } : {})
-      .range(id ? 0 : (orderPage - 1) * orderPageSize, id ? 0 : orderPage * orderPageSize - 1);
+    // Invalid filter syntax must never silently return the entire order list.
+    const { data, error, count: orderCount } = !id && orderSearch && !safeOrderSearch
+      ? { data: [], error: null, count: 0 }
+      : await orderQuery
+          .order("created_at", { ascending: false })
+          .order("id", { ascending: false })
+          .match(id ? { id } : {})
+          .range(id ? 0 : (orderPage - 1) * orderPageSize, id ? 0 : orderPage * orderPageSize - 1);
     if (error) throw error;
     const orderIds = data?.map((o) => o.id) ?? [];
     const { data: transfers, error: transferError } = orderIds.length
