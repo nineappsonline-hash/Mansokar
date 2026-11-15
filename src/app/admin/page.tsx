@@ -33,6 +33,24 @@ import {
 } from "@/components/admin-editor";
 import { money } from "@/lib/catalog";
 import { isRemoteImageUrl } from "@/lib/image-links";
+const orderStatusLabels: Record<string, string> = {
+  pending_confirmation: "Awaiting confirmation",
+  confirmed: "Confirmed",
+  processing: "Preparing",
+  shipped: "Shipped",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  returned: "Returned",
+};
+const paymentStatusLabels: Record<string, string> = {
+  pending: "Awaiting payment",
+  paid: "Paid",
+  failed: "Payment failed",
+  refunded: "Refunded",
+  partially_refunded: "Partially refunded",
+};
+const humanStatus = (value: string, labels: Record<string, string>) =>
+  labels[value] ?? value.replaceAll("_", " ");
 export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Administration",
@@ -675,8 +693,8 @@ export default async function Admin({
               · Cairo time
             </p>
             <p>
-              {o.order_number} · {o.demo ? "DEMO" : ""} · {o.status} ·{" "}
-              {o.payment_status} · {o.payment_method ?? "Not specified"} ·{" "}
+              {o.order_number} · {o.demo ? "DEMO · " : ""}{humanStatus(o.status, orderStatusLabels)} ·{" "}
+              {humanStatus(o.payment_status, paymentStatusLabels)} · {o.payment_method ?? "Not specified"} ·{" "}
               {money(o.total, "en")}
             </p>
             <p>
@@ -769,7 +787,7 @@ export default async function Admin({
                     "cancelled",
                     "returned",
                   ].map((s) => (
-                    <option key={s}>{s}</option>
+                    <option key={s} value={s}>{humanStatus(s, orderStatusLabels)}</option>
                   ))}
                 </select>
               </label>
