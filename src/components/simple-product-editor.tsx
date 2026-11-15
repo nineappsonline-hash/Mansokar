@@ -255,44 +255,10 @@ export function SimpleProductEditor({
               متاح للطلب
             </label>
             <details className="stack">
-              <summary>Optional: verified stock and SEO overrides</summary>
+              <summary>إعدادات إضافية: حالة المنتج وSEO</summary>
               <p>
-                Search copy is automatic. The starting stock is 1,000 and can be
-                changed here; checkout orderability is controlled separately.
+                بيانات البحث بتتولد تلقائيًا، وتقدر تخصصها من هنا. إتاحة الطلب بتتحدد من الاختيار الموجود فوق.
               </p>
-              <label>
-                Stock quantity
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={value.specs?.stock_quantity ?? ""}
-                  onChange={(e) =>
-                    setValue({
-                      ...value,
-                      specs: { ...value.specs, stock_quantity: e.target.value },
-                    })
-                  }
-                />
-              </label>
-              <label>
-                Verified stock
-                <select
-                  value={value.specs?.stock_status ?? ""}
-                  onChange={(e) =>
-                    setValue({
-                      ...value,
-                      specs: { ...value.specs, stock_status: e.target.value },
-                    })
-                  }
-                >
-                  <option value="">Unknown</option>
-                  <option value="in_stock">In stock</option>
-                  <option value="out_of_stock">Out of stock</option>
-                  <option value="preorder">Preorder</option>
-                  <option value="backorder">Backorder</option>
-                </select>
-              </label>
               <label>
                 Verified condition
                 <select
