@@ -12,7 +12,7 @@ async function fixture(){
     create table public.analytics_events(id uuid,product_id text);
     create table public.admin_audit_logs(user_id uuid,action text,details jsonb);
   `);
-  await db.exec(readFileSync("docs/sql/staged-admin-delete-product-atomic.sql","utf8").replace(/^revoke all on function.*$/gm,"").replace(/^grant execute on function.*$/gm,"").replace(/^grant (select,insert,update|usage,select) on .*$/gm,""));
+  await db.exec(readFileSync("docs/sql/staged-admin-delete-product-atomic.sql","utf8").replace(/^revoke all on function.*$/gm,"").replace(/^grant execute on function.*$/gm,"").replace(/^grant (select,insert,update|usage,select) on .*$/gm,"").replace(/^revoke all on public\\.product_image_cleanup_jobs.*$/gm,""));
   const actor="00000000-0000-4000-8000-000000000061";
   await db.query("insert into public.admins values($1,true)",[actor]);
   await db.exec(`
