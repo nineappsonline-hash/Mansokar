@@ -701,15 +701,15 @@ export default async function Admin({
       <div className="stack">
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "الطلب غير موجود" : "لا توجد طلبات حتى الآن"}</h2>
+            <h2>{id ? "الطلب غير موجود" : orderPage > 1 && (orderCount ?? 0) <= (orderPage - 1) * orderPageSize ? "رقم الصفحة خارج نطاق النتائج" : "لا توجد طلبات حتى الآن"}</h2>
             <p>
               {id
                 ? "لم يتم العثور على الطلب. ارجع إلى قائمة الطلبات للمتابعة."
-                : "هنا هتظهر طلبات العملاء الجديدة وتفاصيل الدفع والتوصيل."}
+                : orderPage > 1 && (orderCount ?? 0) <= (orderPage - 1) * orderPageSize ? "الصفحة المطلوبة مش موجودة ضمن النتائج الحالية. ارجع لأول صفحة." : "هنا هتظهر طلبات العملاء الجديدة وتفاصيل الدفع والتوصيل."}
             </p>
             {id && (
               <Link className="button secondary" href="/admin?module=orders">
-                View all orders
+                عرض كل الطلبات
               </Link>
             )}
           </section>
@@ -933,7 +933,7 @@ export default async function Admin({
         )}
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "الرسالة مش موجودة" : selectedMessageStatus ? "مفيش رسائل بالحالة دي" : "مفيش رسائل لسه"}</h2>
+            <h2>{id ? "الرسالة مش موجودة" : messagePage > 1 && (messageCount ?? 0) <= (messagePage - 1) * messagePageSize ? "رقم الصفحة خارج نطاق النتائج" : selectedMessageStatus ? "مفيش رسائل بالحالة دي" : "مفيش رسائل لسه"}</h2>
             <p>هنا هتظهر رسائل العملاء اللي بعتوها من الموقع.</p>
             {id && (
               <Link className="button secondary" href="/admin?module=messages">
@@ -1021,7 +1021,7 @@ export default async function Admin({
         )}
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "الطلب مش موجود" : selectedInquiryStatus ? "مفيش طلبات بالحالة دي" : "مفيش طلبات استفسار لسه"}</h2>
+            <h2>{id ? "الطلب مش موجود" : inquiryPage > 1 && (inquiryCount ?? 0) <= (inquiryPage - 1) * inquiryPageSize ? "رقم الصفحة خارج نطاق النتائج" : selectedInquiryStatus ? "مفيش طلبات بالحالة دي" : "مفيش طلبات استفسار لسه"}</h2>
             <p>هنا هتظهر طلبات التواصل والاستفسارات عن قطع الغيار.</p>
             {id && (
               <Link className="button secondary" href="/admin?module=inquiries">
