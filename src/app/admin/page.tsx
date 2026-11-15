@@ -89,7 +89,7 @@ export default async function Admin({
     return (
       <AdminSignIn>
         <AuthForm
-          locale="en"
+          locale="ar"
           configured={configured()}
           allowSignup={false}
           destination="admin"
