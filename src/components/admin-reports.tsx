@@ -18,35 +18,35 @@ export async function AdminReports({
     return (
       <section className="panel">
         <p role="alert">{(error as Error).message}</p>
-        <Link href={"/admin?module=" + module}>Reset report dates</Link>
+        <Link href={"/admin?module=" + module}>إعادة ضبط فترة التقرير</Link>
       </section>
     );
   }
   const rows = await reportOrders(range);
   const summary = summarizeOrders(rows);
   const values = [
-    ["Placed orders", summary.orders],
-    ["Fully paid order totals", money(summary.paidRevenue, "en")],
-    ["Cancelled / returned", `${summary.cancelled} / ${summary.returned}`],
+    ["الطلبات المسجلة", summary.orders],
+    ["إجمالي الطلبات المدفوعة بالكامل", money(summary.paidRevenue, "ar")],
+    ["ملغاة / مرتجعة", `${summary.cancelled} / ${summary.returned}`],
   ];
   return (
-    <div className="stack">
+    <div className="stack admin-reports-redesign" lang="ar" dir="rtl">
       <form className="panel filters">
         <input type="hidden" name="module" value={module} />
         <label>
-          From (UTC)
+          من تاريخ (UTC)
           <input name="from" type="date" required defaultValue={range.from} />
         </label>
         <label>
-          Through (UTC)
+          إلى تاريخ (UTC)
           <input name="to" type="date" required defaultValue={range.to} />
         </label>
-        <button className="button">Apply dates</button>
+        <button className="button">تطبيق الفترة</button>
         <a
           className="button secondary"
           href={`/api/admin-report?from=${range.from}&to=${range.to}`}
         >
-          Export orders CSV
+          تصدير الطلبات CSV
         </a>
       </form>
       <div className="three-col">
@@ -58,46 +58,43 @@ export async function AdminReports({
         ))}
       </div>
       <p className="notice">
-        Demo orders excluded. All orders within the selected period are
-        included. Fully paid totals include delivery; they are not net profit.
-        Cancelled/returned orders are counted separately.
+        الطلبات التجريبية مستبعدة. التقرير يشمل كل الطلبات في الفترة المحددة. إجمالي الطلبات المدفوعة يشمل الشحن، لكنه مش صافي الربح. الطلبات الملغاة والمرتجعة محسوبة بشكل منفصل.
       </p>
       <section className="panel">
-        <h3>Product contribution after discounts</h3>
+        <h3>مساهمة المنتجات بعد الخصومات</h3>
         <p>
           {summary.contribution === null
-            ? "Unavailable: no fully paid orders, or historical item costs are missing."
-            : money(summary.contribution, "en")}
+            ? "غير متاح: مفيش طلبات مدفوعة بالكامل أو تكلفة بعض المنتجات وقت البيع مش مسجلة."
+            : money(summary.contribution, "ar")}
         </p>
         <p className="muted">
-          Excludes delivery revenue, fulfillment costs, payment fees and tax.
-          Historical costs are never inferred from today’s product cost.
+          المساهمة لا تشمل إيراد الشحن أو تكلفة التنفيذ أو رسوم الدفع أو الضرائب. تكلفة المنتجات التاريخية لا يتم تقديرها من السعر الحالي.
         </p>
       </section>
       <div className="stack">
-        {([["Item brand", summary.manufacturers]] as const).map(
+        {([["العلامة التجارية للقطعة", summary.manufacturers]] as const).map(
           ([title, groups]) => (
             <section className="panel admin-list" key={title}>
-              <h3>{title} · fully paid items</h3>
+              <h3>{title} · القطع المدفوعة بالكامل</h3>
               <table>
                 <thead>
                   <tr>
                     <th>{title}</th>
-                    <th>Units</th>
-                    <th>Item sales before order discounts</th>
+                    <th>الكمية</th>
+                    <th>مبيعات القطع قبل خصومات الطلب</th>
                   </tr>
                 </thead>
                 <tbody>
                   {!groups.length && (
                     <tr>
-                      <td colSpan={3}>No paid item sales in this period.</td>
+                      <td colSpan={3}>مفيش مبيعات قطع مدفوعة في الفترة دي.</td>
                     </tr>
                   )}
                   {groups.map((g) => (
                     <tr key={g.name}>
                       <td>{g.name}</td>
                       <td>{g.units}</td>
-                      <td>{money(g.sales, "en")}</td>
+                      <td>{money(g.sales, "ar")}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -107,13 +104,13 @@ export async function AdminReports({
         )}
       </div>
       <section className="panel admin-list">
-        <h3>Daily trend</h3>
+        <h3>المبيعات والطلبات اليومية</h3>
         <table>
           <thead>
             <tr>
-              <th>Date (UTC)</th>
+              <th>التاريخ (UTC)</th>
               <th>Orders</th>
-              <th>Fully paid totals</th>
+              <th>إجمالي المدفوع بالكامل</th>
             </tr>
           </thead>
           <tbody>
@@ -121,20 +118,20 @@ export async function AdminReports({
               <tr key={p.date}>
                 <td>{p.date}</td>
                 <td>{p.orders}</td>
-                <td>{money(p.paid, "en")}</td>
+                <td>{money(p.paid, "ar")}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </section>
       <section className="panel admin-list">
-        <h3>Coupon usage · all placed orders</h3>
+        <h3>استخدام الكوبونات · جميع الطلبات</h3>
         <table>
           <thead>
             <tr>
-              <th>Code</th>
+              <th>الكود</th>
               <th>Orders</th>
-              <th>Discount</th>
+              <th>الخصم</th>
             </tr>
           </thead>
           <tbody>
@@ -142,7 +139,7 @@ export async function AdminReports({
               <tr key={c.code}>
                 <td>{c.code}</td>
                 <td>{c.orders}</td>
-                <td>{money(c.discount, "en")}</td>
+                <td>{money(c.discount, "ar")}</td>
               </tr>
             ))}
           </tbody>
@@ -155,9 +152,9 @@ export async function AdminReports({
             <tr>
               <th>Order</th>
               <th>Date</th>
-              <th>Status</th>
-              <th>Payment</th>
-              <th>Total</th>
+              <th>الحالة</th>
+              <th>الدفع</th>
+              <th>الإجمالي</th>
             </tr>
           </thead>
           <tbody>

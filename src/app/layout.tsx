@@ -12,7 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
     (await headers()).get("x-mansokar-locale") === "en" ? "en" : "ar";
   const settings = await storefrontSettings();
   const name =
-    settings.storeName?.[locale] ?? (locale === "ar" ? "موبِك" : "MOPC");
+    settings.storeName?.[locale] ?? (locale === "ar" ? "MOPC" : "MOPC");
   const copy = siteCopy[locale];
   const title = `${copy.heading} | ${name}`;
   return {
@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description: copy.description,
       locale: locale === "ar" ? "ar_EG" : "en_EG",
-      images: [{ url: "/images/mopc/logo.png", alt: "MOPC · موبِك" }],
+      images: [{ url: "/images/mopc/logo.png", alt: "MOPC — قطع غيار السيارات" }],
     },
     twitter: {
       card: "summary",

@@ -276,6 +276,7 @@ export function Cart({
   const [loadError, setLoadError] = useState(false);
   const [products, setProducts] = useState(initialProducts);
   const [lines, setLines] = useState<CartLine[]>([]);
+  const [compatibleVehicles, setCompatibleVehicles] = useState<Record<string, { brand: string; model: string; year: number }[]>>({});
   useEffect(() => {
     const refresh = () => setLines(read("cart", []));
     refresh();
@@ -303,6 +304,7 @@ export function Cart({
       })
       .then((data) => {
         setProducts(data.products);
+        setCompatibleVehicles(data.compatibleVehicles ?? {});
         setLoading(false);
       })
       .catch((error) => {
@@ -394,14 +396,44 @@ export function Cart({
                             ? "المنتج غير متاح — احذفه من السلة"
                             : "Product unavailable — please remove it")}
                     </a>
-                    {line.make && (
-                      <span className="cart-vehicle">
-                        {line.make} {line.model} {line.year}
-                      </span>
+                    {p && (
+                      <div className="cart-product-details">
+                        <span>
+                          {locale === "ar" ? "النوع" : "Type"}:{" "}
+                          {p.type === "oem"
+                            ? (locale === "ar" ? "أصلي OEM" : "Original OEM")
+                            : (locale === "ar" ? "بديل Aftermarket" : "Aftermarket")}
+                        </span>
+                        {p.manufacturer && (
+                          <span>{locale === "ar" ? "الشركة المصنعة" : "Manufacturer"}: {p.manufacturer}</span>
+                        )}
+                        {(p.partNumber || p.sku) && (
+                          <span>{locale === "ar" ? "رقم القطعة" : "Part number"}: {p.partNumber || p.sku}</span>
+                        )}
+                        {line.make && (
+                          <span className="cart-vehicle">
+                            {locale === "ar" ? "العربية المختارة" : "Selected vehicle"}:{" "}
+                            {line.make} {line.model} {line.year}
+                          </span>
+                        )}
+                        {(compatibleVehicles[line.id] ?? []).length > 0 ? (
+                          <div className="cart-compatible-vehicles">
+                            <strong>{locale === "ar" ? "السيارات المتوافقة" : "Compatible vehicles"}</strong>
+                            {(compatibleVehicles[line.id] ?? []).map((v, index) => (
+                              <span key={index}>{v.brand} · {v.model} · {v.year}</span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="cart-fitment-note">
+                            {locale === "ar"
+                              ? "لا توجد بيانات توافق مؤكدة للعرض؛ راجع تفاصيل القطعة قبل الشراء"
+                              : "No verified compatibility details available; review the product before ordering"}
+                          </span>
+                        )}
+                        <span>{locale === "ar" ? "سعر الوحدة" : "Unit price"}: {money(p.sale ?? p.price, locale)}</span>
+                        <strong>{locale === "ar" ? "إجمالي القطعة" : "Line total"}: {money((p.sale ?? p.price) * line.qty, locale)}</strong>
+                      </div>
                     )}
-                    <p className="muted">
-                      {p && money(p.sale ?? p.price, locale)}
-                    </p>
                   </div>
                   <label>
                     {t(locale).quantity}

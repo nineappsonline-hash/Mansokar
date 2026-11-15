@@ -37,104 +37,95 @@ import { ApiForm } from "./forms";
 import styles from "./admin-workspace.module.css";
 const navigation: { title: string; items: [string, string, LucideIcon][] }[] = [
   {
-    title: "Workspace",
+    title: "العمليات اليومية",
     items: [
-      ["overview", "Overview", LayoutDashboard],
-      ["orders", "Orders", ShoppingBag],
-      ["messages", "Messages", Inbox],
-      ["inquiries", "Inquiries", MessageSquare],
-      ["customers", "Customers", Users],
+      ["overview", "نظرة عامة", LayoutDashboard],
+      ["orders", "الطلبات", ShoppingBag],
+      ["messages", "رسائل العملاء", Inbox],
+      ["inquiries", "طلبات قطع الغيار", MessageSquare],
+      ["customers", "العملاء", Users],
     ],
   },
   {
-    title: "Catalog",
+    title: "المنتجات والسيارات",
     items: [
-      ["products", "Products", Package],
-      ["vehicles", "Vehicles", Car],
-      ["recommendations", "Recommendations", Layers],
+      ["products", "المنتجات", Package],
+      ["vehicles", "السيارات والتوافق", Car],
+      ["recommendations", "المنتجات المرتبطة", Layers],
     ],
   },
   {
-    title: "Storefront",
+    title: "التسويق والمتجر",
     items: [
-      ["campaigns", "Campaigns", Megaphone],
-      ["promotions", "Promotions", Ticket],
-      ["shipping", "Shipping", Truck],
-      ["cms", "Pages & policies", FileText],
-      ["branding", "Branding", Palette],
-      ["hero-slideshow", "Hero slideshow", GalleryHorizontalEnd],
+      ["campaigns", "البانرات الإعلانية", Megaphone],
+      ["promotions", "كوبونات الخصم", Ticket],
+      ["hero-slideshow", "صور الصفحة الرئيسية", GalleryHorizontalEnd],
+      ["branding", "هوية المتجر", Palette],
+      ["cms", "الصفحات والسياسات", FileText],
     ],
   },
   {
-    title: "Insights & settings",
+    title: "التقارير والإعدادات",
     items: [
-      ["reports", "Sales reports", BarChart3],
-      ["analytics", "Analytics", BarChart3],
-      ["seo", "SEO & discovery", Search],
-      ["settings", "Settings", Settings],
+      ["reports", "تقارير المبيعات", BarChart3],
+      ["analytics", "تحليلات الزوار", BarChart3],
+      ["seo", "تحسين الظهور في البحث", Search],
+      ["shipping", "أسعار التوصيل", Truck],
+      ["settings", "إعدادات المتجر", Settings],
     ],
   },
 ];
 const descriptions: Record<string, string> = {
-  overview: "A clear view of your store’s performance and everyday operations.",
-  products: "Manage your parts, prices and vehicle coverage in one place.",
-  orders: "Review purchases and keep fulfillment moving.",
-  messages: "Read and respond to messages sent from the storefront chat.",
-  inquiries: "Follow up on customer questions and part requests.",
-  shipping: "Set delivery options and rates for every governorate.",
-  vehicles: "Keep your vehicle makes, models and configurations up to date.",
-  seo: "Review search visibility and improve your product content.",
-  customers: "Find customer accounts, orders and private support notes.",
-  recommendations:
-    "Choose alternatives and products that customers can buy together.",
-  campaigns: "Schedule promotional banners for the homepage.",
-  promotions:
-    "Create checkout coupons and manage their dates and usage limits.",
-  cms: "Write and publish your store pages, guides and policies.",
-  branding: "Upload your logo, brand artwork and vehicle pictures.",
-  "hero-slideshow": "Choose homepage photos, their order and slideshow timing.",
-  reports:
-    "Review orders, collected sales and product contribution for a date range.",
-  analytics:
-    "View anonymous storefront activity recorded with customer consent.",
-  settings:
-    "Update your store name and homepage wording, and review payment availability.",
+  overview: "تابع الطلبات والمدفوعات واستفسارات العملاء في مكان واحد.",
+  products: "إدارة قطع الغيار والأسعار والتوافق مع السيارات.",
+  orders: "متابعة الطلبات وحالات الدفع والشحن.",
+  messages: "قراءة رسائل العملاء وتحديث حالتها.",
+  inquiries: "متابعة طلبات قطع الغيار واستفسارات العملاء.",
+  shipping: "تحديد أسعار وخيارات التوصيل.",
+  vehicles: "إدارة الماركات والموديلات وسنوات التصنيع المدعومة.",
+  seo: "مراجعة ظهور المتجر والمنتجات في نتائج البحث.",
+  customers: "متابعة حسابات العملاء وطلباتهم وملاحظاتهم.",
+  recommendations: "اختيار قطع الغيار البديلة والمرتبطة.",
+  campaigns: "إدارة البانرات والحملات الإعلانية.",
+  promotions: "إنشاء كوبونات الخصم ومتابعة صلاحيتها.",
+  cms: "تعديل صفحات المتجر والسياسات.",
+  branding: "إدارة شعار المتجر والصور والهوية البصرية.",
+  "hero-slideshow": "ترتيب صور الصفحة الرئيسية وضبط عرضها.",
+  reports: "متابعة المبيعات والمدفوعات خلال فترة محددة.",
+  analytics: "عرض إحصائيات زيارات المتجر.",
+  settings: "تعديل بيانات المتجر ومراجعة طرق الدفع.",
 };
 export function AdminSignIn({ children }: { children: React.ReactNode }) {
   return (
     <main
       className={`${styles.workspace} ${styles.signIn}`}
-      lang="en"
-      dir="ltr"
+      lang="ar"
+      dir="rtl"
     >
       <div className={styles.signInIntro}>
-        <Link className={styles.brand} href="/en">
+        <Link className={styles.brand} href="/ar">
           <span>
             <BrandLogo className={styles.brandLogo} />
-            <small>STORE MANAGEMENT</small>
+            <small>إدارة المتجر</small>
           </span>
         </Link>
         <div>
-          <span className={styles.eyebrow}>WELCOME TO YOUR WORKSPACE</span>
+          <span className={styles.eyebrow}>أهلًا بك في لوحة الإدارة</span>
           <h1>
-            Everything your
-            <br />
-            store needs.
-            <br />
-            <span>One place.</span>
+            إدارة متجرك\n            <br />\n            <span>في مكان واحد.</span>
           </h1>
           <p>
             Manage your catalog, orders and customer experience from your MOPC
             workspace.
           </p>
         </div>
-        <small>Built for the road ahead.</small>
+        <small>كل أدوات الإدارة في مكان واحد.</small>
       </div>
       <section className={`${styles.module} ${styles.signInForm}`}>
         {children}
         <p className={styles.signInNote}>
           <ShieldCheck size={15} />
-          Access is reserved for authorized administrators.
+          الدخول متاح لمديري المتجر المصرح لهم فقط.
         </p>
       </section>
     </main>
@@ -202,14 +193,14 @@ export function AdminWorkspace({
     };
   }, [open]);
   const title =
-    navigation.flatMap((g) => g.items).find((i) => i[0] === module)?.[1] ||
-    "Administration";
+    module === "overview" ? "لوحة التحكم" : navigation.flatMap((g) => g.items).find((i) => i[0] === module)?.[1] ||
+    "أقسام الإدارة";
   return (
-    <main className={styles.workspace} lang="en" dir="ltr">
+    <main className={styles.workspace} lang="ar" dir="rtl">
       {open && (
         <button
           className={styles.backdrop}
-          aria-label="Close navigation"
+          aria-label="إغلاق القائمة"
           onClick={() => setOpen(false)}
         />
       )}
@@ -220,7 +211,7 @@ export function AdminWorkspace({
         <button
           type="button"
           className={styles.closeNav}
-          aria-label="Close navigation"
+          aria-label="إغلاق القائمة"
           onClick={() => {
             setOpen(false);
             menuButton.current?.focus();
@@ -231,19 +222,19 @@ export function AdminWorkspace({
         <Link className={styles.brand} href="/admin">
           <span>
             <BrandLogo className={styles.brandLogo} />
-            <small>STORE MANAGEMENT</small>
+            <small>إدارة المتجر</small>
           </span>
         </Link>
         <div className={styles.navSearch}>
           <Search size={16} />
           <input
-            aria-label="Find an admin section"
-            placeholder="Find a section…"
+            aria-label="البحث في أقسام الإدارة"
+            placeholder="ابحث عن قسم…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <nav aria-label="Administration">
+        <nav aria-label="أقسام الإدارة">
           {groups.map((group) => (
             <div className={styles.navGroup} key={group.title}>
               <p>{group.title}</p>
@@ -263,21 +254,21 @@ export function AdminWorkspace({
           ))}
           {!groups.length && (
             <p className={styles.noMatches} role="status">
-              No sections match “{query}”.
+              لا توجد أقسام تطابق “{query}”.
             </p>
           )}
         </nav>
         <div className={styles.profile}>
           <span className={styles.avatar}>{email.charAt(0).toUpperCase()}</span>
           <div>
-            <strong>Administrator</strong>
+            <strong>مدير المتجر</strong>
             <span>{email}</span>
           </div>
           <ShieldCheck size={17} />
         </div>
         <div className={styles.logout}>
           <LogOut size={16} />
-          <ApiForm action="logout" label="Sign out" />
+          <ApiForm action="logout" label="تسجيل الخروج" />
         </div>
       </aside>
       <div className={styles.body}>
@@ -286,32 +277,32 @@ export function AdminWorkspace({
             <button
               ref={menuButton}
               className={styles.menu}
-              aria-label={open ? "Close navigation" : "Open navigation"}
+              aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
               aria-expanded={open}
               onClick={() => setOpen(!open)}
             >
               {open ? <X size={22} /> : <Menu size={22} />}
             </button>
             <span className={styles.breadcrumb}>
-              Workspace <ChevronRight size={14} /> <strong>{title}</strong>
+              لوحة الإدارة <ChevronRight size={14} /> <strong>{title}</strong>
             </span>
           </div>
           <Link href="/en" target="_blank" rel="noopener noreferrer">
-            View storefront <ArrowUpRight size={16} />
+            عرض المتجر <ArrowUpRight size={16} />
           </Link>
         </header>
         <div className={styles.content}>
-          <div className={styles.heading}>
+          <div className={`${styles.heading} ${module === "overview" ? "admin-dashboard-heading" : ""}`}>
             <div>
               <span className={styles.eyebrow}>
                 {navigation
                   .find((g) => g.items.some((i) => i[0] === module))
-                  ?.title.toUpperCase() ?? "STORE MANAGEMENT"}
+                  ?.title ?? "إدارة المتجر"}
               </span>
               <h1>{title}</h1>
               <p>
                 {descriptions[module] ||
-                  `Manage your ${title.toLowerCase()} and store preferences.`}
+                  "إدارة إعدادات وبيانات هذا القسم."}
               </p>
             </div>
             <Link
@@ -319,49 +310,14 @@ export function AdminWorkspace({
               href="/admin?module=products#product-editor"
             >
               <Plus size={18} />
-              Add product
+              إضافة منتج
             </Link>
           </div>
-          {module === "overview" && (
-            <div className={styles.quickLinks}>
-              {[
-                [
-                  "products",
-                  "Manage products",
-                  "Update parts and prices",
-                  Package,
-                ],
-                [
-                  "orders",
-                  "Review orders",
-                  "Manage customer purchases",
-                  ShoppingBag,
-                ],
-                [
-                  "inquiries",
-                  "Customer inquiries",
-                  "Keep conversations moving",
-                  MessageSquare,
-                ],
-              ].map(([key, label, description, Icon]: any) => (
-                <Link key={key} href={`/admin?module=${key}`}>
-                  <span className={styles.quickIcon}>
-                    <Icon size={21} />
-                  </span>
-                  <div>
-                    <strong>{label}</strong>
-                    <small>{description}</small>
-                  </div>
-                  <ArrowUpRight size={17} />
-                </Link>
-              ))}
-            </div>
-          )}
           <div className={styles.module}>{children}</div>
           <footer className={styles.footer}>
-            <span>MOPC · Store administration</span>
+            <span>MOPC · إدارة المتجر</span>
             <span>
-              <ShieldCheck size={13} /> Secure administrator access
+              <ShieldCheck size={13} /> دخول آمن للإدارة
             </span>
           </footer>
         </div>

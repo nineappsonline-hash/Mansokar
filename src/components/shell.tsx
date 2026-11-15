@@ -63,18 +63,18 @@ export async function Shell({
             className="logo"
             aria-label={
               (settings.storeName?.[locale] ??
-                (locale === "ar" ? "موبِك" : "MOPC")) +
+                (locale === "ar" ? "MOPC" : "MOPC")) +
               (locale === "ar" ? " الرئيسية" : " home")
             }
           >
             <BrandLogo
               className="store-logo-image"
               src={media.logo?.url || "/images/mopc/logo-dark.png"}
-              alt={locale === "ar" ? "موبِك — قطع غيار العربيات" : "MOPC"}
+              alt={locale === "ar" ? "MOPC — قطع غيار العربيات" : "MOPC"}
             />
             {locale === "ar" && (
               <span className="store-name-ar" lang="ar">
-                {settings.storeName?.ar?.replace(/^موبك$/, "موبِك") || "موبِك"}
+                {"MOPC"}
               </span>
             )}
           </Link>
@@ -165,7 +165,7 @@ export async function Shell({
             <BrandLogo
               className="newsletter-logo"
               src={media.logo?.url || "/images/mopc/logo-dark.png"}
-              alt="MOPC · موبِك"
+              alt="MOPC"
             />
             <Newsletter locale={locale} />
           </div>
@@ -176,12 +176,11 @@ export async function Shell({
               <BrandLogo
                 className="store-logo-image"
                 src={media.logo?.url || "/images/mopc/logo-dark.png"}
-                alt={locale === "ar" ? "موبِك — قطع غيار العربيات" : "MOPC"}
+                alt={locale === "ar" ? "MOPC — قطع غيار العربيات" : "MOPC"}
               />
               {locale === "ar" && (
                 <span className="store-name-ar" lang="ar">
-                  {settings.storeName?.ar?.replace(/^موبك$/, "موبِك") ||
-                    "موبِك"}
+                  {"MOPC"}
                 </span>
               )}
             </Link>
@@ -250,7 +249,7 @@ export async function Shell({
         </div>
         <div className="shell footer-bottom">
           <span>
-            © {new Date().getFullYear()} {locale === "ar" ? "موبِك" : "MOPC"}
+            © {new Date().getFullYear()} {locale === "ar" ? "MOPC" : "MOPC"}
           </span>
           <span>OPEL　/　MG　/　CHEVROLET　/　PEUGEOT　/　CITROËN</span>
         </div>

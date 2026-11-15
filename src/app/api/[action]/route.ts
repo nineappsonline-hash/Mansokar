@@ -19,12 +19,13 @@ import {
   requireAdmin,
   service,
   vehicleCatalog,
+  productImages,
   allRows,
 } from "@/lib/db";
 import { checkoutInput, productInput } from "@/lib/validation";
 import { isProductImagePath, isRemoteImageUrl } from "@/lib/image-links";
 import { automaticProduct } from "@/lib/product-automation";
-import { applicationSpecs } from "@/lib/product-applications";
+import { applicationSpecs, readApplications } from "@/lib/product-applications";
 import { planImportVehicles } from "@/lib/import-vehicles";
 import { prepareItemRows } from "@/lib/prepare-item-import";
 import { importFeedback } from "@/lib/import-feedback";
@@ -69,6 +70,10 @@ export async function POST(
       return NextResponse.json({ error: "Request too large" }, { status: 413 });
     const b = JSON.parse(raw);
     responseLocale = (b.ui_locale ?? b.locale) === "ar" ? "ar" : "en";
+    // Authenticate privileged requests before loading the vehicle catalog or
+    // executing any privileged database operation. A client-supplied action
+    // name never grants access by itself.
+    const adminActor = action.startsWith("admin-") ? await requireAdmin() : null;
     const db = service();
     const { vehicles } = await vehicleCatalog();
     if (action === "analytics") {
@@ -422,6 +427,57 @@ export async function POST(
           process.env.ALLOW_DEMO_CHECKOUT === "true",
       });
       if (error) throw Error(error.message);
+      // Add real catalog metadata to the quote without changing trusted pricing.
+      // Fitments are read from the product's actual vehicle configuration links.
+      const quoted = data as { items?: Array<{ id: string; [key: string]: unknown }> };
+      if (Array.isArray(quoted?.items) && quoted.items.length) {
+        const ids = quoted.items.map((item) => item.id);
+        const productResult = await db.from("products")
+          .select("id,sku,manufacturer,type,partNumber,specs")
+          .in("id", ids);
+        if (productResult.error) throw productResult.error;
+        const productMap = new Map(
+          (productResult.data ?? []).map((p) => [p.id, p]),
+        );
+        const imageResults = await Promise.all(
+          ids.map(async (id) => ({ id, images: await productImages(id) })),
+        );
+        const imageMap = new Map(
+          imageResults.map(({ id, images }) => [id, images[0]?.url ?? null]),
+        );
+        const modelIds = [...new Set(
+          (productResult.data ?? []).flatMap((p) =>
+            readApplications(p.specs ?? {}).map((app) => app.model_id),
+          ),
+        )];
+        const models = modelIds.length
+          ? await db.from("vehicle_models")
+              .select("id,brand,slug,name")
+              .in("id", modelIds)
+          : { data: [] as Array<{ id: string; brand: string; slug: string; name: { ar: string; en: string } }> };
+        if ("error" in models && models.error) throw models.error;
+        const modelMap = new Map((models.data ?? []).map((m) => [m.id, m]));
+        quoted.items = quoted.items.map((item) => {
+          const product = productMap.get(item.id);
+          const vehicles = readApplications(product?.specs ?? {})
+            .flatMap((app) => {
+              const model = modelMap.get(app.model_id);
+              if (!model) return [];
+              return app.years.map((year) => ({
+                brand: model.brand, model: model.name, year,
+              }));
+            });
+          return {
+            ...item,
+            sku: product?.sku ?? null,
+            manufacturer: product?.manufacturer ?? null,
+            type: product?.type ?? null,
+            partNumber: product?.partNumber ?? null,
+            imageUrl: imageMap.get(item.id) ?? null,
+            vehicles,
+          };
+        });
+      }
       return NextResponse.json(data, {
         headers: { "Cache-Control": "no-store" },
       });
@@ -570,7 +626,8 @@ export async function POST(
       }
     }
     if (action.startsWith("admin-")) {
-      const admin = await requireAdmin();
+      if (!adminActor) throw Error("Forbidden");
+      const admin = adminActor;
       let details: unknown = {};
       const commit = (payload: unknown) =>
         db.rpc("admin_commit", {
@@ -585,6 +642,20 @@ export async function POST(
             status: z.enum(["new", "read", "replied", "closed"]),
           })
           .parse(b);
+        if (process.env.ADMIN_ATOMIC_MESSAGE_ENABLED === "true") {
+          // Staged RPC updates message status and writes audit in one transaction.
+          // Do not fall back to the legacy non-atomic path on RPC errors.
+          const { error: rpcError } = await db.rpc(
+            "admin_update_message_atomic",
+            { p_actor: admin.id, p_message: input.id, p_status: input.status },
+          );
+          if (rpcError) {
+            if (rpcError.message.includes("Message not found"))
+              return NextResponse.json({ error: "Message not found" }, { status: 404 });
+            throw rpcError;
+          }
+          details = input;
+        } else {
         const { data, error } = await db
           .from("contact_messages")
           .update({ status: input.status })
@@ -593,12 +664,14 @@ export async function POST(
           .maybeSingle();
         if (error) throw error;
         if (!data) throw Error("Message not found");
-        await db.from("admin_audit_logs").insert({
+        const { error: auditError } = await db.from("admin_audit_logs").insert({
           user_id: admin.id,
           action,
           details: { record: input.id, status: input.status },
         });
+        if (auditError) throw auditError;
         details = input;
+        }
       } else if (action === "admin-hero-slides") {
         const input = z
           .object({
@@ -1181,6 +1254,36 @@ export async function POST(
         details = input;
       } else if (action === "admin-delete-product") {
         const input = z.object({ id: z.string().min(1).max(100) }).parse(b);
+        if (process.env.ADMIN_ATOMIC_PRODUCT_DELETE_ENABLED === "true") {
+          // Requires staged-admin-delete-product-atomic.sql and path guard migration.
+          // No legacy fallback: an RPC failure must never trigger non-atomic deletion.
+          const { data: removed, error: deleteError } = await db.rpc(
+            "admin_delete_product_atomic",
+            { p_actor: admin.id, p_product: input.id },
+          );
+          if (deleteError) {
+            if (deleteError.code === "23503")
+              return NextResponse.json(
+                { error: "This product is linked to saved records and cannot be deleted." },
+                { status: 409 },
+              );
+            if (deleteError.message.includes("belongs to an order"))
+              return NextResponse.json(
+                { error: "This product appears in existing orders. Set it to draft instead." },
+                { status: 409 },
+              );
+            if (deleteError.message.includes("Product not found"))
+              return NextResponse.json(
+                { error: "This product no longer exists. Refresh the page." },
+                { status: 404 },
+              );
+            throw deleteError;
+          }
+          const product = removed?.[0];
+          if (!product) throw Error("Atomic deletion returned no product");
+          // The transaction enqueues image cleanup. Never delete storage inline.
+          details = { id: product.deleted_id, sku: product.deleted_sku };
+        } else {
         const { count, error: orderError } = await db
           .from("order_items")
           .select("id", { count: "exact", head: true })
@@ -1227,12 +1330,14 @@ export async function POST(
           .map((image) => image.path)
           .filter(isProductImagePath);
         if (paths.length) await db.storage.from("catalog-images").remove(paths);
-        await db.from("admin_audit_logs").insert({
+        const { error: auditError } = await db.from("admin_audit_logs").insert({
           user_id: admin.id,
           action,
           details: { record: removed[0].id, sku: removed[0].sku },
         });
+        if (auditError) throw auditError;
         details = { id: removed[0].id, sku: removed[0].sku };
+        }
       } else if (action === "admin-vehicle") {
         const input = vehicleInput.parse(JSON.parse(b.json));
         const { error } = await commit(input);
@@ -1324,6 +1429,31 @@ export async function POST(
             status: z.enum(["verified", "rejected"]),
           })
           .parse(b);
+        // Fail closed on mismatched amounts: the existing database RPC marks
+        // an order paid for its full total, so partial transfers must not
+        // be approved until partial-payment reconciliation is implemented.
+        if (input.status === "verified") {
+          const { data: transfer, error: transferError } = await db
+            .from("manual_transfers")
+            .select("id,order_id,amount,status,method")
+            .eq("id", input.id)
+            .single();
+          if (transferError || !transfer) throw new Error("Transfer not found");
+          if (transfer.status !== "pending") throw new Error("Transfer already reviewed");
+          const { data: order, error: orderError } = await db
+            .from("orders")
+            .select("id,total,payment_status,payment_method")
+            .eq("id", transfer.order_id)
+            .single();
+          if (orderError || !order) throw new Error("Order not found");
+          if (order.payment_status === "paid") throw new Error("Order is already paid");
+          if (Number(transfer.amount) !== Number(order.total)) {
+            throw new Error("Transfer amount differs from order total. Partial payments cannot be approved yet.");
+          }
+          if (transfer.method !== order.payment_method) {
+            throw new Error("Transfer method does not match the order payment method");
+          }
+        }
         const { error } = await db.rpc("verify_manual_transfer", {
           p_actor: admin.id,
           p_transfer: input.id,

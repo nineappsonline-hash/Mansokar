@@ -10,15 +10,14 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
   const change = (key: string, next: unknown) =>
     setValue((v: Record<string, any>) => ({ ...v, [key]: next }));
   return (
-    <section className="panel stack">
-      <h2>{initial.code ? "Edit coupon" : "Create a coupon"}</h2>
+    <section className="panel stack admin-coupon-editor" lang="ar" dir="rtl">
+      <h2>{initial.code ? "تعديل كوبون" : "إضافة كوبون جديد"}</h2>
       <p className="muted">
-        Customers enter this code at checkout. Choose a percentage or a discount
-        in whole Egyptian pounds.
+        العميل بيستخدم الكود أثناء إتمام الطلب. اختار خصم بالنسبة المئوية أو مبلغ ثابت بالجنيه المصري.
       </p>
       <ApiForm
         action="admin-coupon"
-        label="Save coupon"
+        label="حفظ الكوبون"
         extra={{
           json: JSON.stringify({
             ...value,
@@ -28,7 +27,7 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
       >
         <div className="merchant-form-fields">
           <label>
-            Coupon code
+            كود الخصم
             <input
               required
               maxLength={40}
@@ -40,7 +39,7 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
             />
           </label>
           <label>
-            Discount type
+            نوع الخصم
             <select
               value={value.kind}
               onChange={(e) => {
@@ -48,12 +47,12 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
                 setAmount("");
               }}
             >
-              <option value="percentage">Percentage</option>
-              <option value="fixed">Fixed amount · EGP</option>
+              <option value="percentage">نسبة مئوية</option>
+              <option value="fixed">مبلغ ثابت · جنيه</option>
             </select>
           </label>
           <label>
-            {fixed ? "Discount amount · EGP" : "Discount percentage"}
+            {fixed ? "قيمة الخصم بالجنيه" : "نسبة الخصم المئوية"}
             <input
               type="number"
               required
@@ -65,7 +64,7 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
             />
           </label>
           <label>
-            Maximum total uses
+            الحد الأقصى لعدد مرات الاستخدام
             <input
               type="number"
               required
@@ -78,7 +77,7 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
             />
           </label>
           <label>
-            Valid from (UTC)
+            بداية صلاحية الكوبون (UTC)
             <input
               type="datetime-local"
               required
@@ -94,7 +93,7 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
             />
           </label>
           <label>
-            Valid until (UTC)
+            نهاية صلاحية الكوبون (UTC)
             <input
               type="datetime-local"
               required
@@ -111,7 +110,7 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
             />
           </label>
           <label>
-            Uses per customer (blank = no limit)
+            عدد مرات الاستخدام لكل عميل (سيبه فاضي بدون حد)
             <input
               type="number"
               min={1}
@@ -126,18 +125,20 @@ export function AdminCoupon({ initial }: { initial: Record<string, any> }) {
             />
           </label>
         </div>
+        {value.starts_at && value.ends_at && new Date(value.ends_at).getTime() <= new Date(value.starts_at).getTime() && (
+          <p className="notice" role="alert">تاريخ انتهاء الكوبون لازم يكون بعد تاريخ البداية.</p>
+        )}
         {value.scope_category && (
           <div className="notice">
             <p>
-              This existing coupon is limited to a legacy product group. That
-              restriction will be preserved.
+              الكوبون ده مرتبط بمجموعة منتجات قديمة. هنحافظ على القيد ده إلا لو اخترت إزالته.
             </p>
             <label className="check">
               <input
                 type="checkbox"
                 onChange={() => change("scope_category", null)}
               />
-              Apply this coupon to all products instead
+              تطبيق الكوبون على كل المنتجات بدل المجموعة القديمة
             </label>
           </div>
         )}

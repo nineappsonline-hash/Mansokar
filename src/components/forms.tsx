@@ -5,7 +5,7 @@ import {
   shippingWindow,
   type ShippingArea,
 } from "@/lib/shipping";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale, Vehicle } from "@/lib/catalog";
 import { money } from "@/lib/catalog";
@@ -358,6 +358,7 @@ export function Checkout({
   const governorateOptions = shippingGovernorates(areas, locale);
   const deliveryOptions =
     governorateOptions.find((g) => g.value === governorate)?.areas ?? [];
+  const selectedShipping = areas.find((item) => item.id === area);
   const [method, setMethod] = useState<PaymentMethod>(methods[0] ?? "cod");
   const [quote, setQuote] = useState<{
     items: {
@@ -366,14 +367,107 @@ export function Checkout({
       quantity: number;
       unit_price: number;
       total: number;
+      sku?: string | null;
+      manufacturer?: string | null;
+      type?: "oem" | "aftermarket" | null;
+      partNumber?: string | null;
+      imageUrl?: string | null;
+      vehicles?: { brand: string; model: { ar: string; en: string } | string; year: number }[];
     }[];
     subtotal: number;
     discount: number;
     shipping: number;
     total: number;
   } | null>(null);
+  const [cartPreview, setCartPreview] = useState<{
+    items: { id: string; name: Record<Locale, string>; quantity: number; price: number; imageUrl?: string | null }[];
+    subtotal: number;
+  } | null>(null);
+  const [cartPreviewError, setCartPreviewError] = useState(false);
+  const [cartVersion, setCartVersion] = useState(0);
+  useEffect(() => {
+    const onCartChange = () => setCartVersion((value) => value + 1);
+    window.addEventListener("store-change", onCartChange);
+    window.addEventListener("storage", onCartChange);
+    return () => {
+      window.removeEventListener("store-change", onCartChange);
+      window.removeEventListener("storage", onCartChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setCartPreview(null);
+    setCartPreviewError(false);
+    let lines: { id: string; qty: number }[];
+    try { lines = JSON.parse(localStorage.getItem("cart") || "[]"); }
+    catch { setCartPreviewError(true); return; }
+    if (!lines.length) {
+      setCartPreview({ items: [], subtotal: 0 });
+      return;
+    }
+    fetch("/api/products?ids=" + encodeURIComponent(lines.map((line) => line.id).join(",")) + "&locale=" + locale, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw Error("Products unavailable");
+        return response.json();
+      })
+      .then((data) => {
+        const products = data.products as Array<{ id: string; name: Record<Locale, string>; price: number; sale?: number | null; imageUrl?: string | null }>;
+        if (lines.some((line) => !products.some((product) => product.id === line.id))) throw Error("Cart product missing");
+        const items = lines.map((line) => {
+          const product = products.find((p) => p.id === line.id)!;
+          return { id: line.id, name: product.name, quantity: line.qty, price: product.sale ?? product.price, imageUrl: product.imageUrl };
+        });
+        setCartPreview({ items, subtotal: items.reduce((sum, item) => sum + item.price * item.quantity, 0) });
+      })
+      .catch((error) => { if (error.name !== "AbortError") setCartPreviewError(true); });
+    return () => controller.abort();
+  }, [locale, cartVersion]);
   const [reviewed, setReviewed] = useState(false);
+  const checkoutFormRef = useRef<HTMLFormElement>(null);
+  const [quoteInput, setQuoteInput] = useState({ phone: "", coupon: "" });
+  const [quoteBusy, setQuoteBusy] = useState(false);
   const router = useRouter();
+  useEffect(() => {
+    setQuote(null);
+    setReviewed(false);
+    if (!area || !/^01[0125][0-9]{8}$/.test(quoteInput.phone)) {
+      setQuoteBusy(false);
+      return;
+    }
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setQuoteBusy(true);
+      try {
+        const response = await fetch("/api/checkout-quote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
+          body: JSON.stringify({
+            phone: quoteInput.phone,
+            area,
+            coupon: quoteInput.coupon,
+            items: JSON.parse(localStorage.getItem("cart") || "[]"),
+          }),
+        });
+        const data = await response.json();
+        if (!response.ok) throw Error(data.error || "Unable to calculate order");
+        setQuote(data);
+        setReviewed(true);
+        setMessage("");
+      } catch (error) {
+        if (controller.signal.aborted) return;
+        setMessageTone("error");
+        setMessage(error instanceof Error ? error.message : "Unable to calculate order");
+      } finally {
+        if (!controller.signal.aborted) setQuoteBusy(false);
+      }
+    }, 350);
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [area, quoteInput.phone, quoteInput.coupon, cartVersion]);
   const step = reviewed ? 3 : area ? 2 : 1;
   const steps = [
     locale === "ar" ? "التوصيل" : "Delivery",
@@ -439,6 +533,7 @@ export function Checkout({
 
       <form
         className="checkout-layout"
+        ref={checkoutFormRef}
         onChange={(e) => {
           const target = e.target as unknown as { name?: string };
           if (
@@ -461,28 +556,8 @@ export function Checkout({
             const fields = Object.fromEntries(formData);
             if (!methods.length)
               throw Error("No payment method has been enabled");
-            if (!reviewed || !quote) {
-              const response = await fetch("/api/checkout-quote", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  ...fields,
-                  locale,
-                  items: JSON.parse(localStorage.getItem("cart") || "[]"),
-                }),
-              });
-              const data = await response.json();
-              if (!response.ok) throw Error(data.error);
-              setQuote(data);
-              setReviewed(true);
-              setMessageTone("success");
-              setMessage(
-                locale === "ar"
-                  ? "راجع إجمالي الطلب ثم أكد الطلب."
-                  : "Review the totals, then confirm your order.",
-              );
-              return;
-            }
+            if (!reviewed || !quote || quoteBusy)
+              throw Error(locale === "ar" ? "استنى لحظة لحد ما نحسب الإجمالي النهائي." : "Please wait for the final total to be calculated.");
             let imageToken: string | undefined;
             if (isManualPayment(method)) {
               if (!(proof instanceof File) || !proof.size)
@@ -535,8 +610,13 @@ export function Checkout({
               window.location.assign(data.redirect);
             else router.push(data.redirect);
           } catch (error) {
-            setQuote(null);
-            setReviewed(false);
+            // Keep the valid quote visible after upload/payment failures.
+            // Only invalidate it when the server reports a changed total.
+            if (error instanceof Error && /total changed|الإجمالي.*تغير/i.test(error.message)) {
+              setQuote(null);
+              setReviewed(false);
+              setCartVersion((value) => value + 1);
+            }
             setMessageTone("error");
             setMessage(
               error instanceof Error ? error.message : "Checkout failed",
@@ -599,6 +679,7 @@ export function Checkout({
                         const savedGovernorate = governorateOptions.find((g) =>
                           g.areas.some((a) => a.id === addr.area_id),
                         );
+                        setQuoteInput((current) => ({ ...current, phone: addr.phone.trim() }));
                         setGovernorate(savedGovernorate?.value ?? "");
                         setArea(savedGovernorate ? addr.area_id! : "");
                         setMessage("");
@@ -642,6 +723,7 @@ export function Checkout({
                 </span>
                 <input
                   name="phone"
+                  onChange={(e) => setQuoteInput((current) => ({ ...current, phone: e.target.value.trim() }))}
                   required
                   pattern="01[0125][0-9]{8}"
                   dir="ltr"
@@ -804,6 +886,7 @@ export function Checkout({
               </span>
               <input
                 name="coupon"
+                onChange={(e) => setQuoteInput((current) => ({ ...current, coupon: e.target.value.trim() }))}
                 maxLength={40}
                 className="checkout-input"
                 placeholder={
@@ -1092,9 +1175,9 @@ export function Checkout({
                   {quote.items.map((item) => (
                     <div key={item.id} className="order-item">
                       <div className="order-item-image">
-                        {item.id ? (
+                        {item.imageUrl ? (
                           <img
-                            src={`/product-media/${item.id}`}
+                            src={item.imageUrl}
                             alt={item.name[locale]}
                             loading="lazy"
                           />
@@ -1104,10 +1187,42 @@ export function Checkout({
                       </div>
                       <div className="order-item-info">
                         <p className="order-item-name">{item.name[locale]}</p>
-                        <p className="order-item-meta">
-                          {locale === "ar" ? "الكمية" : "Qty"}:{" "}
-                          <span>{item.quantity}</span>
-                        </p>
+                        <div className="order-item-full-details">
+                          {item.type && (
+                            <span className="order-item-detail">
+                              {locale === "ar" ? "النوع" : "Type"}:{" "}
+                              {item.type === "oem"
+                                ? (locale === "ar" ? "أصلي OEM" : "Original OEM")
+                                : (locale === "ar" ? "بديل Aftermarket" : "Aftermarket")}
+                            </span>
+                          )}
+                          {item.manufacturer && (
+                            <span className="order-item-detail">
+                              {locale === "ar" ? "الشركة المصنعة" : "Manufacturer"}: {item.manufacturer}
+                            </span>
+                          )}
+                          {(item.partNumber || item.sku) && (
+                            <span className="order-item-detail">
+                              {locale === "ar" ? "رقم القطعة" : "Part number"}: {item.partNumber || item.sku}
+                            </span>
+                          )}
+                          {item.vehicles && item.vehicles.length > 0 && (
+                            <div className="order-item-fitments">
+                              <strong>{locale === "ar" ? "السيارات المتوافقة" : "Compatible vehicles"}</strong>
+                              {item.vehicles.map((vehicle, index) => (
+                                <span key={index}>
+                                  {vehicle.brand} · {typeof vehicle.model === "string" ? vehicle.model : vehicle.model[locale]} · {vehicle.year}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                          <span className="order-item-detail">
+                            {locale === "ar" ? "العدد" : "Quantity"}: {item.quantity}
+                          </span>
+                          <span className="order-item-detail">
+                            {locale === "ar" ? "سعر الوحدة" : "Unit price"}: {money(item.unit_price, locale)}
+                          </span>
+                        </div>
                       </div>
                       <span className="order-item-price">
                         {money(item.total, locale)}
@@ -1140,11 +1255,39 @@ export function Checkout({
                   </div>
                 </div>
               </div>
+            ) : cartPreview?.items.length ? (
+              <div aria-live="polite">
+                <div className="order-items">
+                  {cartPreview.items.map((item) => (
+                    <div key={item.id} className="order-item">
+                      <div className="order-item-image">
+                        {item.imageUrl ? <img src={item.imageUrl} alt={item.name[locale]} loading="lazy" /> : <Package size={24} />}
+                      </div>
+                      <div className="order-item-info">
+                        <p className="order-item-name">{item.name[locale]}</p>
+                        <span className="order-item-detail">{locale === "ar" ? "العدد" : "Quantity"}: {item.quantity}</span>
+                        <span className="order-item-detail">{locale === "ar" ? "سعر الوحدة" : "Unit price"}: {money(item.price, locale)}</span>
+                      </div>
+                      <span className="order-item-price">{money(item.price * item.quantity, locale)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="order-breakdown">
+                  <div className="order-line"><span className="label">{t(locale).subtotal}</span><span>{money(cartPreview.subtotal, locale)}</span></div>
+                  {selectedShipping && (
+                    <div className="order-line">
+                      <span className="label">{locale === "ar" ? "التوصيل (تقديري)" : "Delivery (estimate)"}</span>
+                      <span>{money(selectedShipping.amount, locale)}</span>
+                    </div>
+                  )}
+                  <p className="checkout-cta-note">{locale === "ar" ? "الإجمالي النهائي بيتحدث تلقائيًا بعد إدخال رقم موبايل صحيح. مصاريف التوصيل بتظهر بمجرد اختيار طريقة الشحن." : "Final total updates automatically once a valid phone number is entered. Delivery charges appear when a shipping option is selected."}</p>
+                </div>
+              </div>
             ) : (
               <div className="checkout-summary-empty">
                 <ReceiptText size={18} strokeWidth={1.8} />
                 <p>
-                  {locale === "ar"
+                  {cartPreviewError ? (locale === "ar" ? "تعذر تحميل منتجات السلة. ارجع للسلة وتأكد من المنتجات." : "Could not load cart products. Please check your cart.") : locale === "ar"
                     ? "إجمالي المنتجات والتوصيل والخصم هيظهر هنا بعد مراجعة الطلب."
                     : "Your item totals, delivery and discounts will appear here after you review your order."}
                 </p>
@@ -1209,24 +1352,18 @@ export function Checkout({
 
             <button
               className="checkout-button"
-              disabled={busy || !methods.length || !area}
+              disabled={busy || quoteBusy || !methods.length || !area || !quote}
             >
-              {busy
+              {busy || quoteBusy
                 ? "…"
-                : reviewed
-                  ? locale === "ar"
-                    ? "تأكيد الطلب"
-                    : "Confirm order"
-                  : locale === "ar"
-                    ? "مراجعة الأسعار والتوصيل"
-                    : "Review prices & delivery"}
+                : locale === "ar" ? "تأكيد الطلب" : "Confirm order"}
               {!busy && <ArrowRight size={17} strokeWidth={2.2} />}
             </button>
             {!quote && !busy && (
               <p className="checkout-cta-note">
                 <Lock size={12} strokeWidth={2} />
                 {locale === "ar"
-                  ? "راجع الإجمالي قبل تأكيد طلبك."
+                  ? "الإجمالي النهائي بيتحسب تلقائيًا بعد اختيار التوصيل وإدخال رقم الموبايل."
                   : "Review your final total before placing your order."}
               </p>
             )}

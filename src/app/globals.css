@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap");
 @import "tailwindcss";
 @font-face {
   font-family: "IBM Plex Sans Arabic";
@@ -7019,5 +7020,444 @@ body {
   }
   .cyan-payments-banner.home-promo-compact > a > img {
     border-radius: 10px !important;
+  }
+}
+
+
+/* MOPC checkout typography: commercial Arabic, legible across desktop/mobile */
+[lang="ar"] .checkout-page,
+[dir="rtl"] .checkout-page {
+  font-family: "MOPC Arabic", "IBM Plex Sans Arabic", Tahoma, sans-serif;
+  font-size: 16px;
+  line-height: 1.75;
+  font-weight: 500;
+}
+.checkout-page .checkout-panel-title,
+.checkout-page .checkout-summary-head h2 {
+  font-size: clamp(22px, 2.1vw, 26px);
+  font-weight: 800;
+  line-height: 1.45;
+}
+.checkout-page .checkout-panel-sub,
+.checkout-page .checkout-label,
+.checkout-page .payment-method-sub,
+.checkout-page .checkout-assurance small,
+.checkout-page .order-item-detail,
+.checkout-page .order-line,
+.checkout-page .checkout-hint {
+  font-size: 15px;
+  line-height: 1.75;
+}
+.checkout-page .checkout-panel-kicker,
+.checkout-page .checkout-step-label,
+.checkout-page .checkout-saved-label,
+.checkout-page .checkout-summary-empty,
+.checkout-page .checkout-cta-note {
+  font-size: 14px;
+  line-height: 1.65;
+}
+.checkout-page .checkout-label > span,
+.checkout-page .payment-method-title,
+.checkout-page .order-item-name,
+.checkout-page .checkout-assurance strong,
+.checkout-page .order-line.total,
+.checkout-page .checkout-button {
+  font-weight: 750;
+}
+.checkout-page .payment-method-title,
+.checkout-page .order-item-name {
+  font-size: 17px;
+  line-height: 1.6;
+}
+.checkout-page .checkout-input,
+.checkout-page .checkout-select,
+.checkout-page .checkout-textarea {
+  font-size: 16px;
+  line-height: 1.65;
+}
+.checkout-page .order-item-price,
+.checkout-page .order-line.total {
+  font-size: 19px;
+  font-weight: 800;
+}
+.checkout-page .checkout-button {
+  font-size: 17px;
+  min-height: 50px;
+}
+@media (max-width: 640px) {
+  .checkout-page .checkout-panel-title,
+  .checkout-page .checkout-summary-head h2 { font-size: 22px; }
+  .checkout-page .checkout-panel-sub,
+  .checkout-page .checkout-label,
+  .checkout-page .payment-method-sub,
+  .checkout-page .order-item-detail,
+  .checkout-page .order-line { font-size: 14.5px; }
+  .checkout-page .checkout-summary { padding: 20px; }
+}
+
+/* MOPC Admin overview — Figma design: page 5:2, desktop 5:3, mobile 5:55 */
+.admin-overview-redesign { gap: 22px; }
+.admin-overview-redesign .admin-overview-section {
+  background: #fff;
+  border: 1px solid #e5eaf0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 3px 18px rgba(16,29,41,.035);
+}
+.admin-overview-redesign .admin-overview-section h2 { color: #172735; font-size: 21px; font-weight: 800; }
+.admin-overview-metrics { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.admin-overview-metric {
+  min-height: 146px;
+  border: 1px solid #e5eaf0 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  padding: 20px !important;
+  display: flex; flex-direction: column; justify-content: space-between;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.admin-overview-metric:hover { border-color: #a3c54b !important; transform: translateY(-2px); }
+.admin-overview-metric:focus-visible { outline: 3px solid #c9e86d; outline-offset: 2px; }
+.admin-overview-redesign .admin-overview-section table { width: 100%; }
+.admin-overview-redesign .admin-overview-section th { background: #f5f7f8; color: #687785; }
+@media (max-width: 1100px) { .admin-overview-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 640px) {
+ .admin-overview-redesign { gap: 14px; }
+ .admin-overview-redesign .admin-overview-section { padding: 16px; }
+ .admin-overview-metrics { grid-template-columns: 1fr; gap: 10px; }
+ .admin-overview-metric { min-height: 110px; padding: 16px !important; }
+ .admin-overview-redesign .admin-overview-section h2 { font-size: 19px; }
+}
+
+/* Figma KPI refinement — 5 compact cards, clear value hierarchy */
+.admin-overview-redesign .admin-overview-metrics {
+  display: grid; grid-template-columns: repeat(5,minmax(0,1fr)); gap: 12px;
+}
+.admin-overview-redesign .admin-overview-metric {
+  min-width: 0; min-height: 164px; padding: 18px !important;
+  gap: 10px; align-items: flex-start; justify-content: flex-start;
+  border-radius: 14px !important; box-shadow: 0 3px 12px rgba(16,29,41,.025);
+}
+.admin-overview-redesign .admin-metric-accent {
+  display: block; width: 38px; height: 6px; flex: 0 0 6px; border-radius: 10px; background: #d7e9b0;
+}
+.admin-overview-redesign .admin-overview-metric:nth-child(2) .admin-metric-accent { background: #cfe5f7; }
+.admin-overview-redesign .admin-overview-metric:nth-child(3) .admin-metric-accent { background: #ffe4b8; }
+.admin-overview-redesign .admin-overview-metric:nth-child(4) .admin-metric-accent { background: #d9eee8; }
+.admin-overview-redesign .admin-overview-metric:nth-child(5) .admin-metric-accent { background: #e5ddf7; }
+.admin-overview-redesign .admin-metric-label { font-size: 13px; font-weight: 700; line-height: 1.5; color: #344453; }
+.admin-overview-redesign .admin-metric-value { display: block; font-size: 38px; font-weight: 800; line-height: 1.1; color: #101d29; font-variant-numeric: tabular-nums; }
+.admin-overview-redesign .admin-metric-link { font-size: 12px; font-weight: 600; color: #687785; margin-top: auto; }
+@media (max-width: 1250px) { .admin-overview-redesign .admin-overview-metrics { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (max-width: 750px) {
+ .admin-overview-redesign .admin-overview-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+ .admin-overview-redesign .admin-overview-metric { min-height: 122px; padding: 13px !important; gap: 7px; }
+ .admin-overview-redesign .admin-metric-value { font-size: 28px; }
+ .admin-overview-redesign .admin-metric-label { font-size: 12px; }
+ .admin-overview-redesign .admin-metric-link { font-size: 11px; }
+}
+
+/* Dashboard composition — aligned with MOPC Admin Figma */
+.admin-dashboard-heading { margin-bottom: 18px; }
+.admin-dashboard-heading h1 { font-size: clamp(25px, 2.3vw, 32px); letter-spacing: -.025em; }
+.admin-dashboard-heading p { max-width: 700px; }
+.admin-overview-redesign .admin-dashboard-metrics-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+.admin-overview-redesign .admin-dashboard-metrics-heading h2 { margin: 0 0 4px; }
+.admin-overview-redesign .admin-dashboard-metrics-heading p { margin: 0; font-size: 13px; }
+.admin-dashboard-live { border: 1px solid #dce8bd; background: #f4f9e6; color: #426025; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700; white-space: nowrap; }
+.admin-overview-redesign .admin-dashboard-priority,
+.admin-overview-redesign .admin-dashboard-orders { border-radius: 16px; padding: 24px; }
+.admin-overview-redesign .admin-dashboard-priority .notice { border-radius: 10px; padding: 14px 16px; }
+@media(max-width: 640px) {
+ .admin-dashboard-heading { margin-bottom: 12px; }
+ .admin-overview-redesign .admin-dashboard-priority,
+ .admin-overview-redesign .admin-dashboard-orders { padding: 16px; }
+ .admin-dashboard-live { padding: 5px 9px; font-size: 10px; }
+}
+
+/* Admin-only Arabic typography, matching the Figma Almarai direction. */
+.admin-overview-redesign,
+.admin-dashboard-heading,
+.admin-overview-redesign button,
+.admin-overview-redesign input,
+.admin-overview-redesign select,
+.admin-overview-redesign textarea {
+  font-family: "Almarai", "MOPC Arabic", "Cairo", Tahoma, sans-serif;
+}
+.admin-overview-redesign { font-size: 14px; line-height: 1.85; }
+.admin-overview-redesign .admin-metric-label { font-size: 13px; font-weight: 700; line-height: 1.75; }
+.admin-overview-redesign .admin-metric-value { font-family: "Almarai", "MOPC Arabic", Tahoma, sans-serif; font-weight: 800; }
+.admin-overview-redesign .admin-overview-section h2 { font-family: "Almarai", "MOPC Arabic", Tahoma, sans-serif; font-weight: 800; line-height: 1.6; }
+.admin-overview-redesign .muted { line-height: 1.85; }
+
+/* Larger, more legible MOPC Admin dashboard type — Figma typography pass */
+.admin-overview-redesign { font-size: 16px; line-height: 1.85; }
+.admin-dashboard-heading h1 { font-size: clamp(29px, 2.6vw, 36px); }
+.admin-dashboard-heading p { font-size: 16px; line-height: 1.8; }
+.admin-overview-redesign .admin-metric-label { font-size: 15px; }
+.admin-overview-redesign .admin-metric-value { font-size: 44px; }
+.admin-overview-redesign .admin-metric-link { font-size: 14px; }
+.admin-overview-redesign .admin-overview-section h2 { font-size: 24px; }
+.admin-overview-redesign .admin-overview-section .muted { font-size: 15px; }
+.admin-overview-redesign .admin-dashboard-priority .notice { font-size: 16px; }
+.admin-overview-redesign .admin-dashboard-orders th,
+.admin-overview-redesign .admin-dashboard-orders td { font-size: 15px; line-height: 1.7; }
+@media(max-width: 750px) {
+ .admin-dashboard-heading h1 { font-size: 27px; }
+ .admin-dashboard-heading p { font-size: 14px; }
+ .admin-overview-redesign .admin-metric-label { font-size: 13px; }
+ .admin-overview-redesign .admin-metric-value { font-size: 32px; }
+ .admin-overview-redesign .admin-metric-link { font-size: 12px; }
+ .admin-overview-redesign .admin-overview-section h2 { font-size: 21px; }
+ .admin-overview-redesign .admin-dashboard-orders th,
+ .admin-overview-redesign .admin-dashboard-orders td { font-size: 13px; }
+}
+
+/* MOPC Admin orders — Figma desktop/mobile list */
+.admin-orders-list { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; border-radius:16px; padding:24px; background:#fff; }
+.admin-orders-list-head { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:22px; }
+.admin-orders-list-head h2 { font-size:25px; font-weight:800; margin:0 0 8px; color:#101d29; }
+.admin-orders-list-head p { margin:0; font-size:15px; color:#687785; }
+.admin-orders-list-head > strong { background:#f1f7e8; border-radius:30px; padding:9px 15px; font-size:13px; color:#345229; }
+.admin-orders-filters { display:flex; align-items:end; gap:12px; flex-wrap:wrap; padding:16px; border:1px solid #e5eaf0; border-radius:12px; background:#f5f7f8; }
+.admin-orders-filters label { display:flex; flex-direction:column; gap:8px; font-size:14px; font-weight:700; flex:1 1 220px; }
+.admin-orders-filters input,.admin-orders-filters select { width:100%; min-height:46px; padding:10px 12px; border:1px solid #d9e0e7; border-radius:9px; background:white; font:inherit; }
+.admin-orders-filters button { min-height:46px; padding:10px 20px; background:#101d29; color:white; border:0; border-radius:9px; font:inherit; font-weight:700; cursor:pointer; }
+.admin-orders-hint { color:#687785; font-size:12px; margin:12px 0 18px; }
+.admin-orders-rows { display:grid; gap:10px; }
+.admin-order-row { display:grid; grid-template-columns:minmax(150px,1.5fr) minmax(120px,1fr) minmax(120px,1fr) minmax(100px,1fr) 100px; align-items:center; gap:14px; padding:17px 20px; background:#fff; border:1px solid #e5eaf0; border-radius:12px; text-decoration:none; color:#142838; min-height:82px; }
+.admin-order-row:hover { border-color:#a3c54b; background:#f9fbf4; }
+.admin-order-row:focus-visible { outline:3px solid #c9e86d; outline-offset:2px; }
+.admin-order-row-primary { display:grid; gap:5px; }
+.admin-order-row-primary strong { font-size:16px; }
+.admin-order-row-primary small { font-size:13px; color:#687785; }
+.admin-order-status { background:#f1f7e8; color:#345229; padding:8px 11px; border-radius:9px; font-size:13px; font-weight:700; width:fit-content; }
+.admin-order-payment { font-size:14px; color:#596a77; }
+.admin-order-total { font-size:16px; }
+.admin-order-open { color:#395f25; font-size:13px; font-weight:700; }
+@media(max-width:800px) {
+ .admin-orders-list { padding:16px; }
+ .admin-orders-filters { padding:12px; }
+ .admin-order-row { grid-template-columns:1fr auto; gap:10px; padding:14px; }
+ .admin-order-row-primary { grid-column:1; }
+ .admin-order-status { grid-column:2; grid-row:1; }
+ .admin-order-payment { grid-column:1; }
+ .admin-order-total { grid-column:2; }
+ .admin-order-open { grid-column:1 / -1; }
+}
+
+/* Order details layout based on MOPC Figma desktop and mobile designs */
+.admin-order-detail { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; background:#f5f7f8; border:0; padding:20px; }
+.admin-order-detail-header { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+.admin-order-detail-header h2 { font-size:28px; margin:12px 0; color:#101d29; }
+.admin-order-detail-header time { color:#687785; font-size:14px; }
+.admin-order-back { color:#456627; font-size:14px; font-weight:700; }
+.admin-order-detail-grid { display:grid; grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr); gap:18px; align-items:start; }
+.admin-order-detail-main,.admin-order-detail-side { display:grid; gap:18px; min-width:0; }
+.admin-order-detail-card { background:#fff; border:1px solid #e5eaf0; border-radius:16px; padding:24px; min-width:0; }
+.admin-order-detail-card h3 { color:#142838; font-size:21px; font-weight:800; margin:0 0 20px; }
+.admin-order-detail-card p { font-size:15px; line-height:1.9; margin:10px 0; overflow-wrap:anywhere; }
+.admin-order-detail-card p strong { color:#344453; }
+.admin-order-item { display:grid; grid-template-columns:minmax(0,1fr) auto auto; gap:16px; align-items:center; padding:15px 0; border-bottom:1px solid #e5eaf0; font-size:14px; }
+.admin-order-item:last-child { border-bottom:0; }
+.admin-order-item div { display:grid; gap:5px; }
+.admin-order-item small { color:#687785; }
+.admin-order-grand-total { border-top:1px solid #e5eaf0; margin-top:15px; padding-top:17px; display:flex; justify-content:space-between; font-size:20px; color:#101d29; }
+.admin-order-detail-card input,.admin-order-detail-card select,.admin-order-detail-card textarea { min-height:44px; font:inherit; }
+@media(max-width:980px) { .admin-order-detail-grid { grid-template-columns:1fr; } }
+@media(max-width:640px) {
+ .admin-order-detail { padding:0; }
+ .admin-order-detail-header h2 { font-size:24px; }
+ .admin-order-detail-card { padding:17px; }
+ .admin-order-detail-card h3 { font-size:19px; }
+ .admin-order-item { grid-template-columns:1fr auto; gap:9px; }
+ .admin-order-item > strong { grid-column:2; }
+}
+
+/* Order audit trail */
+.admin-order-timeline { list-style:none; margin:0; padding:0 0 0 0; display:grid; gap:0; }
+.admin-order-timeline li { position:relative; border-right:2px solid #dce8bd; padding:0 22px 24px 0; display:grid; gap:5px; }
+.admin-order-timeline li:last-child { border-right-color:transparent; padding-bottom:0; }
+.admin-order-timeline li::before { content:""; position:absolute; right:-6px; top:4px; width:10px; height:10px; background:#c9e86d; border:2px solid #fff; border-radius:50%; box-shadow:0 0 0 1px #a7c76d; }
+.admin-order-timeline strong { font-size:15px; color:#142838; }
+.admin-order-timeline time { font-size:12px; color:#687785; }
+.admin-order-timeline p { font-size:13px; margin:3px 0 0; }
+
+.admin-order-transition-hint { font-size:13px; line-height:1.8; color:#687785; background:#f5f7f8; border-radius:9px; padding:11px 13px; margin-bottom:16px; }
+
+/* MOPC Admin products refresh — larger Arabic typography, calmer panels */
+.admin-products-redesign { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; font-size:15px; line-height:1.8; }
+.admin-products-redesign .tabs,
+.admin-products-redesign .productTabs { gap:10px; }
+.admin-products-redesign .tabs button,
+.admin-products-redesign .productTabs button { font-family:inherit; font-size:15px; font-weight:700; padding:13px 17px; border-radius:11px; }
+.admin-products-redesign .tabs button[aria-current="page"] { background:#142838; border-color:#142838; }
+.admin-products-redesign .layout { grid-template-columns:minmax(340px,.9fr) minmax(0,1.5fr); gap:22px; }
+.admin-products-redesign .listHeading h2 { font-size:23px; font-weight:800; color:#142838; }
+.admin-products-redesign .count { font-size:14px; }
+.admin-products-redesign .search input { min-height:48px; font-family:inherit; font-size:15px; padding-right:42px; padding-left:12px !important; }
+.admin-products-redesign .search svg { right:14px; left:auto; top:16px; }
+.admin-products-redesign .filters { gap:10px; }
+.admin-products-redesign .filters select { min-height:46px; font-family:inherit; font-size:14px; border-radius:10px; padding:10px; }
+.admin-products-redesign .clearFilters { font-size:14px; color:#47672b; }
+.admin-products-redesign .products { max-height:720px; gap:11px; }
+.admin-products-redesign .products > a { border-radius:13px; padding:15px; gap:14px; align-items:center; text-decoration:none; }
+.admin-products-redesign .products > a[aria-current="page"] { background:#f7faef; border-color:#b7d47a; box-shadow:0 0 0 1px #dcebbb; }
+.admin-products-redesign .thumb { width:66px; height:66px; flex-basis:66px; border-radius:10px; }
+.admin-products-redesign .products strong { font-family:inherit; font-size:16px; line-height:1.65; color:#142838; }
+.admin-products-redesign .products small { font-family:inherit; font-size:13px; text-align:right; direction:ltr; color:#647483; }
+.admin-products-redesign .productMeta { font-size:13px; gap:12px; }
+.admin-products-redesign .published,
+.admin-products-redesign .draft { border-radius:8px; padding:5px 9px; }
+.admin-products-redesign .context h2 { font-size:25px !important; }
+.admin-products-redesign .context p { font-size:15px; line-height:1.8; }
+.admin-products-redesign .productTabs button[aria-current="page"] { background:#eff6df; color:#3f6024; border-color:#c9e86d; }
+@media(max-width:1050px) { .admin-products-redesign .layout { grid-template-columns:1fr; } }
+@media(max-width:600px) {
+ .admin-products-redesign .tabs button,
+ .admin-products-redesign .productTabs button { font-size:13px; padding:10px; }
+ .admin-products-redesign .products { max-height:480px; }
+ .admin-products-redesign .products strong { font-size:15px; }
+ .admin-products-redesign .thumb { width:56px; height:56px; flex-basis:56px; }
+ .admin-products-redesign .filters { grid-template-columns:1fr 1fr; }
+}
+
+/* Arabic-first product editor desktop and mobile */
+.admin-product-editor { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; background:#fff; border:1px solid #e5eaf0; border-radius:16px; padding:24px; }
+.admin-product-editor h2 { font-size:24px; color:#142838; font-weight:800; }
+.admin-product-editor label { font-family:inherit; font-size:15px; line-height:1.85; color:#344453; }
+.admin-product-editor input:not([type="checkbox"]),.admin-product-editor select,.admin-product-editor textarea { font-family:inherit; font-size:15px; min-height:46px; border-radius:10px; }
+.admin-product-editor input[dir="ltr"] { text-align:left; }
+.admin-product-editor details { border:1px solid #e5eaf0; padding:14px; border-radius:12px; }
+@media(max-width:640px) { .admin-product-editor { padding:16px; } .admin-product-editor h2 { font-size:21px; } }
+
+/* MOPC vehicle fitment editor */
+.admin-product-applications { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; font-size:15px; line-height:1.85; }
+.admin-product-applications > h2 { font-size:23px; font-weight:800; color:#142838; }
+.admin-product-applications > p { font-size:15px; color:#5d6d7b; }
+.admin-product-applications fieldset { min-width:0; background:#fff; border:1px solid #e5eaf0; border-radius:14px; padding:20px; }
+.admin-product-applications legend { font-size:17px; font-weight:800; color:#142838; padding:0 9px; }
+.admin-product-applications label { font-size:14px; font-weight:600; }
+.admin-product-applications input,.admin-product-applications select { font-family:inherit; font-size:14px; min-height:42px; }
+.admin-product-applications button { font-family:inherit; font-size:14px; border-radius:9px; }
+.admin-product-applications details { background:#f5f7f8; border-radius:12px; padding:16px; }
+.admin-product-applications summary { font-weight:700; cursor:pointer; }
+@media(max-width:600px) { .admin-product-applications fieldset { padding:13px; } .admin-product-applications > h2 { font-size:20px; } }
+
+/* Product media management — RTL responsive cards */
+.admin-product-images { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; background:#fff; border:1px solid #e5eaf0; border-radius:16px; padding:24px; }
+.admin-product-images h2 { color:#142838; font-size:24px; font-weight:800; }
+.admin-product-images > p { color:#5b6d79; font-size:15px; line-height:1.85; }
+.admin-product-images label { font-size:15px; font-weight:600; }
+.admin-product-images input { font-family:inherit; font-size:15px; min-height:43px; border-radius:10px; }
+.admin-product-images [data-testid="product-photo-dropzone"] { border:2px dashed #b6ce84; background:#f8fbf1; border-radius:15px; padding:22px; text-align:center; }
+.admin-product-images [data-testid="product-photo-dropzone"] strong { font-size:17px; color:#142838; }
+.admin-product-image-card { border:1px solid #e3eaf0; border-radius:14px; background:#fff; padding:18px; }
+.admin-product-image-card img { border-radius:11px; background:#f5f7f8; width:180px; height:150px; max-width:100%; }
+.admin-product-image-card h3 { font-size:17px; color:#142838; }
+.admin-product-image-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.admin-product-image-actions button { border:1px solid #dce5ea; border-radius:9px; padding:9px 13px; font-family:inherit; font-size:13px; background:#f5f7f8; }
+.admin-product-image-actions button:disabled { opacity:.45; cursor:not-allowed; }
+@media(max-width:640px) { .admin-product-images { padding:15px; } .admin-product-images h2 { font-size:21px; } .admin-product-image-actions button { flex:1 1 43%; } }
+
+/* Admin customer communications */
+.admin-customer-inbox { font-family:"Almarai",Tahoma,sans-serif; font-size:15px; line-height:1.8; }
+.admin-customer-inbox > article { border:1px solid #e2e9ef; border-radius:16px; background:#fff; padding:22px; }
+.admin-customer-inbox h2 { font-size:21px; font-weight:800; color:#142838; overflow-wrap:anywhere; }
+.admin-customer-inbox p,.admin-customer-inbox a { overflow-wrap:anywhere; }
+.admin-customer-inbox time { color:#627583; font-size:13px; }
+.admin-customer-inbox label { font-size:14px; font-weight:700; color:#243748; }
+.admin-customer-inbox select,.admin-customer-inbox textarea,.admin-customer-inbox input { font:inherit; min-height:44px; border-radius:10px; }
+.admin-customer-inbox .prose { white-space:pre-wrap; background:#f5f7f8; border-radius:12px; padding:15px; }
+@media(max-width:640px){.admin-customer-inbox > article {padding:15px;} .admin-customer-inbox h2 {font-size:19px;}}
+
+/* Arabic customer management */
+.admin-customers-redesign { font-family:"Almarai",Tahoma,sans-serif; font-size:15px; line-height:1.8; }
+.admin-customers-redesign .filters { background:#fff; border:1px solid #e3eaf0; border-radius:15px; padding:20px; }
+.admin-customers-redesign .two-col { align-items:start; }
+.admin-customers-redesign .two-col > .panel { min-width:0; border:1px solid #e3eaf0; border-radius:15px; background:#fff; padding:20px; }
+.admin-customers-redesign h2 { color:#142838; font-size:23px; font-weight:800; overflow-wrap:anywhere; }
+.admin-customers-redesign h3 { color:#142838; font-size:17px; font-weight:800; margin-top:12px; }
+.admin-customers-redesign label { font-size:14px; font-weight:700; }
+.admin-customers-redesign input,.admin-customers-redesign select,.admin-customers-redesign textarea { font:inherit; border-radius:10px; min-height:44px; }
+.admin-customers-redesign a { overflow-wrap:anywhere; }
+.admin-customers-redesign .accordion { background:#f5f7f8; border-radius:11px; padding:13px; }
+.admin-customers-redesign .prose { white-space:pre-wrap; }
+@media(max-width:760px) { .admin-customers-redesign .two-col { display:flex; flex-direction:column; } .admin-customers-redesign .two-col > .panel { width:100%; padding:15px; } .admin-customers-redesign h2 { font-size:20px; } }
+
+/* Admin marketing hero: desktop and mobile previews */
+.admin-hero-editor { font-family:"Almarai",Tahoma,sans-serif; line-height:1.8; }
+.admin-hero-editor > .panel { background:#fff; border:1px solid #e2e9ef; border-radius:16px; }
+.admin-hero-editor h2 { color:#142838; font-size:22px; font-weight:800; }
+.admin-hero-editor h3 { font-size:17px; font-weight:800; }
+.admin-hero-editor label { font-weight:700; }
+.admin-hero-editor input[type="number"],.admin-hero-editor input[type="text"] { font:inherit; min-height:44px; border-radius:10px; }
+.admin-hero-editor article.panel { border:1px solid #e4eaf0; border-radius:13px; background:#f8fafb; }
+.admin-hero-editor article img { border-radius:10px; }
+.admin-hero-editor .admin-nav { display:flex; flex-wrap:wrap; gap:9px; }
+.admin-hero-editor .admin-nav button { min-height:44px; }
+.admin-hero-desktop-preview { width:100%; overflow:hidden; border-radius:14px; }
+.admin-hero-mobile-preview { width:min(100%,390px); overflow:hidden; border-radius:18px; }
+@media(max-width:640px){.admin-hero-editor h2{font-size:19px}.admin-hero-editor .admin-nav button{flex:1 1 130px}}
+
+/* Scheduled campaigns */
+.admin-campaigns-redesign { align-items:start; font-family:"Almarai",Tahoma,sans-serif; line-height:1.8; }
+.admin-campaigns-redesign > .panel,.admin-campaigns-redesign > .stack { min-width:0; }
+.admin-campaigns-redesign .panel { border:1px solid #e2e9ef; border-radius:15px; background:#fff; padding:20px; }
+.admin-campaigns-redesign label { font-weight:700; font-size:14px; }
+.admin-campaigns-redesign input,.admin-campaigns-redesign textarea { font:inherit; min-height:44px; border-radius:10px; max-width:100%; }
+.admin-campaigns-redesign a { overflow-wrap:anywhere; }
+@media(max-width:760px){.admin-campaigns-redesign{display:flex;flex-direction:column}.admin-campaigns-redesign > *{width:100%}.admin-campaigns-redesign .panel{padding:15px}}
+
+/* Storefront settings */
+.admin-settings-redesign { font-family:"Almarai",Tahoma,sans-serif; font-size:15px; line-height:1.85; }
+.admin-settings-redesign .panel { border:1px solid #e2e9ef; border-radius:16px; background:#fff; padding:22px; }
+.admin-settings-redesign h2 { color:#142838; font-size:21px; font-weight:800; }
+.admin-settings-redesign label { font-size:14px; font-weight:700; }
+.admin-settings-redesign input,.admin-settings-redesign textarea { font:inherit; border-radius:10px; min-height:44px; }
+.admin-settings-redesign details { border:1px solid #e2e9ef; border-radius:12px; padding:12px 15px; }
+.admin-settings-redesign summary { cursor:pointer; font-weight:700; }
+@media(max-width:640px){.admin-settings-redesign .panel{padding:15px}.admin-settings-redesign h2{font-size:19px}}
+
+/* Admin mobile hardening: long customer details and product forms must not overflow. */
+@media (max-width: 640px) {
+  .admin-order-detail,
+  .admin-order-detail-grid,
+  .admin-order-detail-main,
+  .admin-order-detail-side,
+  .admin-order-detail-card,
+  .admin-product-editor {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .admin-order-detail-card,
+  .admin-order-detail-card p,
+  .admin-order-item,
+  .admin-order-row,
+  .admin-product-editor {
+    overflow-wrap: anywhere;
+  }
+  .admin-order-detail-card input,
+  .admin-order-detail-card select,
+  .admin-order-detail-card textarea,
+  .admin-product-editor input,
+  .admin-product-editor select,
+  .admin-product-editor textarea {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .admin-order-detail-card .two-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-orders-list-head {
+    flex-wrap: wrap;
+  }
+  .admin-orders-filters {
+    flex-wrap: wrap;
+  }
+  .admin-orders-filters label {
+    min-width: min(100%, 220px);
+  }
+  .admin-order-row {
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 }

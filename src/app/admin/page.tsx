@@ -1,4 +1,6 @@
+import { orderSearchTerm } from "@/lib/admin-order-search";
 import { AdminCheckoutReadiness } from "@/components/admin-checkout-readiness";
+import { AdminOverview } from "@/components/admin-overview";
 import { AdminCoupon } from "@/components/admin-coupon";
 import { AdminSeo } from "@/components/admin-seo";
 import { AdminProducts } from "@/components/admin-products";
@@ -33,9 +35,37 @@ import {
 } from "@/components/admin-editor";
 import { money } from "@/lib/catalog";
 import { isRemoteImageUrl } from "@/lib/image-links";
+const orderStatusLabels: Record<string, string> = {
+  pending_confirmation: "بانتظار التأكيد",
+  confirmed: "تم التأكيد",
+  processing: "جارٍ التجهيز",
+  shipped: "تم الشحن",
+  delivered: "تم التسليم",
+  cancelled: "ملغي",
+  returned: "مرتجع",
+};
+const paymentStatusLabels: Record<string, string> = {
+  unpaid: "لم يتم الدفع",
+  pending: "بانتظار الدفع",
+  paid: "مدفوع",
+  failed: "فشل الدفع",
+  refunded: "مسترد",
+  partially_refunded: "مسترد جزئيًا",
+};
+const allowedNextOrderStatuses: Record<string, string[]> = {
+  pending_confirmation: ["confirmed", "cancelled"],
+  confirmed: ["processing", "cancelled"],
+  processing: ["shipped", "cancelled"],
+  shipped: ["delivered"],
+  delivered: ["returned"],
+  cancelled: [],
+  returned: [],
+};
+const humanStatus = (value: string, labels: Record<string, string>) =>
+  labels[value] ?? value.replaceAll("_", " ");
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "Administration",
+  title: "إدارة متجر MOPC",
   robots: { index: false, follow: false },
 };
 export default async function Admin({
@@ -50,6 +80,7 @@ export default async function Admin({
     page?: string;
     view?: string;
     tab?: string;
+    status?: string;
   }>;
 }) {
   let admin;
@@ -59,7 +90,7 @@ export default async function Admin({
     return (
       <AdminSignIn>
         <AuthForm
-          locale="en"
+          locale="ar"
           configured={configured()}
           allowSignup={false}
           destination="admin"
@@ -76,6 +107,7 @@ export default async function Admin({
     page,
     view,
     tab,
+    status,
   } = await searchParams;
   if (["images", "fitments", "taxonomy", "import"].includes(module)) {
     const destination = new URLSearchParams({ module: "products" });
@@ -111,13 +143,15 @@ export default async function Admin({
     redirect("/admin");
   const db = service();
   let content: React.ReactNode;
-  if (module === "overview" || module === "reports") {
+  if (module === "overview") {
     content = (
       <div className="stack">
-        {module === "overview" && <AdminCheckoutReadiness />}
-        <AdminReports module={module} from={from} to={to} />
+        <AdminOverview />
+        <AdminCheckoutReadiness />
       </div>
     );
+  } else if (module === "reports") {
+    content = <AdminReports module={module} from={from} to={to} />;
   } else if (module === "seo") content = <AdminSeo />;
   else if (module === "analytics") {
     const { data, error } = await db
@@ -409,24 +443,23 @@ export default async function Admin({
   } else if (module === "campaigns") {
     const campaigns = await allRows<any>("campaigns");
     content = (
-      <div className="two-col">
+      <div className="two-col admin-campaigns-redesign" lang="ar" dir="rtl">
         <div className="panel stack">
           <Link className="button secondary" href="/admin?module=campaigns">
-            New campaign
+            إضافة حملة جديدة
           </Link>
           {campaigns.map((c) => (
             <Link key={c.id} href={"/admin?module=campaigns&id=" + c.id}>
-              {c.title.en} · {c.enabled ? "Enabled" : "Disabled"}
+              {c.title.ar || c.title.en} · {c.enabled ? "مفعّلة" : "متوقفة"}
             </Link>
           ))}
           <p>
-            Only enabled campaigns within their scheduled UTC dates appear on
-            the homepage.
+            الحملات المفعّلة بس هي اللي بتظهر في الصفحة الرئيسية خلال فترة عرضها المحددة بتوقيت UTC.
           </p>
         </div>
         <MerchantForm
           key={id}
-          title="Scheduled homepage campaign"
+          title="حملة تسويقية مجدولة للصفحة الرئيسية"
           action="admin-campaign"
           initial={
             campaigns.find((c) => c.id === id) ?? {
@@ -444,34 +477,34 @@ export default async function Admin({
             ...["ar", "en"].flatMap((lang) => [
               {
                 path: "title." + lang,
-                label: "Title · " + lang,
+                label: "عنوان الحملة · " + (lang === "ar" ? "عربي" : "إنجليزي"),
                 required: true,
               },
               {
                 path: "body." + lang,
-                label: "Body · " + lang,
+                label: "وصف الحملة · " + (lang === "ar" ? "عربي" : "إنجليزي"),
                 type: "textarea" as const,
               },
             ]),
             {
               path: "href",
-              label: "Internal link (/ar/offers or /en/offers)",
+              label: "رابط داخلي (مثال: /ar/offers)",
               nullable: true,
             },
-            { path: "image", label: "Image path (/images/…)", nullable: true },
+            { path: "image", label: "مسار صورة الحملة (/images/…)", nullable: true },
             {
               path: "starts_at",
-              label: "Starts (UTC)",
+              label: "تاريخ بداية الحملة (UTC)",
               type: "datetime-local",
               required: true,
             },
             {
               path: "ends_at",
-              label: "Ends (UTC)",
+              label: "تاريخ نهاية الحملة (UTC)",
               type: "datetime-local",
               required: true,
             },
-            { path: "enabled", label: "Enabled", type: "checkbox" },
+            { path: "enabled", label: "تفعيل الحملة", type: "checkbox" },
           ]}
         />
       </div>
@@ -624,14 +657,30 @@ export default async function Admin({
       </div>
     );
   } else if (module === "orders") {
-    let orderQuery = db.from("orders");
-    const { data, error } = await orderQuery
-      .select(
-        "id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)",
-      )
-      .order("created_at", { ascending: false })
-      .match(id ? { id } : {})
-      .limit(100);
+    const allowedOrderStatuses = ["pending_confirmation", "confirmed", "processing", "shipped", "delivered", "cancelled", "returned"];
+    const orderPageSize = 25;
+    const requestedPage = Number(page ?? "1");
+    const orderPage = Number.isSafeInteger(requestedPage) && requestedPage > 0
+      ? Math.min(requestedPage, 10000) : 1;
+    // Only allow ordinary search characters in the PostgREST OR expression.
+    // Reject filter syntax rather than interpolate user-supplied operators.
+    const { term: orderSearch, valid: safeOrderSearch } = orderSearchTerm(q);
+    let orderQuery = db.from("orders").select("id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)", { count: id ? undefined : "exact" });
+    if (!id && status && allowedOrderStatuses.includes(status)) orderQuery = orderQuery.eq("status", status);
+    if (!id && orderSearch && safeOrderSearch) {
+      const term = orderSearch.replaceAll("%", "").replaceAll("_", "");
+      orderQuery = orderQuery.or(
+        `order_number.ilike.%${term}%,customer->>name.ilike.%${term}%,customer->>phone.ilike.%${term}%`,
+      );
+    }
+    // Invalid filter syntax must never silently return the entire order list.
+    const { data, error, count: orderCount } = !id && orderSearch && !safeOrderSearch
+      ? { data: [], error: null, count: 0 }
+      : await orderQuery
+          .order("created_at", { ascending: false })
+          .order("id", { ascending: false })
+          .match(id ? { id } : {})
+          .range(id ? 0 : (orderPage - 1) * orderPageSize, id ? 0 : orderPage * orderPageSize - 1);
     if (error) throw error;
     const orderIds = data?.map((o) => o.id) ?? [];
     const { data: transfers, error: transferError } = orderIds.length
@@ -644,56 +693,111 @@ export default async function Admin({
           .order("created_at", { ascending: false })
       : { data: [], error: null };
     if (transferError) throw transferError;
+    const { data: statusHistory, error: statusHistoryError } = id
+      ? await db.from("order_status_events").select("id,order_id,status,created_at,note").eq("order_id", id).order("created_at", { ascending: false }).limit(50)
+      : { data: [], error: null };
+    if (statusHistoryError) throw statusHistoryError;
     content = (
       <div className="stack">
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "Order not found" : "No orders yet"}</h2>
+            <h2>{id ? "الطلب غير موجود" : orderPage > 1 && (orderCount ?? 0) <= (orderPage - 1) * orderPageSize ? "رقم الصفحة خارج نطاق النتائج" : "لا توجد طلبات حتى الآن"}</h2>
             <p>
               {id
-                ? "This order could not be found. Return to the order list to continue."
-                : "New customer orders will appear here with payment and delivery details."}
+                ? "لم يتم العثور على الطلب. ارجع إلى قائمة الطلبات للمتابعة."
+                : orderPage > 1 && (orderCount ?? 0) <= (orderPage - 1) * orderPageSize ? "الصفحة المطلوبة مش موجودة ضمن النتائج الحالية. ارجع لأول صفحة." : "هنا هتظهر طلبات العملاء الجديدة وتفاصيل الدفع والتوصيل."}
             </p>
             {id && (
               <Link className="button secondary" href="/admin?module=orders">
-                View all orders
+                عرض كل الطلبات
               </Link>
             )}
           </section>
         )}
-        {data?.map((o) => (
-          <article key={o.id} className="panel">
-            <h2>Order {o.order_number}</h2>
-            <p>
-              <time dateTime={o.created_at}>
-                {new Intl.DateTimeFormat("en-GB", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                  timeZone: "Africa/Cairo",
-                }).format(new Date(o.created_at))}
-              </time>{" "}
-              · Cairo time
-            </p>
-            <p>
-              {o.order_number} · {o.demo ? "DEMO" : ""} · {o.status} ·{" "}
-              {o.payment_status} · {o.payment_method ?? "cod"} ·{" "}
-              {money(o.total, "en")}
-            </p>
-            <p>
-              {o.customer.name} · {o.customer.phone} · {o.customer.address}
-            </p>
-            <p>
-              {o.shipping.governorate} / {o.shipping.name} · Delivery{" "}
-              {money(o.shipping_amount, "en")} · Discount{" "}
-              {money(o.discount, "en")}
-            </p>
-            <p>{o.customer.delivery_notes}</p>
-            {o.order_items?.map((item: any, i: number) => (
-              <p key={i}>
-                {item.snapshot.sku} · {item.snapshot.name.en} × {item.quantity}{" "}
-                · {money(item.snapshot.price * item.quantity, "en")}
-              </p>
-            ))}
+        {!id && (
+          <section className="panel admin-orders-list" lang="ar" dir="rtl">
+            <div className="admin-orders-list-head"><div><h2>قائمة الطلبات</h2><p>ابحث وتابع الطلبات، وافتح أي طلب لتعديل بياناته أو مراجعة الدفع.</p></div><strong>{orderCount ?? 0} طلب في النتائج</strong></div>
+            <form method="get" action="/admin" className="admin-orders-filters">
+              <input type="hidden" name="module" value="orders" />
+              <label>بحث في النتائج<input type="search" name="q" defaultValue={q ?? ""} placeholder="رقم الطلب أو اسم العميل أو الهاتف" /></label>
+              <label>حالة الطلب<select name="status" defaultValue={status ?? ""}><option value="">كل الحالات</option>{allowedOrderStatuses.map((v) => <option key={v} value={v}>{humanStatus(v, orderStatusLabels)}</option>)}</select></label>
+              <button type="submit">تطبيق الفلاتر</button>
+            </form>
+            <p className="admin-orders-hint">البحث والفلترة على جميع الطلبات المسجلة، مع عرض 25 طلبًا في الصفحة.</p>
+            <div className="admin-orders-rows">
+              {data?.map((o) => (
+                <Link className="admin-order-row" href={`/admin?module=orders&id=${o.id}`} key={o.id}>
+                  <span className="admin-order-row-primary"><strong>#{o.order_number}</strong><small>{o.customer?.name ?? "عميل"}</small></span>
+                  <span className="admin-order-status">{humanStatus(o.status, orderStatusLabels)}</span>
+                  <span className="admin-order-payment">{humanStatus(o.payment_status, paymentStatusLabels)}</span>
+                  <strong className="admin-order-total">{money(o.total, "ar")}</strong>
+                  <span className="admin-order-open">عرض التفاصيل ←</span>
+                </Link>
+              ))}
+            </div>
+            {!safeOrderSearch && orderSearch && <p role="alert">البحث يحتوي على رموز غير مدعومة. استخدم حروفًا أو أرقامًا فقط.</p>}
+            {(orderCount ?? 0) > orderPageSize && (
+              <nav aria-label="صفحات الطلبات" className="admin-orders-pagination">
+                {orderPage > 1 && (
+                  <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "orders", ...(status ? { status } : {}), ...(q ? { q } : {}), page: String(orderPage - 1) })}`}>الصفحة السابقة</Link>
+                )}
+                <span>صفحة {orderPage} من {Math.ceil((orderCount ?? 0) / orderPageSize)}</span>
+                {orderPage * orderPageSize < (orderCount ?? 0) && (
+                  <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "orders", ...(status ? { status } : {}), ...(q ? { q } : {}), page: String(orderPage + 1) })}`}>الصفحة التالية</Link>
+                )}
+              </nav>
+            )}
+          </section>
+        )}
+        {id && data?.map((o) => (
+          <article key={o.id} className="panel admin-order-detail" lang="ar" dir="rtl">
+            <div className="admin-order-detail-header">
+              <div>
+                <Link href="/admin?module=orders" className="admin-order-back">← كل الطلبات</Link>
+                <h2>تفاصيل الطلب #{o.order_number}</h2>
+                <time dateTime={o.created_at}>{new Intl.DateTimeFormat("ar-EG", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Cairo" }).format(new Date(o.created_at))} · بتوقيت القاهرة</time>
+              </div>
+              <span className="admin-order-status">{humanStatus(o.status, orderStatusLabels)}</span>
+            </div>
+            <div className="admin-order-detail-grid">
+              <div className="admin-order-detail-main">
+                <section className="admin-order-detail-card">
+                  <h3>بيانات العميل</h3>
+                  <p><strong>الاسم:</strong> {o.customer.name}</p>
+                  <p><strong>الهاتف:</strong> <a href={`tel:${o.customer.phone}`}>{o.customer.phone}</a></p>
+                  <p><strong>العنوان:</strong> {o.customer.address}</p>
+                  {o.customer.delivery_notes && <p><strong>ملاحظات التوصيل:</strong> {o.customer.delivery_notes}</p>}
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>المنتجات المطلوبة</h3>
+                  {o.order_items?.map((item: any, i: number) => (
+                    <div className="admin-order-item" key={i}>
+                      <div><strong>{item.snapshot.name.ar || item.snapshot.name.en}</strong><small>{item.snapshot.sku}</small></div>
+                      <span>الكمية: {item.quantity}</span>
+                      <strong>{money(item.snapshot.price * item.quantity, "ar")}</strong>
+                    </div>
+                  ))}
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>الشحن والتوصيل</h3>
+                  <p>{o.shipping.governorate} / {o.shipping.name}</p>
+                  <p><strong>تكلفة التوصيل:</strong> {money(o.shipping_amount, "ar")}</p>
+                  <p><strong>شركة الشحن:</strong> {o.carrier || "لم تحدد بعد"}</p>
+                  <p><strong>رقم التتبع:</strong> {o.tracking_number || "لم يحدد بعد"}</p>
+                </section>
+              </div>
+              <div className="admin-order-detail-side">
+                <section className="admin-order-detail-card">
+                  <h3>ملخص الدفع</h3>
+                  <p><strong>الحالة:</strong> {humanStatus(o.payment_status, paymentStatusLabels)}</p>
+                  <p><strong>الطريقة:</strong> {o.payment_method || "غير محددة"}</p>
+                  <p><strong>قيمة المنتجات:</strong> {money(o.subtotal, "ar")}</p>
+                  <p><strong>الخصم:</strong> {money(o.discount, "ar")}</p>
+                  <p><strong>الشحن:</strong> {money(o.shipping_amount, "ar")}</p>
+                  <div className="admin-order-grand-total"><strong>الإجمالي</strong><strong>{money(o.total, "ar")}</strong></div>
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>التحويلات ومراجعة الدفع</h3>
             {transfers
               ?.filter((transfer) => transfer.order_id === o.id)
               .map((transfer) => (
@@ -728,6 +832,24 @@ export default async function Admin({
                   )}
                 </div>
               ))}
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>سجل حالات الطلب</h3>
+                  {statusHistory?.length ? (
+                    <ol className="admin-order-timeline">
+                      {statusHistory.map((event) => (
+                        <li key={event.id}>
+                          <strong>{humanStatus(event.status, orderStatusLabels)}</strong>
+                          <time dateTime={event.created_at}>{new Intl.DateTimeFormat("ar-EG", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Cairo" }).format(new Date(event.created_at))}</time>
+                          {event.note && <p>{event.note}</p>}
+                        </li>
+                      ))}
+                    </ol>
+                  ) : <p>لا توجد تغييرات مسجلة لحالة الطلب حتى الآن.</p>}
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>تحديث الطلب والشحن</h3>
+                  <p className="admin-order-transition-hint">القائمة تعرض الحالة الحالية والانتقالات المسموح بها فقط. قاعدة البيانات تتحقق من صحة أي انتقال قبل حفظه.</p>
             <ApiForm
               action="admin-order"
               extra={{ id: o.id }}
@@ -760,20 +882,13 @@ export default async function Admin({
               <label>
                 Status
                 <select name="status" defaultValue={o.status}>
-                  {[
-                    "pending_confirmation",
-                    "confirmed",
-                    "processing",
-                    "shipped",
-                    "delivered",
-                    "cancelled",
-                    "returned",
-                  ].map((s) => (
-                    <option key={s}>{s}</option>
+                  {[o.status, ...(allowedNextOrderStatuses[o.status] ?? [])].map((s) => (
+                    <option key={s} value={s}>{humanStatus(s, orderStatusLabels)}</option>
                   ))}
                 </select>
               </label>
             </ApiForm>
+                </section>
             {o.status === "delivered" &&
               o.payment_status !== "paid" &&
               (o.payment_method ?? "cod") === "cod" && (
@@ -783,27 +898,46 @@ export default async function Admin({
                   label="Confirm COD collection"
                 />
               )}
+              </div>
+            </div>
           </article>
         ))}
       </div>
     );
   } else if (module === "messages") {
-    const { data, error } = await db
-      .from("contact_messages")
-      .select("*")
-      .match(id ? { id } : {})
+    const messageStatuses = ["new", "read", "replied", "closed"];
+    const selectedMessageStatus = !id && status && messageStatuses.includes(status) ? status : "";
+    const messagePageSize = 25;
+    const requestedMessagePage = Number(page ?? "1");
+    const messagePage = Number.isSafeInteger(requestedMessagePage) && requestedMessagePage > 0
+      ? Math.min(requestedMessagePage, 10000) : 1;
+    const messageQuery = db.from("contact_messages").select("*", { count: id ? undefined : "exact" }).match(id ? { id } : {});
+    const { data, error, count: messageCount } = await (selectedMessageStatus ? messageQuery.eq("status", selectedMessageStatus) : messageQuery)
       .order("created_at", { ascending: false })
-      .limit(200);
+      .order("id", { ascending: false })
+      .range(id ? 0 : (messagePage - 1) * messagePageSize, id ? 0 : messagePage * messagePageSize - 1);
     if (error) throw error;
     content = (
-      <div className="stack">
+      <div className="stack admin-customer-inbox" lang="ar" dir="rtl">
+        {!id && (
+          <form className="panel filters" method="get">
+            <input type="hidden" name="module" value="messages" />
+            <label>فلترة حسب الحالة
+              <select name="status" defaultValue={selectedMessageStatus}>
+                <option value="">كل الرسائل</option>
+                {messageStatuses.map((s) => <option key={s} value={s}>{({ new: "جديدة", read: "مقروءة", replied: "تم الرد", closed: "مغلقة" } as Record<string, string>)[s]}</option>)}
+              </select>
+            </label>
+            <button className="button">تطبيق الفلتر</button>
+          </form>
+        )}
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "Message not found" : "No messages yet"}</h2>
-            <p>Messages sent through the storefront chat appear here.</p>
+            <h2>{id ? "الرسالة مش موجودة" : messagePage > 1 && (messageCount ?? 0) <= (messagePage - 1) * messagePageSize ? "رقم الصفحة خارج نطاق النتائج" : selectedMessageStatus ? "مفيش رسائل بالحالة دي" : "مفيش رسائل لسه"}</h2>
+            <p>هنا هتظهر رسائل العملاء اللي بعتوها من الموقع.</p>
             {id && (
               <Link className="button secondary" href="/admin?module=messages">
-                View all messages
+                عرض كل الرسائل
               </Link>
             )}
           </section>
@@ -814,13 +948,13 @@ export default async function Admin({
               <h2>{m.name}</h2>
               <p>
                 <time dateTime={m.created_at}>
-                  {new Intl.DateTimeFormat("en-GB", {
+                  {new Intl.DateTimeFormat("ar-EG", {
                     dateStyle: "medium",
                     timeStyle: "short",
                     timeZone: "Africa/Cairo",
                   }).format(new Date(m.created_at))}
                 </time>{" "}
-                · Cairo time · {m.status}
+                · بتوقيت القاهرة · {({ new: "جديدة", read: "مقروءة", replied: "تم الرد", closed: "مغلقة" } as Record<string, string>)[m.status] ?? m.status}
               </p>
             </div>
             <p>
@@ -832,38 +966,66 @@ export default async function Admin({
             <ApiForm
               action="admin-message"
               extra={{ id: m.id }}
-              label="Update message"
+              label="حفظ حالة الرسالة"
             >
               <label>
-                Message status
+                حالة الرسالة
                 <select name="status" defaultValue={m.status}>
                   {["new", "read", "replied", "closed"].map((s) => (
-                    <option key={s}>{s}</option>
+                    <option key={s} value={s}>{({ new: "جديدة", read: "مقروءة", replied: "تم الرد", closed: "مغلقة", pending: "قيد المراجعة", quoted: "تم عرض السعر", resolved: "تم الحل" } as Record<string, string>)[s] ?? s}</option>
                   ))}
                 </select>
               </label>
             </ApiForm>
           </article>
         ))}
+        {!id && (messageCount ?? 0) > messagePageSize && (
+          <nav aria-label="صفحات الرسائل" className="admin-orders-pagination">
+            {messagePage > 1 && (
+              <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "messages", ...(selectedMessageStatus ? { status: selectedMessageStatus } : {}), page: String(messagePage - 1) })}`}>الصفحة السابقة</Link>
+            )}
+            <span>صفحة {messagePage} من {Math.ceil((messageCount ?? 0) / messagePageSize)} · {messageCount ?? 0} سجل</span>
+            {messagePage * messagePageSize < (messageCount ?? 0) && (
+              <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "messages", ...(selectedMessageStatus ? { status: selectedMessageStatus } : {}), page: String(messagePage + 1) })}`}>الصفحة التالية</Link>
+            )}
+          </nav>
+        )}
       </div>
     );
   } else if (module === "inquiries") {
-    const { data, error } = await db
-      .from("part_requests")
-      .select("*")
-      .match(id ? { id } : {})
+    const inquiryStatuses = ["pending", "quoted", "resolved", "closed"];
+    const selectedInquiryStatus = !id && status && inquiryStatuses.includes(status) ? status : "";
+    const inquiryPageSize = 25;
+    const requestedInquiryPage = Number(page ?? "1");
+    const inquiryPage = Number.isSafeInteger(requestedInquiryPage) && requestedInquiryPage > 0
+      ? Math.min(requestedInquiryPage, 10000) : 1;
+    const inquiryQuery = db.from("part_requests").select("*", { count: id ? undefined : "exact" }).match(id ? { id } : {});
+    const { data, error, count: inquiryCount } = await (selectedInquiryStatus ? inquiryQuery.eq("status", selectedInquiryStatus) : inquiryQuery)
       .order("created_at", { ascending: false })
-      .limit(100);
+      .order("id", { ascending: false })
+      .range(id ? 0 : (inquiryPage - 1) * inquiryPageSize, id ? 0 : inquiryPage * inquiryPageSize - 1);
     if (error) throw error;
     content = (
-      <div className="stack">
+      <div className="stack admin-customer-inbox" lang="ar" dir="rtl">
+        {!id && (
+          <form className="panel filters" method="get">
+            <input type="hidden" name="module" value="inquiries" />
+            <label>فلترة حسب الحالة
+              <select name="status" defaultValue={selectedInquiryStatus}>
+                <option value="">كل الطلبات</option>
+                {inquiryStatuses.map((s) => <option key={s} value={s}>{({ pending: "قيد المراجعة", quoted: "تم عرض السعر", resolved: "تم الحل", closed: "مغلق" } as Record<string, string>)[s]}</option>)}
+              </select>
+            </label>
+            <button className="button">تطبيق الفلتر</button>
+          </form>
+        )}
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "Inquiry not found" : "No inquiries yet"}</h2>
-            <p>Customer callbacks and spare-part requests appear here.</p>
+            <h2>{id ? "الطلب مش موجود" : inquiryPage > 1 && (inquiryCount ?? 0) <= (inquiryPage - 1) * inquiryPageSize ? "رقم الصفحة خارج نطاق النتائج" : selectedInquiryStatus ? "مفيش طلبات بالحالة دي" : "مفيش طلبات استفسار لسه"}</h2>
+            <p>هنا هتظهر طلبات التواصل والاستفسارات عن قطع الغيار.</p>
             {id && (
               <Link className="button secondary" href="/admin?module=inquiries">
-                View all inquiries
+                عرض كل الطلبات
               </Link>
             )}
           </section>
@@ -873,26 +1035,25 @@ export default async function Admin({
             <h2>{r.contact}</h2>
             <p>
               <time dateTime={r.created_at}>
-                {new Intl.DateTimeFormat("en-GB", {
+                {new Intl.DateTimeFormat("ar-EG", {
                   dateStyle: "medium",
                   timeStyle: "short",
                   timeZone: "Africa/Cairo",
                 }).format(new Date(r.created_at))}
               </time>{" "}
-              · Cairo time
+              · بتوقيت القاهرة
             </p>
             <p>{r.description}</p>
             <p>
               {r.vehicle_details?.request_type === "contact"
-                ? `Callback request · ${r.vehicle_details.topic}`
+                ? `طلب تواصل · ${r.vehicle_details.topic}`
                 : (r.vehicle_config_id ??
                   Object.values(r.vehicle_details ?? {}).join(" · "))}
             </p>
             {!r.vehicle_config_id &&
               r.vehicle_details?.request_type !== "contact" && (
                 <p className="notice">
-                  Customer-described vehicle; exact fitment requires manual
-                  verification.
+                  العميل كتب بيانات العربية بنفسه؛ لازم نراجع التوافق يدويًا قبل تأكيد القطعة.
                 </p>
               )}
             {r.image_path && (
@@ -901,16 +1062,16 @@ export default async function Admin({
                 target="_blank"
                 rel="noreferrer"
               >
-                View private inquiry photo ↗
+                عرض صورة الطلب الخاصة ↗
               </a>
             )}
             <ApiForm
               action="admin-inquiry"
               extra={{ id: r.id }}
-              label="Update inquiry"
+              label="حفظ بيانات الطلب"
             >
               <label>
-                Quoted amount · EGP (whole pounds)
+                السعر المعروض · جنيه مصري
                 <input
                   name="quoted_amount_egp"
                   type="number"
@@ -922,7 +1083,7 @@ export default async function Admin({
                 />
               </label>
               <label>
-                Private staff notes
+                ملاحظات داخلية للفريق
                 <textarea
                   name="staff_notes"
                   maxLength={5000}
@@ -930,16 +1091,27 @@ export default async function Admin({
                 />
               </label>
               <label>
-                Inquiry status
+                حالة الطلب
                 <select name="status" defaultValue={r.status}>
-                  {["pending", "quoted", "resolved", "closed"].map((s) => (
-                    <option key={s}>{s}</option>
+                  {inquiryStatuses.map((s) => (
+                    <option key={s} value={s}>{({ pending: "قيد المراجعة", quoted: "تم عرض السعر", resolved: "تم الحل", closed: "مغلق" } as Record<string, string>)[s]}</option>
                   ))}
                 </select>
               </label>
             </ApiForm>
           </article>
         ))}
+        {!id && (inquiryCount ?? 0) > inquiryPageSize && (
+          <nav aria-label="صفحات طلبات قطع الغيار" className="admin-orders-pagination">
+            {inquiryPage > 1 && (
+              <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "inquiries", ...(selectedInquiryStatus ? { status: selectedInquiryStatus } : {}), page: String(inquiryPage - 1) })}`}>الصفحة السابقة</Link>
+            )}
+            <span>صفحة {inquiryPage} من {Math.ceil((inquiryCount ?? 0) / inquiryPageSize)} · {inquiryCount ?? 0} سجل</span>
+            {inquiryPage * inquiryPageSize < (inquiryCount ?? 0) && (
+              <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "inquiries", ...(selectedInquiryStatus ? { status: selectedInquiryStatus } : {}), page: String(inquiryPage + 1) })}`}>الصفحة التالية</Link>
+            )}
+          </nav>
+        )}
       </div>
     );
   } else if (module === "vehicles") {
@@ -1010,10 +1182,10 @@ export default async function Admin({
       .maybeSingle();
     if (settingsError) throw settingsError;
     content = (
-      <div className="stack">
+      <div className="stack admin-settings-redesign" lang="ar" dir="rtl">
         <AdminCheckoutReadiness />
         <MerchantForm
-          title="Store name & homepage"
+          title="اسم المتجر ومحتوى الصفحة الرئيسية"
           action="admin-settings"
           initial={{
             heroImage: "/images/cyan/hero-blue.webp",
@@ -1025,30 +1197,30 @@ export default async function Admin({
               ar: "اختار عربيتك، واعرف قطع الغيار المناسبة ليها، وقارن الأسعار واطلب بكل سهولة.",
               en: "Choose your car, find the parts that fit, compare prices and order with confidence.",
             },
-            storeName: { ar: "موبِك", en: "MOPC" },
+            storeName: { ar: "MOPC", en: "MOPC" },
             ...currentSettings?.value,
           }}
           fields={[
             {
               path: "heroImage",
-              label: "Fallback image path (uploaded hero photos take priority)",
+              label: "مسار الصورة الافتراضية (صور البانر المرفوعة ليها الأولوية)",
               required: true,
             },
             ...["ar", "en"].flatMap((lang) => [
               {
                 path: "storeName." + lang,
-                label: "Store name · " + lang,
+                label: "اسم المتجر · " + (lang === "ar" ? "عربي" : "إنجليزي"),
                 required: true,
               },
               {
                 path: "heroTitle." + lang,
-                label: "Hero heading · " + lang + " (new line = accent text)",
+                label: "عنوان الواجهة · " + (lang === "ar" ? "عربي" : "إنجليزي") + " (السطر الجديد بيظهر بشكل مميز)",
                 type: "textarea" as const,
                 required: true,
               },
               {
                 path: "heroIntro." + lang,
-                label: "Hero introduction · " + lang,
+                label: "وصف الواجهة · " + (lang === "ar" ? "عربي" : "إنجليزي"),
                 type: "textarea" as const,
               },
             ]),
@@ -1056,41 +1228,38 @@ export default async function Admin({
         />
 
         <section className="panel stack">
-          <h2>Payment availability</h2>
+          <h2>حالة وسائل الدفع</h2>
           <p>
-            Cash on delivery:{" "}
-            {process.env.COD_ENABLED === "true" ? "Available" : "Disabled"}
+            الدفع عند الاستلام:{" "}
+            {process.env.COD_ENABLED === "true" ? "متاح" : "غير مفعّل"}
           </p>
           <p>
-            Cards and installments via EasyKash:{" "}
-            {process.env.EASYKASH_API_KEY ? "Configured" : "Not configured"}
+            البطاقات والتقسيط عبر EasyKash:{" "}
+            {process.env.EASYKASH_API_KEY ? "تم إعداد الربط" : "الربط غير مُعدّ"}
           </p>
           <p>
-            InstaPay and e-wallet transfers: Available with manual payment
-            review
+            التحويلات عبر InstaPay والمحافظ الإلكترونية: متاحة مع مراجعة الدفع يدويًا
           </p>
           <p className="muted">
-            Payment availability is controlled in the hosting settings. Uploaded
-            homepage photos are managed in{" "}
-            <Link href="/admin?module=hero-slideshow">Hero slideshow</Link> and{" "}
-            <Link href="/admin?module=branding">Branding</Link>.
+            وسائل الدفع بتتفعّل من إعدادات الاستضافة، مش من الصفحة دي. تقدر تدير صور الواجهة من{" "}
+            <Link href="/admin?module=hero-slideshow">بانرات الواجهة</Link> أو{" "}
+            <Link href="/admin?module=branding">الهوية البصرية</Link>.
           </p>
           <details>
-            <summary>Technical launch settings</summary>
+            <summary>إعدادات التشغيل التقنية</summary>
             <p>
-              Search indexing:{" "}
+              أرشفة محركات البحث:{" "}
               {process.env.STORE_LAUNCH_APPROVED === "true"
-                ? "Enabled"
-                : "Disabled"}
-              . Analytics:{" "}
+                ? "مفعّلة"
+                : "متوقفة"}
+              . التحليلات:{" "}
               {process.env.ANALYTICS_ENABLED === "true"
-                ? "Enabled"
-                : "Disabled"}
+                ? "مفعّلة"
+                : "متوقفة"}
               .
             </p>
             <p>
-              Production checkout excludes demonstration products. Provider
-              credentials are managed in the deployment environment.
+              المنتجات التجريبية مستبعدة من إتمام الطلبات على الإنتاج. مفاتيح مزودي الدفع بتتدار في بيئة النشر ومش بتظهر هنا.
             </p>
           </details>
         </section>

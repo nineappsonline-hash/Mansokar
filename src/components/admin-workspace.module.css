@@ -111,12 +111,12 @@
   background: #111b2b;
   color: #b2bdcc;
   position: fixed;
-  inset: 0 auto 0 0;
+  inset: 0 0 0 auto;
   display: flex;
   flex-direction: column;
   padding: 30px 16px 14px;
   z-index: 60;
-  border-right: 1px solid #243044;
+  border-left: 1px solid #243044;
 }
 .brand {
   display: flex;
@@ -269,7 +269,7 @@
   display: none;
 }
 .body {
-  margin-left: 252px;
+  margin-right: 252px;
   min-width: 0;
   width: calc(100% - 252px);
 }
@@ -616,7 +616,7 @@
     width: 268px;
   }
   .body {
-    margin-left: 268px;
+    margin-right: 268px;
     width: calc(100% - 268px);
   }
 }
@@ -625,7 +625,7 @@
     width: 224px;
   }
   .body {
-    margin-left: 224px;
+    margin-right: 224px;
     width: calc(100% - 224px);
   }
   .content {
@@ -650,7 +650,7 @@
 }
 @media (max-width: 760px) {
   .sidebar {
-    transform: translateX(-100%);
+    transform: translateX(100%);
     transition: transform 0.2s ease;
     width: 260px;
   }
@@ -658,7 +658,7 @@
     transform: translateX(0);
   }
   .body {
-    margin-left: 0;
+    margin-right: 0;
     width: 100%;
   }
   .menu {
@@ -813,9 +813,9 @@
     place-items: center;
     position: absolute;
     top: 15px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
+    left: 12px;
+    width: 44px;
+    height: 44px;
     padding: 0;
     color: white;
     background: #22314a;
@@ -868,5 +868,54 @@
 @media (max-width: 760px) {
   .module :global(.readiness-policies) {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Arabic-first workspace: keep the drawer on the right and touch targets usable. */
+.workspace {
+  font-family: var(--font-arabic), sans-serif;
+}
+.navGroup > p {
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 12px;
+}
+.navGroup a {
+  font-size: 14px;
+  min-height: 44px;
+}
+.module th {
+  text-align: right;
+}
+.module :global(.admin-orders-pagination) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 18px;
+}
+.module :global(.admin-orders-pagination) a {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+@media (max-width: 760px) {
+  .menu {
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+  .heading {
+    flex-wrap: wrap;
+  }
+  .module :global(.admin-orders-pagination) {
+    justify-content: space-between;
+  }
+  .module :global(.admin-orders-pagination) span {
+    flex: 1 1 100%;
+    text-align: center;
+    order: -1;
   }
 }

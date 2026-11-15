@@ -273,7 +273,7 @@ export function AdminProducts({
     setCarYear("");
   }
   return (
-    <div className="stack">
+    <div className="stack admin-products-redesign" lang="ar" dir="rtl">
       <nav className={styles.tabs} aria-label="Product workspace">
         <button
           type="button"
@@ -281,7 +281,7 @@ export function AdminProducts({
           onClick={() => navigate("products")}
         >
           <Package size={17} />
-          Products <span>{products.length}</span>
+          المنتجات <span>{products.length}</span>
         </button>
         <button
           type="button"
@@ -289,7 +289,7 @@ export function AdminProducts({
           onClick={() => navigate("brands")}
         >
           <Tags size={17} />
-          Item brands
+          ماركات قطع الغيار
         </button>
         <button
           type="button"
@@ -297,7 +297,7 @@ export function AdminProducts({
           onClick={() => navigate("excel")}
         >
           <FileSpreadsheet size={17} />
-          Excel import & export
+          استيراد وتصدير Excel
         </button>
       </nav>
       <div hidden={view !== "products"}>
@@ -305,14 +305,14 @@ export function AdminProducts({
           <section className="panel stack">
             <div className={styles.listHeading}>
               <h2>
-                Your products
+                قائمة المنتجات
                 <span className={styles.count}>
                   {filtered.length}/{products.length}
                 </span>
               </h2>
               <Link
                 href="/admin?module=products#product-editor"
-                aria-label="Create a new product"
+                aria-label="إضافة منتج جديد"
               >
                 <Plus size={19} />
               </Link>
@@ -320,19 +320,19 @@ export function AdminProducts({
             <label className={styles.search}>
               <Search size={16} />
               <input
-                aria-label="Search products"
-                placeholder="Search name or SKU…"
+                aria-label="البحث عن المنتجات"
+                placeholder="ابحث باسم القطعة أو رقم SKU…"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
             </label>
             <div className={styles.filters}>
               <select
-                aria-label="Filter by car make"
+                aria-label="تصفية حسب ماركة العربية"
                 value={carMake}
                 onChange={(e) => changeMake(e.target.value)}
               >
-                <option value="">All car makes</option>
+                <option value="">كل ماركات العربيات</option>
                 {makes.map((make) => (
                   <option key={make} value={make}>
                     {makeLabel(make)}
@@ -340,12 +340,12 @@ export function AdminProducts({
                 ))}
               </select>
               <select
-                aria-label="Filter by car model"
+                aria-label="تصفية حسب موديل العربية"
                 value={carModel}
                 disabled={!carMake}
                 onChange={(e) => changeModel(e.target.value)}
               >
-                <option value="">All car models</option>
+                <option value="">كل الموديلات</option>
                 {models.map((model) => (
                   <option key={model} value={model}>
                     {modelLabel(carMake, model)}
@@ -353,12 +353,12 @@ export function AdminProducts({
                 ))}
               </select>
               <select
-                aria-label="Filter by car year"
+                aria-label="تصفية حسب سنة العربية"
                 value={carYear}
                 disabled={!carModel}
                 onChange={(e) => setCarYear(e.target.value)}
               >
-                <option value="">All years</option>
+                <option value="">كل السنين</option>
                 {years.map((year) => (
                   <option key={year} value={year}>
                     {year}
@@ -366,11 +366,11 @@ export function AdminProducts({
                 ))}
               </select>
               <select
-                aria-label="Filter by item brand"
+                aria-label="تصفية حسب الشركة المصنعة"
                 value={itemBrand}
                 onChange={(e) => setItemBrand(e.target.value)}
               >
-                <option value="">All brands</option>
+                <option value="">كل الشركات المصنعة</option>
                 {manufacturers.map((manufacturer) => (
                   <option key={manufacturer} value={manufacturer}>
                     {manufacturer}
@@ -378,22 +378,22 @@ export function AdminProducts({
                 ))}
               </select>
               <select
-                aria-label="Filter by photos"
+                aria-label="تصفية حسب الصور"
                 value={photoFilter}
                 onChange={(e) => setPhotoFilter(e.target.value)}
               >
-                <option value="all">All photos</option>
-                <option value="with">With photos</option>
-                <option value="without">Without photos</option>
+                <option value="all">كل الصور</option>
+                <option value="with">بصور</option>
+                <option value="without">بدون صور</option>
               </select>
               <select
-                aria-label="Filter by status"
+                aria-label="تصفية حسب حالة النشر"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
-                <option value="all">All statuses</option>
-                <option value="published">Published</option>
-                <option value="draft">Draft</option>
+                <option value="all">كل الحالات</option>
+                <option value="published">منشور</option>
+                <option value="draft">مسودة</option>
               </select>
             </div>
             {hasFilters && (
@@ -409,11 +409,11 @@ export function AdminProducts({
                   setStatusFilter("all");
                 }}
               >
-                Clear filters
+                مسح الفلاتر
               </button>
             )}
             <Link className="button secondary" href="/admin?module=products">
-              <Plus size={15} /> New product
+              <Plus size={15} /> إضافة منتج
             </Link>
             <div className={styles.products}>
               {filtered.map((p) => {
@@ -432,9 +432,9 @@ export function AdminProducts({
                       )}
                     </span>
                     <span className={styles.productInfo}>
-                      <strong>{p.name.en}</strong>
-                      <small lang="ar" dir="rtl">
-                        {p.name.ar}
+                      <strong>{p.name.ar || p.name.en}</strong>
+                      <small lang="en" dir="ltr">
+                        {p.name.en}
                       </small>
                       <span className={styles.productMeta}>
                         <span>{p.sku}</span>
@@ -445,7 +445,7 @@ export function AdminProducts({
                               : styles.draft
                           }
                         >
-                          {p.status}
+                          {p.status === "published" ? "منشور" : p.status === "draft" ? "مسودة" : p.status}
                         </span>
                       </span>
                     </span>
@@ -456,19 +456,19 @@ export function AdminProducts({
             {!filtered.length && (
               <p>
                 {hasFilters || query
-                  ? "No products match these filters."
-                  : "No products yet. Create a new product to get started."}
+                  ? "مفيش منتجات مطابقة للفلاتر المحددة."
+                  : "No products yet. إضافة منتج جديد to get started."}
               </p>
             )}
           </section>
           <div className="stack" id="product-editor">
             <div className={styles.context}>
               <div>
-                <h2>{selected?.name.en || "Create a product"}</h2>
+                <h2>{selected?.name.en || "إضافة منتج جديد"}</h2>
                 <p>
                   {selected
-                    ? "Manage this product’s details, cars and photos below."
-                    : "Start with the part details and cars it fits. Save once, then add its photos."}
+                    ? "عدّل بيانات القطعة والعربيات المتوافقة والصور من هنا."
+                    : "ابدأ ببيانات القطعة والعربيات المتوافقة، وبعد الحفظ أضف الصور."}
                 </p>
               </div>
               {selected && (
@@ -480,7 +480,7 @@ export function AdminProducts({
             </div>
             <nav
               className={styles.productTabs}
-              aria-label="Selected product tools"
+              aria-label="أدوات تعديل المنتج"
             >
               <button
                 type="button"
@@ -488,7 +488,7 @@ export function AdminProducts({
                 onClick={() => navigate(view, "details")}
               >
                 <Package size={17} />
-                Product details
+                بيانات المنتج
               </button>
               <button
                 type="button"
@@ -496,7 +496,7 @@ export function AdminProducts({
                 onClick={() => navigate(view, "vehicles")}
               >
                 <CarFront size={17} />
-                Cars & years
+                العربيات والسنين
               </button>
               <button
                 type="button"
@@ -504,7 +504,7 @@ export function AdminProducts({
                 onClick={() => navigate(view, "photos")}
               >
                 <Image size={17} />
-                Photos
+                الصور
               </button>
             </nav>
             <div hidden={tab === "photos"}>

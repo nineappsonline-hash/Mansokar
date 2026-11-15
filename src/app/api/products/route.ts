@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import { catalog, fitmentFlags, productImages, vehicleCatalog } from "@/lib/db";
 import { fitmentLabel, type Locale } from "@/lib/catalog";
 import { publicProduct, carContext } from "@/lib/public-product";
+import { readApplications } from "@/lib/product-applications";
 export async function GET(request: Request) {
   try {
     await enforceRate(request, "products", 90);
@@ -26,6 +27,22 @@ export async function GET(request: Request) {
   const { vehicles, models, brands } = await vehicleCatalog();
   const vehicle = vehicles.find((v) => v.id === id);
   const flags = await fitmentFlags(ids, vehicle?.id);
+  // Canonical storefront compatibility lives in specs.car_years:<model_id>.
+  // The legacy product_fitments table is empty for this catalog.
+  const modelMap = new Map(models.map((model) => [model.id, model]));
+  const compatibleVehicles: Record<string, { brand: string; model: string; year: number }[]> = {};
+  for (const product of products) {
+    compatibleVehicles[product.id] = readApplications(product.specs)
+      .flatMap((application) => {
+        const model = modelMap.get(application.model_id);
+        if (!model) return [];
+        return application.years.map((year) => ({
+          brand: model.brand,
+          model: model.name[locale] || model.slug,
+          year,
+        }));
+      });
+  }
   return Response.json(
     {
       products: products.map((p) => ({
@@ -46,6 +63,7 @@ export async function GET(request: Request) {
         ),
         imageUrl: imageMap.get(p.id) ?? null,
       })),
+      compatibleVehicles,
       fitments: Object.fromEntries(
         products.map((p) => [
           p.id,
