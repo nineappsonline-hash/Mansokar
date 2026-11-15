@@ -1376,6 +1376,31 @@ export async function POST(
             status: z.enum(["verified", "rejected"]),
           })
           .parse(b);
+        // Fail closed on mismatched amounts: the existing database RPC marks
+        // an order paid for its full total, so partial transfers must not
+        // be approved until partial-payment reconciliation is implemented.
+        if (input.status === "verified") {
+          const { data: transfer, error: transferError } = await db
+            .from("manual_transfers")
+            .select("id,order_id,amount,status,method")
+            .eq("id", input.id)
+            .single();
+          if (transferError || !transfer) throw new Error("Transfer not found");
+          if (transfer.status !== "pending") throw new Error("Transfer already reviewed");
+          const { data: order, error: orderError } = await db
+            .from("orders")
+            .select("id,total,payment_status,payment_method")
+            .eq("id", transfer.order_id)
+            .single();
+          if (orderError || !order) throw new Error("Order not found");
+          if (order.payment_status === "paid") throw new Error("Order is already paid");
+          if (Number(transfer.amount) !== Number(order.total)) {
+            throw new Error("Transfer amount differs from order total. Partial payments cannot be approved yet.");
+          }
+          if (transfer.method !== order.payment_method) {
+            throw new Error("Transfer method does not match the order payment method");
+          }
+        }
         const { error } = await db.rpc("verify_manual_transfer", {
           p_actor: admin.id,
           p_transfer: input.id,
