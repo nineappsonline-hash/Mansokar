@@ -65,13 +65,13 @@ export function SimpleProductEditor({
   const availableMakers = [...new Set([...manufacturers, ...makers])];
   const [addBrand, setAddBrand] = useState(false);
   return (
-    <section className="panel stack">
+    <section className="panel stack admin-product-editor" lang="ar" dir="rtl">
       <h2>
         {activeTab === "vehicles"
-          ? "Choose cars & years"
+          ? "اختيار العربيات والسنين"
           : value.id
-            ? "Edit product"
-            : "New product"}
+            ? "تعديل المنتج"
+            : "إضافة منتج جديد"}
       </h2>
       {activeTab === "vehicles" &&
         (!value.name.en.trim() ||
@@ -79,18 +79,18 @@ export function SimpleProductEditor({
           !value.manufacturer.trim() ||
           !value.partNumber.trim()) && (
           <p>
-            Complete the required fields in Product details before saving. You
-            can choose cars and years now.
+            كمّل الحقول المطلوبة في بيانات المنتج قبل الحفظ. تقدر
+            تختار العربيات والسنين دلوقتي.
           </p>
         )}
       {applications.some((a) => !a.years.length) && (
         <p>
-          Select at least one year for each chosen model, or remove that model.
+          اختار سنة واحدة على الأقل لكل موديل، أو احذف الموديل من القائمة.
         </p>
       )}
       <ApiForm
         action="admin-product"
-        label="Save product"
+        label="حفظ المنتج"
         disabled={
           !value.name.en.trim() ||
           !value.name.ar.trim() ||
@@ -114,7 +114,7 @@ export function SimpleProductEditor({
           <div className="stack">
             {(["en", "ar"] as const).map((lang) => (
               <label key={lang}>
-                Spare part name · {lang}
+                اسم قطعة الغيار · {lang}
                 <input
                   required
                   maxLength={200}
@@ -130,7 +130,7 @@ export function SimpleProductEditor({
               </label>
             ))}
             <label>
-              Item brand — search or select
+              الشركة المصنعة — ابحث أو اختار
               <input
                 required
                 list="item-brands"
@@ -161,7 +161,7 @@ export function SimpleProductEditor({
                 </button>
               )}
             <label>
-              Warranty · months (blank if not supplied)
+              الضمان بالشهور (اتركه فارغًا لو مش متوفر)
               <input
                 type="number"
                 min={1}
@@ -172,7 +172,7 @@ export function SimpleProductEditor({
               />
             </label>
             <label>
-              Country of origin
+              بلد المنشأ
               <input
                 maxLength={100}
                 value={value.specs?.country_of_origin ?? ""}
@@ -188,7 +188,7 @@ export function SimpleProductEditor({
               />
             </label>
             <label>
-              Part number
+              رقم القطعة
               <input
                 required
                 maxLength={100}
@@ -202,9 +202,9 @@ export function SimpleProductEditor({
               <label key={key}>
                 {
                   {
-                    price: "Sale price",
-                    sale: "Discount price (optional)",
-                    cost: "Cost price",
+                    price: "السعر الأساسي",
+                    sale: "السعر بعد الخصم (اختياري)",
+                    cost: "سعر التكلفة",
                   }[key]
                 }{" "}
                 · EGP
@@ -232,8 +232,8 @@ export function SimpleProductEditor({
                 value={value.type}
                 onChange={(e) => setValue({ ...value, type: e.target.value })}
               >
-                <option value="oem">Original</option>
-                <option value="aftermarket">After Market</option>
+                <option value="oem">أصلي</option>
+                <option value="aftermarket">بديل Aftermarket</option>
               </select>
             </label>
             <label>
@@ -242,8 +242,8 @@ export function SimpleProductEditor({
                 value={value.status}
                 onChange={(e) => setValue({ ...value, status: e.target.value })}
               >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
+                <option value="draft">مسودة</option>
+                <option value="published">منشور</option>
               </select>
             </label>
             <label className="check">
@@ -254,7 +254,7 @@ export function SimpleProductEditor({
                   setValue({ ...value, orderable: e.target.checked })
                 }
               />
-              Available to order
+              متاح للطلب
             </label>
             <details className="stack">
               <summary>Optional: verified stock and SEO overrides</summary>
