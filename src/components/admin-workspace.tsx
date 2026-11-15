@@ -76,7 +76,7 @@ const navigation: { title: string; items: [string, string, LucideIcon][] }[] = [
   },
 ];
 const descriptions: Record<string, string> = {
-  overview: "A clear view of your store’s performance and everyday operations.",
+  overview: "تابع الطلبات والمدفوعات واستفسارات العملاء في مكان واحد.",
   products: "Manage your parts, prices and vehicle coverage in one place.",
   orders: "Review purchases and keep fulfillment moving.",
   messages: "Read and respond to messages sent from the storefront chat.",
@@ -202,7 +202,7 @@ export function AdminWorkspace({
     };
   }, [open]);
   const title =
-    navigation.flatMap((g) => g.items).find((i) => i[0] === module)?.[1] ||
+    module === "overview" ? "لوحة التحكم" : navigation.flatMap((g) => g.items).find((i) => i[0] === module)?.[1] ||
     "Administration";
   return (
     <main className={styles.workspace} lang="en" dir="ltr">
@@ -301,7 +301,7 @@ export function AdminWorkspace({
           </Link>
         </header>
         <div className={styles.content}>
-          <div className={styles.heading}>
+          <div className={`${styles.heading} ${module === "overview" ? "admin-dashboard-heading" : ""}`}>
             <div>
               <span className={styles.eyebrow}>
                 {navigation
@@ -322,41 +322,6 @@ export function AdminWorkspace({
               Add product
             </Link>
           </div>
-          {module === "overview" && (
-            <div className={styles.quickLinks}>
-              {[
-                [
-                  "products",
-                  "Manage products",
-                  "Update parts and prices",
-                  Package,
-                ],
-                [
-                  "orders",
-                  "Review orders",
-                  "Manage customer purchases",
-                  ShoppingBag,
-                ],
-                [
-                  "inquiries",
-                  "Customer inquiries",
-                  "Keep conversations moving",
-                  MessageSquare,
-                ],
-              ].map(([key, label, description, Icon]: any) => (
-                <Link key={key} href={`/admin?module=${key}`}>
-                  <span className={styles.quickIcon}>
-                    <Icon size={21} />
-                  </span>
-                  <div>
-                    <strong>{label}</strong>
-                    <small>{description}</small>
-                  </div>
-                  <ArrowUpRight size={17} />
-                </Link>
-              ))}
-            </div>
-          )}
           <div className={styles.module}>{children}</div>
           <footer className={styles.footer}>
             <span>MOPC · Store administration</span>
