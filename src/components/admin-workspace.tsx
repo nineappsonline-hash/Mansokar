@@ -135,7 +135,7 @@ export function AdminSignIn({ children }: { children: React.ReactNode }) {
     </main>
   );
 }
-export function Adminلوحة الإدارة({
+export function AdminWorkspace({
   module,
   email,
   children,
