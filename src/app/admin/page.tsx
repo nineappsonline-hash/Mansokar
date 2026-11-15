@@ -51,6 +51,15 @@ const paymentStatusLabels: Record<string, string> = {
   refunded: "Refunded",
   partially_refunded: "Partially refunded",
 };
+const allowedNextOrderStatuses: Record<string, string[]> = {
+  pending_confirmation: ["confirmed", "cancelled"],
+  confirmed: ["processing", "cancelled"],
+  processing: ["shipped", "cancelled"],
+  shipped: ["delivered"],
+  delivered: ["returned"],
+  cancelled: [],
+  returned: [],
+};
 const humanStatus = (value: string, labels: Record<string, string>) =>
   labels[value] ?? value.replaceAll("_", " ");
 export const dynamic = "force-dynamic";
@@ -811,6 +820,7 @@ export default async function Admin({
                 </section>
                 <section className="admin-order-detail-card">
                   <h3>تحديث الطلب والشحن</h3>
+                  <p className="admin-order-transition-hint">القائمة تعرض الحالة الحالية والانتقالات المسموح بها فقط. قاعدة البيانات تتحقق من صحة أي انتقال قبل حفظه.</p>
             <ApiForm
               action="admin-order"
               extra={{ id: o.id }}
@@ -843,15 +853,7 @@ export default async function Admin({
               <label>
                 Status
                 <select name="status" defaultValue={o.status}>
-                  {[
-                    "pending_confirmation",
-                    "confirmed",
-                    "processing",
-                    "shipped",
-                    "delivered",
-                    "cancelled",
-                    "returned",
-                  ].map((s) => (
+                  {[o.status, ...(allowedNextOrderStatuses[o.status] ?? [])].map((s) => (
                     <option key={s} value={s}>{humanStatus(s, orderStatusLabels)}</option>
                   ))}
                 </select>
