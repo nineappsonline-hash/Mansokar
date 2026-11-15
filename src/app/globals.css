@@ -7417,3 +7417,47 @@ body {
 .admin-settings-redesign details { border:1px solid #e2e9ef; border-radius:12px; padding:12px 15px; }
 .admin-settings-redesign summary { cursor:pointer; font-weight:700; }
 @media(max-width:640px){.admin-settings-redesign .panel{padding:15px}.admin-settings-redesign h2{font-size:19px}}
+
+/* Admin mobile hardening: long customer details and product forms must not overflow. */
+@media (max-width: 640px) {
+  .admin-order-detail,
+  .admin-order-detail-grid,
+  .admin-order-detail-main,
+  .admin-order-detail-side,
+  .admin-order-detail-card,
+  .admin-product-editor {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .admin-order-detail-card,
+  .admin-order-detail-card p,
+  .admin-order-item,
+  .admin-order-row,
+  .admin-product-editor {
+    overflow-wrap: anywhere;
+  }
+  .admin-order-detail-card input,
+  .admin-order-detail-card select,
+  .admin-order-detail-card textarea,
+  .admin-product-editor input,
+  .admin-product-editor select,
+  .admin-product-editor textarea {
+    max-width: 100%;
+    min-width: 0;
+  }
+  .admin-order-detail-card .two-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .admin-orders-list-head {
+    flex-wrap: wrap;
+  }
+  .admin-orders-filters {
+    flex-wrap: wrap;
+  }
+  .admin-orders-filters label {
+    min-width: min(100%, 220px);
+  }
+  .admin-order-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
