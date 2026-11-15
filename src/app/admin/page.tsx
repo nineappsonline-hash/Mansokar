@@ -904,10 +904,15 @@ export default async function Admin({
   } else if (module === "messages") {
     const messageStatuses = ["new", "read", "replied", "closed"];
     const selectedMessageStatus = !id && status && messageStatuses.includes(status) ? status : "";
-    const messageQuery = db.from("contact_messages").select("*").match(id ? { id } : {});
-    const { data, error } = await (selectedMessageStatus ? messageQuery.eq("status", selectedMessageStatus) : messageQuery)
+    const messagePageSize = 25;
+    const requestedMessagePage = Number(page ?? "1");
+    const messagePage = Number.isSafeInteger(requestedMessagePage) && requestedMessagePage > 0
+      ? Math.min(requestedMessagePage, 10000) : 1;
+    const messageQuery = db.from("contact_messages").select("*", { count: id ? undefined : "exact" }).match(id ? { id } : {});
+    const { data, error, count: messageCount } = await (selectedMessageStatus ? messageQuery.eq("status", selectedMessageStatus) : messageQuery)
       .order("created_at", { ascending: false })
-      .limit(200);
+      .order("id", { ascending: false })
+      .range(id ? 0 : (messagePage - 1) * messagePageSize, id ? 0 : messagePage * messagePageSize - 1);
     if (error) throw error;
     content = (
       <div className="stack admin-customer-inbox" lang="ar" dir="rtl">
@@ -971,15 +976,31 @@ export default async function Admin({
             </ApiForm>
           </article>
         ))}
+        {!id && (messageCount ?? 0) > messagePageSize && (
+          <nav aria-label="صفحات الرسائل" className="admin-orders-pagination">
+            {messagePage > 1 && (
+              <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "messages", ...(selectedMessageStatus ? { status: selectedMessageStatus } : {}), page: String(messagePage - 1) })}`}>الصفحة السابقة</Link>
+            )}
+            <span>صفحة {messagePage} من {Math.ceil((messageCount ?? 0) / messagePageSize)} · {messageCount ?? 0} سجل</span>
+            {messagePage * messagePageSize < (messageCount ?? 0) && (
+              <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "messages", ...(selectedMessageStatus ? { status: selectedMessageStatus } : {}), page: String(messagePage + 1) })}`}>الصفحة التالية</Link>
+            )}
+          </nav>
+        )}
       </div>
     );
   } else if (module === "inquiries") {
     const inquiryStatuses = ["pending", "quoted", "resolved", "closed"];
     const selectedInquiryStatus = !id && status && inquiryStatuses.includes(status) ? status : "";
-    const inquiryQuery = db.from("part_requests").select("*").match(id ? { id } : {});
-    const { data, error } = await (selectedInquiryStatus ? inquiryQuery.eq("status", selectedInquiryStatus) : inquiryQuery)
+    const inquiryPageSize = 25;
+    const requestedInquiryPage = Number(page ?? "1");
+    const inquiryPage = Number.isSafeInteger(requestedInquiryPage) && requestedInquiryPage > 0
+      ? Math.min(requestedInquiryPage, 10000) : 1;
+    const inquiryQuery = db.from("part_requests").select("*", { count: id ? undefined : "exact" }).match(id ? { id } : {});
+    const { data, error, count: inquiryCount } = await (selectedInquiryStatus ? inquiryQuery.eq("status", selectedInquiryStatus) : inquiryQuery)
       .order("created_at", { ascending: false })
-      .limit(100);
+      .order("id", { ascending: false })
+      .range(id ? 0 : (inquiryPage - 1) * inquiryPageSize, id ? 0 : inquiryPage * inquiryPageSize - 1);
     if (error) throw error;
     content = (
       <div className="stack admin-customer-inbox" lang="ar" dir="rtl">
@@ -1077,6 +1098,17 @@ export default async function Admin({
             </ApiForm>
           </article>
         ))}
+        {!id && (inquiryCount ?? 0) > inquiryPageSize && (
+          <nav aria-label="صفحات طلبات قطع الغيار" className="admin-orders-pagination">
+            {inquiryPage > 1 && (
+              <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "inquiries", ...(selectedInquiryStatus ? { status: selectedInquiryStatus } : {}), page: String(inquiryPage - 1) })}`}>الصفحة السابقة</Link>
+            )}
+            <span>صفحة {inquiryPage} من {Math.ceil((inquiryCount ?? 0) / inquiryPageSize)} · {inquiryCount ?? 0} سجل</span>
+            {inquiryPage * inquiryPageSize < (inquiryCount ?? 0) && (
+              <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "inquiries", ...(selectedInquiryStatus ? { status: selectedInquiryStatus } : {}), page: String(inquiryPage + 1) })}`}>الصفحة التالية</Link>
+            )}
+          </nav>
+        )}
       </div>
     );
   } else if (module === "vehicles") {
