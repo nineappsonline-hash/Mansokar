@@ -37,41 +37,41 @@ import { ApiForm } from "./forms";
 import styles from "./admin-workspace.module.css";
 const navigation: { title: string; items: [string, string, LucideIcon][] }[] = [
   {
-    title: "Workspace",
+    title: "Daily operations",
     items: [
       ["overview", "Overview", LayoutDashboard],
       ["orders", "Orders", ShoppingBag],
-      ["messages", "Messages", Inbox],
-      ["inquiries", "Inquiries", MessageSquare],
+      ["messages", "Customer messages", Inbox],
+      ["inquiries", "Part requests", MessageSquare],
       ["customers", "Customers", Users],
     ],
   },
   {
-    title: "Catalog",
+    title: "Catalog & vehicles",
     items: [
       ["products", "Products", Package],
-      ["vehicles", "Vehicles", Car],
-      ["recommendations", "Recommendations", Layers],
+      ["vehicles", "Cars & compatibility", Car],
+      ["recommendations", "Related products", Layers],
     ],
   },
   {
-    title: "Storefront",
+    title: "Marketing & storefront",
     items: [
-      ["campaigns", "Campaigns", Megaphone],
-      ["promotions", "Promotions", Ticket],
-      ["shipping", "Shipping", Truck],
+      ["campaigns", "Campaign banners", Megaphone],
+      ["promotions", "Discount coupons", Ticket],
+      ["hero-slideshow", "Homepage slideshow", GalleryHorizontalEnd],
+      ["branding", "Brand identity", Palette],
       ["cms", "Pages & policies", FileText],
-      ["branding", "Branding", Palette],
-      ["hero-slideshow", "Hero slideshow", GalleryHorizontalEnd],
     ],
   },
   {
-    title: "Insights & settings",
+    title: "Reports & settings",
     items: [
       ["reports", "Sales reports", BarChart3],
-      ["analytics", "Analytics", BarChart3],
-      ["seo", "SEO & discovery", Search],
-      ["settings", "Settings", Settings],
+      ["analytics", "Visitor analytics", BarChart3],
+      ["seo", "SEO & search visibility", Search],
+      ["shipping", "Delivery rates", Truck],
+      ["settings", "Store settings", Settings],
     ],
   },
 ];
