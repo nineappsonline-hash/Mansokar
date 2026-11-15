@@ -1179,9 +1179,8 @@ export default async function Admin({
             التحويلات عبر InstaPay والمحافظ الإلكترونية: متاحة مع مراجعة الدفع يدويًا
           </p>
           <p className="muted">
-            حالة وسائل الدفع is controlled in the hosting settings. Uploaded
-            homepage photos are managed in{" "}
-            <Link href="/admin?module=hero-slideshow">بانرات الواجهة</Link> and{" "}
+            وسائل الدفع بتتفعّل من إعدادات الاستضافة، مش من الصفحة دي. تقدر تدير صور الواجهة من{" "}
+            <Link href="/admin?module=hero-slideshow">بانرات الواجهة</Link> أو{" "}
             <Link href="/admin?module=branding">الهوية البصرية</Link>.
           </p>
           <details>
