@@ -7283,3 +7283,40 @@ body {
 .admin-order-timeline p { font-size:13px; margin:3px 0 0; }
 
 .admin-order-transition-hint { font-size:13px; line-height:1.8; color:#687785; background:#f5f7f8; border-radius:9px; padding:11px 13px; margin-bottom:16px; }
+
+/* MOPC Admin products refresh — larger Arabic typography, calmer panels */
+.admin-products-redesign { font-family:"Almarai","MOPC Arabic",Tahoma,sans-serif; font-size:15px; line-height:1.8; }
+.admin-products-redesign .tabs,
+.admin-products-redesign .productTabs { gap:10px; }
+.admin-products-redesign .tabs button,
+.admin-products-redesign .productTabs button { font-family:inherit; font-size:15px; font-weight:700; padding:13px 17px; border-radius:11px; }
+.admin-products-redesign .tabs button[aria-current="page"] { background:#142838; border-color:#142838; }
+.admin-products-redesign .layout { grid-template-columns:minmax(340px,.9fr) minmax(0,1.5fr); gap:22px; }
+.admin-products-redesign .listHeading h2 { font-size:23px; font-weight:800; color:#142838; }
+.admin-products-redesign .count { font-size:14px; }
+.admin-products-redesign .search input { min-height:48px; font-family:inherit; font-size:15px; padding-right:42px; padding-left:12px !important; }
+.admin-products-redesign .search svg { right:14px; left:auto; top:16px; }
+.admin-products-redesign .filters { gap:10px; }
+.admin-products-redesign .filters select { min-height:46px; font-family:inherit; font-size:14px; border-radius:10px; padding:10px; }
+.admin-products-redesign .clearFilters { font-size:14px; color:#47672b; }
+.admin-products-redesign .products { max-height:720px; gap:11px; }
+.admin-products-redesign .products > a { border-radius:13px; padding:15px; gap:14px; align-items:center; text-decoration:none; }
+.admin-products-redesign .products > a[aria-current="page"] { background:#f7faef; border-color:#b7d47a; box-shadow:0 0 0 1px #dcebbb; }
+.admin-products-redesign .thumb { width:66px; height:66px; flex-basis:66px; border-radius:10px; }
+.admin-products-redesign .products strong { font-family:inherit; font-size:16px; line-height:1.65; color:#142838; }
+.admin-products-redesign .products small { font-family:inherit; font-size:13px; text-align:right; direction:ltr; color:#647483; }
+.admin-products-redesign .productMeta { font-size:13px; gap:12px; }
+.admin-products-redesign .published,
+.admin-products-redesign .draft { border-radius:8px; padding:5px 9px; }
+.admin-products-redesign .context h2 { font-size:25px !important; }
+.admin-products-redesign .context p { font-size:15px; line-height:1.8; }
+.admin-products-redesign .productTabs button[aria-current="page"] { background:#eff6df; color:#3f6024; border-color:#c9e86d; }
+@media(max-width:1050px) { .admin-products-redesign .layout { grid-template-columns:1fr; } }
+@media(max-width:600px) {
+ .admin-products-redesign .tabs button,
+ .admin-products-redesign .productTabs button { font-size:13px; padding:10px; }
+ .admin-products-redesign .products { max-height:480px; }
+ .admin-products-redesign .products strong { font-size:15px; }
+ .admin-products-redesign .thumb { width:56px; height:56px; flex-basis:56px; }
+ .admin-products-redesign .filters { grid-template-columns:1fr 1fr; }
+}
