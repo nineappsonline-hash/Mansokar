@@ -442,24 +442,23 @@ export default async function Admin({
   } else if (module === "campaigns") {
     const campaigns = await allRows<any>("campaigns");
     content = (
-      <div className="two-col">
+      <div className="two-col admin-campaigns-redesign" lang="ar" dir="rtl">
         <div className="panel stack">
           <Link className="button secondary" href="/admin?module=campaigns">
-            New campaign
+            إضافة حملة جديدة
           </Link>
           {campaigns.map((c) => (
             <Link key={c.id} href={"/admin?module=campaigns&id=" + c.id}>
-              {c.title.en} · {c.enabled ? "Enabled" : "Disabled"}
+              {c.title.ar || c.title.en} · {c.enabled ? "مفعّلة" : "متوقفة"}
             </Link>
           ))}
           <p>
-            Only enabled campaigns within their scheduled UTC dates appear on
-            the homepage.
+            الحملات المفعّلة بس هي اللي بتظهر في الصفحة الرئيسية خلال فترة عرضها المحددة بتوقيت UTC.
           </p>
         </div>
         <MerchantForm
           key={id}
-          title="Scheduled homepage campaign"
+          title="حملة تسويقية مجدولة للصفحة الرئيسية"
           action="admin-campaign"
           initial={
             campaigns.find((c) => c.id === id) ?? {
@@ -477,34 +476,34 @@ export default async function Admin({
             ...["ar", "en"].flatMap((lang) => [
               {
                 path: "title." + lang,
-                label: "Title · " + lang,
+                label: "عنوان الحملة · " + (lang === "ar" ? "عربي" : "إنجليزي"),
                 required: true,
               },
               {
                 path: "body." + lang,
-                label: "Body · " + lang,
+                label: "وصف الحملة · " + (lang === "ar" ? "عربي" : "إنجليزي"),
                 type: "textarea" as const,
               },
             ]),
             {
               path: "href",
-              label: "Internal link (/ar/offers or /en/offers)",
+              label: "رابط داخلي (مثال: /ar/offers)",
               nullable: true,
             },
-            { path: "image", label: "Image path (/images/…)", nullable: true },
+            { path: "image", label: "مسار صورة الحملة (/images/…)", nullable: true },
             {
               path: "starts_at",
-              label: "Starts (UTC)",
+              label: "تاريخ بداية الحملة (UTC)",
               type: "datetime-local",
               required: true,
             },
             {
               path: "ends_at",
-              label: "Ends (UTC)",
+              label: "تاريخ نهاية الحملة (UTC)",
               type: "datetime-local",
               required: true,
             },
-            { path: "enabled", label: "Enabled", type: "checkbox" },
+            { path: "enabled", label: "تفعيل الحملة", type: "checkbox" },
           ]}
         />
       </div>
