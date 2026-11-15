@@ -1025,7 +1025,7 @@ export default async function Admin({
               ar: "اختار عربيتك، واعرف قطع الغيار المناسبة ليها، وقارن الأسعار واطلب بكل سهولة.",
               en: "Choose your car, find the parts that fit, compare prices and order with confidence.",
             },
-            storeName: { ar: "موبِك", en: "MOPC" },
+            storeName: { ar: "MOPC", en: "MOPC" },
             ...currentSettings?.value,
           }}
           fields={[
