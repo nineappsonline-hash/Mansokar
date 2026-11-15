@@ -1,3 +1,4 @@
+import { orderSearchTerm } from "@/lib/admin-order-search";
 import { AdminCheckoutReadiness } from "@/components/admin-checkout-readiness";
 import { AdminOverview } from "@/components/admin-overview";
 import { AdminCoupon } from "@/components/admin-coupon";
@@ -663,8 +664,7 @@ export default async function Admin({
       ? Math.min(requestedPage, 10000) : 1;
     // Only allow ordinary search characters in the PostgREST OR expression.
     // Reject filter syntax rather than interpolate user-supplied operators.
-    const orderSearch = (q ?? "").trim().slice(0, 80);
-    const safeOrderSearch = /^[\p{L}\p{N}\s+.#/-]*$/u.test(orderSearch);
+    const { term: orderSearch, valid: safeOrderSearch } = orderSearchTerm(q);
     let orderQuery = db.from("orders").select("id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)", { count: id ? undefined : "exact" });
     if (!id && status && allowedOrderStatuses.includes(status)) orderQuery = orderQuery.eq("status", status);
     if (!id && orderSearch && safeOrderSearch) {
