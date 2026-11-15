@@ -1120,10 +1120,10 @@ export default async function Admin({
       .maybeSingle();
     if (settingsError) throw settingsError;
     content = (
-      <div className="stack">
+      <div className="stack admin-settings-redesign" lang="ar" dir="rtl">
         <AdminCheckoutReadiness />
         <MerchantForm
-          title="Store name & homepage"
+          title="اسم المتجر ومحتوى الصفحة الرئيسية"
           action="admin-settings"
           initial={{
             heroImage: "/images/cyan/hero-blue.webp",
@@ -1141,24 +1141,24 @@ export default async function Admin({
           fields={[
             {
               path: "heroImage",
-              label: "Fallback image path (uploaded hero photos take priority)",
+              label: "مسار الصورة الافتراضية (صور البانر المرفوعة ليها الأولوية)",
               required: true,
             },
             ...["ar", "en"].flatMap((lang) => [
               {
                 path: "storeName." + lang,
-                label: "Store name · " + lang,
+                label: "اسم المتجر · " + (lang === "ar" ? "عربي" : "إنجليزي"),
                 required: true,
               },
               {
                 path: "heroTitle." + lang,
-                label: "Hero heading · " + lang + " (new line = accent text)",
+                label: "عنوان الواجهة · " + (lang === "ar" ? "عربي" : "إنجليزي") + " (السطر الجديد بيظهر بشكل مميز)",
                 type: "textarea" as const,
                 required: true,
               },
               {
                 path: "heroIntro." + lang,
-                label: "Hero introduction · " + lang,
+                label: "وصف الواجهة · " + (lang === "ar" ? "عربي" : "إنجليزي"),
                 type: "textarea" as const,
               },
             ]),
@@ -1166,41 +1166,39 @@ export default async function Admin({
         />
 
         <section className="panel stack">
-          <h2>Payment availability</h2>
+          <h2>حالة وسائل الدفع</h2>
           <p>
-            Cash on delivery:{" "}
-            {process.env.COD_ENABLED === "true" ? "Available" : "Disabled"}
+            الدفع عند الاستلام:{" "}
+            {process.env.COD_ENABLED === "true" ? "متاح" : "غير مفعّل"}
           </p>
           <p>
-            Cards and installments via EasyKash:{" "}
-            {process.env.EASYKASH_API_KEY ? "Configured" : "Not configured"}
+            البطاقات والتقسيط عبر EasyKash:{" "}
+            {process.env.EASYKASH_API_KEY ? "تم إعداد الربط" : "الربط غير مُعدّ"}
           </p>
           <p>
-            InstaPay and e-wallet transfers: Available with manual payment
-            review
+            التحويلات عبر InstaPay والمحافظ الإلكترونية: متاحة مع مراجعة الدفع يدويًا
           </p>
           <p className="muted">
-            Payment availability is controlled in the hosting settings. Uploaded
+            حالة وسائل الدفع is controlled in the hosting settings. Uploaded
             homepage photos are managed in{" "}
-            <Link href="/admin?module=hero-slideshow">Hero slideshow</Link> and{" "}
-            <Link href="/admin?module=branding">Branding</Link>.
+            <Link href="/admin?module=hero-slideshow">بانرات الواجهة</Link> and{" "}
+            <Link href="/admin?module=branding">الهوية البصرية</Link>.
           </p>
           <details>
-            <summary>Technical launch settings</summary>
+            <summary>إعدادات التشغيل التقنية</summary>
             <p>
-              Search indexing:{" "}
+              أرشفة محركات البحث:{" "}
               {process.env.STORE_LAUNCH_APPROVED === "true"
-                ? "Enabled"
-                : "Disabled"}
-              . Analytics:{" "}
+                ? "مفعّلة"
+                : "متوقفة"}
+              . التحليلات:{" "}
               {process.env.ANALYTICS_ENABLED === "true"
-                ? "Enabled"
-                : "Disabled"}
+                ? "مفعّلة"
+                : "متوقفة"}
               .
             </p>
             <p>
-              Production checkout excludes demonstration products. Provider
-              credentials are managed in the deployment environment.
+              المنتجات التجريبية مستبعدة من إتمام الطلبات على الإنتاج. مفاتيح مزودي الدفع بتتدار في بيئة النشر ومش بتظهر هنا.
             </p>
           </details>
         </section>
