@@ -650,11 +650,12 @@ export async function POST(
           .maybeSingle();
         if (error) throw error;
         if (!data) throw Error("Message not found");
-        await db.from("admin_audit_logs").insert({
+        const { error: auditError } = await db.from("admin_audit_logs").insert({
           user_id: admin.id,
           action,
           details: { record: input.id, status: input.status },
         });
+        if (auditError) throw auditError;
         details = input;
       } else if (action === "admin-hero-slides") {
         const input = z
@@ -1284,11 +1285,12 @@ export async function POST(
           .map((image) => image.path)
           .filter(isProductImagePath);
         if (paths.length) await db.storage.from("catalog-images").remove(paths);
-        await db.from("admin_audit_logs").insert({
+        const { error: auditError } = await db.from("admin_audit_logs").insert({
           user_id: admin.id,
           action,
           details: { record: removed[0].id, sku: removed[0].sku },
         });
+        if (auditError) throw auditError;
         details = { id: removed[0].id, sku: removed[0].sku };
       } else if (action === "admin-vehicle") {
         const input = vehicleInput.parse(JSON.parse(b.json));
