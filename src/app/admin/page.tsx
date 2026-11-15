@@ -1,4 +1,5 @@
 import { AdminCheckoutReadiness } from "@/components/admin-checkout-readiness";
+import { AdminOverview } from "@/components/admin-overview";
 import { AdminCoupon } from "@/components/admin-coupon";
 import { AdminSeo } from "@/components/admin-seo";
 import { AdminProducts } from "@/components/admin-products";
@@ -129,13 +130,15 @@ export default async function Admin({
     redirect("/admin");
   const db = service();
   let content: React.ReactNode;
-  if (module === "overview" || module === "reports") {
+  if (module === "overview") {
     content = (
       <div className="stack">
-        {module === "overview" && <AdminCheckoutReadiness />}
-        <AdminReports module={module} from={from} to={to} />
+        <AdminOverview />
+        <AdminCheckoutReadiness />
       </div>
     );
+  } else if (module === "reports") {
+    content = <AdminReports module={module} from={from} to={to} />;
   } else if (module === "seo") content = <AdminSeo />;
   else if (module === "analytics") {
     const { data, error } = await db
