@@ -35,21 +35,21 @@ import {
 import { money } from "@/lib/catalog";
 import { isRemoteImageUrl } from "@/lib/image-links";
 const orderStatusLabels: Record<string, string> = {
-  pending_confirmation: "Awaiting confirmation",
-  confirmed: "Confirmed",
-  processing: "Preparing",
-  shipped: "Shipped",
-  delivered: "Delivered",
-  cancelled: "Cancelled",
-  returned: "Returned",
+  pending_confirmation: "بانتظار التأكيد",
+  confirmed: "تم التأكيد",
+  processing: "جارٍ التجهيز",
+  shipped: "تم الشحن",
+  delivered: "تم التسليم",
+  cancelled: "ملغي",
+  returned: "مرتجع",
 };
 const paymentStatusLabels: Record<string, string> = {
   unpaid: "لم يتم الدفع",
-  pending: "Awaiting payment",
-  paid: "Paid",
-  failed: "Payment failed",
-  refunded: "Refunded",
-  partially_refunded: "Partially refunded",
+  pending: "بانتظار الدفع",
+  paid: "مدفوع",
+  failed: "فشل الدفع",
+  refunded: "مسترد",
+  partially_refunded: "مسترد جزئيًا",
 };
 const allowedNextOrderStatuses: Record<string, string[]> = {
   pending_confirmation: ["confirmed", "cancelled"],
@@ -64,7 +64,7 @@ const humanStatus = (value: string, labels: Record<string, string>) =>
   labels[value] ?? value.replaceAll("_", " ");
 export const dynamic = "force-dynamic";
 export const metadata = {
-  title: "Administration",
+  title: "إدارة متجر MOPC",
   robots: { index: false, follow: false },
 };
 export default async function Admin({
@@ -683,11 +683,11 @@ export default async function Admin({
       <div className="stack">
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "Order not found" : "No orders yet"}</h2>
+            <h2>{id ? "الطلب غير موجود" : "لا توجد طلبات حتى الآن"}</h2>
             <p>
               {id
-                ? "This order could not be found. Return to the order list to continue."
-                : "New customer orders will appear here with payment and delivery details."}
+                ? "لم يتم العثور على الطلب. ارجع إلى قائمة الطلبات للمتابعة."
+                : "هنا هتظهر طلبات العملاء الجديدة وتفاصيل الدفع والتوصيل."}
             </p>
             {id && (
               <Link className="button secondary" href="/admin?module=orders">
