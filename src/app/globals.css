@@ -7093,3 +7093,36 @@ body {
   .checkout-page .order-line { font-size: 14.5px; }
   .checkout-page .checkout-summary { padding: 20px; }
 }
+
+/* MOPC Admin overview — Figma design: page 5:2, desktop 5:3, mobile 5:55 */
+.admin-overview-redesign { gap: 22px; }
+.admin-overview-redesign .admin-overview-section {
+  background: #fff;
+  border: 1px solid #e5eaf0;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 3px 18px rgba(16,29,41,.035);
+}
+.admin-overview-redesign .admin-overview-section h2 { color: #172735; font-size: 21px; font-weight: 800; }
+.admin-overview-metrics { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; }
+.admin-overview-metric {
+  min-height: 146px;
+  border: 1px solid #e5eaf0 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  padding: 20px !important;
+  display: flex; flex-direction: column; justify-content: space-between;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.admin-overview-metric:hover { border-color: #a3c54b !important; transform: translateY(-2px); }
+.admin-overview-metric:focus-visible { outline: 3px solid #c9e86d; outline-offset: 2px; }
+.admin-overview-redesign .admin-overview-section table { width: 100%; }
+.admin-overview-redesign .admin-overview-section th { background: #f5f7f8; color: #687785; }
+@media (max-width: 1100px) { .admin-overview-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 640px) {
+ .admin-overview-redesign { gap: 14px; }
+ .admin-overview-redesign .admin-overview-section { padding: 16px; }
+ .admin-overview-metrics { grid-template-columns: 1fr; gap: 10px; }
+ .admin-overview-metric { min-height: 110px; padding: 16px !important; }
+ .admin-overview-redesign .admin-overview-section h2 { font-size: 19px; }
+}
