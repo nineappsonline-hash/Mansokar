@@ -386,7 +386,9 @@ export function Checkout({
   const [cartPreviewError, setCartPreviewError] = useState(false);
   useEffect(() => {
     const controller = new AbortController();
-    const lines: { id: string; qty: number }[] = JSON.parse(localStorage.getItem("cart") || "[]");
+    let lines: { id: string; qty: number }[];
+    try { lines = JSON.parse(localStorage.getItem("cart") || "[]"); }
+    catch { setCartPreviewError(true); return; }
     if (!lines.length) {
       setCartPreview({ items: [], subtotal: 0 });
       return;
@@ -407,11 +409,21 @@ export function Checkout({
       })
       .catch((error) => { if (error.name !== "AbortError") setCartPreviewError(true); });
     return () => controller.abort();
-  }, [locale]);
+  }, [locale, cartVersion]);
   const [reviewed, setReviewed] = useState(false);
   const checkoutFormRef = useRef<HTMLFormElement>(null);
   const [quoteInput, setQuoteInput] = useState({ phone: "", coupon: "" });
   const [quoteBusy, setQuoteBusy] = useState(false);
+  const [cartVersion, setCartVersion] = useState(0);
+  useEffect(() => {
+    const onCartChange = () => setCartVersion((value) => value + 1);
+    window.addEventListener("store-change", onCartChange);
+    window.addEventListener("storage", onCartChange);
+    return () => {
+      window.removeEventListener("store-change", onCartChange);
+      window.removeEventListener("storage", onCartChange);
+    };
+  }, []);
   const router = useRouter();
   useEffect(() => {
     setQuote(null);
@@ -452,7 +464,7 @@ export function Checkout({
       window.clearTimeout(timer);
       controller.abort();
     };
-  }, [area, quoteInput.phone, quoteInput.coupon]);
+  }, [area, quoteInput.phone, quoteInput.coupon, cartVersion]);
   const step = reviewed ? 3 : area ? 2 : 1;
   const steps = [
     locale === "ar" ? "التوصيل" : "Delivery",
