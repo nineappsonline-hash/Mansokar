@@ -608,8 +608,13 @@ export function Checkout({
               window.location.assign(data.redirect);
             else router.push(data.redirect);
           } catch (error) {
-            setQuote(null);
-            setReviewed(false);
+            // Keep the valid quote visible after upload/payment failures.
+            // Only invalidate it when the server reports a changed total.
+            if (error instanceof Error && /total changed|الإجمالي.*تغير/i.test(error.message)) {
+              setQuote(null);
+              setReviewed(false);
+              setCartVersion((value) => value + 1);
+            }
             setMessageTone("error");
             setMessage(
               error instanceof Error ? error.message : "Checkout failed",
