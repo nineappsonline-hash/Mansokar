@@ -7383,3 +7383,18 @@ body {
 .admin-customers-redesign .accordion { background:#f5f7f8; border-radius:11px; padding:13px; }
 .admin-customers-redesign .prose { white-space:pre-wrap; }
 @media(max-width:760px) { .admin-customers-redesign .two-col { display:flex; flex-direction:column; } .admin-customers-redesign .two-col > .panel { width:100%; padding:15px; } .admin-customers-redesign h2 { font-size:20px; } }
+
+/* Admin marketing hero: desktop and mobile previews */
+.admin-hero-editor { font-family:"Almarai",Tahoma,sans-serif; line-height:1.8; }
+.admin-hero-editor > .panel { background:#fff; border:1px solid #e2e9ef; border-radius:16px; }
+.admin-hero-editor h2 { color:#142838; font-size:22px; font-weight:800; }
+.admin-hero-editor h3 { font-size:17px; font-weight:800; }
+.admin-hero-editor label { font-weight:700; }
+.admin-hero-editor input[type="number"],.admin-hero-editor input[type="text"] { font:inherit; min-height:44px; border-radius:10px; }
+.admin-hero-editor article.panel { border:1px solid #e4eaf0; border-radius:13px; background:#f8fafb; }
+.admin-hero-editor article img { border-radius:10px; }
+.admin-hero-editor .admin-nav { display:flex; flex-wrap:wrap; gap:9px; }
+.admin-hero-editor .admin-nav button { min-height:44px; }
+.admin-hero-desktop-preview { width:100%; overflow:hidden; border-radius:14px; }
+.admin-hero-mobile-preview { width:min(100%,390px); overflow:hidden; border-radius:18px; }
+@media(max-width:640px){.admin-hero-editor h2{font-size:19px}.admin-hero-editor .admin-nav button{flex:1 1 130px}}
