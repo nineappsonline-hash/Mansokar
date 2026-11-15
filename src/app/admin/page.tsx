@@ -876,18 +876,30 @@ export default async function Admin({
       </div>
     );
   } else if (module === "messages") {
-    const { data, error } = await db
-      .from("contact_messages")
-      .select("*")
-      .match(id ? { id } : {})
+    const messageStatuses = ["new", "read", "replied", "closed"];
+    const selectedMessageStatus = !id && status && messageStatuses.includes(status) ? status : "";
+    const messageQuery = db.from("contact_messages").select("*").match(id ? { id } : {});
+    const { data, error } = await (selectedMessageStatus ? messageQuery.eq("status", selectedMessageStatus) : messageQuery)
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) throw error;
     content = (
       <div className="stack admin-customer-inbox" lang="ar" dir="rtl">
+        {!id && (
+          <form className="panel filters" method="get">
+            <input type="hidden" name="module" value="messages" />
+            <label>فلترة حسب الحالة
+              <select name="status" defaultValue={selectedMessageStatus}>
+                <option value="">كل الرسائل</option>
+                {messageStatuses.map((s) => <option key={s} value={s}>{({ new: "جديدة", read: "مقروءة", replied: "تم الرد", closed: "مغلقة" } as Record<string, string>)[s]}</option>)}
+              </select>
+            </label>
+            <button className="button">تطبيق الفلتر</button>
+          </form>
+        )}
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "الرسالة مش موجودة" : "مفيش رسائل لسه"}</h2>
+            <h2>{id ? "الرسالة مش موجودة" : selectedMessageStatus ? "مفيش رسائل بالحالة دي" : "مفيش رسائل لسه"}</h2>
             <p>هنا هتظهر رسائل العملاء اللي بعتوها من الموقع.</p>
             {id && (
               <Link className="button secondary" href="/admin?module=messages">
@@ -936,18 +948,30 @@ export default async function Admin({
       </div>
     );
   } else if (module === "inquiries") {
-    const { data, error } = await db
-      .from("part_requests")
-      .select("*")
-      .match(id ? { id } : {})
+    const inquiryStatuses = ["pending", "quoted", "resolved", "closed"];
+    const selectedInquiryStatus = !id && status && inquiryStatuses.includes(status) ? status : "";
+    const inquiryQuery = db.from("part_requests").select("*").match(id ? { id } : {});
+    const { data, error } = await (selectedInquiryStatus ? inquiryQuery.eq("status", selectedInquiryStatus) : inquiryQuery)
       .order("created_at", { ascending: false })
       .limit(100);
     if (error) throw error;
     content = (
       <div className="stack admin-customer-inbox" lang="ar" dir="rtl">
+        {!id && (
+          <form className="panel filters" method="get">
+            <input type="hidden" name="module" value="inquiries" />
+            <label>فلترة حسب الحالة
+              <select name="status" defaultValue={selectedInquiryStatus}>
+                <option value="">كل الطلبات</option>
+                {inquiryStatuses.map((s) => <option key={s} value={s}>{({ pending: "قيد المراجعة", quoted: "تم عرض السعر", resolved: "تم الحل", closed: "مغلق" } as Record<string, string>)[s]}</option>)}
+              </select>
+            </label>
+            <button className="button">تطبيق الفلتر</button>
+          </form>
+        )}
         {!data?.length && (
           <section className="panel admin-empty">
-            <h2>{id ? "الطلب مش موجود" : "مفيش طلبات استفسار لسه"}</h2>
+            <h2>{id ? "الطلب مش موجود" : selectedInquiryStatus ? "مفيش طلبات بالحالة دي" : "مفيش طلبات استفسار لسه"}</h2>
             <p>هنا هتظهر طلبات التواصل والاستفسارات عن قطع الغيار.</p>
             {id && (
               <Link className="button secondary" href="/admin?module=inquiries">
@@ -1019,8 +1043,8 @@ export default async function Admin({
               <label>
                 حالة الطلب
                 <select name="status" defaultValue={r.status}>
-                  {["pending", "quoted", "resolved", "closed"].map((s) => (
-                    <option key={s}>{s}</option>
+                  {inquiryStatuses.map((s) => (
+                    <option key={s} value={s}>{({ pending: "قيد المراجعة", quoted: "تم عرض السعر", resolved: "تم الحل", closed: "مغلق" } as Record<string, string>)[s]}</option>
                   ))}
                 </select>
               </label>
