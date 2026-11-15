@@ -7407,3 +7407,13 @@ body {
 .admin-campaigns-redesign input,.admin-campaigns-redesign textarea { font:inherit; min-height:44px; border-radius:10px; max-width:100%; }
 .admin-campaigns-redesign a { overflow-wrap:anywhere; }
 @media(max-width:760px){.admin-campaigns-redesign{display:flex;flex-direction:column}.admin-campaigns-redesign > *{width:100%}.admin-campaigns-redesign .panel{padding:15px}}
+
+/* Storefront settings */
+.admin-settings-redesign { font-family:"Almarai",Tahoma,sans-serif; font-size:15px; line-height:1.85; }
+.admin-settings-redesign .panel { border:1px solid #e2e9ef; border-radius:16px; background:#fff; padding:22px; }
+.admin-settings-redesign h2 { color:#142838; font-size:21px; font-weight:800; }
+.admin-settings-redesign label { font-size:14px; font-weight:700; }
+.admin-settings-redesign input,.admin-settings-redesign textarea { font:inherit; border-radius:10px; min-height:44px; }
+.admin-settings-redesign details { border:1px solid #e2e9ef; border-radius:12px; padding:12px 15px; }
+.admin-settings-redesign summary { cursor:pointer; font-weight:700; }
+@media(max-width:640px){.admin-settings-redesign .panel{padding:15px}.admin-settings-redesign h2{font-size:19px}}
