@@ -676,7 +676,7 @@ export default async function Admin({
             </p>
             <p>
               {o.order_number} · {o.demo ? "DEMO" : ""} · {o.status} ·{" "}
-              {o.payment_status} · {o.payment_method ?? "cod"} ·{" "}
+              {o.payment_status} · {o.payment_method ?? "Not specified"} ·{" "}
               {money(o.total, "en")}
             </p>
             <p>
