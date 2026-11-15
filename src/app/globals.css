@@ -7188,3 +7188,26 @@ body {
 .admin-overview-redesign .admin-metric-value { font-family: "Almarai", "MOPC Arabic", Tahoma, sans-serif; font-weight: 800; }
 .admin-overview-redesign .admin-overview-section h2 { font-family: "Almarai", "MOPC Arabic", Tahoma, sans-serif; font-weight: 800; line-height: 1.6; }
 .admin-overview-redesign .muted { line-height: 1.85; }
+
+/* Larger, more legible MOPC Admin dashboard type — Figma typography pass */
+.admin-overview-redesign { font-size: 16px; line-height: 1.85; }
+.admin-dashboard-heading h1 { font-size: clamp(29px, 2.6vw, 36px); }
+.admin-dashboard-heading p { font-size: 16px; line-height: 1.8; }
+.admin-overview-redesign .admin-metric-label { font-size: 15px; }
+.admin-overview-redesign .admin-metric-value { font-size: 44px; }
+.admin-overview-redesign .admin-metric-link { font-size: 14px; }
+.admin-overview-redesign .admin-overview-section h2 { font-size: 24px; }
+.admin-overview-redesign .admin-overview-section .muted { font-size: 15px; }
+.admin-overview-redesign .admin-dashboard-priority .notice { font-size: 16px; }
+.admin-overview-redesign .admin-dashboard-orders th,
+.admin-overview-redesign .admin-dashboard-orders td { font-size: 15px; line-height: 1.7; }
+@media(max-width: 750px) {
+ .admin-dashboard-heading h1 { font-size: 27px; }
+ .admin-dashboard-heading p { font-size: 14px; }
+ .admin-overview-redesign .admin-metric-label { font-size: 13px; }
+ .admin-overview-redesign .admin-metric-value { font-size: 32px; }
+ .admin-overview-redesign .admin-metric-link { font-size: 12px; }
+ .admin-overview-redesign .admin-overview-section h2 { font-size: 21px; }
+ .admin-overview-redesign .admin-dashboard-orders th,
+ .admin-overview-redesign .admin-dashboard-orders td { font-size: 13px; }
+}
