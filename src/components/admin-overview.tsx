@@ -26,7 +26,7 @@ export async function AdminOverview() {
     db.from("orders").select("id", { count: "exact", head: true }).in("status", ["confirmed", "processing", "shipped"]).eq("demo", false),
     db.from("manual_transfers").select("id", { count: "exact", head: true }).eq("status", "pending"),
     db.from("contact_messages").select("id", { count: "exact", head: true }),
-    db.from("part_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
+    db.from("part_requests").select("id", { count: "exact", head: true }).eq("status", "pending"),
     db.from("orders").select("id,order_number,status,payment_status,total,created_at,customer").eq("demo", false).order("created_at", { ascending: false }).limit(6),
   ]);
   const results = [newOrders, processingOrders, pendingTransfers, openMessages, openInquiries, latestOrders];
@@ -83,7 +83,7 @@ export async function AdminOverview() {
                     <td>{order.order_number}</td>
                     <td>{(order.customer as { name?: string } | null)?.name ?? "—"}</td>
                     <td>{orderLabels[order.status] ?? order.status.replaceAll("_", " ")}</td>
-                    <td>{order.payment_status === "paid" ? "مدفوع" : order.payment_status === "pending" ? "بانتظار الدفع" : order.payment_status.replaceAll("_", " ")}</td>
+                    <td>{order.payment_status === "paid" ? "مدفوع" : ["pending", "unpaid"].includes(order.payment_status) ? "بانتظار الدفع" : order.payment_status.replaceAll("_", " ")}</td>
                     <td>{money(order.total, "ar")}</td>
                     <td><Link href={`/admin?module=orders&id=${order.id}`}>فتح الطلب</Link></td>
                   </tr>
