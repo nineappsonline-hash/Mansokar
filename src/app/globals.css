@@ -7358,3 +7358,14 @@ body {
 .admin-product-image-actions button { border:1px solid #dce5ea; border-radius:9px; padding:9px 13px; font-family:inherit; font-size:13px; background:#f5f7f8; }
 .admin-product-image-actions button:disabled { opacity:.45; cursor:not-allowed; }
 @media(max-width:640px) { .admin-product-images { padding:15px; } .admin-product-images h2 { font-size:21px; } .admin-product-image-actions button { flex:1 1 43%; } }
+
+/* Admin customer communications */
+.admin-customer-inbox { font-family:"Almarai",Tahoma,sans-serif; font-size:15px; line-height:1.8; }
+.admin-customer-inbox > article { border:1px solid #e2e9ef; border-radius:16px; background:#fff; padding:22px; }
+.admin-customer-inbox h2 { font-size:21px; font-weight:800; color:#142838; overflow-wrap:anywhere; }
+.admin-customer-inbox p,.admin-customer-inbox a { overflow-wrap:anywhere; }
+.admin-customer-inbox time { color:#627583; font-size:13px; }
+.admin-customer-inbox label { font-size:14px; font-weight:700; color:#243748; }
+.admin-customer-inbox select,.admin-customer-inbox textarea,.admin-customer-inbox input { font:inherit; min-height:44px; border-radius:10px; }
+.admin-customer-inbox .prose { white-space:pre-wrap; background:#f5f7f8; border-radius:12px; padding:15px; }
+@media(max-width:640px){.admin-customer-inbox > article {padding:15px;} .admin-customer-inbox h2 {font-size:19px;}}
