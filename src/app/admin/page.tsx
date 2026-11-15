@@ -707,38 +707,54 @@ export default async function Admin({
           </section>
         )}
         {id && data?.map((o) => (
-          <article key={o.id} className="panel">
-            <h2>Order {o.order_number}</h2>
-            <p>
-              <time dateTime={o.created_at}>
-                {new Intl.DateTimeFormat("en-GB", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                  timeZone: "Africa/Cairo",
-                }).format(new Date(o.created_at))}
-              </time>{" "}
-              · Cairo time
-            </p>
-            <p>
-              {o.order_number} · {o.demo ? "DEMO · " : ""}{humanStatus(o.status, orderStatusLabels)} ·{" "}
-              {humanStatus(o.payment_status, paymentStatusLabels)} · {o.payment_method ?? "Not specified"} ·{" "}
-              {money(o.total, "en")}
-            </p>
-            <p>
-              {o.customer.name} · {o.customer.phone} · {o.customer.address}
-            </p>
-            <p>
-              {o.shipping.governorate} / {o.shipping.name} · Delivery{" "}
-              {money(o.shipping_amount, "en")} · Discount{" "}
-              {money(o.discount, "en")}
-            </p>
-            <p>{o.customer.delivery_notes}</p>
-            {o.order_items?.map((item: any, i: number) => (
-              <p key={i}>
-                {item.snapshot.sku} · {item.snapshot.name.en} × {item.quantity}{" "}
-                · {money(item.snapshot.price * item.quantity, "en")}
-              </p>
-            ))}
+          <article key={o.id} className="panel admin-order-detail" lang="ar" dir="rtl">
+            <div className="admin-order-detail-header">
+              <div>
+                <Link href="/admin?module=orders" className="admin-order-back">← كل الطلبات</Link>
+                <h2>تفاصيل الطلب #{o.order_number}</h2>
+                <time dateTime={o.created_at}>{new Intl.DateTimeFormat("ar-EG", { dateStyle: "medium", timeStyle: "short", timeZone: "Africa/Cairo" }).format(new Date(o.created_at))} · بتوقيت القاهرة</time>
+              </div>
+              <span className="admin-order-status">{humanStatus(o.status, orderStatusLabels)}</span>
+            </div>
+            <div className="admin-order-detail-grid">
+              <div className="admin-order-detail-main">
+                <section className="admin-order-detail-card">
+                  <h3>بيانات العميل</h3>
+                  <p><strong>الاسم:</strong> {o.customer.name}</p>
+                  <p><strong>الهاتف:</strong> <a href={`tel:${o.customer.phone}`}>{o.customer.phone}</a></p>
+                  <p><strong>العنوان:</strong> {o.customer.address}</p>
+                  {o.customer.delivery_notes && <p><strong>ملاحظات التوصيل:</strong> {o.customer.delivery_notes}</p>}
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>المنتجات المطلوبة</h3>
+                  {o.order_items?.map((item: any, i: number) => (
+                    <div className="admin-order-item" key={i}>
+                      <div><strong>{item.snapshot.name.ar || item.snapshot.name.en}</strong><small>{item.snapshot.sku}</small></div>
+                      <span>الكمية: {item.quantity}</span>
+                      <strong>{money(item.snapshot.price * item.quantity, "ar")}</strong>
+                    </div>
+                  ))}
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>الشحن والتوصيل</h3>
+                  <p>{o.shipping.governorate} / {o.shipping.name}</p>
+                  <p><strong>تكلفة التوصيل:</strong> {money(o.shipping_amount, "ar")}</p>
+                  <p><strong>شركة الشحن:</strong> {o.carrier || "لم تحدد بعد"}</p>
+                  <p><strong>رقم التتبع:</strong> {o.tracking_number || "لم يحدد بعد"}</p>
+                </section>
+              </div>
+              <div className="admin-order-detail-side">
+                <section className="admin-order-detail-card">
+                  <h3>ملخص الدفع</h3>
+                  <p><strong>الحالة:</strong> {humanStatus(o.payment_status, paymentStatusLabels)}</p>
+                  <p><strong>الطريقة:</strong> {o.payment_method || "غير محددة"}</p>
+                  <p><strong>قيمة المنتجات:</strong> {money(o.subtotal, "ar")}</p>
+                  <p><strong>الخصم:</strong> {money(o.discount, "ar")}</p>
+                  <p><strong>الشحن:</strong> {money(o.shipping_amount, "ar")}</p>
+                  <div className="admin-order-grand-total"><strong>الإجمالي</strong><strong>{money(o.total, "ar")}</strong></div>
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>التحويلات ومراجعة الدفع</h3>
             {transfers
               ?.filter((transfer) => transfer.order_id === o.id)
               .map((transfer) => (
@@ -773,6 +789,9 @@ export default async function Admin({
                   )}
                 </div>
               ))}
+                </section>
+                <section className="admin-order-detail-card">
+                  <h3>تحديث الطلب والشحن</h3>
             <ApiForm
               action="admin-order"
               extra={{ id: o.id }}
@@ -819,6 +838,7 @@ export default async function Admin({
                 </select>
               </label>
             </ApiForm>
+                </section>
             {o.status === "delivered" &&
               o.payment_status !== "paid" &&
               (o.payment_method ?? "cod") === "cod" && (
@@ -828,6 +848,8 @@ export default async function Admin({
                   label="Confirm COD collection"
                 />
               )}
+              </div>
+            </div>
           </article>
         ))}
       </div>
