@@ -21,7 +21,7 @@ grant usage,select on sequence public.product_image_cleanup_jobs_id_seq to servi
 create or replace function public.admin_delete_product_atomic(p_actor uuid,p_product text)
 returns table(deleted_id text,deleted_sku text,image_paths text[])
 language plpgsql set search_path to '' as $function$
-declare v_sku text; v_paths text[];
+declare v_sku text; v_paths text[]; v_path text;
 begin
   if not exists(select 1 from public.admins where user_id=p_actor and enabled=true) then
     raise exception 'Forbidden';
@@ -31,8 +31,13 @@ begin
   if exists(select 1 from public.order_items i where i.product_id=p_product) then
     raise exception 'Product belongs to an order; set to draft instead';
   end if;
-  select coalesce(array_agg(distinct path),array[]::text[]) into v_paths
+  select coalesce(array_agg(distinct path order by path),array[]::text[]) into v_paths
     from public.product_images where product_id=p_product;
+  -- Serialize queue creation with all future image-path assignments.
+  -- Ordered locking avoids deadlocks when a product has multiple images.
+  foreach v_path in array v_paths loop
+    perform pg_advisory_xact_lock(hashtextextended('catalog-images:'||v_path,0));
+  end loop;
   update public.analytics_events set product_id=null where product_id=p_product;
   -- Queue cleanup before deleting the product so rollback protects the jobs too.
   -- Never queue a path still referenced by another product.
