@@ -41,8 +41,6 @@ export function SimpleProductEditor({
           specs: {
             country_of_origin: "أصلي",
             authenticity: "أصلي",
-            stock_quantity: "1000",
-            stock_status: "in_stock",
           },
         },
   );
