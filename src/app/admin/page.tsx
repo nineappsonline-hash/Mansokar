@@ -657,12 +657,27 @@ export default async function Admin({
     );
   } else if (module === "orders") {
     const allowedOrderStatuses = ["pending_confirmation", "confirmed", "processing", "shipped", "delivered", "cancelled", "returned"];
-    let orderQuery = db.from("orders").select("id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)");
+    const orderPageSize = 25;
+    const requestedPage = Number(page ?? "1");
+    const orderPage = Number.isSafeInteger(requestedPage) && requestedPage > 0
+      ? Math.min(requestedPage, 10000) : 1;
+    // Only allow ordinary search characters in the PostgREST OR expression.
+    // Reject filter syntax rather than interpolate user-supplied operators.
+    const orderSearch = (q ?? "").trim().slice(0, 80);
+    const safeOrderSearch = /^[\\p{L}\\p{N}\\s+.#\\/-]*$/u.test(orderSearch);
+    let orderQuery = db.from("orders").select("id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)", { count: id ? undefined : "exact" });
     if (!id && status && allowedOrderStatuses.includes(status)) orderQuery = orderQuery.eq("status", status);
-    const { data, error } = await orderQuery
+    if (!id && orderSearch && safeOrderSearch) {
+      const term = orderSearch.replaceAll("%", "").replaceAll("_", "");
+      orderQuery = orderQuery.or(
+        `order_number.ilike.%${term}%,customer->>name.ilike.%${term}%,customer->>phone.ilike.%${term}%`,
+      );
+    }
+    const { data, error, count: orderCount } = await orderQuery
       .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .match(id ? { id } : {})
-      .limit(100);
+      .range(id ? 0 : (orderPage - 1) * orderPageSize, id ? 0 : orderPage * orderPageSize - 1);
     if (error) throw error;
     const orderIds = data?.map((o) => o.id) ?? [];
     const { data: transfers, error: transferError } = orderIds.length
@@ -698,16 +713,16 @@ export default async function Admin({
         )}
         {!id && (
           <section className="panel admin-orders-list" lang="ar" dir="rtl">
-            <div className="admin-orders-list-head"><div><h2>قائمة الطلبات</h2><p>ابحث وتابع الطلبات، وافتح أي طلب لتعديل بياناته أو مراجعة الدفع.</p></div><strong>{data?.length ?? 0} طلب في النتائج</strong></div>
+            <div className="admin-orders-list-head"><div><h2>قائمة الطلبات</h2><p>ابحث وتابع الطلبات، وافتح أي طلب لتعديل بياناته أو مراجعة الدفع.</p></div><strong>{orderCount ?? 0} طلب في النتائج</strong></div>
             <form method="get" action="/admin" className="admin-orders-filters">
               <input type="hidden" name="module" value="orders" />
               <label>بحث في النتائج<input type="search" name="q" defaultValue={q ?? ""} placeholder="رقم الطلب أو اسم العميل أو الهاتف" /></label>
               <label>حالة الطلب<select name="status" defaultValue={status ?? ""}><option value="">كل الحالات</option>{allowedOrderStatuses.map((v) => <option key={v} value={v}>{humanStatus(v, orderStatusLabels)}</option>)}</select></label>
               <button type="submit">تطبيق الفلاتر</button>
             </form>
-            <p className="admin-orders-hint">البحث النصي داخل أحدث 100 طلب في الحالة المحددة؛ استخدم فلتر الحالة لتضييق النتائج.</p>
+            <p className="admin-orders-hint">البحث والفلترة على جميع الطلبات المسجلة، مع عرض 25 طلبًا في الصفحة.</p>
             <div className="admin-orders-rows">
-              {data?.filter((o) => !q || [o.order_number, o.customer?.name, o.customer?.phone].some((v) => String(v ?? "").toLowerCase().includes(q.trim().toLowerCase()))).map((o) => (
+              {data?.map((o) => (
                 <Link className="admin-order-row" href={`/admin?module=orders&id=${o.id}`} key={o.id}>
                   <span className="admin-order-row-primary"><strong>#{o.order_number}</strong><small>{o.customer?.name ?? "عميل"}</small></span>
                   <span className="admin-order-status">{humanStatus(o.status, orderStatusLabels)}</span>
@@ -717,6 +732,18 @@ export default async function Admin({
                 </Link>
               ))}
             </div>
+            {!safeOrderSearch && orderSearch && <p role="alert">البحث يحتوي على رموز غير مدعومة. استخدم حروفًا أو أرقامًا فقط.</p>}
+            {(orderCount ?? 0) > orderPageSize && (
+              <nav aria-label="صفحات الطلبات" className="admin-orders-pagination">
+                {orderPage > 1 && (
+                  <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "orders", ...(status ? { status } : {}), ...(q ? { q } : {}), page: String(orderPage - 1) })}`}>الصفحة السابقة</Link>
+                )}
+                <span>صفحة {orderPage} من {Math.ceil((orderCount ?? 0) / orderPageSize)}</span>
+                {orderPage * orderPageSize < (orderCount ?? 0) && (
+                  <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "orders", ...(status ? { status } : {}), ...(q ? { q } : {}), page: String(orderPage + 1) })}`}>الصفحة التالية</Link>
+                )}
+              </nav>
+            )}
           </section>
         )}
         {id && data?.map((o) => (
