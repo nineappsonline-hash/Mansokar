@@ -25,3 +25,8 @@ Read-only production inspection of the Supabase administrative RPC grants, live 
 - Supabase Security Advisor, 2026-11-15.
 - Live `pg_get_functiondef('public.verify_manual_transfer(uuid,uuid,text)'::regprocedure)`, read-only inspection, 2026-11-15.
 - `src/app/api/[action]/route.ts`, feature branch.
+
+## Audit logging follow-up
+- Admin message updates and product deletions now check the `admin_audit_logs` insert result and return an error if the audit write fails (commit c7efbf8).
+- **Important:** these actions currently mutate data before the separate audit insert. A failed audit write can therefore return an error **after** the change has already committed. This is not atomic auditing. Move both mutation and audit insertion into a single database transaction/RPC before calling audit integrity complete.
+- The isolated Vercel sandbox does not expose `postgres`, `pg_ctl`, `psql`, or Docker executables; the PGlite tests use one in-memory database and do **not** prove independent-session concurrency behavior. A two-connection PostgreSQL integration test remains a release gate.
