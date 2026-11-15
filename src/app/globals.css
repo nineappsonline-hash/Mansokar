@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap");
 @import "tailwindcss";
 @font-face {
   font-family: "IBM Plex Sans Arabic";
@@ -7172,3 +7173,18 @@ body {
  .admin-overview-redesign .admin-dashboard-orders { padding: 16px; }
  .admin-dashboard-live { padding: 5px 9px; font-size: 10px; }
 }
+
+/* Admin-only Arabic typography, matching the Figma Almarai direction. */
+.admin-overview-redesign,
+.admin-dashboard-heading,
+.admin-overview-redesign button,
+.admin-overview-redesign input,
+.admin-overview-redesign select,
+.admin-overview-redesign textarea {
+  font-family: "Almarai", "MOPC Arabic", "Cairo", Tahoma, sans-serif;
+}
+.admin-overview-redesign { font-size: 14px; line-height: 1.85; }
+.admin-overview-redesign .admin-metric-label { font-size: 13px; font-weight: 700; line-height: 1.75; }
+.admin-overview-redesign .admin-metric-value { font-family: "Almarai", "MOPC Arabic", Tahoma, sans-serif; font-weight: 800; }
+.admin-overview-redesign .admin-overview-section h2 { font-family: "Almarai", "MOPC Arabic", Tahoma, sans-serif; font-weight: 800; line-height: 1.6; }
+.admin-overview-redesign .muted { line-height: 1.85; }
