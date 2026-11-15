@@ -1239,6 +1239,36 @@ export async function POST(
         details = input;
       } else if (action === "admin-delete-product") {
         const input = z.object({ id: z.string().min(1).max(100) }).parse(b);
+        if (process.env.ADMIN_ATOMIC_PRODUCT_DELETE_ENABLED === "true") {
+          // Requires staged-admin-delete-product-atomic.sql and path guard migration.
+          // No legacy fallback: an RPC failure must never trigger non-atomic deletion.
+          const { data: removed, error: deleteError } = await db.rpc(
+            "admin_delete_product_atomic",
+            { p_actor: admin.id, p_product: input.id },
+          );
+          if (deleteError) {
+            if (deleteError.code === "23503")
+              return NextResponse.json(
+                { error: "This product is linked to saved records and cannot be deleted." },
+                { status: 409 },
+              );
+            if (deleteError.message.includes("belongs to an order"))
+              return NextResponse.json(
+                { error: "This product appears in existing orders. Set it to draft instead." },
+                { status: 409 },
+              );
+            if (deleteError.message.includes("Product not found"))
+              return NextResponse.json(
+                { error: "This product no longer exists. Refresh the page." },
+                { status: 404 },
+              );
+            throw deleteError;
+          }
+          const product = removed?.[0];
+          if (!product) throw Error("Atomic deletion returned no product");
+          // The transaction enqueues image cleanup. Never delete storage inline.
+          details = { id: product.deleted_id, sku: product.deleted_sku };
+        } else {
         const { count, error: orderError } = await db
           .from("order_items")
           .select("id", { count: "exact", head: true })
@@ -1292,6 +1322,7 @@ export async function POST(
         });
         if (auditError) throw auditError;
         details = { id: removed[0].id, sku: removed[0].sku };
+        }
       } else if (action === "admin-vehicle") {
         const input = vehicleInput.parse(JSON.parse(b.json));
         const { error } = await commit(input);
