@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { catalog, vehicleCatalog } from "@/lib/db";
 import { storefrontSettings } from "@/lib/db";
 import "./globals.css";
+import "@/components/mopc-premium-v2.css";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 export async function generateMetadata(): Promise<Metadata> {
