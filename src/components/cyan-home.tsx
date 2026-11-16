@@ -110,7 +110,6 @@ export async function CyanHome({
         >
           <div className="shell cyan-hero-content">
             <div className="cyan-hero-copy">
-              <p className="mopc-v2-eyebrow">{ar ? "MOPC  /  قطع غيار عربيتك" : "MOPC  /  CAR PARTS"}</p>
               <h1>
                 {heroTitle?.trim() ? (
                   heroTitle
