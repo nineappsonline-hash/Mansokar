@@ -159,3 +159,42 @@
     transform: none;
   }
 }
+
+/* Phase 2: editorial copy and stronger hierarchy within the existing hero. */
+.mopc-cyan .cyan-home .mopc-v2-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin: 0 0 18px;
+  padding: 8px 13px;
+  border: 1px solid rgba(213,240,109,.42);
+  border-radius: 100px;
+  color: #d5f06d;
+  background: rgba(11,28,48,.42);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+.mopc-cyan .cyan-home .mopc-v2-hero-description {
+  max-width: 550px;
+  margin: 20px 0 26px;
+  color: #e2eaf0;
+  font-size: clamp(15px,1.35vw,18px);
+  line-height: 1.9;
+  text-wrap: pretty;
+}
+.mopc-cyan .cyan-home .cyan-hero-copy h1 span,
+.mopc-cyan .cyan-home .cyan-hero-copy h1 em { display: block; }
+.mopc-cyan .cyan-home .cyan-section-title { color: #17283a; }
+.mopc-cyan .cyan-home .cyan-brand-tile:focus-visible {
+  outline: 3px solid #d5f06d;
+  outline-offset: 4px;
+}
+@media (max-width: 768px) {
+  .mopc-cyan .cyan-home .mopc-v2-eyebrow { margin-bottom: 12px; font-size: 11px; }
+  .mopc-cyan .cyan-home .mopc-v2-hero-description {
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 14px 0 19px;
+  }
+}
