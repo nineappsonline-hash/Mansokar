@@ -370,3 +370,33 @@
     margin-inline: 14px;
   }
 }
+
+
+/* Product photography: always show the complete source image inside its card.
+   Overrides legacy cover/crop rules, including hover zoom, on every catalog card. */
+.card.card:global(.product-card) :global(.product-art) {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card.card:global(.product-card) :global(.product-art > img.product-card-image) {
+  position: relative;
+  inset: auto;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+  object-fit: contain;
+  object-position: center;
+  transform: none;
+}
+.card.card:global(.product-card:hover) :global(.product-art > img.product-card-image),
+.card.card:global(.product-card:focus-within) :global(.product-art > img.product-card-image),
+.card.card:global(.product-card) :global(.product-art:hover > img.product-card-image) {
+  object-fit: contain;
+  transform: none;
+}
