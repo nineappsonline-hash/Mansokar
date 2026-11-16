@@ -110,6 +110,7 @@ export async function CyanHome({
         >
           <div className="shell cyan-hero-content">
             <div className="cyan-hero-copy">
+              <p className="mopc-v2-eyebrow">{ar ? "MOPC  /  قطع غيار عربيتك" : "MOPC  /  CAR PARTS"}</p>
               <h1>
                 {heroTitle?.trim() ? (
                   heroTitle
@@ -125,15 +126,16 @@ export async function CyanHome({
                   <>
                     <span>
                       {ar
-                        ? "قطع الغيار المناسبة لعربيتك…"
-                        : "The right parts for your car…"}
+                        ? "القطعة الصح."
+                        : "The right part."}
                     </span>
                     <em>
-                      {ar ? "بثقة وراحة بال." : "Warranty. Peace of mind."}
+                      {ar ? "من أول مرة." : "From the first time."}
                     </em>
                   </>
                 )}
               </h1>
+              <p className="mopc-v2-hero-description">{ar ? "اختار ماركة عربيتك وموديلها وسنة الصنع، أو ابحث عن القطعة بالاسم ورقمها. اختيار أسهل ومعلومات أوضح قبل الشراء." : "Select your car make, model and year, or search by part name or number. Find clearer information before you buy."}</p>
               <div className="cyan-hero-actions">
                 <a className="button cyan-hero-primary" href="#vehicle-finder">{ar ? "اختار عربيتك" : "Find your car"} <CarFront size={20} /></a>
                 <Link className="cyan-hero-secondary" href={`/${locale}/catalog`}>{ar ? "ابحث عن قطعة غيار" : "Search parts"} <Search size={19} /></Link>
