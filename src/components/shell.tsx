@@ -74,7 +74,7 @@ export async function Shell({
             />
             {locale === "ar" && (
               <span className="store-name-ar" lang="ar">
-                {"MOPC"}
+                {"موبِك"}
               </span>
             )}
           </Link>
@@ -180,7 +180,7 @@ export async function Shell({
               />
               {locale === "ar" && (
                 <span className="store-name-ar" lang="ar">
-                  {"MOPC"}
+                  {"موبِك"}
                 </span>
               )}
             </Link>
