@@ -1,0 +1,161 @@
+/* MOPC Premium V2 storefront — scoped to customer-facing pages only.
+   Figma direction: deep navy #0B1C30, lime #D5F06D, warm canvas #F5F6F2.
+   Existing catalog images, vehicle compatibility, checkout and payment logic remain unchanged. */
+:where(.mopc-cyan) {
+  --mopc-v2-navy: #0b1c30;
+  --mopc-v2-navy-soft: #17334d;
+  --mopc-v2-lime: #d5f06d;
+  --mopc-v2-canvas: #f5f6f2;
+  --mopc-v2-ink: #17283a;
+  --mopc-v2-muted: #64788a;
+  --mopc-v2-border: #dde5e5;
+  --bg: var(--mopc-v2-canvas);
+  --surface: #fff;
+  --light: var(--mopc-v2-ink);
+  --muted: var(--mopc-v2-muted);
+  --border: var(--mopc-v2-border);
+  --amber: var(--mopc-v2-lime);
+  background: var(--mopc-v2-canvas);
+  color: var(--mopc-v2-ink);
+}
+:where(.mopc-cyan) :is(h1,h2,h3) { color: var(--mopc-v2-ink); letter-spacing: -.015em; }
+:where(.mopc-cyan) :is(button,a,input,select,textarea):focus-visible {
+  outline: 3px solid #9dbf34;
+  outline-offset: 3px;
+}
+:where(.mopc-cyan) :is(.button,.purchase-buttons .button,.purchase-actions .button) {
+  border-radius: 13px;
+  min-height: 46px;
+  transition: background-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+:where(.mopc-cyan) :is(.button,.purchase-buttons .button,.purchase-actions .button):not(.secondary) {
+  background: var(--mopc-v2-navy);
+  border-color: var(--mopc-v2-navy);
+  color: #fff;
+}
+:where(.mopc-cyan) :is(.button,.purchase-buttons .button,.purchase-actions .button):not(.secondary):hover {
+  background: var(--mopc-v2-navy-soft);
+  border-color: var(--mopc-v2-navy-soft);
+}
+:where(.mopc-cyan) :is(.button,.purchase-buttons .button,.purchase-actions .button):disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+:where(.mopc-cyan) :is(.product-card,.purchase-panel,.product-gallery,.checkout-panel,.cart-item) {
+  background: #fff;
+  border: 1px solid var(--mopc-v2-border);
+  border-radius: 19px;
+  box-shadow: 0 12px 32px -27px rgba(11,28,48,.4);
+}
+:where(.mopc-cyan) .product-card {
+  overflow: hidden;
+  transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+}
+:where(.mopc-cyan) .product-card:hover {
+  border-color: #b3c5b5;
+  box-shadow: 0 18px 42px -25px rgba(11,28,48,.32);
+  transform: translateY(-2px);
+}
+:where(.mopc-cyan) .product-card :is(.product-art,.product-image) {
+  background: #e9eeeb;
+}
+:where(.mopc-cyan) .product-card :is(h3,.product-price) { color: var(--mopc-v2-ink); }
+:where(.mopc-cyan) :is(.part-row,.product-assurances,.product-specifications) {
+  border-color: var(--mopc-v2-border);
+}
+:where(.mopc-cyan) :is(.breadcrumbs,.part-number,.product-meta) { color: var(--mopc-v2-muted); }
+:where(.mopc-cyan) :is(input,select,textarea) {
+  border-radius: 12px;
+  accent-color: #8da72f;
+}
+:where(.mopc-cyan) :is(.header,.site-header) {
+  background: var(--mopc-v2-navy);
+}
+:where(.mopc-cyan) .cart-count {
+  background: var(--mopc-v2-lime);
+  border-color: var(--mopc-v2-lime);
+  color: var(--mopc-v2-navy);
+}
+:where(.mopc-cyan) .cyan-home {
+  --mopc-ink: var(--mopc-v2-ink);
+  --mopc-navy: var(--mopc-v2-navy);
+  --mopc-hero: var(--mopc-v2-navy);
+  --mopc-lime: var(--mopc-v2-lime);
+  --mopc-canvas: var(--mopc-v2-canvas);
+  --mopc-soft: #e9eeeb;
+}
+:where(.mopc-cyan) .cyan-home .cyan-hero {
+  background: var(--mopc-v2-navy);
+}
+:where(.mopc-cyan) .cyan-home .cyan-hero::before {
+  background: linear-gradient(100deg, rgba(11,28,48,.93), rgba(23,51,77,.72));
+}
+:where(.mopc-cyan) .cyan-home .cyan-hero-copy h1 {
+  color: #fff;
+  font-size: clamp(2.15rem,4.6vw,4.4rem);
+  line-height: 1.18;
+}
+:where(.mopc-cyan) .cyan-home .cyan-hero-copy h1 em {
+  color: var(--mopc-v2-lime);
+}
+:where(.mopc-cyan) .cyan-home :is(.cyan-hero-primary,.cyan-button) {
+  background: var(--mopc-v2-lime);
+  color: var(--mopc-v2-navy);
+  border: 1px solid var(--mopc-v2-lime);
+  border-radius: 13px;
+  font-weight: 800;
+}
+:where(.mopc-cyan) .cyan-home :is(.cyan-hero-primary,.cyan-button):hover {
+  background: #e2f6a0;
+  color: var(--mopc-v2-navy);
+}
+:where(.mopc-cyan) .cyan-home .cyan-finder-region {
+  background: #fff;
+  border: 1px solid var(--mopc-v2-border);
+  border-radius: 22px;
+  box-shadow: 0 22px 54px -33px rgba(11,28,48,.4);
+}
+:where(.mopc-cyan) .cyan-home .cyan-vehicle-finder label {
+  background: var(--mopc-v2-canvas);
+  border: 1px solid var(--mopc-v2-border);
+  border-radius: 12px;
+  color: var(--mopc-v2-ink);
+}
+:where(.mopc-cyan) .cyan-home .cyan-vehicle-finder select {
+  color: var(--mopc-v2-ink);
+}
+:where(.mopc-cyan) .cyan-home :is(.cyan-brand-tile,.cyan-benefits > div,.cyan-trust-strip) {
+  border-radius: 19px;
+}
+:where(.mopc-cyan) .cyan-home .cyan-brand-cta { color: var(--mopc-v2-lime); }
+:where(.mopc-cyan) .cyan-home :is(.cyan-trust-strip,.cyan-benefits > div) {
+  background: #fff;
+  border: 1px solid var(--mopc-v2-border);
+  color: var(--mopc-v2-ink);
+}
+:where(.mopc-cyan) .cyan-home .cyan-featured .product-card { border-radius: 19px; }
+@media (max-width: 768px) {
+  :where(.mopc-cyan) .cyan-home .cyan-hero::before {
+    background: linear-gradient(0deg,rgba(11,28,48,.95),rgba(23,51,77,.67));
+  }
+  :where(.mopc-cyan) .cyan-home .cyan-hero-copy h1 {
+    font-size: clamp(1.9rem,8vw,2.7rem);
+  }
+  :where(.mopc-cyan) .cyan-home .cyan-finder-region {
+    padding: 18px;
+    border-radius: 18px;
+  }
+  :where(.mopc-cyan) .product-card {
+    border-radius: 15px;
+  }
+  :where(.mopc-cyan) :is(.button,.purchase-buttons .button,.purchase-actions .button) {
+    min-height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(.mopc-cyan) .product-card,
+  :where(.mopc-cyan) :is(.button,.purchase-buttons .button,.purchase-actions .button) {
+    transition: none;
+    transform: none;
+  }
+}
