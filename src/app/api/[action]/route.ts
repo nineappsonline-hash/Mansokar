@@ -1417,6 +1417,11 @@ export async function POST(
         const { error } = await commit(input);
         if (error) throw error;
         details = { kind: input.kind };
+      } else if (action === "admin-payment-reconcile") {
+        const input = z.object({id:z.uuid(),reference:z.string().trim().min(6).max(160),note:z.string().trim().min(12).max(1000)}).parse(b);
+        const {error} = await db.rpc("admin_reconcile_payment",{p_actor:admin.id,p_order:input.id,p_reference:input.reference,p_note:input.note});
+        if(error) throw error;
+        details = {order_id:input.id,manual_override:true};
       } else if (action === "admin-collect-cod") {
         const id = z.uuid().parse(b.id);
         const { error } = await commit({ id });
