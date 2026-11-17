@@ -1,0 +1,203 @@
+import Link from "next/link";
+import { BannerMotion } from "./banner-motion";
+import type { CSSProperties } from "react";
+import {
+  ArrowUpRight,
+  CarFront,
+  Check,
+  Coins,
+  CreditCard,
+  Headset,
+  ShieldCheck,
+  Truck,
+  Wifi,
+  CalendarDays,
+} from "lucide-react";
+import type { Locale } from "@/lib/catalog";
+import styles from "./storefront-banners.module.css";
+
+export function BenefitsBanner({
+  locale,
+  cardPayments,
+}: {
+  locale: Locale;
+  cardPayments: boolean;
+}) {
+  const ar = locale === "ar";
+  const benefits = [
+    {
+      icon: ShieldCheck,
+      title: ar ? "أصلية وبضمان" : "Genuine. Guaranteed.",
+      detail: ar ? "قطع غيار أصلية بضمان" : "Genuine parts with warranty",
+      motif: "shield",
+    },
+    {
+      icon: CarFront,
+      title: ar ? "القطعة المناسبة" : "Made for your car",
+      detail: ar ? "اختار حسب عربيتك" : "Find parts by your vehicle",
+      motif: "car",
+    },
+    {
+      icon: Coins,
+      title: ar ? "أسعار واضحة" : "Clear pricing",
+      detail: ar ? "تفاصيل أوضح قبل الشراء" : "Know the details before you buy",
+      motif: "coins",
+    },
+    {
+      icon: CreditCard,
+      title: ar ? "ادفع بطريقتك" : "Pay your way",
+      detail: ar
+        ? cardPayments
+          ? "كروت وطرق دفع مرنة"
+          : "إنستاباي ومحافظ إلكترونية"
+        : cardPayments
+          ? "Cards & flexible payments"
+          : "InstaPay & mobile wallets",
+      motif: "payment",
+    },
+    {
+      icon: Truck,
+      title: ar ? "لحد بابك" : "To your doorstep",
+      detail: ar ? "شحن لكل محافظات مصر" : "Delivery across Egypt",
+      motif: "delivery",
+    },
+    {
+      icon: Headset,
+      title: ar ? "معاك في كل خطوة" : "Here to help",
+      detail: ar ? "دعم قبل وبعد الشراء" : "Support before and after purchase",
+      motif: "support",
+    },
+  ];
+  return (
+    <BannerMotion
+      className={`shell ${styles.benefits}`}
+      label={ar ? "مميزات التسوق مع موبك" : "Why shop with MOPC"}
+    >
+      <div className={styles.benefitsIntro}>
+        <span className={styles.eyebrow}>
+          MOPC / {ar ? "راحة بالك" : "PEACE OF MIND"}
+        </span>
+        <h2>{ar ? "كل تفصيلة، لراحة بالك." : "Confidence in every detail."}</h2>
+        <span className={styles.introLine} aria-hidden="true" />
+      </div>
+      <div className={styles.benefitGrid}>
+        {benefits.map(({ icon: Icon, title, detail, motif }, index) => (
+          <div
+            className={styles.benefit}
+            key={motif}
+            style={{ "--benefit-index": index } as CSSProperties}
+          >
+            <div
+              className={`${styles.iconScene} ${styles[motif]}`}
+              aria-hidden="true"
+            >
+              <span className={styles.orbit} />
+              <span className={styles.satellite} />
+              <span className={styles.iconPlate}>
+                <Icon size={30} strokeWidth={1.6} />
+              </span>
+              <span className={styles.iconDetail}>
+                {motif === "shield" || motif === "car" ? (
+                  <Check size={11} strokeWidth={3} />
+                ) : (
+                  <span />
+                )}
+              </span>
+            </div>
+            <div className={styles.benefitCopy}>
+              <h3>{title}</h3>
+              <p>{detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </BannerMotion>
+  );
+}
+
+export function PaymentBanner({ locale }: { locale: Locale }) {
+  const ar = locale === "ar";
+  return (
+    <BannerMotion
+      className={`shell ${styles.payments}`}
+      labelledBy="payment-heading"
+    >
+      <div className={styles.paymentCopy}>
+        <span className={styles.eyebrow}>
+          {ar ? "مرونة في كل اختيار" : "MORE WAYS. MORE FLEXIBILITY."}
+        </span>
+        <h2 id="payment-heading">
+          {ar ? (
+            <>
+              قطعتك الصح.
+              <br />
+              <span>وطريقة الدفع اللي تناسبك.</span>
+            </>
+          ) : (
+            <>
+              The right part.
+              <br />
+              <span>The way you want to pay.</span>
+            </>
+          )}
+        </h2>
+        <p>
+          {ar
+            ? "اكتشف طرق الدفع والتقسيط المتاحة، واختار اللي يناسبك قبل ما تطلب."
+            : "Explore available payment and installment options, and choose what suits you before you order."}
+        </p>
+        <Link href={`/${locale}/installments`} className={styles.paymentLink}>
+          {ar ? "اكتشف طرق الدفع" : "Explore payment options"}
+          <ArrowUpRight size={19} aria-hidden="true" />
+        </Link>
+      </div>
+      <div className={styles.paymentArt} aria-hidden="true">
+        <div className={styles.artHalo} />
+        <div className={styles.artOrbit} />
+        <div className={styles.backCard}>
+          <span />
+          <span />
+          <span />
+        </div>
+        <div className={styles.bankCard}>
+          <div className={styles.cardTop}>
+            <b>MOPC</b>
+            <Wifi size={25} />
+          </div>
+          <div className={styles.chip}>
+            <i />
+            <i />
+            <i />
+          </div>
+          <div className={styles.cardDigits}>
+            •••• &nbsp; •••• &nbsp; •••• &nbsp; 2026
+          </div>
+          <div className={styles.cardBottom}>
+            <span>YOUR CAR. YOUR WAY.</span>
+            <div className={styles.cardCircles}>
+              <i />
+              <i />
+            </div>
+          </div>
+        </div>
+        <div className={styles.coinOne}>
+          <span>ج.م</span>
+        </div>
+        <div className={styles.coinTwo}>
+          <span>ج.م</span>
+        </div>
+        <div className={styles.installmentTag}>
+          <span className={styles.tagIcon}>
+            <CalendarDays size={23} />
+          </span>
+          <div>
+            <b>{ar ? "اختيارات أكتر" : "More choice"}</b>
+            <span>{ar ? "دفع وتقسيط" : "Pay & installments"}</span>
+          </div>
+        </div>
+        <span className={styles.sparkOne}>+</span>
+        <span className={styles.sparkTwo}>+</span>
+      </div>
+    </BannerMotion>
+  );
+}

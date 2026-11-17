@@ -1,0 +1,735 @@
+/* Self-contained vector scenes: crisp at any size, no image downloads or motion JS. */
+.benefits.benefits {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 32px;
+  align-items: center;
+  padding: 32px;
+  margin-block: 28px 0;
+  border: 1px solid #e0e6ed;
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at 100% 0%, #fff0e7, transparent 45%), #fff;
+  box-shadow: 0 12px 36px #0b1c3006;
+}
+.benefits::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(#adc0d144 0.8px, transparent 0.8px);
+  background-size: 14px 14px;
+  mask-image: linear-gradient(90deg, transparent 55%, #000);
+}
+.eyebrow {
+  display: block;
+  color: #a84218;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  line-height: 1.8;
+}
+.benefitsIntro {
+  padding-inline-end: 26px;
+  border-inline-end: 1px solid #e4e9ee;
+}
+.benefitsIntro h2 {
+  margin: 10px 0 16px;
+  font-size: 25px;
+  line-height: 1.6;
+  font-weight: 750;
+}
+.introLine {
+  display: block;
+  width: 44px;
+  height: 3px;
+  border-radius: 4px;
+  background: #e9642e;
+}
+.benefitGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px 18px;
+}
+.benefit {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-width: 0;
+}
+.benefitCopy {
+  min-width: 0;
+}
+.benefitCopy h3 {
+  margin: 0 0 5px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-weight: 750;
+}
+.benefitCopy p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.7;
+  color: #586c80;
+}
+.iconScene {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+  perspective: 200px;
+}
+.iconScene::before {
+  content: "";
+  position: absolute;
+  inset: 9px;
+  border-radius: 50%;
+  background: #ffe1cf;
+  filter: blur(11px);
+  opacity: 0.65;
+}
+.orbit {
+  position: absolute;
+  inset: 1px;
+  border: 1px dashed #c9d4df;
+  border-radius: 50%;
+  transform: rotate(-25deg) scaleY(0.86);
+}
+.iconPlate {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 49px;
+  height: 49px;
+  border: 1px solid #ffffff;
+  border-radius: 15px;
+  color: #17344e;
+  background: linear-gradient(145deg, #fff, #e8eef4);
+  box-shadow:
+    3px 6px 0 #d7e0e8,
+    5px 12px 16px #0b1c3015;
+  transform: rotate(-7deg);
+  animation: icon-arrive 4s both;
+  animation-delay: calc(var(--benefit-index) * 0.1s);
+}
+.iconPlate svg {
+  filter: drop-shadow(0 2px 0 #fff);
+}
+.satellite {
+  position: absolute;
+  top: 3px;
+  left: 11px;
+  width: 6px;
+  height: 6px;
+  background: #ee6a33;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #ee6a3312;
+  animation: satellite-arrive 4s both;
+}
+.iconDetail {
+  position: absolute;
+  bottom: 5px;
+  right: 0;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #c24d1b;
+  color: #fff;
+  box-shadow: 0 3px 6px #0b1c3018;
+}
+.iconDetail > span {
+  width: 5px;
+  height: 5px;
+  background: #fff;
+  border-radius: 50%;
+}
+.coins .iconPlate {
+  color: #a55718;
+  background: linear-gradient(135deg, #fff8e6, #ffdf9f);
+  box-shadow:
+    3px 6px 0 #e0bc7f,
+    5px 12px 16px #0b1c3015;
+}
+.payment .iconPlate {
+  color: #fff;
+  background: linear-gradient(140deg, #2e536e, #102438);
+  box-shadow:
+    3px 6px 0 #a8bac9,
+    5px 12px 16px #0b1c3015;
+}
+.payment .iconPlate svg {
+  filter: none;
+}
+.delivery .iconPlate {
+  transform: rotate(6deg);
+}
+.support .iconPlate {
+  border-radius: 50%;
+}
+.benefit:hover .iconPlate {
+  transform: translateY(-4px) rotate(0deg);
+  transition: transform 0.25s ease;
+}
+.payments.payments {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  min-height: 350px;
+  padding: 44px 56px;
+  margin-block: 0 32px;
+  overflow: hidden;
+  border: 1px solid #263e55;
+  border-radius: 20px;
+  color: #fff;
+  background:
+    radial-gradient(ellipse at 20% 50%, #234561 0%, transparent 55%),
+    linear-gradient(115deg, #10263d, #0b1c30 75%);
+}
+.payments::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(#ffffff05 1px, transparent 1px),
+    linear-gradient(90deg, #ffffff05 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(90deg, #000, transparent 75%);
+}
+.paymentCopy {
+  position: relative;
+  z-index: 2;
+  max-width: 570px;
+}
+.paymentCopy .eyebrow {
+  color: #ffad88;
+  font-size: 11px;
+}
+.paymentCopy.paymentCopy h2 {
+  margin: 14px 0;
+  color: #fff;
+  font-size: clamp(25px, 2.5vw, 38px);
+  line-height: 1.55;
+  font-weight: 750;
+}
+.paymentCopy h2 span {
+  color: #ffad88;
+}
+.paymentCopy p {
+  margin: 0 0 24px;
+  color: #c3d0dd;
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 440px;
+}
+.paymentLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 46px;
+  padding: 12px 22px;
+  border: 1px solid #ffad8860;
+  border-radius: 9px;
+  background: #fff;
+  color: #102438;
+  font-weight: 750;
+  font-size: 14px;
+  box-shadow: 0 6px 16px #00000012;
+  transition:
+    background 0.2s ease,
+    gap 0.2s ease;
+}
+.paymentLink:hover {
+  background: #ffeadf;
+  color: #102438;
+  gap: 25px;
+}
+.paymentArt {
+  position: relative;
+  justify-self: center;
+  width: 430px;
+  max-width: 100%;
+  height: 300px;
+  direction: ltr;
+}
+.artHalo {
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  left: 100px;
+  top: 25px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ef783d44, transparent 70%);
+}
+.artOrbit {
+  position: absolute;
+  inset: 12px 35px;
+  border: 1px solid #ffffff16;
+  border-radius: 50%;
+  transform: rotate(-25deg);
+}
+.artOrbit::after {
+  content: "";
+  position: absolute;
+  inset: 22px -25px;
+  border: 1px dashed #ffffff16;
+  border-radius: 50%;
+}
+.bankCard {
+  position: absolute;
+  top: 64px;
+  left: 62px;
+  width: 286px;
+  height: 174px;
+  padding: 20px 24px;
+  border: 1px solid #ffffff60;
+  border-radius: 17px;
+  background: linear-gradient(130deg, #49667e, #19354f 50%, #10273c);
+  box-shadow:
+    0 24px 38px #00000044,
+    inset 0 0 25px #ffffff08;
+  transform: rotate(-10deg);
+  animation: card-arrive 4.5s both;
+}
+.bankCard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    120deg,
+    transparent 15%,
+    #ffffff18 40%,
+    transparent 60%
+  );
+  pointer-events: none;
+  animation: card-light 4s both;
+}
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #f7f9fc;
+}
+.cardTop b {
+  font-size: 18px;
+  font-style: italic;
+  letter-spacing: 0.12em;
+}
+.cardTop svg {
+  transform: rotate(90deg);
+  opacity: 0.7;
+}
+.chip {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  width: 34px;
+  height: 26px;
+  padding: 5px;
+  margin-top: 14px;
+  border-radius: 5px;
+  border: 1px solid #e2c288;
+  background: linear-gradient(135deg, #f7e4b7, #bf9858);
+}
+.chip i {
+  width: 6px;
+  border: 1px solid #9c773d80;
+  border-radius: 2px;
+}
+.cardDigits {
+  margin-top: 10px;
+  font-family: monospace;
+  font-size: 15px;
+  letter-spacing: 0.12em;
+  color: #e7edf4;
+}
+.cardBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+.cardBottom > span {
+  color: #c4d2df;
+  font-size: 7px;
+  letter-spacing: 0.12em;
+}
+.cardCircles {
+  display: flex;
+}
+.cardCircles i {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: #f16d36;
+}
+.cardCircles i + i {
+  margin-left: -8px;
+  background: #f9b279b3;
+}
+.backCard {
+  position: absolute;
+  top: 33px;
+  left: 97px;
+  width: 276px;
+  height: 164px;
+  overflow: hidden;
+  border: 1px solid #ffb99a;
+  border-radius: 17px;
+  background: linear-gradient(140deg, #f3b58d, #d86635);
+  box-shadow: 0 12px 28px #00000020;
+  transform: rotate(12deg);
+  animation: back-arrive 4s both;
+}
+.backCard span {
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border: 1px solid #ffffff45;
+  border-radius: 50%;
+  top: 50px;
+  left: 80px;
+}
+.backCard span:nth-child(2) {
+  top: 65px;
+  left: 65px;
+}
+.backCard span:nth-child(3) {
+  top: 80px;
+  left: 50px;
+}
+.coinOne,
+.coinTwo {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border: 5px solid #f5d196;
+  border-radius: 50%;
+  background: linear-gradient(130deg, #ffe5b7, #c48a40);
+  color: #754718;
+  box-shadow:
+    3px 5px 0 #956d3d,
+    0 12px 20px #00000030;
+  animation: coin-arrive 4s both;
+}
+.coinOne span,
+.coinTwo span {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1px dashed #aa783f;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+}
+.coinOne {
+  top: 12px;
+  left: 34px;
+  transform: rotate(-18deg);
+}
+.coinTwo {
+  bottom: 34px;
+  right: 25px;
+  width: 45px;
+  height: 45px;
+  transform: rotate(15deg);
+  animation-delay: 0.2s;
+}
+.coinTwo span {
+  font-size: 10px;
+}
+.installmentTag {
+  position: absolute;
+  bottom: 10px;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 14px 20px 14px 12px;
+  border: 1px solid #fff;
+  border-radius: 12px;
+  color: #122d43;
+  background: #f7fafc;
+  box-shadow: 0 15px 25px #00000020;
+  transform: rotate(-4deg);
+  animation: tag-arrive 4.5s both;
+}
+.tagIcon {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  background: #fce5d7;
+  color: #a84218;
+}
+.installmentTag b {
+  display: block;
+  font-size: 13px;
+}
+.installmentTag div > span {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: #52677a;
+}
+.sparkOne,
+.sparkTwo {
+  position: absolute;
+  font-size: 27px;
+  font-weight: 300;
+  color: #ffbb92;
+}
+.sparkOne {
+  top: 10px;
+  right: 55px;
+}
+.sparkTwo {
+  bottom: 30px;
+  left: 4px;
+  font-size: 18px;
+}
+@keyframes icon-arrive {
+  0% {
+    transform: translateY(12px) rotate(-14deg);
+  }
+  22%,
+  70% {
+    opacity: 1;
+    transform: translateY(-3px) rotate(-7deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(-7deg);
+  }
+}
+@keyframes satellite-arrive {
+  0%,
+  15% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes card-arrive {
+  0% {
+    transform: translateY(24px) rotate(-15deg);
+  }
+  35%,
+  70% {
+    opacity: 1;
+    transform: translateY(-7px) rotate(-10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(-10deg);
+  }
+}
+@keyframes back-arrive {
+  0% {
+    transform: translateY(15px) rotate(0);
+  }
+  40%,
+  75% {
+    opacity: 1;
+    transform: translateY(-5px) rotate(14deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(12deg);
+  }
+}
+@keyframes card-light {
+  0% {
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.4;
+  }
+}
+@keyframes coin-arrive {
+  0% {
+    translate: 0 20px;
+  }
+  40%,
+  75% {
+    opacity: 1;
+    translate: 0 -6px;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes tag-arrive {
+  0% {
+    translate: 0 20px;
+  }
+  45%,
+  70% {
+    opacity: 1;
+    translate: 0 -4px;
+  }
+  100% {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@media (max-width: 1150px) {
+  .benefits.benefits {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .benefitsIntro {
+    border: 0;
+    padding: 0;
+  }
+  .benefitsIntro h2 {
+    font-size: 23px;
+    margin: 4px 0 10px;
+  }
+  .payments.payments {
+    padding: 32px;
+  }
+  .paymentArt {
+    scale: 0.9;
+  }
+}
+@media (max-width: 700px) {
+  .benefits.benefits {
+    padding: 24px 18px;
+    margin-top: 20px;
+    border-radius: 16px;
+  }
+  .benefitGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 12px;
+  }
+  .benefit {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .benefitCopy h3 {
+    font-size: 13px;
+  }
+  .benefitCopy p {
+    font-size: 11px;
+  }
+  .iconScene {
+    width: 60px;
+    height: 60px;
+  }
+  .iconPlate {
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+  }
+  .iconPlate svg {
+    width: 27px;
+    height: 27px;
+  }
+  .payments.payments {
+    grid-template-columns: 1fr;
+    padding: 28px 24px 12px;
+    min-height: 0;
+  }
+  .paymentCopy.paymentCopy h2 {
+    font-size: 27px;
+  }
+  .paymentCopy p {
+    font-size: 13px;
+  }
+  .paymentArt {
+    width: 360px;
+    height: 285px;
+    margin-top: 10px;
+    scale: 0.88;
+    transform-origin: center;
+  }
+  .bankCard {
+    left: 22px;
+  }
+  .backCard {
+    left: 53px;
+  }
+  .coinOne {
+    left: 0;
+  }
+  .coinTwo {
+    right: 0;
+  }
+  .installmentTag {
+    left: 7px;
+    bottom: 5px;
+  }
+  .artHalo {
+    left: 40px;
+  }
+  .artOrbit {
+    inset-inline: 0;
+  }
+  .sparkOne {
+    right: 3px;
+  }
+  .sparkTwo {
+    left: -8px;
+  }
+}
+@media (max-width: 360px) {
+  .payments.payments {
+    padding-inline: 18px;
+  }
+  .paymentCopy.paymentCopy h2 {
+    font-size: 24px;
+  }
+  .paymentArt {
+    scale: 0.76;
+    margin-inline: -15px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .benefits *,
+  .payments * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+.benefits[data-in-view="false"] *,
+.payments[data-in-view="false"] * {
+  animation-play-state: paused;
+}
+/* Outrank the storefront's inherited heading colors inside the dark banner. */
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .payments .paymentCopy h2 {
+  color: #fff;
+}
+.paymentCopy {
+  min-width: 0;
+}
+@media (max-width: 700px) {
+  .payments.payments {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -2,18 +2,10 @@ import "./mopc-home-2026.css";
 import { productImages } from "@/lib/db";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowUpRight,
-  ShieldCheck,
-  CarFront,
-  Coins,
-  Truck,
-  CreditCard,
-  Headset,
-  Search,
-} from "lucide-react";
+import { ArrowUpRight, CarFront, Search } from "lucide-react";
 import type { Locale, Product, Text, Vehicle } from "@/lib/catalog";
 import { ProductCard } from "./product-card";
+import { BenefitsBanner, PaymentBanner } from "./storefront-banners";
 import { HomeVehicleFinder } from "./home-vehicle-finder";
 import { HeroSlideshow, type HeroSlide } from "./hero-slideshow";
 
@@ -76,32 +68,6 @@ export async function CyanHome({
     ...candidates.filter((p) => !p.media),
   ].slice(0, 4);
 
-  const benefits = [
-    {
-      icon: ShieldCheck,
-      text: ar ? "قطع غيار أصلية بضمان" : "Genuine parts with warranty",
-    },
-    {
-      icon: CarFront,
-      text: ar ? "قطع مناسبة لعربيتك" : "Find the right fit for your car",
-    },
-    { icon: Coins, text: ar ? "أسعار واضحة" : "Clear, straightforward prices" },
-    {
-      icon: CreditCard,
-      text: ar
-        ? cardPayments
-          ? "كروت وطرق دفع مرنة"
-          : "إنستاباي ومحافظ إلكترونية"
-        : cardPayments
-          ? "Cards & flexible payments"
-          : "InstaPay & mobile wallets",
-    },
-    { icon: Truck, text: ar ? "شحن لكل محافظات مصر" : "Delivery across Egypt" },
-    {
-      icon: Headset,
-      text: ar ? "دعم قبل وبعد الشراء" : "Support before and after purchase",
-    },
-  ];
   return (
     <div className="cyan-home">
       <section className="cyan-hero">
@@ -160,16 +126,7 @@ export async function CyanHome({
           </div>
         </HeroSlideshow>
       </section>
-      <div className="shell">
-        <div className="cyan-trust-strip">
-          {benefits.map(({ icon: Icon, text }) => (
-            <div key={text}>
-              <Icon size={32} />
-              <span>{text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
+      <BenefitsBanner locale={locale} cardPayments={cardPayments} />
       <section className="shell cyan-brands" id="brands">
         <h2 className="cyan-section-title">
           {ar ? "تصفح حسب الماركة" : "Shop by car make"}
@@ -243,30 +200,7 @@ export async function CyanHome({
           ))}
         </div>
       </section>
-      {cardPayments && (
-        <section
-          className="shell showroom-payments"
-          aria-labelledby="payment-heading"
-        >
-          <div>
-            <CreditCard size={26} aria-hidden="true" />
-            <h2 id="payment-heading">
-              {ar
-                ? "اختار طريقة الدفع اللي تناسبك"
-                : "Payment that fits your plans"}
-            </h2>
-            <p>
-              {ar
-                ? "اعرف طرق الدفع والتقسيط المتاحة قبل ما تطلب."
-                : "Explore available payment and installment options before you order."}
-            </p>
-          </div>
-          <Link href={`/${locale}/installments`} className="showroom-text-link">
-            {ar ? "طرق الدفع والتقسيط" : "Explore payment options"}
-            <ArrowUpRight size={18} aria-hidden="true" />
-          </Link>
-        </section>
-      )}
+      {cardPayments && <PaymentBanner locale={locale} />}
       <section
         className="shell showroom-request"
         aria-labelledby="request-heading"
