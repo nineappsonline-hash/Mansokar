@@ -689,7 +689,7 @@ export default async function Admin({
     const vehicleIds = [...new Set(orderItems.map((item) => item.vehicle_config_id).filter((value): value is string => typeof value === "string" && !!value))];
     const [{ data: orderPhotos, error: orderPhotosError }, { data: orderVehicles, error: orderVehiclesError }] = await Promise.all([
       productIds.length ? db.from("product_images").select("id,product_id,path,position").in("product_id", productIds).order("position") : Promise.resolve({ data: [], error: null }),
-      vehicleIds.length ? db.from("vehicle_configs").select("id,year,vehicle_models(name,brand,vehicle_brands(name))").in("id", vehicleIds) : Promise.resolve({ data: [], error: null }),
+      vehicleIds.length ? db.from("vehicle_configs").select("id,year,vehicle_models(name,brand)").in("id", vehicleIds) : Promise.resolve({ data: [], error: null }),
     ]);
     if (orderPhotosError) throw orderPhotosError;
     if (orderVehiclesError) throw orderVehiclesError;
@@ -697,11 +697,12 @@ export default async function Admin({
     for (const photo of orderPhotos ?? []) {
       if (!orderPhotoMap.has(photo.product_id)) orderPhotoMap.set(photo.product_id, isRemoteImageUrl(photo.path) ? photo.path : `/product-media/${photo.id}`);
     }
+    const { brands: orderBrands } = vehicleIds.length ? await vehicleCatalog() : { brands: [] as any[] };
     const orderVehicleMap = new Map((orderVehicles ?? []).map((vehicle: any) => {
       const model = Array.isArray(vehicle.vehicle_models) ? vehicle.vehicle_models[0] : vehicle.vehicle_models;
-      const brand = Array.isArray(model?.vehicle_brands) ? model.vehicle_brands[0] : model?.vehicle_brands;
+      const brand = orderBrands.find((candidate) => candidate.slug === model?.brand);
       const modelName = model?.name?.ar || model?.name?.en || model?.slug || "غير محدد";
-      return [vehicle.id, { brand: brand?.name || model?.brand || "غير محددة", model: modelName, year: vehicle.year }] as const;
+      return [vehicle.id, { brand: brand?.ar || brand?.name || model?.brand || "غير محددة", model: modelName, year: vehicle.year }] as const;
     }));
     const { data: transfers, error: transferError } = orderIds.length
       ? await db
