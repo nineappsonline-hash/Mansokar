@@ -136,31 +136,61 @@
   overflow-wrap: anywhere;
 }
 .vehicles {
-  display: flex;
-  align-items: flex-start;
-  gap: 7px;
-  border-top: 1px solid #edf0f3;
-  padding-top: 8px;
-  color: #52677a;
-  font-size: 11px;
-  line-height: 1.6;
+  padding: 8px 9px;
+  background: #f0f4f8;
+  border: 1px solid #dce5ee;
+  border-radius: 8px;
 }
-.vehicles > svg {
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-.vehicles > div {
+.vehicleApplications {
   min-width: 0;
 }
-.vehicles > div > span {
+.vehicleApplication {
   display: flex;
-  flex-wrap: wrap;
-  gap: 3px 7px;
-  align-items: baseline;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
 }
-.vehicles bdi {
+.vehicleMark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 1px solid #dce5ee;
+  border-radius: 7px;
+  color: #334c61;
+}
+.vehicleMark img {
+  display: block;
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+.vehicleName {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 64px;
+  gap: 2px;
+  line-height: 1.35;
+}
+.vehicleName > span {
+  font-size: 12px;
+  color: #435d73;
+  font-weight: 600;
+}
+.vehicleName > strong {
+  font-size: 15px;
+  color: #122b40;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+.vehicleYears {
   font-size: 10px;
-  color: #677c8d;
+  font-weight: 650;
+  color: #334c61;
+  flex-shrink: 0;
 }
 .more {
   display: inline-block;
@@ -179,11 +209,9 @@
 }
 .footer {
   grid-area: footer;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
   margin: 0 16px;
   padding: 12px 0;
   border-top: 1px solid #e7ecf0;
@@ -207,7 +235,7 @@
   .card
   .footer
   :global(.purchase-controls) {
-  width: auto;
+  width: 100%;
   max-width: 100%;
   min-width: 0;
 }
@@ -215,17 +243,23 @@
   .card
   .footer
   :global(.purchase-buttons) {
-  display: flex;
-  width: auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
   margin: 0;
 }
-:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .footer :global(.purchase-add) {
+:global(.mopc-cyan.mopc-cyan.mopc-cyan)
+  .card
+  .footer
+  :global(:is(.purchase-add, .purchase-buy)) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  width: auto;
-  min-height: 40px;
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
   height: auto;
   margin: 0;
   padding: 9px 12px;
@@ -306,9 +340,12 @@
   .price {
     font-size: 21px;
   }
-  :global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .footer :global(.purchase-add) {
-    min-height: 40px;
-    padding-inline: 16px;
+  :global(.mopc-cyan.mopc-cyan.mopc-cyan)
+    .card
+    .footer
+    :global(:is(.purchase-add, .purchase-buy)) {
+    min-height: 42px;
+    padding-inline: 8px;
     font-size: 12px;
   }
   :global(.mopc-cyan.mopc-cyan.mopc-cyan) .card :global(.favorite-toggle) {
@@ -323,5 +360,43 @@
 @media (prefers-reduced-motion: reduce) {
   :global(.mopc-cyan) .card.card {
     transition: none;
+  }
+}
+
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .footer :global(.purchase-buy) {
+  background: #fff;
+  color: #122b40;
+  border: 1px solid #b5c3cf;
+}
+:global(.mopc-cyan.mopc-cyan.mopc-cyan)
+  .card
+  .footer
+  :global(.purchase-buy:hover) {
+  background: #f0f4f8;
+  border-color: #52677a;
+}
+:global(.mopc-cyan) .card .footer :global(.purchase-buttons svg) {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+@media (max-width: 540px) {
+  .vehicleApplication {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .vehicleName > strong {
+    font-size: 14px;
+  }
+  .vehicleMark {
+    width: 30px;
+    height: 30px;
+  }
+  .vehicleMark img {
+    width: 23px;
+    height: 23px;
+  }
+  .vehicleYears {
+    margin-inline-start: auto;
   }
 }

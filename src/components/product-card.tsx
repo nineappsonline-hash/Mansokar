@@ -6,6 +6,7 @@ import styles from "./product-card.module.css";
 import { FavoriteButton } from "./favorites";
 import Link from "next/link";
 import { BadgeCheck, CarFront } from "lucide-react";
+import { vehicleBrandLogo } from "@/lib/vehicle-brand-logo";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -147,14 +148,44 @@ export async function ProductCard({
               locale === "ar" ? "العربيات المتوافقة" : "Vehicle applications"
             }
           >
-            <CarFront size={15} aria-hidden="true" />
-            <div>
-              {vehicleRows.slice(0, 1).map((row) => (
-                <span key={row.id}>
-                  {row.name}
-                  {row.years && <bdi dir="ltr">{row.years}</bdi>}
-                </span>
-              ))}
+            <div className={styles.vehicleApplications}>
+              {vehicleRows.slice(0, 1).map((row) => {
+                const model = carCatalog.models.find(
+                  (item) => item.id === row.id,
+                );
+                const make = carCatalog.brands.find(
+                  (item) => item.slug === model?.brand,
+                );
+                const logo = vehicleBrandLogo(make?.slug);
+                return (
+                  <div key={row.id} className={styles.vehicleApplication}>
+                    <span className={styles.vehicleMark} aria-hidden="true">
+                      {logo ? (
+                        <img
+                          src={logo}
+                          alt=""
+                          width={26}
+                          height={26}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <CarFront size={23} />
+                      )}
+                    </span>
+                    <div className={styles.vehicleName}>
+                      {make && (
+                        <span>{locale === "ar" ? make.ar : make.name}</span>
+                      )}
+                      <strong>{model?.name[locale] ?? row.name}</strong>
+                    </div>
+                    {row.years && (
+                      <bdi className={styles.vehicleYears} dir="ltr">
+                        {row.years}
+                      </bdi>
+                    )}
+                  </div>
+                );
+              })}
               {vehicleRows.length > 1 && (
                 <Link className={styles.more} href={href}>
                   {locale === "ar"
@@ -179,7 +210,6 @@ export async function ProductCard({
           {p.sale !== null && <del>{money(p.price, locale)}</del>}
         </div>
         <PurchaseButtons
-          compact
           product={{ id: p.id, name: p.name, orderable: p.orderable }}
           locale={locale}
           vehicle={
