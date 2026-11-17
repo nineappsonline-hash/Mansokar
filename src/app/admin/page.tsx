@@ -34,6 +34,7 @@ import {
   RelationsEditor,
 } from "@/components/admin-editor";
 import { money } from "@/lib/catalog";
+import { AdminOrdersTable } from "@/components/admin-orders-table";
 import { isRemoteImageUrl } from "@/lib/image-links";
 const orderStatusLabels: Record<string, string> = {
   pending_confirmation: "بانتظار التأكيد",
@@ -81,6 +82,7 @@ export default async function Admin({
     view?: string;
     tab?: string;
     status?: string;
+    payment?: string;
   }>;
 }) {
   let admin;
@@ -108,6 +110,7 @@ export default async function Admin({
     view,
     tab,
     status,
+    payment,
   } = await searchParams;
   if (["images", "fitments", "taxonomy", "import"].includes(module)) {
     const destination = new URLSearchParams({ module: "products" });
@@ -667,6 +670,8 @@ export default async function Admin({
     const { term: orderSearch, valid: safeOrderSearch } = orderSearchTerm(q);
     let orderQuery = db.from("orders").select("id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(product_id,vehicle_config_id,snapshot,quantity)", { count: id ? undefined : "exact" });
     if (!id && status && allowedOrderStatuses.includes(status)) orderQuery = orderQuery.eq("status", status);
+    const allowedPaymentStatuses = ["unpaid","pending","paid","failed","refunded","partially_refunded"];
+    if (!id && payment && allowedPaymentStatuses.includes(payment)) orderQuery = orderQuery.eq("payment_status",payment);
     if (!id && orderSearch && safeOrderSearch) {
       const term = orderSearch.replaceAll("%", "").replaceAll("_", "");
       orderQuery = orderQuery.or(
@@ -737,30 +742,31 @@ export default async function Admin({
         )}
         {!id && (
           <section className="panel admin-orders-list" lang="ar" dir="rtl">
-            <div className="admin-orders-list-head"><div><h2>قائمة الطلبات</h2><p>ابحث وتابع الطلبات، وافتح أي طلب لتعديل بياناته أو مراجعة الدفع.</p></div><strong>{orderCount ?? 0} طلب في النتائج</strong></div>
+            <div className="admin-orders-list-head"><div><h2>مركز إدارة الطلبات</h2><p>تحكم في حالة الطلب ومراجعة المدفوعات مباشرة، من غير فتح كل طلب.</p></div><strong>{orderCount ?? 0} طلب في النتائج</strong></div>
+            <div className="mopc-orders-kpis">
+              <div><small>الطلبات المعروضة</small><strong>{data?.length ?? 0}</strong></div>
+              <div><small>بانتظار التأكيد</small><strong>{data?.filter(o=>o.status==="pending_confirmation").length ?? 0}</strong></div>
+              <div><small>قيد التجهيز</small><strong>{data?.filter(o=>o.status==="processing").length ?? 0}</strong></div>
+              <div><small>بانتظار الدفع</small><strong>{data?.filter(o=>o.payment_status!=="paid").length ?? 0}</strong></div>
+            </div>
             <form method="get" action="/admin" className="admin-orders-filters">
               <input type="hidden" name="module" value="orders" />
-              <label>بحث في النتائج<input type="search" name="q" defaultValue={q ?? ""} placeholder="رقم الطلب أو اسم العميل أو الهاتف" /></label>
-              <label>حالة الطلب<select name="status" defaultValue={status ?? ""}><option value="">كل الحالات</option>{allowedOrderStatuses.map((v) => <option key={v} value={v}>{humanStatus(v, orderStatusLabels)}</option>)}</select></label>
+              <label>بحث<input type="search" name="q" defaultValue={q ?? ""} placeholder="رقم الطلب أو اسم العميل أو الهاتف" /></label>
+              <label>حالة الطلب<select name="status" defaultValue={status ?? ""}><option value="">كل الحالات</option>{allowedOrderStatuses.map(v=><option key={v} value={v}>{humanStatus(v,orderStatusLabels)}</option>)}</select></label>
+              <label>حالة الدفع<select name="payment" defaultValue={payment ?? ""}><option value="">كل المدفوعات</option>{allowedPaymentStatuses.map(v=><option key={v} value={v}>{humanStatus(v,paymentStatusLabels)}</option>)}</select></label>
               <button type="submit">تطبيق الفلاتر</button>
             </form>
-            <p className="admin-orders-hint">البحث والفلترة على جميع الطلبات المسجلة، مع عرض 25 طلبًا في الصفحة.</p>
-            <div className="admin-orders-rows">
-              {data?.map((o) => (
-                <Link className="admin-order-row" href={`/admin?module=orders&id=${o.id}`} key={o.id}>
-                  <span className="admin-order-row-primary"><strong>#{o.order_number}</strong><small>{o.customer?.name ?? "عميل"}</small></span>
-                  <span className="admin-order-status">{humanStatus(o.status, orderStatusLabels)}</span>
-                  <span className="admin-order-payment">{humanStatus(o.payment_status, paymentStatusLabels)}</span>
-                  <strong className="admin-order-total">{money(o.total, "ar")}</strong>
-                  <span className="admin-order-open">عرض التفاصيل ←</span>
-                </Link>
-              ))}
-            </div>
+            <AdminOrdersTable
+              orders={(data ?? []) as any}
+              photos={Object.fromEntries(orderPhotoMap)}
+              vehicles={Object.fromEntries(orderVehicleMap)}
+              transfers={(transfers ?? []) as any}
+            />
             {!safeOrderSearch && orderSearch && <p role="alert">البحث يحتوي على رموز غير مدعومة. استخدم حروفًا أو أرقامًا فقط.</p>}
             {(orderCount ?? 0) > orderPageSize && (
               <nav aria-label="صفحات الطلبات" className="admin-orders-pagination">
                 {orderPage > 1 && (
-                  <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "orders", ...(status ? { status } : {}), ...(q ? { q } : {}), page: String(orderPage - 1) })}`}>الصفحة السابقة</Link>
+                  <Link className="button secondary" href={`/admin?${new URLSearchParams({ module: "orders", ...(status ? { status } : {}), ...(payment ? { payment } : {}), ...(q ? { q } : {}), page: String(orderPage - 1) })}`}>الصفحة السابقة</Link>
                 )}
                 <span>صفحة {orderPage} من {Math.ceil((orderCount ?? 0) / orderPageSize)}</span>
                 {orderPage * orderPageSize < (orderCount ?? 0) && (
