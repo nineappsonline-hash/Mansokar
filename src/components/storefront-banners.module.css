@@ -733,3 +733,25 @@
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* Full-width replacement for the Arabic six-benefit banner. */
+.benefitsImageBanner {
+  display: block;
+  margin-block: 22px 28px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #071525;
+}
+.benefitsImageBanner img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+@media (max-width: 640px) {
+  .benefitsImageBanner {
+    margin-block: 14px 20px;
+    border-radius: 12px;
+  }
+}
