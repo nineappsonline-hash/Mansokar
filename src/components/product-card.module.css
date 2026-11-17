@@ -1,168 +1,327 @@
-/* One shared, image-first card for storefront and catalog results. */
-.card.referenceCard:global(.premium-product-card) {
+/* Isolated card anatomy avoids the legacy storefront's fixed-height content rows. */
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card.card {
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  grid-template-areas: "photo" "details" "footer";
+  gap: 0;
   min-width: 0;
   height: 100%;
   overflow: hidden;
+  border: 1px solid #dce3e9;
+  border-radius: 12px;
   background: #fff;
-  border: 1px solid #e1e6eb;
-  border-radius: 14px;
-  box-shadow: 0 4px 16px #0b1c3005;
+  box-shadow: 0 2px 6px #10243804;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
 }
-.card.referenceCard:global(.premium-product-card):hover {
-  border-color: #a7b5c2;
-  box-shadow: 0 12px 28px #0b1c3010;
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card.card:hover {
+  border-color: #aab8c4;
+  box-shadow: 0 8px 22px #10243810;
+  transform: none;
 }
-.card.referenceCard :global(.product-art) {
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .photo {
+  grid-area: photo;
   position: relative;
+  z-index: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 200px;
+  height: 164px;
   min-height: 0;
-  padding: 24px;
-  background: #fff;
+  margin: 0;
+  padding: 12px 24px;
   border: 0;
   border-radius: 0;
+  background: #fff;
+  overflow: hidden;
 }
-.card.referenceCard :global(.product-art img.product-card-image) {
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .photo > img {
   position: static;
+  display: block;
   width: 100%;
   height: 100%;
+  max-height: 100%;
   object-fit: contain;
+  object-position: center;
+  padding: 0;
   transform: none;
   filter: none;
 }
-.card.referenceCard :global(.favorite-button) {
-  z-index: 2;
-  top: 12px;
-  inset-inline-end: 12px;
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card :global(.favorite-toggle) {
+  position: absolute;
+  z-index: 3;
+  top: 10px;
+  inset-inline-end: 10px;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  border: 1px solid #e6ebef;
+  border-radius: 50%;
+  background: #ffffffed;
+  box-shadow: none;
+}
+:global(.mopc-cyan) .card :global(.favorite-toggle svg) {
+  width: 17px;
+  height: 17px;
+}
+.details {
+  grid-area: details;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 8px 16px 14px;
+}
+.identity {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  font-size: 10px;
+  line-height: 1.4;
+  color: #637386;
+}
+.identity > strong {
+  font-size: 11px;
+  color: #334c61;
+  font-weight: 750;
+  letter-spacing: 0.03em;
+}
+.original {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #455e73;
+  padding-inline-start: 7px;
+  border-inline-start: 1px solid #dce3e9;
+}
+.origin {
+  overflow-wrap: anywhere;
+}
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .title {
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  font-size: 16px;
+  line-height: 1.55;
+  font-weight: 750;
+  color: #122b40;
+  overflow-wrap: anywhere;
+}
+.title a {
+  color: inherit;
+  text-decoration: none;
+}
+.title a:hover {
+  color: #a84218;
 }
 .partNumber {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 4px 10px;
-  margin: 0 18px;
-  padding: 10px 0;
-  border-top: 1px solid #edf0f3;
-  color: #637386;
-  font-size: 11px;
+  gap: 4px 8px;
+  align-items: baseline;
+  font-size: 10px;
+  line-height: 1.6;
+  color: #6b7b89;
 }
 .partNumber bdi {
-  color: #33465a;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-  font-variant-numeric: tabular-nums;
-}
-.card.referenceCard :global(.product-info) {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 10px;
-  width: 100%;
-  min-width: 0;
-  padding: 12px 18px 18px;
-}
-.card.referenceCard :global(.product-card-badge-row),
-.card.referenceCard :global(.product-meta) {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin: 0;
-}
-.card.referenceCard :global(.original-badge) {
-  position: static;
-  margin: 0;
-}
-.card.referenceCard :global(.product-brand) {
-  background: #f0f3f6;
-  color: #33465a;
-  border: 0;
-  box-shadow: none;
   font-size: 11px;
-}
-.card.referenceCard :global(.product-info h3) {
-  margin: 0;
-  min-height: 3em;
-  font-size: 16px;
-  line-height: 1.5;
-  font-weight: 700;
-  color: #0b1c30;
+  font-weight: 600;
+  color: #41586b;
+  font-family: ui-monospace, monospace;
+  overflow-wrap: anywhere;
 }
 .vehicles {
-  display: grid;
-  gap: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  border-top: 1px solid #edf0f3;
+  padding-top: 8px;
+  color: #52677a;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.vehicles > svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.vehicles > div {
+  min-width: 0;
+}
+.vehicles > div > span {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 7px;
+  align-items: baseline;
+}
+.vehicles bdi {
+  font-size: 10px;
+  color: #677c8d;
 }
 .more {
-  color: #455e73;
-  font-size: 12px;
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 10px;
+  color: #52677a;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.card.referenceCard :global(.product-price) {
+.unlisted,
+.fitment {
+  margin: 0;
+  color: #637386;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.footer {
+  grid-area: footer;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: auto;
-  padding-top: 12px;
-  border-top: 1px solid #edf0f3;
-  font-size: 23px;
-  font-weight: 750;
-  color: #0b1c30;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 16px;
+  padding: 12px 0;
+  border-top: 1px solid #e7ecf0;
 }
-.card.referenceCard :global(.product-price del) {
-  color: #7a8794;
-  font-size: 13px;
+.price {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: #122b40;
+  font-size: 21px;
+  line-height: 1.4;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+.price del {
+  color: #768593;
+  font-size: 11px;
   font-weight: 400;
 }
-.card.referenceCard :global(.purchase-controls),
-.card.referenceCard :global(.purchase-buttons) {
-  width: 100%;
+:global(.mopc-cyan.mopc-cyan.mopc-cyan)
+  .card
+  .footer
+  :global(.purchase-controls) {
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
 }
-.card.referenceCard :global(.purchase-buttons) {
+:global(.mopc-cyan.mopc-cyan.mopc-cyan)
+  .card
+  .footer
+  :global(.purchase-buttons) {
   display: flex;
+  width: auto;
+  margin: 0;
 }
-.card.referenceCard :global(.purchase-buttons .purchase-add) {
-  width: 100%;
-  min-height: 44px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  font-size: 13px;
-}
-.card.referenceCard :global(.product-details-link) {
+:global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .footer :global(.purchase-add) {
   display: inline-flex;
+  align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 12px;
-  color: #52677a;
+  width: auto;
+  min-height: 40px;
+  height: auto;
+  margin: 0;
+  padding: 9px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: normal;
 }
-@media (max-width: 700px) {
-  .card.referenceCard :global(.product-art) {
-    height: 185px;
-    padding: 20px;
+:global(.mopc-cyan) .card .footer :global(.purchase-add svg) {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+:global(.mopc-cyan) .card .footer :global(.purchase-error) {
+  display: block;
+  max-width: 150px;
+  font-size: 11px;
+}
+:global(.mopc-cyan) .card .photo .discount {
+  position: absolute;
+  inset-inline-start: 10px;
+  top: 10px;
+  width: auto;
+  height: auto;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: #a92d26;
+  color: #fff;
+  font-size: 11px;
+}
+:global(.mopc-cyan) .card .photo .demo {
+  position: absolute;
+  bottom: 6px;
+  inset-inline-start: 10px;
+  width: auto;
+  height: auto;
+  padding: 2px 6px;
+  background: #f1f4f7;
+  color: #52677a;
+  font-size: 10px;
+}
+@media (max-width: 540px) {
+  :global(.mopc-cyan.mopc-cyan.mopc-cyan) .card.card {
+    grid-template-columns: 108px minmax(0, 1fr);
+    grid-template-rows: 1fr auto;
+    grid-template-areas: "photo details" "footer footer";
+    border-radius: 11px;
   }
-  .card.referenceCard :global(.product-info) {
-    padding: 12px 16px 16px;
+  :global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .photo {
+    height: 100%;
+    min-height: 138px;
+    max-height: 190px;
+    padding: 24px 8px 10px;
   }
-  .card.referenceCard :global(.product-info h3) {
-    min-height: 0;
+  .details {
+    padding: 14px 12px 12px;
+    gap: 6px;
   }
-  .partNumber {
-    margin-inline: 16px;
+  :global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .title {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .identity {
+    gap: 5px;
+    font-size: 9px;
+  }
+  .identity > strong {
+    font-size: 10px;
+  }
+  .original {
+    padding-inline-start: 5px;
+  }
+  .footer {
+    margin-inline: 12px;
+    padding-block: 10px;
+    gap: 8px;
+  }
+  .price {
+    font-size: 21px;
+  }
+  :global(.mopc-cyan.mopc-cyan.mopc-cyan) .card .footer :global(.purchase-add) {
+    min-height: 40px;
+    padding-inline: 16px;
+    font-size: 12px;
+  }
+  :global(.mopc-cyan.mopc-cyan.mopc-cyan) .card :global(.favorite-toggle) {
+    inset-inline-end: auto;
+    inset-inline-start: 7px;
+    top: 7px;
+    width: 28px;
+    height: 28px;
+    min-height: 28px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .card.referenceCard {
+  :global(.mopc-cyan) .card.card {
     transition: none;
   }
 }

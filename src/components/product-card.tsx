@@ -5,7 +5,7 @@ import {
 import styles from "./product-card.module.css";
 import { FavoriteButton } from "./favorites";
 import Link from "next/link";
-import { ArrowUpRight, Globe2 } from "lucide-react";
+import { BadgeCheck, CarFront } from "lucide-react";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -23,8 +23,6 @@ import {
   productContextHref,
   type CarContext,
 } from "@/lib/public-product";
-import { OriginalBadge } from "./original-badge";
-import { VehicleBadge } from "./vehicle-badge";
 export async function ProductCard({
   product: raw,
   locale,
@@ -74,51 +72,40 @@ export async function ProductCard({
     /* A missing photo does not conceal the product. */
   }
   const w = t(locale);
+  const fitment = vehicle ? fitmentLabel(vehicle, !!confirmed, locale) : "";
+  const photo =
+    media?.url ??
+    (p.demo ? partArt(p.category) : "/images/part-placeholder.svg");
+  const photoAlt =
+    media?.alt[locale] ??
+    (p.demo
+      ? locale === "ar"
+        ? "رسم توضيحي لمنتج تجريبي"
+        : "Demo product illustration"
+      : locale === "ar"
+        ? "صورة توضيحية عامة؛ صورة المنتج غير متاحة"
+        : "Generic placeholder; product photo unavailable");
   return (
     <article
-      className={`product-card product-card-animate premium-product-card ${styles.card} ${styles.referenceCard}`}
+      className={`product-card premium-product-card ${styles.card}`}
       aria-label={p.name[locale]}
     >
       <FavoriteButton id={p.id} locale={locale} />
       <Link
         href={href}
-        className="product-art"
+        className={`product-art ${styles.photo}`}
         data-analytics="select_item"
         data-productid={p.id}
       >
-        {media ? (
-          <img
-            src={media.url}
-            alt={media.alt[locale]}
-            loading="lazy"
-            className="product-card-image"
-          />
-        ) : p.demo ? (
-          <img
-            src={partArt(p.category)}
-            alt={
-              locale === "ar"
-                ? "رسم توضيحي لمنتج تجريبي"
-                : "Demo product illustration"
-            }
-            loading="lazy"
-            className="product-card-image"
-          />
-        ) : (
-          <img
-            src="/images/part-placeholder.svg"
-            alt={
-              locale === "ar"
-                ? "صورة توضيحية عامة؛ صورة المنتج غير متاحة"
-                : "Generic placeholder; product photo unavailable"
-            }
-            loading="lazy"
-            className="product-card-image"
-          />
-        )}
-        {p.demo && <span>{w.demoProduct}</span>}
+        <img
+          src={photo}
+          alt={photoAlt}
+          loading="lazy"
+          className="product-card-image"
+        />
+        {p.demo && <span className={styles.demo}>{w.demoProduct}</span>}
         {p.sale !== null && p.price > 0 && (
-          <b>
+          <b className={styles.discount}>
             −
             {new Intl.NumberFormat(locale === "ar" ? "ar-EG" : "en", {
               style: "percent",
@@ -127,42 +114,32 @@ export async function ProductCard({
           </b>
         )}
       </Link>
-      <div className={`product-card-part-below-image ${styles.partNumber}`}>
-        <span>{locale === "ar" ? "رقم القطعة" : "Part number"}</span>
-        <bdi dir="ltr">{p.partNumber}</bdi>
-      </div>
-      <div className="product-info">
-        <div className="product-card-badge-row">
-          {p.type === "oem" && <OriginalBadge locale={locale} />}
-          <div className="product-meta">
-            <strong
-              className="product-brand"
-              dir="auto"
-              aria-label={`${locale === "ar" ? "الماركة" : "Brand"}: ${p.manufacturer}`}
-            >
-              {p.manufacturer}
-            </strong>
-            {origin && (
-              <span className="product-origin" dir="auto">
-                <Globe2 size={14} aria-hidden="true" />
-                {origin}
-              </span>
-            )}
-          </div>
+      <div className={styles.details}>
+        <div className={styles.identity}>
+          <strong dir="auto">{p.manufacturer}</strong>
+          {p.type === "oem" ? (
+            <span className={styles.original}>
+              <BadgeCheck size={13} aria-hidden="true" />
+              {locale === "ar" ? "أصلي" : "Original"}
+            </span>
+          ) : (
+            <span>{locale === "ar" ? "بديل" : "Aftermarket"}</span>
+          )}
+          {origin && (
+            <span className={styles.origin} dir="auto">
+              {origin}
+            </span>
+          )}
         </div>
-        {p.type !== "oem" && (
-          <span className="eyebrow muted">After Market</span>
-        )}
-        <h3>
-          <Link
-            className="card-navigation-link"
-            data-analytics="select_item"
-            data-productid={p.id}
-            href={href}
-          >
+        <h3 className={styles.title}>
+          <Link href={href} data-analytics="select_item" data-productid={p.id}>
             {p.name[locale]}
           </Link>
         </h3>
+        <div className={styles.partNumber}>
+          <span>{locale === "ar" ? "رقم القطعة" : "Part no."}</span>
+          <bdi dir="ltr">{p.partNumber}</bdi>
+        </div>
         {vehicleRows.length > 0 ? (
           <div
             className={styles.vehicles}
@@ -170,48 +147,34 @@ export async function ProductCard({
               locale === "ar" ? "العربيات المتوافقة" : "Vehicle applications"
             }
           >
-            {vehicleRows.slice(0, 2).map((row) => {
-              const model = carCatalog.models.find((m) => m.id === row.id);
-              const brand = carCatalog.brands.find(
-                (b) => b.slug === model?.brand,
-              );
-              return (
-                <VehicleBadge
-                  key={row.id}
-                  locale={locale}
-                  make={
-                    brand
-                      ? locale === "ar"
-                        ? brand.ar
-                        : brand.name
-                      : undefined
-                  }
-                  model={model?.name[locale] ?? row.name}
-                  years={row.years}
-                  brand={brand?.slug}
-                />
-              );
-            })}
-            {vehicleRows.length > 2 && (
-              <Link className={styles.more} href={href}>
-                {locale === "ar"
-                  ? `+ ${vehicleRows.length - 2} موديلات أخرى`
-                  : `+ ${vehicleRows.length - 2} more models`}
-              </Link>
-            )}
+            <CarFront size={15} aria-hidden="true" />
+            <div>
+              {vehicleRows.slice(0, 1).map((row) => (
+                <span key={row.id}>
+                  {row.name}
+                  {row.years && <bdi dir="ltr">{row.years}</bdi>}
+                </span>
+              ))}
+              {vehicleRows.length > 1 && (
+                <Link className={styles.more} href={href}>
+                  {locale === "ar"
+                    ? `+${vehicleRows.length - 1} موديلات أخرى`
+                    : `+${vehicleRows.length - 1} more models`}
+                </Link>
+              )}
+            </div>
           </div>
         ) : (
-          <div className="product-card-fitment-unlisted">
+          <p className={styles.unlisted}>
             {locale === "ar"
-              ? "لم يتم تحديد الماركة والموديل والسنوات لهذا المنتج بعد"
-              : "Make, model and years have not been specified for this product"}
-          </div>
+              ? "راجع توافق القطعة قبل الطلب"
+              : "Check vehicle compatibility before ordering"}
+          </p>
         )}
-
-        <p className="small muted">
-          {fitmentLabel(vehicle, !!confirmed, locale)}
-        </p>
-        <div className="product-price">
+        {fitment && <p className={styles.fitment}>{fitment}</p>}
+      </div>
+      <div className={styles.footer}>
+        <div className={styles.price}>
           <span>{money(p.sale ?? p.price, locale)}</span>
           {p.sale !== null && <del>{money(p.price, locale)}</del>}
         </div>
@@ -235,10 +198,6 @@ export async function ProductCard({
                 : undefined
           }
         />
-        <Link className="product-details-link" href={href}>
-          {w.view}
-          <ArrowUpRight size={17} aria-hidden="true" />
-        </Link>
       </div>
     </article>
   );
