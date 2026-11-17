@@ -748,6 +748,7 @@
   width: 100%;
   height: auto;
   max-width: 100%;
+  margin-top: -2.5%;
   object-fit: contain;
 }
 @media (max-width: 640px) {
