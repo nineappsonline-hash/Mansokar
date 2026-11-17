@@ -7521,3 +7521,27 @@ body {
 .mopc-order-footnote{font-size:11px;color:#738095;margin:10px 0 0}
 .mopc-order-error{background:#fff0ed;color:#a42820;padding:12px;border-radius:8px}
 @media(max-width:780px){.mopc-orders-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-orders-list{padding:12px!important}.admin-orders-list-head{align-items:start;flex-direction:column}}
+
+/* Readable orders dashboard v2 */
+.admin-orders-list {padding:26px!important}
+.admin-orders-list-head h2{font-size:27px!important;line-height:1.4!important}
+.admin-orders-list-head p,.mopc-order-footnote{font-size:14px!important;line-height:1.7!important}
+.mopc-orders-kpis small{font-size:14px!important}
+.mopc-orders-kpis strong{font-size:29px!important}
+.admin-orders-filters label{font-size:15px!important;font-weight:600}
+.admin-orders-filters input,.admin-orders-filters select,.admin-orders-filters button{font-size:15px!important;min-height:44px!important}
+.mopc-orders-table{font-size:15px!important;min-width:1220px!important}
+.mopc-orders-table th{font-size:14px!important;padding:17px 14px!important}
+.mopc-orders-table td{padding:17px 14px!important}
+.mopc-orders-table td>strong,.mopc-order-product strong{font-size:15px!important;line-height:1.6!important}
+.mopc-orders-table small{font-size:13px!important;line-height:1.6!important}
+.mopc-order-product{min-width:255px!important}
+.mopc-order-product img,.mopc-order-photo-empty{width:65px!important;height:65px!important}
+.mopc-order-pill{font-size:13px!important;padding:8px 11px!important}
+.mopc-orders-table select{font-size:13px!important;min-width:145px!important;min-height:39px!important}
+.mopc-order-detail-link,.mopc-cod-btn,.mopc-payment-actions button{font-size:13px!important}
+.mopc-reconcile{display:flex;flex-direction:column;gap:7px;margin-top:10px;min-width:185px}
+.mopc-reconcile input,.mopc-reconcile textarea{width:100%;font-size:13px;border:1px solid #d9e0e9;border-radius:7px;padding:9px}
+.mopc-reconcile button{font-size:12px;background:#1c3555;color:#fff;border:0;border-radius:7px;padding:9px;cursor:pointer}
+.mopc-reconcile button:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:800px){.admin-orders-list{padding:14px!important}.mopc-orders-table{min-width:1120px!important}}
