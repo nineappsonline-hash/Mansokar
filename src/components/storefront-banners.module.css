@@ -737,7 +737,8 @@
 /* Full-width replacement for the Arabic six-benefit banner. */
 .benefitsImageBanner {
   display: block;
-  margin-block: 22px 28px;
+  width: min(100% - 32px, 1120px);
+  margin: 18px auto 24px;
   overflow: hidden;
   border-radius: 18px;
   background: #071525;
@@ -751,7 +752,8 @@
 }
 @media (max-width: 640px) {
   .benefitsImageBanner {
-    margin-block: 14px 20px;
+    width: calc(100% - 24px);
+    margin: 14px auto 20px;
     border-radius: 12px;
   }
 }
