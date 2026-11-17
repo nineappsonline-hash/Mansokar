@@ -7461,3 +7461,30 @@ body {
     grid-template-columns: minmax(0, 1fr) auto;
   }
 }
+
+/* Compact order detail layout */
+.admin-order-detail { padding:18px 22px !important; }
+.admin-order-detail-header { margin-bottom:14px !important; }
+.admin-order-detail-header h2 { font-size:20px !important; margin:5px 0 !important; }
+.admin-order-detail-grid { gap:12px !important; grid-template-columns:minmax(0,1.65fr) minmax(285px,.85fr) !important; }
+.admin-order-detail-main,.admin-order-detail-side { gap:12px !important; }
+.admin-order-detail-card { padding:14px 16px !important; border-radius:12px !important; }
+.admin-order-detail-card h3 { font-size:15px !important; margin:0 0 9px !important; }
+.admin-order-detail-card p { font-size:13px !important; line-height:1.55 !important; margin:5px 0 !important; }
+.admin-order-item { grid-template-columns:64px minmax(0,1fr) auto auto !important; gap:12px !important; padding:9px 0 !important; font-size:13px !important; }
+.admin-order-item-photo { width:64px; height:64px; border:1px solid #e5eaf0; background:#f6f8fa; border-radius:9px; display:flex !important; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+.admin-order-item-photo > span { font-size:24px; opacity:.35; }
+.admin-order-item-photo > img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; background:white; }
+.admin-order-item-info { display:flex !important; flex-direction:column; gap:3px !important; min-width:0; }
+.admin-order-item-info strong { font-size:13px; line-height:1.4; }
+.admin-order-item-info small { font-size:11px; line-height:1.45; }
+.admin-order-vehicle { color:#43576b !important; }
+.admin-order-grand-total { margin-top:9px !important; padding-top:10px !important; font-size:16px !important; }
+@media(max-width:980px) { .admin-order-detail-grid { grid-template-columns:1fr !important; } }
+@media(max-width:640px) {
+ .admin-order-detail { padding:12px !important; }
+ .admin-order-item { grid-template-columns:52px minmax(0,1fr) auto !important; gap:8px !important; }
+ .admin-order-item-photo { width:52px; height:52px; }
+ .admin-order-item > strong { grid-column:3 !important; }
+ .admin-order-item > span { grid-column:2 !important; }
+}
