@@ -24,6 +24,23 @@ export function BenefitsBanner({
   cardPayments: boolean;
 }) {
   const ar = locale === "ar";
+  if (ar) {
+    return (
+      <section
+        className={`shell ${styles.benefitsImageBanner}`}
+        aria-label="تسوق قطع الغيار بسهولة وأمان"
+      >
+        <img
+          src="/images/تسوق قطع الغيار بسهولة وأمان.png"
+          alt="تسوق قطع الغيار بكل سهولة وأمان: قطع أصلية وبضمان، القطعة المناسبة لعربيتك، أسعار واضحة، طرق دفع مرنة، شحن لكل محافظات مصر ودعم قبل وبعد الشراء"
+          loading="lazy"
+          decoding="async"
+          width={2048}
+          height={704}
+        />
+      </section>
+    );
+  }
   const benefits = [
     {
       icon: ShieldCheck,
