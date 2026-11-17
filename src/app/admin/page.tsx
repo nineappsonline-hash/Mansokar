@@ -692,23 +692,23 @@ export default async function Admin({
     const orderItems = (data ?? []).flatMap((order) => order.order_items ?? []);
     const productIds = [...new Set(orderItems.map((item) => item.product_id).filter((value): value is string => typeof value === "string" && !!value))];
     const vehicleIds = [...new Set(orderItems.map((item) => item.vehicle_config_id).filter((value): value is string => typeof value === "string" && !!value))];
-    const [{ data: orderPhotos, error: orderPhotosError }, { data: orderVehicles, error: orderVehiclesError }] = await Promise.all([
-      productIds.length ? db.from("product_images").select("id,product_id,path,position").in("product_id", productIds).order("position") : Promise.resolve({ data: [], error: null }),
-      vehicleIds.length ? db.from("vehicle_configs").select("id,year,vehicle_models(name,brand)").in("id", vehicleIds) : Promise.resolve({ data: [], error: null }),
-    ]);
+    const { data: orderPhotos, error: orderPhotosError } = productIds.length
+      ? await db.from("product_images").select("id,product_id,path,position").in("product_id", productIds).order("position")
+      : { data: [], error: null };
     if (orderPhotosError) throw orderPhotosError;
-    if (orderVehiclesError) throw orderVehiclesError;
     const orderPhotoMap = new Map<string, string>();
     for (const photo of orderPhotos ?? []) {
       if (!orderPhotoMap.has(photo.product_id)) orderPhotoMap.set(photo.product_id, isRemoteImageUrl(photo.path) ? photo.path : `/product-media/${photo.id}`);
     }
-    const { brands: orderBrands } = vehicleIds.length ? await vehicleCatalog() : { brands: [] as any[] };
-    const orderVehicleMap = new Map((orderVehicles ?? []).map((vehicle: any) => {
-      const model = Array.isArray(vehicle.vehicle_models) ? vehicle.vehicle_models[0] : vehicle.vehicle_models;
-      const brand = orderBrands.find((candidate) => candidate.slug === model?.brand);
-      const modelName = model?.name?.ar || model?.name?.en || model?.slug || "غير محدد";
-      return [vehicle.id, { brand: brand?.ar || brand?.name || model?.brand || "غير محددة", model: modelName, year: vehicle.year }] as const;
-    }));
+    const catalog = vehicleIds.length ? await vehicleCatalog() : null;
+    const orderVehicleMap = new Map<string, {brand:string;model:string;year:number}>();
+    for (const vehicleId of vehicleIds) {
+      const vehicle = catalog?.vehicles.find(v => v.id === vehicleId);
+      if (!vehicle) continue;
+      const brand = catalog?.brands.find(b => b.slug === vehicle.brand);
+      const model = catalog?.models.find(m => m.slug === vehicle.model && m.brand === vehicle.brand);
+      orderVehicleMap.set(vehicleId, { brand: brand?.ar || brand?.name || vehicle.brand, model: model?.name?.ar || model?.name?.en || vehicle.model, year: vehicle.year });
+    }
     const { data: transfers, error: transferError } = orderIds.length
       ? await db
           .from("manual_transfers")
@@ -836,6 +836,16 @@ export default async function Admin({
                   <p><strong>الشحن:</strong> {money(o.shipping_amount, "ar")}</p>
                   <div className="admin-order-grand-total"><strong>الإجمالي</strong><strong>{money(o.total, "ar")}</strong></div>
                 </section>
+                {o.payment_method === "card" && o.payment_status !== "paid" && (
+                  <section className="admin-order-detail-card">
+                    <h3>مراجعة الدفع بالبطاقة</h3>
+                    <p>اعتمد الدفع يدويًا فقط بعد التأكد من وصول المبلغ في لوحة مزود الدفع. سيتم تسجيل العملية ومرجعها في سجل المراجعة.</p>
+                    <ApiForm action="admin-payment-reconcile" extra={{id:o.id}} label="اعتماد الدفع بعد التحقق">
+                      <label>مرجع عملية الدفع<input name="reference" required minLength={6} maxLength={160} /></label>
+                      <label>دليل وصول المبلغ وسبب الاعتماد<textarea name="note" required minLength={12} maxLength={1000} /></label>
+                    </ApiForm>
+                  </section>
+                )}
                 <section className="admin-order-detail-card">
                   <h3>التحويلات ومراجعة الدفع</h3>
             {transfers
