@@ -13,16 +13,16 @@
   padding: 12px 18px;
   border: 1px solid #ffffff40;
   border-radius: 999px;
-  background: linear-gradient(135deg, #d8c08d, #a47632);
-  color: #17232b;
+  background: #0b1c30;
+  color: #fff;
   font-size: 14px;
   font-weight: 700;
   box-shadow: 0 16px 36px #0000002e;
 }
 
 .launcher:hover {
-  color: #17232b;
-  background: linear-gradient(135deg, #e4ce9f, #b48642);
+  color: #fff;
+  background: #17334d;
   transform: translateY(-2px);
 }
 
@@ -37,7 +37,7 @@
   width: 27px;
   height: 27px;
   border-radius: 50%;
-  background: #ffffff5c;
+  background: #ffffff1f;
 }
 
 .overlay {

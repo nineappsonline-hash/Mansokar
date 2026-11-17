@@ -12,10 +12,12 @@ export function PurchaseButtons({
   quantity = 1,
   vehicle,
   context,
+  compact = false,
 }: {
   product: Pick<Product, "id" | "name" | "orderable">;
   locale: Locale;
   quantity?: number;
+  compact?: boolean;
   vehicle?: { make?: string; model?: string; year?: number };
   context?: CarContext;
 }) {
@@ -62,16 +64,18 @@ export function PurchaseButtons({
           )}
           <span>{added ? w.addedToCart : w.add}</span>
         </button>
-        <button
-          type="button"
-          className="button secondary purchase-buy"
-          disabled={!product.orderable || buying}
-          aria-label={`${buying ? w.openingCheckout : w.buyNow}: ${product.name[locale]}`}
-          onClick={() => purchase(true)}
-        >
-          <span>{buying ? w.openingCheckout : w.buyNow}</span>
-          <ArrowUpRight size={18} aria-hidden="true" />
-        </button>
+        {!compact && (
+          <button
+            type="button"
+            className="button secondary purchase-buy"
+            disabled={!product.orderable || buying}
+            aria-label={`${buying ? w.openingCheckout : w.buyNow}: ${product.name[locale]}`}
+            onClick={() => purchase(true)}
+          >
+            <span>{buying ? w.openingCheckout : w.buyNow}</span>
+            <ArrowUpRight size={18} aria-hidden="true" />
+          </button>
+        )}
       </div>
       <span
         className={error ? "purchase-error" : "sr-only"}

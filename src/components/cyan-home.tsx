@@ -10,7 +10,6 @@ import {
   Truck,
   CreditCard,
   Headset,
-  Send,
   Search,
 } from "lucide-react";
 import type { Locale, Product, Text, Vehicle } from "@/lib/catalog";
@@ -75,7 +74,7 @@ export async function CyanHome({
   const featured = [
     ...candidates.filter((p) => p.media),
     ...candidates.filter((p) => !p.media),
-  ].slice(0, 5);
+  ].slice(0, 4);
 
   const benefits = [
     {
@@ -98,6 +97,10 @@ export async function CyanHome({
           : "InstaPay & mobile wallets",
     },
     { icon: Truck, text: ar ? "شحن لكل محافظات مصر" : "Delivery across Egypt" },
+    {
+      icon: Headset,
+      text: ar ? "دعم قبل وبعد الشراء" : "Support before and after purchase",
+    },
   ];
   return (
     <div className="cyan-home">
@@ -123,31 +126,50 @@ export async function CyanHome({
                     )
                 ) : (
                   <>
-                    <span>
-                      {ar
-                        ? "القطعة الصح."
-                        : "The right part."}
-                    </span>
-                    <em>
-                      {ar ? "من أول مرة." : "From the first time."}
-                    </em>
+                    <span>{ar ? "القطعة الصح." : "The right part."}</span>
+                    <em>{ar ? "من أول مرة." : "From the first time."}</em>
                   </>
                 )}
               </h1>
-              <p className="mopc-v2-hero-description">{ar ? "اختار ماركة عربيتك وموديلها وسنة الصنع، أو ابحث عن القطعة بالاسم ورقمها. اختيار أسهل ومعلومات أوضح قبل الشراء." : "Select your car make, model and year, or search by part name or number. Find clearer information before you buy."}</p>
+              <p className="mopc-v2-hero-description">
+                {heroIntro?.trim() ||
+                  (ar
+                    ? "قطع غيار لعربيتك، بتفاصيل واضحة واختيار أسهل. ابحث برقم القطعة أو اختار عربيتك."
+                    : "Parts for your car, with clear details and a simpler choice. Search by part number or select your vehicle.")}
+              </p>
               <div className="cyan-hero-actions">
-                <a className="button cyan-hero-primary" href="#vehicle-finder">{ar ? "اختار عربيتك" : "Find your car"} <CarFront size={20} /></a>
-                <Link className="cyan-hero-secondary" href={`/${locale}/catalog`}>{ar ? "ابحث عن قطعة غيار" : "Search parts"} <Search size={19} /></Link>
+                <a className="button cyan-hero-primary" href="#vehicle-finder">
+                  {ar ? "اختار عربيتك" : "Find your car"} <CarFront size={20} />
+                </a>
+                <Link
+                  className="cyan-hero-secondary"
+                  href={`/${locale}/catalog`}
+                >
+                  {ar ? "ابحث عن قطعة غيار" : "Search parts"}{" "}
+                  <Search size={19} />
+                </Link>
               </div>
             </div>
-            <div id="vehicle-finder" className="cyan-finder-region"><HomeVehicleFinder
-              locale={locale}
-              brands={brands}
-              models={models}
-            /></div>
+            <div id="vehicle-finder" className="cyan-finder-region">
+              <HomeVehicleFinder
+                locale={locale}
+                brands={brands}
+                models={models}
+              />
+            </div>
           </div>
         </HeroSlideshow>
       </section>
+      <div className="shell">
+        <div className="cyan-trust-strip">
+          {benefits.map(({ icon: Icon, text }) => (
+            <div key={text}>
+              <Icon size={32} />
+              <span>{text}</span>
+            </div>
+          ))}
+        </div>
+      </div>
       <section className="shell cyan-brands" id="brands">
         <h2 className="cyan-section-title">
           {ar ? "تصفح حسب الماركة" : "Shop by car make"}
@@ -196,30 +218,7 @@ export async function CyanHome({
           ))}
         </div>
       </section>
-      <div className="shell">
-        <div className="cyan-trust-strip">
-          {benefits.map(({ icon: Icon, text }) => (
-            <div key={text}>
-              <Icon size={32} />
-              <span>{text}</span>
-            </div>
-          ))}
-        </div>
-      </div>
       {campaigns}
-      {cardPayments && (
-        <section className="shell cyan-payments-banner home-promo-compact" aria-label={ar ? "طرق الدفع والتقسيط" : "Payment and installment options"}>
-          <Link href={`/${locale}/installments`} aria-label={ar ? "اعرف المزيد عن طرق الدفع والتقسيط" : "Learn more about payment and installment options"}>
-            <img
-              src="/images/Futuristic%20Neon%20Payment%20Options.webp"
-              alt={ar ? "طرق الدفع والتقسيط المتاحة: فاليو، أمان، سهولة، كونتاكت، Apple Pay، Vodafone Cash، Visa، وInstaPay" : "Available payment and installment options: valU, Aman, Souhoola, Contact, Apple Pay, Vodafone Cash, Visa and InstaPay"}
-              loading="lazy"
-              decoding="async"
-              style={{ display: "block", width: "100%", height: "auto", borderRadius: "18px" }}
-            />
-          </Link>
-        </section>
-      )}
       <section className="cyan-featured shell">
         <div className="section-heading">
           <h2 className="cyan-section-title">
@@ -244,37 +243,59 @@ export async function CyanHome({
           ))}
         </div>
       </section>
-      <section className="shell cyan-request-image-banner home-promo-compact" aria-label={ar ? "اطلب قطعة غيار" : "Request an auto part"}>
-        <Link href={`/${locale}/request-part`} aria-label={ar ? "اطلب قطعة غيار الآن" : "Request an auto part now"}>
-          <img
-            src="/images/Arabic%20Auto%20Parts%20Promo%20Banner.png"
-            alt={ar ? "مش لاقي القطعة اللي محتاجها؟ ابعتلنا بياناتها وهنساعدك تلاقي القطعة المناسبة" : "Can't find the part you need? Send us the details and we'll help."}
-            loading="lazy"
-            decoding="async"
-            style={{ display: "block", width: "100%", height: "auto", borderRadius: "18px" }}
-          />
-        </Link>
-      </section>
-      <section className="shell cyan-why">
-        <h2 className="cyan-section-title">
-          {ar ? "ليه تختار MOPC؟" : "Why choose MOPC?"}
-        </h2>
-        <div className="cyan-benefits">
-          {[
-            ...benefits,
-            {
-              icon: Headset,
-              text: ar
-                ? "دعم ومتابعة بعد البيع"
-                : "Support before and after your order",
-            },
-          ].map(({ icon: Icon, text }, i) => (
-            <div className={i === 3 ? "cyan-benefit-accent" : ""} key={text}>
-              <Icon size={42} strokeWidth={1.7} />
-              <h3>{text}</h3>
-            </div>
-          ))}
+      {cardPayments && (
+        <section
+          className="shell showroom-payments"
+          aria-labelledby="payment-heading"
+        >
+          <div>
+            <CreditCard size={26} aria-hidden="true" />
+            <h2 id="payment-heading">
+              {ar
+                ? "اختار طريقة الدفع اللي تناسبك"
+                : "Payment that fits your plans"}
+            </h2>
+            <p>
+              {ar
+                ? "اعرف طرق الدفع والتقسيط المتاحة قبل ما تطلب."
+                : "Explore available payment and installment options before you order."}
+            </p>
+          </div>
+          <Link href={`/${locale}/installments`} className="showroom-text-link">
+            {ar ? "طرق الدفع والتقسيط" : "Explore payment options"}
+            <ArrowUpRight size={18} aria-hidden="true" />
+          </Link>
+        </section>
+      )}
+      <section
+        className="shell showroom-request"
+        aria-labelledby="request-heading"
+      >
+        <div className="showroom-request-art" aria-hidden="true">
+          <Search size={64} strokeWidth={1} />
         </div>
+        <div>
+          <span className="showroom-eyebrow">
+            {ar ? "مساعدة في اختيار القطعة" : "Expert assistance"}
+          </span>
+          <h2 id="request-heading">
+            {ar
+              ? "مش لاقي القطعة اللي محتاجها؟"
+              : "Looking for a specific part?"}
+          </h2>
+          <p>
+            {ar
+              ? "ابعت بيانات عربيتك ورقم القطعة أو صورتها، وهنساعدك تلاقي الاختيار المناسب."
+              : "Send your vehicle details and a part number or photo. We’ll help you find the right option."}
+          </p>
+        </div>
+        <Link
+          href={`/${locale}/request-part`}
+          className="button showroom-request-button"
+        >
+          {ar ? "اطلب مساعدة" : "Find my part"}
+          <ArrowUpRight size={18} aria-hidden="true" />
+        </Link>
       </section>
     </div>
   );

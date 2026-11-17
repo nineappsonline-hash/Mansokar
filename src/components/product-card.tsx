@@ -6,7 +6,6 @@ import styles from "./product-card.module.css";
 import { FavoriteButton } from "./favorites";
 import Link from "next/link";
 import { ArrowUpRight, Globe2 } from "lucide-react";
-import { BrandLogo } from "./brand-logo";
 import { productImages } from "@/lib/db";
 import { partArt } from "@/lib/visuals";
 import {
@@ -77,13 +76,9 @@ export async function ProductCard({
   const w = t(locale);
   return (
     <article
-      className={`product-card product-card-animate product-card-reference ${styles.card} ${styles.referenceCard}`}
+      className={`product-card product-card-animate premium-product-card ${styles.card} ${styles.referenceCard}`}
       aria-label={p.name[locale]}
     >
-      <div className={`product-card-identity ${styles.cardIdentity}`}>
-        <BrandLogo className={`product-card-mopc-logo ${styles.mopcLogo}`} alt="MOPC" />
-
-      </div>
       <FavoriteButton id={p.id} locale={locale} />
       <Link
         href={href}
@@ -140,20 +135,20 @@ export async function ProductCard({
         <div className="product-card-badge-row">
           {p.type === "oem" && <OriginalBadge locale={locale} />}
           <div className="product-meta">
-          <strong
-            className="product-brand"
-            dir="auto"
-            aria-label={`${locale === "ar" ? "الماركة" : "Brand"}: ${p.manufacturer}`}
-          >
-            {p.manufacturer}
-          </strong>
-          {origin && (
-            <span className="product-origin" dir="auto">
-              <Globe2 size={14} aria-hidden="true" />
-              {origin}
-            </span>
-          )}
-        </div>
+            <strong
+              className="product-brand"
+              dir="auto"
+              aria-label={`${locale === "ar" ? "الماركة" : "Brand"}: ${p.manufacturer}`}
+            >
+              {p.manufacturer}
+            </strong>
+            {origin && (
+              <span className="product-origin" dir="auto">
+                <Globe2 size={14} aria-hidden="true" />
+                {origin}
+              </span>
+            )}
+          </div>
         </div>
         {p.type !== "oem" && (
           <span className="eyebrow muted">After Market</span>
@@ -206,7 +201,11 @@ export async function ProductCard({
             )}
           </div>
         ) : (
-          <div className="product-card-fitment-unlisted">{locale === "ar" ? "لم يتم تحديد الماركة والموديل والسنوات لهذا المنتج بعد" : "Make, model and years have not been specified for this product"}</div>
+          <div className="product-card-fitment-unlisted">
+            {locale === "ar"
+              ? "لم يتم تحديد الماركة والموديل والسنوات لهذا المنتج بعد"
+              : "Make, model and years have not been specified for this product"}
+          </div>
         )}
 
         <p className="small muted">
@@ -217,6 +216,7 @@ export async function ProductCard({
           {p.sale !== null && <del>{money(p.price, locale)}</del>}
         </div>
         <PurchaseButtons
+          compact
           product={{ id: p.id, name: p.name, orderable: p.orderable }}
           locale={locale}
           vehicle={

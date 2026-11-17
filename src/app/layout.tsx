@@ -6,6 +6,7 @@ import { catalog, vehicleCatalog } from "@/lib/db";
 import { storefrontSettings } from "@/lib/db";
 import "./globals.css";
 import "@/components/mopc-premium-v2.css";
+import "@/components/mopc-showroom.css";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 export async function generateMetadata(): Promise<Metadata> {
@@ -27,7 +28,9 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description: copy.description,
       locale: locale === "ar" ? "ar_EG" : "en_EG",
-      images: [{ url: "/images/mopc/logo.png", alt: "MOPC — قطع غيار السيارات" }],
+      images: [
+        { url: "/images/mopc/logo.png", alt: "MOPC — قطع غيار السيارات" },
+      ],
     },
     twitter: {
       card: "summary",
