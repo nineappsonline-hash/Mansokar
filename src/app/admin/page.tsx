@@ -665,7 +665,7 @@ export default async function Admin({
     // Only allow ordinary search characters in the PostgREST OR expression.
     // Reject filter syntax rather than interpolate user-supplied operators.
     const { term: orderSearch, valid: safeOrderSearch } = orderSearchTerm(q);
-    let orderQuery = db.from("orders").select("id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(snapshot,quantity)", { count: id ? undefined : "exact" });
+    let orderQuery = db.from("orders").select("id,order_number,customer,status,payment_status,payment_method,total,subtotal,discount,shipping_amount,shipping,carrier,tracking_number,staff_notes,demo,created_at,order_items(product_id,vehicle_config_id,snapshot,quantity)", { count: id ? undefined : "exact" });
     if (!id && status && allowedOrderStatuses.includes(status)) orderQuery = orderQuery.eq("status", status);
     if (!id && orderSearch && safeOrderSearch) {
       const term = orderSearch.replaceAll("%", "").replaceAll("_", "");
@@ -683,6 +683,26 @@ export default async function Admin({
           .range(id ? 0 : (orderPage - 1) * orderPageSize, id ? 0 : orderPage * orderPageSize - 1);
     if (error) throw error;
     const orderIds = data?.map((o) => o.id) ?? [];
+    // Resolve current product photos and the exact vehicle selected at checkout.
+    const orderItems = (data ?? []).flatMap((order) => order.order_items ?? []);
+    const productIds = [...new Set(orderItems.map((item) => item.product_id).filter((value): value is string => typeof value === "string" && !!value))];
+    const vehicleIds = [...new Set(orderItems.map((item) => item.vehicle_config_id).filter((value): value is string => typeof value === "string" && !!value))];
+    const [{ data: orderPhotos, error: orderPhotosError }, { data: orderVehicles, error: orderVehiclesError }] = await Promise.all([
+      productIds.length ? db.from("product_images").select("id,product_id,path,position").in("product_id", productIds).order("position") : Promise.resolve({ data: [], error: null }),
+      vehicleIds.length ? db.from("vehicle_configs").select("id,year,vehicle_models(name,brand,vehicle_brands(name))").in("id", vehicleIds) : Promise.resolve({ data: [], error: null }),
+    ]);
+    if (orderPhotosError) throw orderPhotosError;
+    if (orderVehiclesError) throw orderVehiclesError;
+    const orderPhotoMap = new Map<string, string>();
+    for (const photo of orderPhotos ?? []) {
+      if (!orderPhotoMap.has(photo.product_id)) orderPhotoMap.set(photo.product_id, isRemoteImageUrl(photo.path) ? photo.path : `/product-media/${photo.id}`);
+    }
+    const orderVehicleMap = new Map((orderVehicles ?? []).map((vehicle: any) => {
+      const model = Array.isArray(vehicle.vehicle_models) ? vehicle.vehicle_models[0] : vehicle.vehicle_models;
+      const brand = Array.isArray(model?.vehicle_brands) ? model.vehicle_brands[0] : model?.vehicle_brands;
+      const modelName = model?.name?.ar || model?.name?.en || model?.slug || "غير محدد";
+      return [vehicle.id, { brand: brand?.name || model?.brand || "غير محددة", model: modelName, year: vehicle.year }] as const;
+    }));
     const { data: transfers, error: transferError } = orderIds.length
       ? await db
           .from("manual_transfers")
@@ -772,15 +792,28 @@ export default async function Admin({
                   <h3>المنتجات المطلوبة</h3>
                   {o.order_items?.map((item: any, i: number) => (
                     <div className="admin-order-item" key={i}>
-                      <div><strong>{item.snapshot.name.ar || item.snapshot.name.en}</strong><small>{item.snapshot.sku}</small></div>
+                      <div className="admin-order-item-photo">
+                        {/* Use a CSS fallback so missing and broken URLs do not leave an empty cell. */}
+                        <span aria-hidden="true">📦</span>
+                        {item.product_id && orderPhotoMap.get(item.product_id) && <img src={orderPhotoMap.get(item.product_id)} alt={item.snapshot.name?.ar || item.snapshot.name?.en || "صورة المنتج"} loading="lazy" />}
+                      </div>
+                      <div className="admin-order-item-info">
+                        <strong>{item.snapshot.name?.ar || item.snapshot.name?.en || "منتج"}</strong>
+                        <small>{item.snapshot.sku}</small>
+                        {(() => {
+                          const vehicle = orderVehicleMap.get(item.vehicle_config_id);
+                          return vehicle ? <small className="admin-order-vehicle">ماركة: {vehicle.brand} · موديل: {vehicle.model} · سنة: {vehicle.year}</small> : <small className="admin-order-vehicle">بيانات العربية غير مسجلة للمنتج</small>;
+                        })()}
+                      </div>
                       <span>الكمية: {item.quantity}</span>
-                      <strong>{money(item.snapshot.price * item.quantity, "ar")}</strong>
+                      <strong>{money((item.snapshot.price ?? 0) * item.quantity, "ar")}</strong>
                     </div>
                   ))}
                 </section>
                 <section className="admin-order-detail-card">
                   <h3>الشحن والتوصيل</h3>
-                  <p>{o.shipping.governorate} / {o.shipping.name}</p>
+                  <p><strong>نوع الشحن:</strong> {o.shipping.service_type || o.shipping.name || "غير محدد"}</p>
+                  <p><strong>المنطقة:</strong> {o.shipping.governorate} / {o.shipping.name}</p>
                   <p><strong>تكلفة التوصيل:</strong> {money(o.shipping_amount, "ar")}</p>
                   <p><strong>شركة الشحن:</strong> {o.carrier || "لم تحدد بعد"}</p>
                   <p><strong>رقم التتبع:</strong> {o.tracking_number || "لم يحدد بعد"}</p>
