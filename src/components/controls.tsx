@@ -2,6 +2,7 @@
 import commerce from "./commerce.module.css";
 import { addCartItem } from "@/lib/cart";
 import { partArt } from "@/lib/visuals";
+import { groupVehicleYears } from "@/lib/vehicle-year-ranges";
 import { useEffect, useState, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import {
@@ -370,6 +371,7 @@ export function Cart({
           ) : (
             lines.map((line) => {
               const p = products.find((p) => p.id === line.id);
+              const applications = groupVehicleYears(compatibleVehicles[line.id] ?? []);
               return (
                 <article className="cart-row panel" key={line.id}>
                   <div className="cart-row-image">
@@ -416,11 +418,13 @@ export function Cart({
                             {line.make} {line.model} {line.year}
                           </span>
                         )}
-                        {(compatibleVehicles[line.id] ?? []).length > 0 ? (
+                        {applications.length > 0 ? (
                           <div className="cart-compatible-vehicles">
                             <strong>{locale === "ar" ? "السيارات المتوافقة" : "Compatible vehicles"}</strong>
-                            {(compatibleVehicles[line.id] ?? []).map((v, index) => (
-                              <span key={index}>{v.brand} · {v.model} · {v.year}</span>
+                            {applications.map((application) => (
+                              <span key={JSON.stringify([application.brand, application.model])}>
+                                {application.brand} · {application.model} · <bdi dir="ltr">{application.years}</bdi>
+                              </span>
                             ))}
                           </div>
                         ) : (

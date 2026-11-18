@@ -1,3 +1,4 @@
+import { formatYearRanges as yearRanges } from "./vehicle-year-ranges";
 import type { Locale, Product, Text } from "./catalog";
 import type { CarContext } from "./public-product";
 import { readApplications } from "./product-applications";
@@ -6,18 +7,6 @@ export type CardCarCatalog = {
   brands: { slug: string; name: string; ar: string }[];
   models: { id: string; brand: string; slug: string; name: Text }[];
 };
-
-function yearRanges(years: number[]) {
-  const sorted = [...new Set(years)].sort((a, b) => a - b);
-  const ranges: string[] = [];
-  for (let i = 0; i < sorted.length; i++) {
-    const first = sorted[i];
-    let last = first;
-    while (sorted[i + 1] === last + 1) last = sorted[++i];
-    ranges.push(first === last ? String(first) : `${first}–${last}`);
-  }
-  return ranges.join(", ");
-}
 
 export function productCardVehicles(
   product: Pick<Product, "specs">,
