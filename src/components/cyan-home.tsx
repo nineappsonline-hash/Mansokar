@@ -97,12 +97,12 @@ export async function CyanHome({
                   </>
                 )}
               </h1>
-              <p className="mopc-v2-hero-description">
-                {heroIntro?.trim() ||
-                  (ar
-                    ? "قطع غيار لعربيتك، بتفاصيل واضحة واختيار أسهل. ابحث برقم القطعة أو اختار عربيتك."
-                    : "Parts for your car, with clear details and a simpler choice. Search by part number or select your vehicle.")}
-              </p>
+              {!ar && (
+                <p className="mopc-v2-hero-description">
+                  {heroIntro?.trim() ||
+                    "Parts for your car, with clear details and a simpler choice. Search by part number or select your vehicle."}
+                </p>
+              )}
               <div className="cyan-hero-actions">
                 <a className="button cyan-hero-primary" href="#vehicle-finder">
                   {ar ? "اختار عربيتك" : "Find your car"} <CarFront size={20} />
