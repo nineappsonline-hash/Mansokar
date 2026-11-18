@@ -1,4 +1,3 @@
-import deliveryStyles from "@/components/shipping-estimate.module.css";
 import compactProduct from "@/components/product-page.module.css";
 import { productCardVehicles } from "@/lib/product-card-vehicles";
 import compatibilityStyles from "@/components/product-compatibility.module.css";
@@ -15,7 +14,6 @@ import { CarModelPage } from "@/components/car-model-page";
 import { CyanHome } from "@/components/cyan-home";
 import { Favorites } from "@/components/favorites";
 import { ProductText } from "@/components/product-text";
-import { productSpecifications } from "@/lib/product-specifications";
 import { SiteMap } from "@/components/site-map";
 import {
   publicProduct,
@@ -1310,9 +1308,7 @@ export default async function Page({ params, searchParams }: Props) {
         </div>
         <details className={compactProduct.disclosure}>
           <summary>
-            {locale === "ar"
-              ? "تفاصيل المنتج والمواصفات"
-              : "Product details & specifications"}
+            {locale === "ar" ? "تفاصيل المنتج" : "Product details"}
           </summary>
           <section className="product-story">
             <header className="product-story-heading">
@@ -1329,23 +1325,6 @@ export default async function Page({ params, searchParams }: Props) {
                 <p className="product-story-why">{p.editorial.why[locale]}</p>
               )}
             </header>
-            <div className="product-specs">
-              <h3 className="product-block-title">
-                {locale === "ar" ? "المواصفات" : "Specifications"}
-              </h3>
-              <div className="spec-grid">
-                {productSpecifications(p, locale).map(
-                  ({ key, label, value }) => (
-                    <div key={key}>
-                      <span className="muted small">{label}</span>
-                      <p>
-                        <bdi dir="auto">{value}</bdi>
-                      </p>
-                    </div>
-                  ),
-                )}
-              </div>
-            </div>
             <div className="product-faq">
               {policies.map((page) => (
                 <details className="accordion" key={page.slug}>
@@ -1366,51 +1345,7 @@ export default async function Page({ params, searchParams }: Props) {
               {p.warranty && (
                 <p className="product-warranty-note">{p.warranty[locale]}</p>
               )}
-              <div className={deliveryStyles.layout}>
-                <ShippingEstimate locale={locale} areas={areas} />
-                <section className={deliveryStyles.card}>
-                  <header className={deliveryStyles.header}>
-                    <span className={deliveryStyles.icon}>
-                      <ShieldCheck size={20} aria-hidden="true" />
-                    </span>
-                    <div>
-                      <h3>
-                        {locale === "ar"
-                          ? "الشحن والإرجاع والضمان"
-                          : "Shipping, returns & warranty"}
-                      </h3>
-                      <p>
-                        {locale === "ar"
-                          ? "منتجات أصلية وضمان موثوق"
-                          : "Genuine products and dependable warranty"}
-                      </p>
-                    </div>
-                  </header>
-                  <p className={deliveryStyles.policyText}>
-                    {locale === "ar"
-                      ? "جميع منتجاتنا أصلية وبضمان الوكيل أو المورد حسب المنتج. تتحدد رسوم التوصيل حسب المنطقة، وتطبق سياسة الإرجاع المنشورة."
-                      : "All products are genuine, with an agent or supplier warranty according to the product. Delivery fees vary by area, and our published returns policy applies."}
-                  </p>
-                  <nav
-                    className={deliveryStyles.links}
-                    aria-label={
-                      locale === "ar"
-                        ? "سياسات الشحن والاسترجاع والضمان"
-                        : "Shipping, returns and warranty policies"
-                    }
-                  >
-                    <Link href={`/${locale}/policies/returns`}>
-                      {locale === "ar" ? "سياسة الاسترجاع" : "Return policy"}
-                    </Link>
-                    <Link href={`/${locale}/policies/shipping`}>
-                      {locale === "ar" ? "سياسة الشحن" : "Shipping policy"}
-                    </Link>
-                    <Link href={`/${locale}/policies/warranty`}>
-                      {locale === "ar" ? "سياسة الضمان" : "Warranty policy"}
-                    </Link>
-                  </nav>
-                </section>
-              </div>
+              <ShippingEstimate locale={locale} areas={areas} />
             </div>
           </section>
         </details>

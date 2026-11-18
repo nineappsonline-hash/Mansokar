@@ -6,7 +6,7 @@ import {
 } from "@/lib/shipping";
 import { useState } from "react";
 import { money, type Locale } from "@/lib/catalog";
-import { Truck } from "lucide-react";
+import { Truck, MapPin, Clock3, Zap } from "lucide-react";
 import styles from "./shipping-estimate.module.css";
 
 export function ShippingEstimate({
@@ -18,7 +18,8 @@ export function ShippingEstimate({
 }) {
   const [governorate, setGovernorate] = useState("");
   const groups = shippingGovernorates(areas, locale);
-  const shown = groups.find((g) => g.value === governorate)?.areas ?? [];
+  const selected = groups.find((group) => group.value === governorate);
+  const shown = selected?.areas ?? [];
   const ar = locale === "ar";
   return (
     <section
@@ -27,36 +28,46 @@ export function ShippingEstimate({
     >
       <header className={styles.header}>
         <span className={styles.icon}>
-          <Truck size={20} aria-hidden="true" />
+          <Truck size={23} aria-hidden="true" />
         </span>
         <div>
-          <h3>{ar ? "تكلفة التوصيل" : "Delivery estimate"}</h3>
+          <h3>{ar ? "احسب تكلفة التوصيل" : "Your delivery options"}</h3>
           <p>
             {ar
-              ? "شوف طرق التوصيل المتاحة لمحافظتك"
-              : "Explore delivery options for your governorate"}
+              ? "اختار محافظتك لعرض الرسوم ومدة التوصيل المتاحة."
+              : "Choose your governorate to see available rates and delivery times."}
           </p>
         </div>
       </header>
       {groups.length > 0 ? (
-        <>
-          <label className={styles.field}>
-            <span>{ar ? "المحافظة" : "Governorate"}</span>
-            <select
-              value={governorate}
-              onChange={(e) => setGovernorate(e.target.value)}
-            >
-              <option value="">
-                {ar ? "اختار المحافظة" : "Select governorate"}
-              </option>
-              {groups.map((g) => (
-                <option value={g.value} key={g.value}>
-                  {g.label}
+        <div className={styles.body}>
+          <div className={styles.destination}>
+            <label className={styles.field}>
+              <span>
+                <MapPin size={14} aria-hidden="true" />
+                {ar ? "وجهة التوصيل" : "Delivery destination"}
+              </span>
+              <select
+                value={governorate}
+                onChange={(event) => setGovernorate(event.target.value)}
+              >
+                <option value="">
+                  {ar ? "اختار المحافظة" : "Select governorate"}
                 </option>
-              ))}
-            </select>
-          </label>
-          <div aria-live="polite">
+                {groups.map((group) => (
+                  <option value={group.value} key={group.value}>
+                    {group.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p className={styles.hint}>
+              {ar
+                ? "التكلفة تُضاف إلى إجمالي الطلب عند إتمام الشراء."
+                : "Delivery is added to your order total at checkout."}
+            </p>
+          </div>
+          <div className={styles.results} aria-live="polite" aria-atomic="true">
             {shown.length > 0 ? (
               <ul className={styles.rates}>
                 {[...shown]
@@ -65,35 +76,63 @@ export function ShippingEstimate({
                       Number(a.service_type === "express") -
                       Number(b.service_type === "express"),
                   )
-                  .map((area) => (
-                    <li key={area.id}>
-                      <div>
-                        <strong>
-                          {area.service_type === "express"
-                            ? ar
-                              ? "توصيل سريع"
-                              : "Express delivery"
-                            : ar
-                              ? "توصيل عادي"
-                              : "Normal delivery"}
-                        </strong>
-                        {shippingWindow(area, locale) && (
-                          <small>{shippingWindow(area, locale)}</small>
+                  .map((area) => {
+                    const express = area.service_type === "express";
+                    const deliveryWindow = shippingWindow(area, locale);
+                    return (
+                      <li key={area.id}>
+                        <div className={styles.service}>
+                          <span
+                            className={
+                              express ? styles.expressIcon : styles.methodIcon
+                            }
+                          >
+                            {express ? (
+                              <Zap size={16} aria-hidden="true" />
+                            ) : (
+                              <Truck size={17} aria-hidden="true" />
+                            )}
+                          </span>
+                          <strong>
+                            {express
+                              ? ar
+                                ? "توصيل سريع"
+                                : "Express delivery"
+                              : ar
+                                ? "توصيل عادي"
+                                : "Standard delivery"}
+                          </strong>
+                        </div>
+                        <bdi className={styles.amount}>
+                          {money(area.amount, locale)}
+                        </bdi>
+                        {deliveryWindow && (
+                          <small className={styles.window}>
+                            <Clock3 size={13} aria-hidden="true" />
+                            {deliveryWindow}
+                          </small>
                         )}
-                      </div>
-                      <bdi>{money(area.amount, locale)}</bdi>
-                    </li>
-                  ))}
+                      </li>
+                    );
+                  })}
               </ul>
             ) : (
-              <p className={styles.hint}>
-                {ar
-                  ? "اختار محافظتك علشان تشوف طرق التوصيل وتكلفتها."
-                  : "Choose your governorate to see delivery methods and their costs."}
-              </p>
+              <div className={styles.empty}>
+                <MapPin size={24} strokeWidth={1.5} aria-hidden="true" />
+                <div>
+                  <strong>
+                    {ar ? "التوصيل لحد عندك" : "Delivered to your door"}
+                  </strong>
+                  <p>
+                    {ar
+                      ? "طرق التوصيل وأسعارها هتظهر هنا بعد اختيار المحافظة."
+                      : "Available delivery methods and prices appear here once you select a governorate."}
+                  </p>
+                </div>
+              </div>
             )}
           </div>
-        </>
+        </div>
       ) : (
         <p className={styles.hint}>
           {ar

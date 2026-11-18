@@ -187,8 +187,8 @@ export function publicProduct(
         : automaticTitle;
       const automaticDescription =
         locale === "ar"
-          ? `${p.name.ar} من ماركة ${p.manufacturer} لعربيات ${vehicleText}. رقم القطعة ${p.partNumber}. قطعة غيار أصلية بضمان الوكيل أو المورد حسب المنتج، وتقدر تطلبها من موبِك في مصر.`
-          : `${p.name.en} by ${p.manufacturer} for ${vehicleText}. Part number ${p.partNumber}. Genuine spare parts with an agent or supplier warranty according to the product, available to order in Egypt.`;
+          ? `${p.name.ar} من ماركة ${p.manufacturer} لعربيات ${vehicleText}. رقم القطعة ${p.partNumber}. قطعة غيار أصلية متاحة للطلب من موبِك في مصر.`
+          : `${p.name.en} by ${p.manufacturer} for ${vehicleText}. Part number ${p.partNumber}. Genuine spare parts, available to order in Egypt.`;
       const manualDescription =
         p.seo?.manual && !context
           ? p.seo.description?.[locale]?.trim()
