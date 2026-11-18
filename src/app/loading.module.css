@@ -1,78 +1,236 @@
 .screen {
   min-height: 100svh;
+  position: relative;
+  isolation: isolate;
   display: grid;
   place-items: center;
-  padding: 40px 24px;
-  position: relative;
   overflow: hidden;
-  background: radial-gradient(
-    ellipse at 50% 35%,
-    #20323b 0,
-    #111e25 48%,
-    #0c151b 100%
-  );
-  color: #f1eee6;
+  padding: 88px 24px;
+  color: #f5f7fa;
+  background: #0a1829;
 }
 .screen::before {
   content: "";
   position: absolute;
-  inset: 24px;
-  border: 1px solid #d1ae731a;
-  border-radius: 3px;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    #1d354c 0%,
+    #0e2033 35%,
+    #0a1829 70%
+  );
+}
+.screen::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    linear-gradient(#b1c7db05 1px, transparent 1px),
+    linear-gradient(90deg, #b1c7db05 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse at center, #000, transparent 70%);
   pointer-events: none;
 }
+.ambient {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: min(720px, 110vw);
+  aspect-ratio: 1;
+  border: 1px solid #aac2d409;
+  border-radius: 50%;
+  transform: translate(-50%, -55%);
+}
+.ambient::before,
+.ambient::after {
+  content: "";
+  position: absolute;
+  inset: 45px;
+  border: 1px solid #aac2d407;
+  border-radius: 50%;
+}
+.ambient::after {
+  inset: 95px;
+}
+.cornerBrand {
+  position: absolute;
+  inset-inline-start: 36px;
+  top: 30px;
+  color: #d3deea;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 750;
+  font-style: italic;
+  letter-spacing: 0.12em;
+}
+.cornerBrand span {
+  margin-inline-start: 8px;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: #8b9eb1;
+}
 .panel {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
-  width: min(100%, 440px);
   text-align: center;
-  padding: 48px 20px;
+  width: min(100%, 560px);
+}
+.instrument {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 268px;
+  height: 268px;
+  margin-bottom: 36px;
+}
+.dial {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #a8c2d529;
+  border-radius: 50%;
+}
+.dial::before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px dashed #a8c2d52b;
+  border-radius: 50%;
+}
+.dial::after {
+  content: "";
+  position: absolute;
+  inset: 24px;
+  border: 1px solid #a8c2d515;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff04, transparent 75%);
+}
+.orbit {
+  position: absolute;
+  inset: -12px;
+  border: 1px solid #a8c2d510;
+  border-radius: 50%;
+}
+.arc {
+  position: absolute;
+  inset: -1px;
+  border: 2px solid transparent;
+  border-top-color: #f18b5b;
+  border-inline-end-color: #ef642b35;
+  border-radius: 50%;
+  animation: rotate 4s linear infinite;
+}
+.marker {
+  position: absolute;
+  top: -3px;
+  left: calc(50% - 3px);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f18b5b;
+  box-shadow:
+    0 0 0 5px #ef642b10,
+    0 0 16px #ef642b45;
+}
+.crosshair {
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  background:
+    linear-gradient(#8ca4ba, #8ca4ba) center top / 1px 8px no-repeat,
+    linear-gradient(#8ca4ba, #8ca4ba) center bottom / 1px 8px no-repeat,
+    linear-gradient(#8ca4ba, #8ca4ba) left center / 8px 1px no-repeat,
+    linear-gradient(#8ca4ba, #8ca4ba) right center / 8px 1px no-repeat;
+  opacity: 0.5;
+}
+.brand {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 .logo {
-  width: clamp(220px, 55vw, 300px);
-  height: 100px;
+  width: 170px;
+  height: 58px;
 }
 .name {
-  font-family: var(--font-arabic);
-  font-size: 38px;
+  font-family: var(--font-arabic), sans-serif;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.eyebrow {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 8px;
+  font-family: Arial, sans-serif;
+  letter-spacing: 0.25em;
+  font-weight: 500;
+  color: #ecac8c;
+}
+.copy h1 {
+  margin: 0;
+  color: #f5f7fa;
+  font-size: clamp(23px, 3vw, 30px);
+  font-weight: 600;
   line-height: 1.6;
-  font-weight: 900;
-  margin-top: 8px;
-}
-.indicator {
-  width: 112px;
-  height: 2px;
-  margin: 32px 0 28px;
-  background: #d1ae732b;
-  position: relative;
-  overflow: hidden;
-  border-radius: 2px;
-}
-.indicator span {
-  position: absolute;
-  width: 45%;
-  height: 100%;
-  background: linear-gradient(90deg, #d1ae7300, #d1ae73, #ff4a18);
-  animation: travel 1.6s ease-in-out infinite;
+  text-wrap: balance;
 }
 .copy p {
-  margin: 0 0 8px;
-  font-size: 20px;
-  font-weight: 500;
-}
-.detail {
-  color: #9faeb4;
+  margin: 8px 0 0;
+  color: #aabacb;
   font-size: 14px;
   line-height: 1.8;
 }
-.signature {
+.indicator {
+  position: relative;
+  overflow: hidden;
+  width: 80px;
+  height: 2px;
+  margin-top: 26px;
+  border-radius: 4px;
+  background: #a8c2d523;
+  direction: ltr;
+}
+.indicator > span {
+  display: block;
+  width: 36px;
+  height: 100%;
+  border-radius: inherit;
+  background: #ef9369;
+  animation: travel 2s ease-in-out infinite;
+}
+.footer {
   position: absolute;
-  bottom: 40px;
+  bottom: 30px;
+  inset-inline: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
   font-size: 10px;
-  letter-spacing: 0.35em;
-  color: #91a2aa70;
+  line-height: 1.8;
+  color: #8fa4b9;
+  text-align: center;
+}
+.footer .en {
+  font-family: Arial, sans-serif;
+  font-size: 8px;
+  letter-spacing: 0.15em;
+}
+.footerLine {
+  width: 32px;
+  height: 1px;
+  flex-shrink: 0;
+  background: #a8c2d526;
 }
 .ar {
   display: block;
@@ -86,29 +244,75 @@
 :global(html[lang|="en"]) .en {
   display: block;
 }
-@keyframes travel {
-  0% {
-    transform: translateX(-110%);
-  }
-  100% {
-    transform: translateX(330%);
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
   }
 }
-@media (prefers-reduced-motion: reduce) {
-  .indicator span {
-    animation: none;
-    width: 40%;
-    left: 30%;
+@keyframes travel {
+  0% {
+    transform: translateX(-36px);
+  }
+  100% {
+    transform: translateX(80px);
   }
 }
 @media (max-width: 480px) {
-  .screen::before {
-    inset: 14px;
+  .cornerBrand {
+    top: 24px;
+    inset-inline-start: 24px;
+  }
+  .instrument {
+    width: 226px;
+    height: 226px;
+    margin-bottom: 32px;
+  }
+  .logo {
+    width: 148px;
+    height: 50px;
   }
   .name {
-    font-size: 32px;
+    font-size: 22px;
   }
-  .signature {
-    bottom: 28px;
+  .copy h1 {
+    font-size: 24px;
+  }
+  .footer {
+    bottom: 24px;
+  }
+}
+@media (max-height: 600px) {
+  .screen {
+    padding-block: 68px;
+  }
+  .instrument {
+    width: 170px;
+    height: 170px;
+    margin-bottom: 24px;
+  }
+  .logo {
+    width: 120px;
+    height: 42px;
+  }
+  .name {
+    font-size: 19px;
+  }
+  .copy h1 {
+    font-size: 21px;
+  }
+  .eyebrow {
+    margin-bottom: 6px;
+  }
+  .indicator {
+    margin-top: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arc,
+  .indicator > span {
+    animation: none;
+  }
+  .indicator > span {
+    margin-left: 22px;
   }
 }
