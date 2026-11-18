@@ -47,7 +47,7 @@
   width: 44px;
   height: 3px;
   border-radius: 4px;
-  background: #52b9e3;
+  background: #75bfd9;
 }
 .benefitGrid {
   display: grid;
@@ -126,9 +126,9 @@
   left: 11px;
   width: 6px;
   height: 6px;
-  background: #52b9e3;
+  background: #75bfd9;
   border-radius: 50%;
-  box-shadow: 0 0 0 4px #52b9e312;
+  box-shadow: 0 0 0 4px #75bfd912;
   animation: satellite-arrive 4s both;
 }
 .iconDetail {
@@ -155,7 +155,7 @@
   color: #216383;
   background: linear-gradient(135deg, #f0faff, #b9e5f5);
   box-shadow:
-    3px 6px 0 #52b9e3,
+    3px 6px 0 #75bfd9,
     5px 12px 16px #0b1c3015;
 }
 .payment .iconPlate {
@@ -212,7 +212,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #72cef2;
+  color: #91d0e6;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.09em;
@@ -221,7 +221,7 @@
   content: "";
   width: 22px;
   height: 1px;
-  background: #72cef2;
+  background: #91d0e6;
 }
 :global(.mopc-cyan.mopc-cyan.mopc-cyan) .payments .paymentCopy h2 {
   margin: 16px 0 14px;
@@ -249,24 +249,24 @@
   gap: 20px;
   padding: 12px 20px;
   min-height: 46px;
-  border: 1px solid #45abd5;
+  border: 1px solid #75b8d1;
   border-radius: 7px;
-  background: var(--mopc-blue-gloss);
+  background: var(--mopc-blue-satin);
   color: #0b1c30;
   font-size: 13px;
   font-weight: 650;
-  box-shadow: var(--mopc-blue-shadow);
+  box-shadow: var(--mopc-blue-depth);
   transition:
     background 0.2s ease,
     border-color 0.2s ease;
 }
 .paymentLink:hover {
-  background: var(--mopc-blue-gloss-hover);
-  border-color: #299bc9;
+  background: var(--mopc-blue-satin-hover);
+  border-color: #56a7c7;
   color: #0b1c30;
 }
 .paymentLink:focus-visible {
-  outline: 2px solid #72cef2;
+  outline: 2px solid #91d0e6;
   outline-offset: 4px;
 }
 .paymentArt {
@@ -382,7 +382,7 @@
   font-family: Georgia, serif;
   font-size: 19px;
   font-style: italic;
-  color: #72cef2;
+  color: #91d0e6;
 }
 .paymentOptions {
   position: absolute;
@@ -409,7 +409,7 @@
   background: #ffffff20;
 }
 .paymentOptions svg {
-  color: #72cef2;
+  color: #91d0e6;
 }
 @keyframes icon-arrive {
   0% {

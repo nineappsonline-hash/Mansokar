@@ -322,7 +322,7 @@
   content: "−";
 }
 .disclosure > summary:focus-visible {
-  outline: 2px solid #72cef2;
+  outline: 2px solid #91d0e6;
   outline-offset: -4px;
 }
 .page.page :global(.product-story) {
@@ -471,10 +471,10 @@
     margin-top: 0;
   }
   .page.page :global(.mobile-buy-bar .button) {
-    background: var(--mopc-blue-gloss);
+    background: var(--mopc-blue-satin);
     color: #0b1c30;
-    border-color: #45abd5;
-    box-shadow: var(--mopc-blue-shadow);
+    border-color: #75b8d1;
+    box-shadow: var(--mopc-blue-depth);
     border-radius: 7px;
     font-size: 13px;
     min-height: 42px;

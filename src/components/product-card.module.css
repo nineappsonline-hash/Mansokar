@@ -9,10 +9,10 @@
   min-width: 0;
   height: 100%;
   overflow: hidden;
-  border: 1px solid #dce3e9;
-  border-radius: 12px;
+  border: 1px solid #d7e1e9;
+  border-radius: 10px;
   background: #fff;
-  box-shadow: 0 2px 6px #10243804;
+  box-shadow: 0 5px 18px #10243809;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -30,10 +30,10 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 164px;
+  height: 156px;
   min-height: 0;
   margin: 0;
-  padding: 12px 24px;
+  padding: 8px 14px;
   border: 0;
   border-radius: 0;
   background: #fff;
@@ -48,7 +48,7 @@
   object-fit: contain;
   object-position: center;
   padding: 0;
-  transform: none;
+  transform: scale(1.18);
   filter: none;
 }
 :global(.mopc-cyan.mopc-cyan.mopc-cyan) .card :global(.favorite-toggle) {
@@ -72,9 +72,9 @@
   grid-area: details;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
-  padding: 8px 16px 14px;
+  padding: 4px 16px 12px;
 }
 .identity {
   display: flex;
@@ -211,9 +211,9 @@
   grid-area: footer;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 8px;
+  gap: 7px;
   margin: 0 16px;
-  padding: 12px 0;
+  padding: 10px 0;
   border-top: 1px solid #e7ecf0;
 }
 .price {
@@ -263,7 +263,7 @@
   height: auto;
   margin: 0;
   padding: 9px 12px;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 11px;
   line-height: 1.5;
   white-space: normal;
@@ -312,7 +312,7 @@
     height: 100%;
     min-height: 138px;
     max-height: 190px;
-    padding: 24px 8px 10px;
+    padding: 14px 8px 8px;
   }
   .details {
     padding: 14px 12px 12px;

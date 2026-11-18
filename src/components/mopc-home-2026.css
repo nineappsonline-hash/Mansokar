@@ -3,7 +3,7 @@
   --mopc-ink: #18232b;
   --mopc-navy: #101d29;
   --mopc-hero: #142838;
-  --mopc-lime: #72cef2;
+  --mopc-lime: #91d0e6;
   --mopc-canvas: #f5f7f8;
   --mopc-soft: #e9f0f0;
   background: var(--mopc-canvas);
@@ -23,7 +23,7 @@
   border: 0; border-radius: 12px; font-weight: 800;
 }
 .cyan-home .cyan-hero-primary:hover, .cyan-home .cyan-button:hover {
-  background: #bcecff; color: var(--mopc-ink);
+  background: #cfeaf3; color: var(--mopc-ink);
 }
 .cyan-home .cyan-hero-secondary { color: #fff; }
 .cyan-home .cyan-finder-region {

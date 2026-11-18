@@ -7,27 +7,27 @@
   min-height: 54px;
   margin: 8px 0 14px;
   padding: 10px 16px;
-  border: 1px solid #45abd5;
+  border: 1px solid #75b8d1;
   border-radius: 9px;
-  background: var(--mopc-blue-gloss);
+  background: var(--mopc-blue-satin);
   color: #0b1c30;
   text-decoration: none;
   font-size: 14px;
   font-weight: 750;
   line-height: 1.6;
-  box-shadow: var(--mopc-blue-shadow);
+  box-shadow: var(--mopc-blue-depth);
   transition:
     background-color 0.18s ease,
     border-color 0.18s ease;
 }
 :global(.mopc-cyan.mopc-cyan) .link:hover {
   color: #0b1c30;
-  background: var(--mopc-blue-gloss-hover);
-  border-color: #299bc9;
+  background: var(--mopc-blue-satin-hover);
+  border-color: #56a7c7;
   text-decoration: none;
 }
 :global(.mopc-cyan.mopc-cyan) .link:focus-visible {
-  outline: 3px solid #72cef2;
+  outline: 3px solid #91d0e6;
   outline-offset: 4px;
 }
 .icon {
