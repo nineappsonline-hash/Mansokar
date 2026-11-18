@@ -7,27 +7,27 @@
   min-height: 54px;
   margin: 8px 0 14px;
   padding: 10px 16px;
-  border: 1px solid #a73910;
+  border: 1px solid #7bbdd8;
   border-radius: 9px;
-  background: #b53d10;
-  color: #fff;
+  background: #a8dff2;
+  color: #0b1c30;
   text-decoration: none;
   font-size: 14px;
   font-weight: 750;
   line-height: 1.6;
-  box-shadow: 0 3px 8px #60210c16;
+  box-shadow: 0 3px 8px #204b6316;
   transition:
     background-color 0.18s ease,
     border-color 0.18s ease;
 }
 :global(.mopc-cyan.mopc-cyan) .link:hover {
-  color: #fff;
-  background: #96320d;
-  border-color: #96320d;
+  color: #0b1c30;
+  background: #8bcde5;
+  border-color: #8bcde5;
   text-decoration: none;
 }
 :global(.mopc-cyan.mopc-cyan) .link:focus-visible {
-  outline: 3px solid #b53d10;
+  outline: 3px solid #a8dff2;
   outline-offset: 4px;
 }
 .icon {
@@ -36,8 +36,8 @@
   width: 32px;
   height: 32px;
   border-radius: 7px;
-  background: #ffffff18;
-  border: 1px solid #ffffff30;
+  background: #0b1c3010;
+  border: 1px solid #0b1c3030;
 }
 .arrow {
   justify-self: end;

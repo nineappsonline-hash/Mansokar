@@ -1,15 +1,15 @@
 /* Customer storefront refinement. Admin tools retain their existing styles. */
 .mopc-cyan.mopc-cyan.mopc-cyan {
-  --mopc-v2-lime: #ef642b;
+  --mopc-v2-lime: #a8dff2;
   --mopc-v2-canvas: #f6f7f9;
   --mopc-v2-border: #e1e6eb;
   --mopc-v2-muted: #596b7d;
-  --amber: #ef642b;
-  --mopc-showroom-accent: #b53d10;
+  --amber: #a8dff2;
+  --mopc-showroom-accent: #a8dff2;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan
   :is(button, a, input, select, textarea):focus-visible {
-  outline-color: #ef642b;
+  outline-color: #a8dff2;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .product-grid:has(> .premium-product-card) {
   display: grid;
@@ -24,14 +24,14 @@
   color: #0b1c30;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan :is(.purchase-add, .showroom-request-button) {
-  background: #b53d10 !important;
-  border-color: #b53d10 !important;
-  color: #fff !important;
+  background: #a8dff2 !important;
+  border-color: #a8dff2 !important;
+  color: #0b1c30 !important;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan
   :is(.purchase-add, .showroom-request-button):hover {
-  background: #95320d !important;
-  border-color: #95320d !important;
+  background: #8bcde5 !important;
+  border-color: #8bcde5 !important;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .purchase-buy {
   background: #fff;
@@ -50,16 +50,16 @@
   display: block;
   width: 44px;
   height: 3px;
-  background: #ef642b;
+  background: #a8dff2;
   margin-top: 24px;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-hero-primary {
-  background: #b53d10;
-  border-color: #b53d10;
-  color: #fff;
+  background: #a8dff2;
+  border-color: #a8dff2;
+  color: #0b1c30;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-hero-primary:hover {
-  background: #95320d;
+  background: #8bcde5;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-finder-region {
   border-radius: 14px;
@@ -203,7 +203,7 @@
   font-size: 15px;
 }
 .mopc-cyan .showroom-eyebrow {
-  color: #ffad88;
+  color: #a8dff2;
   font-size: 12px;
 }
 .mopc-cyan .showroom-request-art {
@@ -214,7 +214,7 @@
   height: 110px;
   border: 1px solid #ffffff25;
   border-radius: 50%;
-  color: #ffad88;
+  color: #a8dff2;
 }
 .mopc-cyan .showroom-request-button {
   margin-inline-start: auto;
@@ -318,30 +318,30 @@
   .cyan-home
   .cyan-hero-actions
   .cyan-hero-primary {
-  background: #b53d10;
-  border-color: #b53d10;
-  color: #fff;
+  background: #a8dff2;
+  border-color: #a8dff2;
+  color: #0b1c30;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan
   .cyan-home
   .cyan-hero-actions
   .cyan-hero-primary:hover {
-  background: #95320d;
+  background: #8bcde5;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan
   .product-detail
   .product-actions
   .button.product-add-to-cart {
-  background: #b53d10;
-  border-color: #b53d10;
-  color: #fff;
+  background: #a8dff2;
+  border-color: #a8dff2;
+  color: #0b1c30;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan
   .product-detail
   .product-actions
   .button.product-add-to-cart:hover {
-  background: #95320d;
-  border-color: #95320d;
+  background: #8bcde5;
+  border-color: #8bcde5;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan
   .product-detail

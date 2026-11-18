@@ -169,15 +169,15 @@
 
 
 /* MOPC 2026 / approved Figma visual direction */
-.page { --model-accent: #8cae42; --model-accent-dark: #63832d; background: #f5f7f8; }
+.page { --model-accent: #78c7e5; --model-accent-dark: #216383; background: #f5f7f8; }
 .hero { background: #142838; }
 .hero::before { background: #142838; mix-blend-mode: normal; opacity: .76; }
 .hero::after { background: linear-gradient(90deg, #101d297a, #14283878); }
 .heroInner { min-height: 315px; }
-.emblem { border-inline-end-color: #c9e86d88; }
+.emblem { border-inline-end-color: #a8dff288; }
 .breadcrumb { color: #d4e1e2; }
-.breadcrumb a:hover { color: #c9e86d; }
+.breadcrumb a:hover { color: #a8dff2; }
 .page .hero p { color: #d4e1e2; }
-.aftermarket { color: #c9e86d; }
+.aftermarket { color: #a8dff2; }
 .content { padding-block: 46px 80px; }
 @media(max-width:760px){ .heroInner{min-height:260px;} .content{padding-block:28px 48px;} }

@@ -946,7 +946,7 @@
   border-radius: 8px;
 }
 .store :global(.fit-card.confirmed) {
-  background: #eaf4ed;
+  background: #eaf6fb;
   border-color: #bfdbca;
   color: #367050;
 }
@@ -1430,10 +1430,10 @@
   gap: 6px;
   margin: 20px 0 0;
   padding: 16px 18px;
-  border: 1px solid #d5ddc9;
+  border: 1px solid #d2e6ef;
   border-radius: 12px;
-  background: linear-gradient(120deg, #f1f5ec, #fafbf6);
-  color: #3f5a45;
+  background: linear-gradient(120deg, #eff8fc, #f8fcfe);
+  color: #284b60;
 }
 .store :global(.fit-card::before) {
   display: none;
@@ -1443,24 +1443,24 @@
   gap: 8px;
   font-size: 10px;
   letter-spacing: 0.16em;
-  color: #5c7a52;
+  color: #216383;
 }
 .store :global(.fit-card .status-dot) {
   width: 6px;
   height: 6px;
-  background: #3e8f5e;
-  box-shadow: 0 0 0 3px #3e8f5e1f;
+  background: #78c7e5;
+  box-shadow: 0 0 0 3px #78c7e51f;
 }
 .store :global(.fit-card p) {
   margin: 0;
   font-size: 15.5px;
   font-weight: 600;
   line-height: 1.6;
-  color: #26402c;
+  color: #173b53;
 }
 .store :global(.fit-card.confirmed) {
-  border-color: #c3d9c8;
-  background: linear-gradient(120deg, #eaf4ed, #f7fbf8);
+  border-color: #b9dcea;
+  background: linear-gradient(120deg, #eaf6fb, #f7fcfe);
 }
 .store :global(.purchase-actions) {
   margin-top: 22px;
