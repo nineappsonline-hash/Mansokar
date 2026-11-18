@@ -503,8 +503,8 @@
   line-height: 1.45;
 }
 :global(.mopc-cyan.mopc-cyan) .page.page :global(.product-art.large) {
-  height: 290px;
-  padding: 12px;
+  height: 380px;
+  padding: 0;
 }
 :global(.mopc-cyan.mopc-cyan) .page.page :global(.purchase-panel .fit-card) {
   margin: 10px 0;
@@ -552,8 +552,8 @@
     padding: 16px;
   }
   :global(.mopc-cyan.mopc-cyan) .page.page :global(.product-art.large) {
-    height: 185px;
-    padding: 8px;
+    height: clamp(240px, 72vw, 290px);
+    padding: 0;
   }
   .page.page :global(.product-media-column) {
     gap: 0;
@@ -597,7 +597,7 @@
 }
 @media (max-width: 760px) {
   :global(.mopc-cyan.mopc-cyan) .page.page :global(.product-art.large) {
-    height: 160px;
+    height: clamp(240px, 72vw, 290px);
   }
   .page.page :global(.product-media-column) {
     align-self: start;
