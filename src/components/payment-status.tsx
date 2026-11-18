@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { InstaPayButton } from "./instapay-button";
 import type { Locale } from "@/lib/catalog";
 import { statusLabel } from "@/lib/i18n";
 import {
-  INSTAPAY_URL,
   WALLET_NUMBER,
   isManualPayment,
   paymentMethodLabel,
@@ -90,9 +90,7 @@ export function PaymentStatus({
                 : "Your order and transfer receipt were received. Payment will be reviewed within 24 hours."}
             </p>
             {method === "instapay" ? (
-              <a href={INSTAPAY_URL} target="_blank" rel="noreferrer">
-                {ar ? "تحويل عبر إنستاباي" : "Pay with InstaPay"}
-              </a>
+              <InstaPayButton locale={locale} />
             ) : (
               <p>
                 {ar ? "رقم المحفظة" : "Wallet number"}:{" "}

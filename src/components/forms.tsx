@@ -1,5 +1,6 @@
 "use client";
 import commerce from "./commerce.module.css";
+import { InstaPayButton } from "./instapay-button";
 import {
   shippingGovernorates,
   shippingWindow,
@@ -12,7 +13,6 @@ import { money } from "@/lib/catalog";
 import { t } from "@/lib/i18n";
 import {
   InstallmentProviders,
-  INSTAPAY_URL,
   WALLET_NUMBER,
   isManualPayment,
   type PaymentMethod,
@@ -998,17 +998,7 @@ export function Checkout({
                       </label>
                       {method === "instapay" && (
                         <div className="payment-method-details">
-                          <a
-                            className="payment-link"
-                            href={INSTAPAY_URL}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {locale === "ar"
-                              ? "فتح رابط إنستاباي"
-                              : "Open InstaPay link"}
-                            <ArrowRight size={14} strokeWidth={2} />
-                          </a>
+                          <InstaPayButton locale={locale} />
                           <label className="checkout-file">
                             <span className="checkout-file-icon">
                               <Upload size={16} strokeWidth={1.9} />
