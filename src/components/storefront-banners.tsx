@@ -140,46 +140,41 @@ export function PaymentBanner({ locale }: { locale: Locale }) {
       labelledBy="payment-heading"
     >
       <div className={styles.paymentCopy}>
-        <span className={styles.eyebrow}>
-          {ar ? "مرونة في كل اختيار" : "MORE WAYS. MORE FLEXIBILITY."}
+        <span className={styles.paymentEyebrow}>
+          {ar ? "الدفع والتقسيط" : "PAYMENT & INSTALLMENTS"}
         </span>
         <h2 id="payment-heading">
           {ar ? (
             <>
-              قطعتك الصح.
+              خيارات دفع مرنة.
               <br />
-              <span>وطريقة الدفع اللي تناسبك.</span>
+              <span>تجربة شراء أسهل.</span>
             </>
           ) : (
             <>
-              The right part.
+              Flexible ways to pay.
               <br />
-              <span>The way you want to pay.</span>
+              <span>A simpler way to shop.</span>
             </>
           )}
         </h2>
         <p>
           {ar
-            ? "اكتشف طرق الدفع والتقسيط المتاحة، واختار اللي يناسبك قبل ما تطلب."
-            : "Explore available payment and installment options, and choose what suits you before you order."}
+            ? "تعرّف على خيارات الدفع والتقسيط المتاحة، واختار الأنسب لك قبل إتمام طلبك."
+            : "Discover available payment and installment options, and choose what works for you before checkout."}
         </p>
         <Link href={`/${locale}/installments`} className={styles.paymentLink}>
-          {ar ? "اكتشف طرق الدفع" : "Explore payment options"}
-          <ArrowUpRight size={19} aria-hidden="true" />
+          {ar ? "استعرض خيارات الدفع" : "View payment options"}
+          <ArrowUpRight size={18} aria-hidden="true" />
         </Link>
       </div>
       <div className={styles.paymentArt} aria-hidden="true">
-        <div className={styles.artHalo} />
         <div className={styles.artOrbit} />
-        <div className={styles.backCard}>
-          <span />
-          <span />
-          <span />
-        </div>
+        <div className={styles.backCard} />
         <div className={styles.bankCard}>
           <div className={styles.cardTop}>
             <b>MOPC</b>
-            <Wifi size={25} />
+            <Wifi size={23} />
           </div>
           <div className={styles.chip}>
             <i />
@@ -187,33 +182,24 @@ export function PaymentBanner({ locale }: { locale: Locale }) {
             <i />
           </div>
           <div className={styles.cardDigits}>
-            •••• &nbsp; •••• &nbsp; •••• &nbsp; 2026
+            •••• &nbsp; •••• &nbsp; •••• &nbsp; ••••
           </div>
           <div className={styles.cardBottom}>
-            <span>YOUR CAR. YOUR WAY.</span>
-            <div className={styles.cardCircles}>
-              <i />
-              <i />
-            </div>
+            <span>PAYMENT, YOUR WAY.</span>
+            <span className={styles.cardMonogram}>M</span>
           </div>
         </div>
-        <div className={styles.coinOne}>
-          <span>ج.م</span>
-        </div>
-        <div className={styles.coinTwo}>
-          <span>ج.م</span>
-        </div>
-        <div className={styles.installmentTag}>
-          <span className={styles.tagIcon}>
-            <CalendarDays size={23} />
+        <div className={styles.paymentOptions}>
+          <span>
+            <CreditCard size={16} />
+            {ar ? "كروت بنكية" : "Bank cards"}
           </span>
-          <div>
-            <b>{ar ? "اختيارات أكتر" : "More choice"}</b>
-            <span>{ar ? "دفع وتقسيط" : "Pay & installments"}</span>
-          </div>
+          <i />
+          <span>
+            <CalendarDays size={16} />
+            {ar ? "خيارات تقسيط" : "Installment options"}
+          </span>
         </div>
-        <span className={styles.sparkOne}>+</span>
-        <span className={styles.sparkTwo}>+</span>
       </div>
     </BannerMotion>
   );
