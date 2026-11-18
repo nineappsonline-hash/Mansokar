@@ -284,3 +284,10 @@
     border-radius: 18px 18px 0 0;
   }
 }
+
+/* Keep support clear of the product page's mobile purchase bar. */
+@media (max-width: 760px) {
+  :global(body:has(.product-detail)) .launcherWrap {
+    bottom: calc(90px + env(safe-area-inset-bottom));
+  }
+}

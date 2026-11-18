@@ -1153,10 +1153,44 @@ export default async function Page({ params, searchParams }: Props) {
           ]}
         />
         <div className="product-layout">
+          <div className="purchase-heading">
+            <span className="eyebrow">
+              {categories.find((category) => category.slug === p.category)
+                ?.name[locale] ??
+                (locale === "ar" ? "قطع غيار السيارات" : "Automotive parts")}
+            </span>
+            <h1>{p.name[locale]}</h1>
+            <div className="badges">
+              <div className={compactProduct.brandPart}>
+                <span className={compactProduct.brandLabel} dir="auto">
+                  {p.manufacturer}
+                </span>
+                <div className={compactProduct.partNumber}>
+                  <span>{locale === "ar" ? "رقم القطعة" : "Part no."}</span>
+                  <CopyPart value={p.partNumber} locale={locale} />
+                </div>
+              </div>
+              {p.type === "oem" && <OriginalBadge locale={locale} />}
+              {p.type !== "oem" && (
+                <span className="badge after-market">
+                  {locale === "ar" ? "بديل" : "After Market"}
+                </span>
+              )}
+              {p.demo && (
+                <span className="badge demo-badge">{w.demoProduct}</span>
+              )}
+            </div>
+          </div>
           <div
             className={`product-page-animate product-media-column ${compatibilityStyles.media}`}
           >
             <div className="product-gallery">
+              <div className={compactProduct.galleryHeading}>
+                <span>
+                  {locale === "ar" ? "صورة القطعة" : "PRODUCT GALLERY"}
+                </span>
+                <span dir="auto">{p.manufacturer}</span>
+              </div>
               <Gallery
                 locale={locale}
                 media={media}
@@ -1175,36 +1209,32 @@ export default async function Page({ params, searchParams }: Props) {
                 </p>
               )}
             </div>
+            <dl className={compactProduct.quickFacts}>
+              <div>
+                <dt>{locale === "ar" ? "رقم القطعة" : "Part number"}</dt>
+                <dd>
+                  <bdi dir="ltr">{p.partNumber}</bdi>
+                </dd>
+              </div>
+              <div>
+                <dt>{locale === "ar" ? "الشركة المصنعة" : "Manufacturer"}</dt>
+                <dd dir="auto">{p.manufacturer}</dd>
+              </div>
+              <div>
+                <dt>{locale === "ar" ? "نوع القطعة" : "Part type"}</dt>
+                <dd>
+                  {p.type === "oem"
+                    ? locale === "ar"
+                      ? "أصلي"
+                      : "Original"
+                    : locale === "ar"
+                      ? "بديل"
+                      : "Aftermarket"}
+                </dd>
+              </div>
+            </dl>
           </div>
           <aside className="purchase-panel product-page-animate slide">
-            <div className="purchase-heading">
-              <span className="eyebrow">
-                {locale === "ar"
-                  ? "قطع غيار أصلية بضمان"
-                  : "Genuine spare parts with warranty"}
-              </span>
-              <h1>{p.name[locale]}</h1>
-              <div className="badges">
-                <div className={compactProduct.brandPart}>
-                  <span className={compactProduct.brandLabel} dir="auto">
-                    {p.manufacturer}
-                  </span>
-                  <div className={compactProduct.partNumber}>
-                    <span>{locale === "ar" ? "رقم القطعة" : "Part no."}</span>
-                    <CopyPart value={p.partNumber} locale={locale} />
-                  </div>
-                </div>
-                {p.type === "oem" && <OriginalBadge locale={locale} />}
-                {p.type !== "oem" && (
-                  <span className="badge after-market">
-                    {locale === "ar" ? "بديل" : "After Market"}
-                  </span>
-                )}
-                {p.demo && (
-                  <span className="badge demo-badge">{w.demoProduct}</span>
-                )}
-              </div>
-            </div>
             <div
               className={`fit-card ${confirmed ? "confirmed" : ""} ${showApplications ? compatibilityStyles.panel : ""}`}
               data-compatibility-result={confirmed ? "confirmed" : "unknown"}
@@ -1293,69 +1323,72 @@ export default async function Page({ params, searchParams }: Props) {
               />
             </div>
             <div className="purchase-notes">
-              <Link className="small muted" href={`/${locale}/checkout`}>
+              <span>
                 {locale === "ar"
-                  ? "اختار منطقة التوصيل وقت تأكيد الطلب"
-                  : "Check delivery area at checkout"}{" "}
+                  ? "رسوم التوصيل تُحسب حسب منطقتك عند إتمام الطلب."
+                  : "Delivery is calculated for your area at checkout."}
+              </span>
+              <Link href={`/${locale}/request-part`}>
+                {locale === "ar"
+                  ? "غير متأكد من التوافق؟ اطلب مساعدة في اختيار القطعة"
+                  : "Unsure about fitment? Get help finding the right part"}{" "}
                 ↗
               </Link>
-              <p className="small muted">
-                {p.demo
-                  ? locale === "ar"
-                    ? "منتج تجريبي للاختبار للاختبار."
-                    : "Fictional demonstration product for testing."
-                  : locale === "ar"
-                    ? ""
-                    : "Fulfillment is confirmed by the merchant."}
-              </p>
+              {p.demo && (
+                <p>
+                  {locale === "ar"
+                    ? "منتج تجريبي للاختبار."
+                    : "Demonstration product for testing."}
+                </p>
+              )}
             </div>
           </aside>
         </div>
         <ul className="product-assurances">
           <li>
-            <ShieldCheck size={18} aria-hidden="true" />
+            <ShieldCheck size={20} aria-hidden="true" />
             <div>
               <strong>
-                {locale === "ar"
-                  ? "جميع منتجاتنا أصلية"
-                  : "All products are genuine"}
+                {locale === "ar" ? "اختيار مدروس" : "Know your part"}
               </strong>
               <span>
                 {locale === "ar"
-                  ? "قطع غيار أصلية مضمونة"
-                  : "Guaranteed genuine spare parts"}
+                  ? "راجع رقم القطعة وتوافقها قبل الطلب"
+                  : "Check the part number and vehicle fitment"}
               </span>
             </div>
           </li>
           <li>
-            <Truck size={18} aria-hidden="true" />
+            <Truck size={20} aria-hidden="true" />
             <div>
               <strong>
                 {locale === "ar" ? "توصيل داخل مصر" : "Delivery across Egypt"}
               </strong>
               <span>
                 {locale === "ar"
-                  ? "التكلفة حسب المحافظة"
-                  : "Fees by governorate"}
+                  ? "رسوم الشحن حسب منطقة التوصيل"
+                  : "Shipping fees depend on your delivery area"}
               </span>
             </div>
           </li>
           <li>
-            <RotateCcw size={18} aria-hidden="true" />
+            <RotateCcw size={20} aria-hidden="true" />
             <div>
               <strong>
-                {locale === "ar" ? "ضمان أصلي" : "Genuine warranty"}
+                {locale === "ar"
+                  ? "الشحن والإرجاع والضمان"
+                  : "Shipping, returns & warranty"}
               </strong>
               <span>
                 {locale === "ar"
-                  ? "بضمان الوكيل أو المورد حسب المنتج"
-                  : "Agent or supplier warranty by product"}
+                  ? "راجع السياسات وتفاصيل المنتج قبل الشراء"
+                  : "Review product details and policies before buying"}
               </span>
             </div>
           </li>
         </ul>
 
-        <details className={compactProduct.disclosure}>
+        <details className={compactProduct.disclosure} open>
           <summary>
             {locale === "ar"
               ? "تفاصيل المنتج والمواصفات"
