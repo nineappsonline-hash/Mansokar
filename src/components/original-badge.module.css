@@ -1,0 +1,23 @@
+/* A plain authenticity label; no pulse, halo or embossed icon treatment. */
+:global(.mopc-cyan) .badge.badge {
+  background: #f3f6f8;
+  color: #435d73;
+  border: 1px solid #dce4eb;
+  border-radius: 5px;
+  padding: 5px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  animation: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+:global(.mopc-cyan) .badge.badge svg,
+:global(.mopc-cyan) .badge.badge span {
+  color: inherit;
+  animation: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
+}

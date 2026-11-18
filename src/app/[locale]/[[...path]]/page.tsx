@@ -30,7 +30,6 @@ import { ContactForm } from "@/components/contact-form";
 import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
 import { buyingGuides } from "@/lib/buying-guides";
 import { BuyingGuide } from "@/components/buying-guide";
-import { ProductAnswers } from "@/components/product-answers";
 import { InstallmentsGuide } from "@/components/installments-guide";
 import { productSearchCopy, productStructuredData } from "@/lib/product-seo";
 import { builtInPolicy } from "@/lib/policy-content";
@@ -1185,12 +1184,6 @@ export default async function Page({ params, searchParams }: Props) {
             className={`product-page-animate product-media-column ${compatibilityStyles.media}`}
           >
             <div className="product-gallery">
-              <div className={compactProduct.galleryHeading}>
-                <span>
-                  {locale === "ar" ? "صورة القطعة" : "PRODUCT GALLERY"}
-                </span>
-                <span dir="auto">{p.manufacturer}</span>
-              </div>
               <Gallery
                 locale={locale}
                 media={media}
@@ -1209,30 +1202,6 @@ export default async function Page({ params, searchParams }: Props) {
                 </p>
               )}
             </div>
-            <dl className={compactProduct.quickFacts}>
-              <div>
-                <dt>{locale === "ar" ? "رقم القطعة" : "Part number"}</dt>
-                <dd>
-                  <bdi dir="ltr">{p.partNumber}</bdi>
-                </dd>
-              </div>
-              <div>
-                <dt>{locale === "ar" ? "الشركة المصنعة" : "Manufacturer"}</dt>
-                <dd dir="auto">{p.manufacturer}</dd>
-              </div>
-              <div>
-                <dt>{locale === "ar" ? "نوع القطعة" : "Part type"}</dt>
-                <dd>
-                  {p.type === "oem"
-                    ? locale === "ar"
-                      ? "أصلي"
-                      : "Original"
-                    : locale === "ar"
-                      ? "بديل"
-                      : "Aftermarket"}
-                </dd>
-              </div>
-            </dl>
           </div>
           <aside className="purchase-panel product-page-animate slide">
             <div
@@ -1323,15 +1292,10 @@ export default async function Page({ params, searchParams }: Props) {
               />
             </div>
             <div className="purchase-notes">
-              <span>
-                {locale === "ar"
-                  ? "رسوم التوصيل تُحسب حسب منطقتك عند إتمام الطلب."
-                  : "Delivery is calculated for your area at checkout."}
-              </span>
               <Link href={`/${locale}/request-part`}>
                 {locale === "ar"
-                  ? "غير متأكد من التوافق؟ اطلب مساعدة في اختيار القطعة"
-                  : "Unsure about fitment? Get help finding the right part"}{" "}
+                  ? "اسألنا عن توافق القطعة"
+                  : "Ask us about vehicle fitment"}{" "}
                 ↗
               </Link>
               {p.demo && (
@@ -1344,51 +1308,7 @@ export default async function Page({ params, searchParams }: Props) {
             </div>
           </aside>
         </div>
-        <ul className="product-assurances">
-          <li>
-            <ShieldCheck size={20} aria-hidden="true" />
-            <div>
-              <strong>
-                {locale === "ar" ? "اختيار مدروس" : "Know your part"}
-              </strong>
-              <span>
-                {locale === "ar"
-                  ? "راجع رقم القطعة وتوافقها قبل الطلب"
-                  : "Check the part number and vehicle fitment"}
-              </span>
-            </div>
-          </li>
-          <li>
-            <Truck size={20} aria-hidden="true" />
-            <div>
-              <strong>
-                {locale === "ar" ? "توصيل داخل مصر" : "Delivery across Egypt"}
-              </strong>
-              <span>
-                {locale === "ar"
-                  ? "رسوم الشحن حسب منطقة التوصيل"
-                  : "Shipping fees depend on your delivery area"}
-              </span>
-            </div>
-          </li>
-          <li>
-            <RotateCcw size={20} aria-hidden="true" />
-            <div>
-              <strong>
-                {locale === "ar"
-                  ? "الشحن والإرجاع والضمان"
-                  : "Shipping, returns & warranty"}
-              </strong>
-              <span>
-                {locale === "ar"
-                  ? "راجع السياسات وتفاصيل المنتج قبل الشراء"
-                  : "Review product details and policies before buying"}
-              </span>
-            </div>
-          </li>
-        </ul>
-
-        <details className={compactProduct.disclosure} open>
+        <details className={compactProduct.disclosure}>
           <summary>
             {locale === "ar"
               ? "تفاصيل المنتج والمواصفات"
@@ -1493,14 +1413,6 @@ export default async function Page({ params, searchParams }: Props) {
               </div>
             </div>
           </section>
-        </details>
-        <details className={compactProduct.disclosure}>
-          <summary>
-            {locale === "ar"
-              ? "أسئلة عن القطعة"
-              : "Product questions & answers"}
-          </summary>
-          <ProductAnswers product={p} locale={locale} />
         </details>
         {together.length > 0 && (
           <section className="section product-page-animate slide">
