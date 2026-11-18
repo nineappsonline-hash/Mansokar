@@ -174,10 +174,10 @@
 .hero::before { background: #142838; mix-blend-mode: normal; opacity: .76; }
 .hero::after { background: linear-gradient(90deg, #101d297a, #14283878); }
 .heroInner { min-height: 315px; }
-.emblem { border-inline-end-color: #a8dff288; }
+.emblem { border-inline-end-color: #72cef288; }
 .breadcrumb { color: #d4e1e2; }
-.breadcrumb a:hover { color: #a8dff2; }
+.breadcrumb a:hover { color: #72cef2; }
 .page .hero p { color: #d4e1e2; }
-.aftermarket { color: #a8dff2; }
+.aftermarket { color: #72cef2; }
 .content { padding-block: 46px 80px; }
 @media(max-width:760px){ .heroInner{min-height:260px;} .content{padding-block:28px 48px;} }
