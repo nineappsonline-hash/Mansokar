@@ -11,14 +11,18 @@ export async function GET(request: Request) {
   try {
     await requireAdmin();
     await enforceRate(request, "admin-export", 10);
-    const [products, fitments, images, categories] = await Promise.all([
-      allRows<Product>("products"),
-      allRows<{ product_id: string; vehicle_config_id: string }>(
-        "product_fitments",
-      ),
-      allRows<any>("product_images"),
-      allRows<{ slug: string; name: { ar: string; en: string } }>("categories"),
-    ]);
+    const [products, fitments, images, categories, modelYears] =
+      await Promise.all([
+        allRows<Product>("products"),
+        allRows<{ product_id: string; vehicle_config_id: string }>(
+          "product_fitments",
+        ),
+        allRows<any>("product_images"),
+        allRows<{ slug: string; name: { ar: string; en: string } }>(
+          "categories",
+        ),
+        allRows<{ model_id: string; year: number }>("vehicle_model_years"),
+      ]);
     const byProduct = new Map<string, string[]>();
     for (const f of fitments)
       byProduct.set(f.product_id, [
@@ -69,6 +73,7 @@ export async function GET(request: Request) {
               vehicles,
               models,
               categories,
+              modelYears,
             ),
           )
         : "\uFEFF" + exportCsv(rows),

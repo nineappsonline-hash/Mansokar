@@ -3,7 +3,10 @@ import { useState } from "react";
 import { emptyImportMessage, importFeedback } from "@/lib/import-feedback";
 import { ApiForm } from "./forms";
 import uploadStyles from "./product-upload.module.css";
-import { moveProductPhoto, validateProductPhotos } from "@/lib/product-photo-order";
+import {
+  moveProductPhoto,
+  validateProductPhotos,
+} from "@/lib/product-photo-order";
 export function JsonEditor({
   action,
   initial,
@@ -149,11 +152,13 @@ export function Importer({
         Leave both SKU and item_key blank for new products; both are automatic.
         For multiple cars, repeat the same part names, item brand, part number,
         type and item details on each car row. Enter start_year and end_year
-        (both included); missing cars are created on confirmed import. Warranty
-        is entered once in months. Prices are in Egyptian pounds. SKU, URL,
-        descriptions and SEO are automatic. Exported SKUs update existing items.
-        Photos may use existing upload references or https image links; you can
-        also drag and drop new pictures after importing.
+        (both included). Enter All for a make, model or year to match saved
+        options; preview the expanded matches before importing. Missing explicit
+        cars are created on confirmed import. Warranty is entered once in
+        months. Prices are in Egyptian pounds. SKU, URL, descriptions and SEO
+        are automatic. Exported SKUs update existing items. Photos may use
+        existing upload references or https image links; you can also drag and
+        drop new pictures after importing.
       </p>
       <a
         className="button secondary"
@@ -1113,7 +1118,8 @@ export function ImageManager({
       try {
         if (!["image/jpeg", "image/png", "image/webp"].includes(file.type))
           throw Error("اختار صور JPG أو PNG أو WebP.");
-        if (file.size > 5_000_000) throw Error("الحد الأقصى لحجم الصورة 5 ميجابايت.");
+        if (file.size > 5_000_000)
+          throw Error("الحد الأقصى لحجم الصورة 5 ميجابايت.");
         const form = new FormData();
         form.append("image", file);
         const response = await fetch("/api/upload?kind=catalog", {
@@ -1161,7 +1167,8 @@ export function ImageManager({
         </label>
       )}
       <p>
-        أول صورة هي الصورة الأساسية اللي بتظهر للعميل. اكتب وصف الصورة بالعربي والإنجليزي، وبعدها احفظ الترتيب.
+        أول صورة هي الصورة الأساسية اللي بتظهر للعميل. اكتب وصف الصورة بالعربي
+        والإنجليزي، وبعدها احفظ الترتيب.
       </p>
       <div
         className={
@@ -1183,7 +1190,8 @@ export function ImageManager({
           {busy ? "جاري رفع الصور…" : "اسحب صور المنتج هنا أو اختارها من جهازك"}
         </strong>
         <p>
-          تقدر ترفع أكتر من صورة مرة واحدة. JPG أو PNG أو WebP، بحد أقصى 5 ميجابايت للصورة و10 صور للمنتج.
+          تقدر ترفع أكتر من صورة مرة واحدة. JPG أو PNG أو WebP، بحد أقصى 5
+          ميجابايت للصورة و10 صور للمنتج.
         </p>
         <label>
           اختيار صور المنتج
@@ -1203,7 +1211,9 @@ export function ImageManager({
       </div>
       <p role="status">{message}</p>
       {images.length > 0 && validateProductPhotos(images) && (
-        <p role="alert" className="notice">لازم تكتب وصف عربي وإنجليزي لكل صورة قبل الحفظ.</p>
+        <p role="alert" className="notice">
+          لازم تكتب وصف عربي وإنجليزي لكل صورة قبل الحفظ.
+        </p>
       )}
       <ApiForm
         action="admin-images"
@@ -1217,7 +1227,10 @@ export function ImageManager({
         }}
       >
         {images.map((image, index) => (
-          <article className="panel stack admin-product-image-card" key={image.path}>
+          <article
+            className="panel stack admin-product-image-card"
+            key={image.path}
+          >
             {image.url && (
               <img
                 src={image.url}
@@ -1254,7 +1267,9 @@ export function ImageManager({
                 <button
                   type="button"
                   disabled={busy}
-                  onClick={() => setImages((current) => moveProductPhoto(current, index, 0))}
+                  onClick={() =>
+                    setImages((current) => moveProductPhoto(current, index, 0))
+                  }
                 >
                   تعيين كصورة أساسية
                 </button>
@@ -1263,7 +1278,9 @@ export function ImageManager({
                 type="button"
                 disabled={busy || index === 0}
                 onClick={() =>
-                  setImages((current) => moveProductPhoto(current, index, index - 1))
+                  setImages((current) =>
+                    moveProductPhoto(current, index, index - 1),
+                  )
                 }
               >
                 تحريك للأمام
@@ -1272,7 +1289,9 @@ export function ImageManager({
                 type="button"
                 disabled={busy || index === images.length - 1}
                 onClick={() =>
-                  setImages((current) => moveProductPhoto(current, index, index + 1))
+                  setImages((current) =>
+                    moveProductPhoto(current, index, index + 1),
+                  )
                 }
               >
                 تحريك للخلف

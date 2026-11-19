@@ -104,7 +104,14 @@ test("item categories survive Excel import, update, and export", async () => {
   );
   assert.equal(parsed[0].category, "filters");
   const existing = [{ ...parsed[0], category: "brakes" }];
-  const models = [{ id: "opel-astra", brand: "opel", slug: "astra", name: { ar: "أسترا", en: "Astra" } }];
+  const models = [
+    {
+      id: "opel-astra",
+      brand: "opel",
+      slug: "astra",
+      name: { ar: "أسترا", en: "Astra" },
+    },
+  ];
   const updated = prepareItemRows(parsed, models, existing);
   assert.equal(updated[0].category, "filters");
   const out = new ExcelJS.Workbook();
@@ -116,6 +123,123 @@ test("item categories survive Excel import, update, and export", async () => {
       .getCell(itemColumns.indexOf("category") + 1).value,
     "filters",
   );
+});
+test("Excel All expands saved makes, models and model years without inventing cars", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const book = new ExcelJS.Workbook();
+  await book.xlsx.load(await exportItemWorkbook([], [], []));
+  const sheet = book.getWorksheet("Products")!;
+  sheet.addRow(
+    (
+      book.getWorksheet("Examples — copy to Products")!.getRow(2)
+        .values as unknown[]
+    ).slice(1),
+  );
+  const set = (field: string, value: string | number) => {
+    sheet.getRow(2).getCell(itemColumns.indexOf(field as any) + 1).value =
+      value;
+  };
+  const read = async () => {
+    const bytes = new Uint8Array(await book.xlsx.writeBuffer());
+    return await parseSpreadsheet(bytes.buffer as ArrayBuffer, "all.xlsx");
+  };
+  const brands = [
+    { slug: "chevrolet", name: "Chevrolet" },
+    { slug: "opel", name: "Opel" },
+  ];
+  const models = [
+    {
+      id: "chevrolet-cruze",
+      brand: "chevrolet",
+      slug: "cruze",
+      name: { ar: "كروز", en: "Cruze" },
+    },
+    {
+      id: "chevrolet-captiva",
+      brand: "chevrolet",
+      slug: "captiva",
+      name: { ar: "كابتيفا", en: "Captiva" },
+    },
+    {
+      id: "opel-astra",
+      brand: "opel",
+      slug: "astra",
+      name: { ar: "أسترا", en: "Astra" },
+    },
+    {
+      id: "opel-insignia",
+      brand: "opel",
+      slug: "insignia",
+      name: { ar: "إنسيجنيا", en: "Insignia" },
+    },
+  ];
+  const years = [
+    { model_id: "chevrolet-cruze", year: 2020 },
+    { model_id: "chevrolet-cruze", year: 2021 },
+    { model_id: "chevrolet-captiva", year: 2019 },
+    { model_id: "opel-astra", year: 2018 },
+    { model_id: "opel-astra", year: 2019 },
+  ];
+  set("car_make", "All");
+  set("car_model", "");
+  set("start_year", "");
+  set("end_year", "");
+  set("years", "");
+  let plan = planImportVehicles(await read(), models, brands, years);
+  assert.equal(plan.additions.length, 0);
+  assert.deepEqual(plan.skippedModels, ["opel-insignia"]);
+  assert.deepEqual(
+    plan.rows[0].applications_input.map((app: any) => app.model).sort(),
+    ["astra", "captiva", "cruze"],
+  );
+  let item = prepareItemRows(plan.rows, plan.models, [])[0];
+  assert.equal(item.specs["car_years:chevrolet-cruze"], "2020,2021");
+  assert.equal(item.specs["car_years:opel-astra"], "2018,2019");
+  set("car_make", "Chevrolet");
+  set("car_model", "ALL");
+  plan = planImportVehicles(await read(), models, brands, years);
+  assert.deepEqual(
+    plan.rows[0].applications_input.map((app: any) => app.model).sort(),
+    ["captiva", "cruze"],
+  );
+  set("years", "2019");
+  plan = planImportVehicles(await read(), models, brands, years);
+  assert.deepEqual(
+    plan.rows[0].applications_input.map((app: any) => app.model),
+    ["captiva"],
+  );
+  set("years", "");
+  set("car_make", "Opel");
+  set("car_model", "Astra");
+  set("years", "all");
+  plan = planImportVehicles(await read(), models, brands, years);
+  assert.deepEqual(plan.rows[0].applications_input[0].years, [2018, 2019]);
+  set("years", "");
+  set("start_year", "ALL");
+  set("end_year", "");
+  plan = planImportVehicles(await read(), models, brands, years);
+  assert.deepEqual(plan.rows[0].applications_input[0].years, [2018, 2019]);
+  set("start_year", "");
+  set("years", "all");
+  set("car_make", "Unknown Make");
+  set("car_model", "Unknown Model");
+  await assert.throws(
+    () =>
+      planImportVehicles(
+        plan.rows.map((row: any) => ({
+          ...row,
+          applications_input: [
+            { make: "Unknown Make", model: "Unknown Model", years: "all" },
+          ],
+        })),
+        models,
+        brands,
+        years,
+      ),
+    /no saved years/,
+  );
+  set("years", "all, 2020");
+  await assert.rejects(read(), /use All by itself/);
 });
 test("raster sanitization rejects SVG, spoofed content and oversize payloads", async () => {
   await assert.rejects(

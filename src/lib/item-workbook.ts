@@ -39,6 +39,7 @@ export async function exportItemWorkbook(
   vehicles: Vehicle[],
   models: Model[],
   categories: { slug: string; name: { ar: string; en: string } }[] = [],
+  modelYears: { model_id: string; year: number }[] = [],
 ) {
   const book = new ExcelJS.Workbook(),
     sheet = book.addWorksheet("Products");
@@ -171,7 +172,7 @@ export async function exportItemWorkbook(
     ],
     [
       "Cars",
-      "Repeat the same part names, item brand, part number, type and item details on another row for each make/model. Leave item_key and SKU blank for new items; existing exported SKUs update items. Enter start_year and end_year (2015 and 2020 includes every year). For non-contiguous years use years instead (2021, 2023); do not mix both. Missing makes/models are created on confirmed import. Use existing codes or names to avoid duplicates.",
+      "Repeat the same part names, item brand, part number, type and item details on another row for each make/model. Leave item_key and SKU blank for new items; existing exported SKUs update items. Enter start_year and end_year (2015 and 2020 includes every year). For non-contiguous years use years instead (2021, 2023); do not mix both. Enter All in car_make for every saved make, in car_model for every model of the selected make, or in years for every saved year of each matched model. Blank lower-level fields alongside All also mean All. All never creates new makes, models or years; it uses only saved catalog options listed in Car models and Model years sheets. Models without matching saved years are skipped and counted in the preview. Missing explicit makes/models are created on confirmed import. Use existing codes or names to avoid duplicates.",
     ],
     [
       "Prices",
@@ -215,6 +216,12 @@ export async function exportItemWorkbook(
   const cars = book.addWorksheet("Car models");
   cars.addRow(["car_make", "car_model", "English model", "Arabic model"]);
   models.forEach((m) => cars.addRow([m.brand, m.slug, m.name.en, m.name.ar]));
+  const yearsSheet = book.addWorksheet("Model years");
+  yearsSheet.addRow(["car_make", "car_model", "year"]);
+  modelYears.forEach((entry) => {
+    const model = models.find((item) => item.id === entry.model_id);
+    if (model) yearsSheet.addRow([model.brand, model.slug, entry.year]);
+  });
   const configs = book.addWorksheet("Vehicles");
   configs.addRow([
     "vehicle_config_id",
@@ -451,7 +458,22 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
       throw Error(
         `Row ${n}: repeated item has conflicting details: ${v.sku || v.item_key || v.part_number || v.name_en}`,
       );
+    const all = (value: string) => value.trim().toLowerCase() === "all";
+    const yearFields = [v.years, v.start_year, v.end_year];
+    if (yearFields.some((value) => /\ball\b/i.test(value || "") && !all(value)))
+      throw Error(
+        `Row ${n}: use All by itself for car years, or enter specific years`,
+      );
+    const yearAll = yearFields.some((value) => all(value || ""));
     if (
+      yearAll &&
+      [v.years, v.start_year, v.end_year].some((value) => value && !all(value))
+    )
+      throw Error(
+        `Row ${n}: use All by itself for car years, or enter specific years`,
+      );
+    if (
+      !yearAll &&
       (v.start_year || v.end_year) &&
       (!v.start_year || !v.end_year || v.years)
     )
@@ -459,22 +481,32 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
         `Row ${n}: fill both start_year and end_year, and leave years blank`,
       );
     if (
+      !yearAll &&
       v.start_year &&
       (!/^\d{4}$/.test(v.start_year) || !/^\d{4}$/.test(v.end_year))
     )
       throw Error(`Row ${n}: start_year and end_year must be four-digit years`);
+    const hasAll = all(v.car_make || "") || all(v.car_model || "") || yearAll;
     const app =
       v.car_make || v.car_model || v.years || v.start_year || v.end_year
         ? {
-            make: v.car_make,
-            model: v.car_model,
-            years: parseYears(
-              v.start_year ? `${v.start_year}-${v.end_year}` : v.years,
-              n,
-            ),
+            make: v.car_make || (hasAll ? "All" : ""),
+            model: v.car_model || (hasAll ? "All" : ""),
+            years:
+              yearAll || (hasAll && !v.years && !v.start_year && !v.end_year)
+                ? ("all" as const)
+                : parseYears(
+                    v.start_year ? `${v.start_year}-${v.end_year}` : v.years,
+                    n,
+                  ),
           }
         : null;
-    if (app && (!app.make || !app.model || !app.years.length))
+    if (
+      app &&
+      (!app.make ||
+        !app.model ||
+        (Array.isArray(app.years) && !app.years.length))
+    )
       throw Error(
         `Row ${n}: fill car_make, car_model and start_year/end_year (or years) together`,
       );

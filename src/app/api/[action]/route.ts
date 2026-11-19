@@ -1023,13 +1023,36 @@ export async function POST(
         let vehicleAdditions: ReturnType<
           typeof planImportVehicles
         >["additions"] = [];
+        let expandedMatches = 0;
+        let skippedModels = 0;
         if (modern) {
-          const [{ models, brands }, existing] = await Promise.all([
+          const [
+            { models, brands, vehicles: vehicleConfigs },
+            existing,
+            savedYears,
+          ] = await Promise.all([
             vehicleCatalog(),
             allRows<any>("products"),
+            allRows<{ model_id: string; year: number }>("vehicle_model_years"),
           ]);
-          const plan = planImportVehicles(rows, models, brands);
+          const configYears = vehicleConfigs.flatMap((config) =>
+            models
+              .filter(
+                (model) =>
+                  model.brand === config.brand && model.slug === config.model,
+              )
+              .map((model) => ({ model_id: model.id, year: config.year })),
+          );
+          const plan = planImportVehicles(rows, models, brands, [
+            ...savedYears,
+            ...configYears,
+          ]);
           vehicleAdditions = plan.additions;
+          skippedModels = plan.skippedModels.length;
+          expandedMatches = plan.rows.reduce(
+            (count, row) => count + (row.applications_input?.length || 0),
+            0,
+          );
           rows = prepareItemRows(plan.rows, plan.models, existing);
         }
         const result = validateImport(rows);
@@ -1120,7 +1143,7 @@ export async function POST(
         }
         if (action === "admin-import-preview")
           return NextResponse.json({
-            message: `Dry run: ${result.rows.length} valid items; ${vehicleAdditions.length} new car models will be created. No changes saved.`,
+            message: `Dry run: ${result.rows.length} valid items; ${expandedMatches} car model matches; ${vehicleAdditions.length} new car models will be created; ${skippedModels} models without matching saved years skipped. No changes saved.`,
           });
         if (modern) {
           const { error } = await db.from("manufacturers").upsert(
