@@ -191,7 +191,7 @@
   margin-block: 0 32px;
   border: 1px solid #26394c;
   border-radius: 16px;
-  background: #0c1d30;
+  background: linear-gradient(112deg, #10253a 0%, #0c1d30 58%, #0b1b2c 100%);
   color: #fff;
 }
 .payments::before {
@@ -199,7 +199,15 @@
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: radial-gradient(ellipse at 20% 50%, #31465755, transparent 55%);
+  background: radial-gradient(ellipse at 24% 50%, #49617420, transparent 58%);
+  pointer-events: none;
+}
+.payments::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  border: 1px solid #ffffff0c;
+  border-radius: 9px;
   pointer-events: none;
 }
 .paymentCopy {
@@ -272,144 +280,115 @@
 .paymentArt {
   position: relative;
   justify-self: center;
-  width: min(100%, 380px);
-  height: 250px;
+  width: min(100%, 400px);
+  padding: 12px;
   direction: ltr;
 }
-.artOrbit {
-  position: absolute;
-  inset: -12px 22px 4px;
-  border: 1px solid #a9bdcf10;
-  border-radius: 50%;
-}
-.artOrbit::after {
-  content: "";
-  position: absolute;
-  inset: -24px;
-  border: 1px solid #a9bdcf08;
-  border-radius: 50%;
-}
-.bankCard {
-  position: absolute;
-  top: 20px;
-  left: 50%;
-  width: 282px;
-  max-width: 88%;
-  height: 170px;
-  padding: 20px 22px;
-  border: 1px solid #9aacbd55;
-  border-radius: 13px;
-  background: linear-gradient(120deg, #3c5064, #23384d 55%, #182b40);
-  box-shadow:
-    0 20px 28px #00000028,
-    inset 0 1px 0 #ffffff18;
-  transform: translateX(-50%) rotate(-6deg);
-  animation: card-arrive 2.8s ease-out both;
-}
-.bankCard::before {
+.paymentArt::before {
   content: "";
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(125deg, #ffffff0a, transparent 45%);
+  border: 1px solid #a49a8952;
+  border-radius: 15px;
+  transform: translate(11px, -11px);
   pointer-events: none;
 }
-.backCard {
+.artFrame {
+  position: relative;
+  overflow: hidden;
+  padding: 22px 24px 18px;
+  border: 1px solid #536476;
+  border-radius: 14px;
+  background: linear-gradient(145deg, #1c354c, #14283b 62%, #102235);
+  box-shadow: 0 20px 32px #00000024, inset 0 1px 0 #ffffff1a;
+  animation: card-arrive 1.6s ease-out both;
+}
+.artFrame::before {
+  content: "";
   position: absolute;
-  top: 9px;
-  left: 50%;
-  width: 278px;
-  max-width: 87%;
-  height: 164px;
-  border: 1px solid #83bad180;
-  border-radius: 13px;
-  background: linear-gradient(140deg, #477a96, #27475d);
-  transform: translateX(-46%) rotate(3deg);
-  animation: back-arrive 2.8s ease-out both;
+  width: 270px;
+  height: 270px;
+  inset: -155px -115px auto auto;
+  border: 1px solid #ffffff0c;
+  border-radius: 50%;
+  box-shadow: 0 0 0 30px #ffffff04, 0 0 0 65px #ffffff03;
+  pointer-events: none;
 }
-.cardTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #f4f7fa;
-}
-.cardTop b {
-  font-family: Arial, sans-serif;
-  font-size: 16px;
-  font-style: italic;
-  letter-spacing: 0.16em;
-}
-.cardTop svg {
-  transform: rotate(90deg);
-  color: #b5c1cd;
-}
-.chip {
-  display: flex;
-  gap: 4px;
-  width: 29px;
-  height: 23px;
-  margin-top: 17px;
-  padding: 4px;
-  border: 1px solid #d2bea0;
-  border-radius: 4px;
-  background: linear-gradient(135deg, #deceb4, #b19b7b);
-}
-.chip i {
-  width: 5px;
-  border: 1px solid #8e7b5f80;
-  border-radius: 2px;
-}
-.cardDigits {
-  margin-top: 12px;
-  font-family: ui-monospace, monospace;
-  font-size: 13px;
-  letter-spacing: 0.1em;
-  color: #dce4ec;
-}
-.cardBottom {
+.artHeader {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 11px;
-}
-.cardBottom > span:first-child {
-  color: #bdcad6;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #ffffff20;
+  color: #f7f4ee;
   font-family: Arial, sans-serif;
-  font-size: 7px;
-  letter-spacing: 0.15em;
-}
-.cardMonogram {
-  font-family: Georgia, serif;
-  font-size: 19px;
-  font-style: italic;
-  color: #b79a6a;
-}
-.paymentOptions {
-  position: absolute;
-  bottom: 2px;
-  inset-inline: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px;
-  padding-top: 15px;
-  color: #b7c5d2;
-  direction: inherit;
-}
-.paymentOptions > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
   font-size: 11px;
-  white-space: nowrap;
+  font-weight: 700;
+  letter-spacing: .18em;
 }
-.paymentOptions > i {
-  width: 1px;
-  height: 12px;
-  background: #ffffff20;
+.artHeader span:last-child {
+  color: #c7ab80;
+  font-size: 10px;
+  font-weight: 500;
 }
-.paymentOptions svg {
-  color: #b79a6a;
+.artHeading {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin: 21px 0 14px;
+  color: #e6cba4;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .02em;
+}
+.artRule {
+  flex: 1;
+  height: 1px;
+  background: #c7ab8050;
+}
+.artMethods {
+  position: relative;
+  display: grid;
+  gap: 8px;
+}
+.artMethod {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 49px;
+  padding: 7px 12px;
+  border: 1px solid #ffffff1c;
+  border-radius: 8px;
+  background: #ffffff0b;
+  color: #f7f8fa;
+  font-size: 12px;
+  font-weight: 600;
+}
+.artMethodIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: #c4ab8440;
+  color: #ead2ad;
+}
+.artMethod small {
+  color: #c7ab80;
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  letter-spacing: .08em;
+}
+.artFooter {
+  position: relative;
+  margin-top: 17px;
+  color: #aab8c5;
+  font-family: Arial, sans-serif;
+  font-size: 8px;
+  letter-spacing: .17em;
 }
 @keyframes icon-arrive {
   0% {
@@ -443,14 +422,6 @@
   }
   65% {
     translate: 0 -2px;
-  }
-  100% {
-    translate: 0 0;
-  }
-}
-@keyframes back-arrive {
-  0% {
-    translate: 0 6px;
   }
   100% {
     translate: 0 0;
@@ -522,26 +493,13 @@
   }
   .paymentArt {
     width: min(100%, 340px);
-    height: 226px;
+    margin-inline: auto;
   }
-  .bankCard {
-    height: 155px;
-    padding: 16px 18px;
+  .artFrame {
+    padding: 18px 18px 16px;
   }
-  .backCard {
-    height: 150px;
-  }
-  .chip {
-    margin-top: 13px;
-  }
-  .cardDigits {
-    font-size: 12px;
-  }
-  .paymentOptions {
-    gap: 12px;
-  }
-  .paymentOptions > span {
-    font-size: 10px;
+  .artHeading {
+    margin-block: 16px 12px;
   }
 }
 @media (max-width: 360px) {
@@ -550,12 +508,6 @@
   }
   :global(.mopc-cyan.mopc-cyan.mopc-cyan) .payments .paymentCopy h2 {
     font-size: 24px;
-  }
-  .paymentOptions {
-    gap: 9px;
-  }
-  .cardDigits {
-    font-size: 10px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

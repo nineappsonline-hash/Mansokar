@@ -10,7 +10,6 @@ import {
   Headset,
   ShieldCheck,
   Truck,
-  Wifi,
   CalendarDays,
 } from "lucide-react";
 import type { Locale } from "@/lib/catalog";
@@ -152,36 +151,28 @@ export function PaymentBanner({ locale }: { locale: Locale }) {
         </Link>
       </div>
       <div className={styles.paymentArt} aria-hidden="true">
-        <div className={styles.artOrbit} />
-        <div className={styles.backCard} />
-        <div className={styles.bankCard}>
-          <div className={styles.cardTop}>
-            <b>MOPC</b>
-            <Wifi size={23} />
+        <div className={styles.artFrame}>
+          <div className={styles.artHeader}>
+            <span>MOPC</span>
+            <span>01 / 02</span>
           </div>
-          <div className={styles.chip}>
-            <i />
-            <i />
-            <i />
+          <div className={styles.artHeading}>
+            <span>{ar ? "اختيارات تناسبك" : "WAYS TO PAY"}</span>
+            <span className={styles.artRule} />
           </div>
-          <div className={styles.cardDigits}>
-            •••• &nbsp; •••• &nbsp; •••• &nbsp; ••••
+          <div className={styles.artMethods}>
+            <div className={styles.artMethod}>
+              <span className={styles.artMethodIcon}><CreditCard size={21} /></span>
+              <span>{ar ? "كروت بنكية" : "Bank cards"}</span>
+              <small>01</small>
+            </div>
+            <div className={styles.artMethod}>
+              <span className={styles.artMethodIcon}><CalendarDays size={21} /></span>
+              <span>{ar ? "خيارات تقسيط" : "Installment options"}</span>
+              <small>02</small>
+            </div>
           </div>
-          <div className={styles.cardBottom}>
-            <span>PAYMENT, YOUR WAY.</span>
-            <span className={styles.cardMonogram}>M</span>
-          </div>
-        </div>
-        <div className={styles.paymentOptions}>
-          <span>
-            <CreditCard size={16} />
-            {ar ? "كروت بنكية" : "Bank cards"}
-          </span>
-          <i />
-          <span>
-            <CalendarDays size={16} />
-            {ar ? "خيارات تقسيط" : "Installment options"}
-          </span>
+          <div className={styles.artFooter}>PAYMENT, YOUR WAY.</div>
         </div>
       </div>
     </BannerMotion>
