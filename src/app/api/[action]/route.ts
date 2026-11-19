@@ -73,7 +73,9 @@ export async function POST(
     // Authenticate privileged requests before loading the vehicle catalog or
     // executing any privileged database operation. A client-supplied action
     // name never grants access by itself.
-    const adminActor = action.startsWith("admin-") ? await requireAdmin() : null;
+    const adminActor = action.startsWith("admin-")
+      ? await requireAdmin()
+      : null;
     const db = service();
     const { vehicles } = await vehicleCatalog();
     if (action === "analytics") {
@@ -429,10 +431,13 @@ export async function POST(
       if (error) throw Error(error.message);
       // Add real catalog metadata to the quote without changing trusted pricing.
       // Fitments are read from the product's actual vehicle configuration links.
-      const quoted = data as { items?: Array<{ id: string; [key: string]: unknown }> };
+      const quoted = data as {
+        items?: Array<{ id: string; [key: string]: unknown }>;
+      };
       if (Array.isArray(quoted?.items) && quoted.items.length) {
         const ids = quoted.items.map((item) => item.id);
-        const productResult = await db.from("products")
+        const productResult = await db
+          .from("products")
           .select("id,sku,manufacturer,type,partNumber,specs")
           .in("id", ids);
         if (productResult.error) throw productResult.error;
@@ -445,28 +450,41 @@ export async function POST(
         const imageMap = new Map(
           imageResults.map(({ id, images }) => [id, images[0]?.url ?? null]),
         );
-        const modelIds = [...new Set(
-          (productResult.data ?? []).flatMap((p) =>
-            readApplications(p.specs ?? {}).map((app) => app.model_id),
+        const modelIds = [
+          ...new Set(
+            (productResult.data ?? []).flatMap((p) =>
+              readApplications(p.specs ?? {}).map((app) => app.model_id),
+            ),
           ),
-        )];
+        ];
         const models = modelIds.length
-          ? await db.from("vehicle_models")
+          ? await db
+              .from("vehicle_models")
               .select("id,brand,slug,name")
               .in("id", modelIds)
-          : { data: [] as Array<{ id: string; brand: string; slug: string; name: { ar: string; en: string } }> };
+          : {
+              data: [] as Array<{
+                id: string;
+                brand: string;
+                slug: string;
+                name: { ar: string; en: string };
+              }>,
+            };
         if ("error" in models && models.error) throw models.error;
         const modelMap = new Map((models.data ?? []).map((m) => [m.id, m]));
         quoted.items = quoted.items.map((item) => {
           const product = productMap.get(item.id);
-          const vehicles = readApplications(product?.specs ?? {})
-            .flatMap((app) => {
+          const vehicles = readApplications(product?.specs ?? {}).flatMap(
+            (app) => {
               const model = modelMap.get(app.model_id);
               if (!model) return [];
               return app.years.map((year) => ({
-                brand: model.brand, model: model.name, year,
+                brand: model.brand,
+                model: model.name,
+                year,
               }));
-            });
+            },
+          );
           return {
             ...item,
             sku: product?.sku ?? null,
@@ -651,26 +669,31 @@ export async function POST(
           );
           if (rpcError) {
             if (rpcError.message.includes("Message not found"))
-              return NextResponse.json({ error: "Message not found" }, { status: 404 });
+              return NextResponse.json(
+                { error: "Message not found" },
+                { status: 404 },
+              );
             throw rpcError;
           }
           details = input;
         } else {
-        const { data, error } = await db
-          .from("contact_messages")
-          .update({ status: input.status })
-          .eq("id", input.id)
-          .select("id")
-          .maybeSingle();
-        if (error) throw error;
-        if (!data) throw Error("Message not found");
-        const { error: auditError } = await db.from("admin_audit_logs").insert({
-          user_id: admin.id,
-          action,
-          details: { record: input.id, status: input.status },
-        });
-        if (auditError) throw auditError;
-        details = input;
+          const { data, error } = await db
+            .from("contact_messages")
+            .update({ status: input.status })
+            .eq("id", input.id)
+            .select("id")
+            .maybeSingle();
+          if (error) throw error;
+          if (!data) throw Error("Message not found");
+          const { error: auditError } = await db
+            .from("admin_audit_logs")
+            .insert({
+              user_id: admin.id,
+              action,
+              details: { record: input.id, status: input.status },
+            });
+          if (auditError) throw auditError;
+          details = input;
         }
       } else if (action === "admin-hero-slides") {
         const input = z
@@ -926,7 +949,14 @@ export async function POST(
           Object.assign(parsed, auto, {
             manufacturer,
             id: existing?.data?.id || crypto.randomUUID(),
-            category: existing?.data?.category || "spare-parts",
+            category: z
+              .string()
+              .trim()
+              .min(1)
+              .max(100)
+              .parse(
+                parsed.category || existing?.data?.category || "spare-parts",
+              ),
             family: existing?.data?.family || sku,
             specs: {
               ...(applications
@@ -937,6 +967,14 @@ export async function POST(
                 : { warranty_months: String(months) }),
             },
           });
+          const { data: selectedCategory, error: selectedCategoryError } =
+            await db
+              .from("categories")
+              .select("slug")
+              .eq("slug", parsed.category)
+              .maybeSingle();
+          if (selectedCategoryError) throw selectedCategoryError;
+          if (!selectedCategory) throw Error("Unknown category");
           if (manualSeo) parsed.seo = manualSeo;
           parsed.specs.public_slug = publicProductSlug(
             existing?.data ?? parsed,
@@ -1264,12 +1302,18 @@ export async function POST(
           if (deleteError) {
             if (deleteError.code === "23503")
               return NextResponse.json(
-                { error: "This product is linked to saved records and cannot be deleted." },
+                {
+                  error:
+                    "This product is linked to saved records and cannot be deleted.",
+                },
                 { status: 409 },
               );
             if (deleteError.message.includes("belongs to an order"))
               return NextResponse.json(
-                { error: "This product appears in existing orders. Set it to draft instead." },
+                {
+                  error:
+                    "This product appears in existing orders. Set it to draft instead.",
+                },
                 { status: 409 },
               );
             if (deleteError.message.includes("Product not found"))
@@ -1284,59 +1328,62 @@ export async function POST(
           // The transaction enqueues image cleanup. Never delete storage inline.
           details = { id: product.deleted_id, sku: product.deleted_sku };
         } else {
-        const { count, error: orderError } = await db
-          .from("order_items")
-          .select("id", { count: "exact", head: true })
-          .eq("product_id", input.id);
-        if (orderError) throw orderError;
-        if (count)
-          return NextResponse.json(
-            {
-              error:
-                "This product appears in existing orders and cannot be deleted. Set it to draft instead.",
-            },
-            { status: 409 },
-          );
-        const { data: imageRows, error: imageError } = await db
-          .from("product_images")
-          .select("path")
-          .eq("product_id", input.id);
-        if (imageError) throw imageError;
-        const { error: analyticsError } = await db
-          .from("analytics_events")
-          .update({ product_id: null })
-          .eq("product_id", input.id);
-        if (analyticsError) throw analyticsError;
-        const { data: removed, error: deleteError } = await db
-          .from("products")
-          .delete()
-          .eq("id", input.id)
-          .select("id,sku");
-        if (deleteError?.code === "23503")
-          return NextResponse.json(
-            {
-              error:
-                "This product is linked to saved records and cannot be deleted. Remove those links first.",
-            },
-            { status: 409 },
-          );
-        if (deleteError) throw deleteError;
-        if (!removed?.length)
-          return NextResponse.json(
-            { error: "This product no longer exists. Refresh the page." },
-            { status: 404 },
-          );
-        const paths = (imageRows ?? [])
-          .map((image) => image.path)
-          .filter(isProductImagePath);
-        if (paths.length) await db.storage.from("catalog-images").remove(paths);
-        const { error: auditError } = await db.from("admin_audit_logs").insert({
-          user_id: admin.id,
-          action,
-          details: { record: removed[0].id, sku: removed[0].sku },
-        });
-        if (auditError) throw auditError;
-        details = { id: removed[0].id, sku: removed[0].sku };
+          const { count, error: orderError } = await db
+            .from("order_items")
+            .select("id", { count: "exact", head: true })
+            .eq("product_id", input.id);
+          if (orderError) throw orderError;
+          if (count)
+            return NextResponse.json(
+              {
+                error:
+                  "This product appears in existing orders and cannot be deleted. Set it to draft instead.",
+              },
+              { status: 409 },
+            );
+          const { data: imageRows, error: imageError } = await db
+            .from("product_images")
+            .select("path")
+            .eq("product_id", input.id);
+          if (imageError) throw imageError;
+          const { error: analyticsError } = await db
+            .from("analytics_events")
+            .update({ product_id: null })
+            .eq("product_id", input.id);
+          if (analyticsError) throw analyticsError;
+          const { data: removed, error: deleteError } = await db
+            .from("products")
+            .delete()
+            .eq("id", input.id)
+            .select("id,sku");
+          if (deleteError?.code === "23503")
+            return NextResponse.json(
+              {
+                error:
+                  "This product is linked to saved records and cannot be deleted. Remove those links first.",
+              },
+              { status: 409 },
+            );
+          if (deleteError) throw deleteError;
+          if (!removed?.length)
+            return NextResponse.json(
+              { error: "This product no longer exists. Refresh the page." },
+              { status: 404 },
+            );
+          const paths = (imageRows ?? [])
+            .map((image) => image.path)
+            .filter(isProductImagePath);
+          if (paths.length)
+            await db.storage.from("catalog-images").remove(paths);
+          const { error: auditError } = await db
+            .from("admin_audit_logs")
+            .insert({
+              user_id: admin.id,
+              action,
+              details: { record: removed[0].id, sku: removed[0].sku },
+            });
+          if (auditError) throw auditError;
+          details = { id: removed[0].id, sku: removed[0].sku };
         }
       } else if (action === "admin-vehicle") {
         const input = vehicleInput.parse(JSON.parse(b.json));
@@ -1418,10 +1465,21 @@ export async function POST(
         if (error) throw error;
         details = { kind: input.kind };
       } else if (action === "admin-payment-reconcile") {
-        const input = z.object({id:z.uuid(),reference:z.string().trim().min(6).max(160),note:z.string().trim().min(12).max(1000)}).parse(b);
-        const {error} = await db.rpc("admin_reconcile_payment",{p_actor:admin.id,p_order:input.id,p_reference:input.reference,p_note:input.note});
-        if(error) throw error;
-        details = {order_id:input.id,manual_override:true};
+        const input = z
+          .object({
+            id: z.uuid(),
+            reference: z.string().trim().min(6).max(160),
+            note: z.string().trim().min(12).max(1000),
+          })
+          .parse(b);
+        const { error } = await db.rpc("admin_reconcile_payment", {
+          p_actor: admin.id,
+          p_order: input.id,
+          p_reference: input.reference,
+          p_note: input.note,
+        });
+        if (error) throw error;
+        details = { order_id: input.id, manual_override: true };
       } else if (action === "admin-collect-cod") {
         const id = z.uuid().parse(b.id);
         const { error } = await commit({ id });
@@ -1444,19 +1502,25 @@ export async function POST(
             .eq("id", input.id)
             .single();
           if (transferError || !transfer) throw new Error("Transfer not found");
-          if (transfer.status !== "pending") throw new Error("Transfer already reviewed");
+          if (transfer.status !== "pending")
+            throw new Error("Transfer already reviewed");
           const { data: order, error: orderError } = await db
             .from("orders")
             .select("id,total,payment_status,payment_method")
             .eq("id", transfer.order_id)
             .single();
           if (orderError || !order) throw new Error("Order not found");
-          if (order.payment_status === "paid") throw new Error("Order is already paid");
+          if (order.payment_status === "paid")
+            throw new Error("Order is already paid");
           if (Number(transfer.amount) !== Number(order.total)) {
-            throw new Error("Transfer amount differs from order total. Partial payments cannot be approved yet.");
+            throw new Error(
+              "Transfer amount differs from order total. Partial payments cannot be approved yet.",
+            );
           }
           if (transfer.method !== order.payment_method) {
-            throw new Error("Transfer method does not match the order payment method");
+            throw new Error(
+              "Transfer method does not match the order payment method",
+            );
           }
         }
         const { error } = await db.rpc("verify_manual_transfer", {

@@ -78,6 +78,45 @@ test("modern Excel template has isolated examples and repeated rows create one m
     /conflicting/,
   );
 });
+test("item categories survive Excel import, update, and export", async () => {
+  const { default: ExcelJS } = await import("exceljs");
+  const categories = [
+    { slug: "filters", name: { ar: "الفلاتر", en: "Filters" } },
+    { slug: "brakes", name: { ar: "الفرامل", en: "Brakes" } },
+  ];
+  const book = new ExcelJS.Workbook();
+  await book.xlsx.load(await exportItemWorkbook([], [], [], categories));
+  const products = book.getWorksheet("Products")!;
+  assert.equal(
+    products.getRow(1).getCell(itemColumns.indexOf("category") + 1).value,
+    "category",
+  );
+  assert.equal(
+    book.getWorksheet("Categories")!.getRow(2).getCell(1).value,
+    "filters",
+  );
+  const example = book.getWorksheet("Examples — copy to Products")!;
+  products.addRow((example.getRow(2).values as unknown[]).slice(1));
+  const bytes = new Uint8Array(await book.xlsx.writeBuffer());
+  const parsed = await parseSpreadsheet(
+    bytes.buffer as ArrayBuffer,
+    "categories.xlsx",
+  );
+  assert.equal(parsed[0].category, "filters");
+  const existing = [{ ...parsed[0], category: "brakes" }];
+  const models = [{ id: "opel-astra", brand: "opel", slug: "astra", name: { ar: "أسترا", en: "Astra" } }];
+  const updated = prepareItemRows(parsed, models, existing);
+  assert.equal(updated[0].category, "filters");
+  const out = new ExcelJS.Workbook();
+  await out.xlsx.load(await exportItemWorkbook(updated, [], [], categories));
+  assert.equal(
+    out
+      .getWorksheet("Products")!
+      .getRow(2)
+      .getCell(itemColumns.indexOf("category") + 1).value,
+    "filters",
+  );
+});
 test("raster sanitization rejects SVG, spoofed content and oversize payloads", async () => {
   await assert.rejects(
     sanitizeImage(Buffer.from('<svg onload="alert(1)"></svg>')),

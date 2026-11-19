@@ -522,7 +522,7 @@ export default async function Page({ params, searchParams }: Props) {
           model: q.model,
           year: q.year ? Number(q.year) || 0 : undefined,
           vehicle: vehicle?.id,
-          category: path[0] === "categories" ? path[1] : undefined,
+          category: path[0] === "categories" ? path[1] : q.category,
           manufacturer: q.manufacturer,
           type: q.type,
           offers: route === "offers",
@@ -680,7 +680,7 @@ export default async function Page({ params, searchParams }: Props) {
   } else if (isCatalog) {
     if (path[0] === "categories" && !categories.some((c) => c.slug === path[1]))
       notFound();
-    const category = path[0] === "categories" ? path[1] : undefined;
+    const category = path[0] === "categories" ? path[1] : q.category;
     const currentCategory =
       path[0] === "categories"
         ? categories.find((c) => c.slug === category)
@@ -816,10 +816,7 @@ export default async function Page({ params, searchParams }: Props) {
               ? "بحث وتصفية المنتجات"
               : "Search & filter products"}
           </summary>
-          <form
-            className="catalog-filters panel"
-            action={modelListing ? `/${locale}/catalog` : undefined}
-          >
+          <form className="catalog-filters panel">
             <CatalogCarFilters
               key={`${q.make ?? vehicle?.brand ?? ""}/${q.model ?? vehicle?.model ?? ""}/${q.year ?? vehicle?.year ?? ""}`}
               locale={locale}
@@ -841,6 +838,21 @@ export default async function Page({ params, searchParams }: Props) {
                 maxLength={100}
               />
             </label>
+            {path[0] !== "categories" && (
+              <label>
+                {locale === "ar" ? "فئة القطعة" : "Part category"}
+                <select name="category" defaultValue={q.category || ""}>
+                  <option value="">
+                    {locale === "ar" ? "كل الفئات" : "All categories"}
+                  </option>
+                  {categories.map((category) => (
+                    <option key={category.slug} value={category.slug}>
+                      {category.name[locale]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
             <label>
               {w.manufacturer}
               <select name="manufacturer" defaultValue={q.manufacturer}>
@@ -880,7 +892,11 @@ export default async function Page({ params, searchParams }: Props) {
               {locale === "ar" ? "تطبيق" : "Apply"}
             </button>
             <Link
-              href={`/${locale}/${modelListing ? "catalog" : route}?make=`}
+              href={
+                modelListing
+                  ? `/${locale}/brands/${path[1]}/${path[2]}`
+                  : `/${locale}/${route}`
+              }
               className="text-link"
             >
               {locale === "ar" ? "مسح الفلاتر" : "Reset filters"}

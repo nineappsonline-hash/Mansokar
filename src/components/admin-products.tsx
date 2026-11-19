@@ -25,6 +25,7 @@ export function AdminProducts({
   carModels,
   selectedId,
   manufacturers,
+  categories,
   initialView = "products",
   initialTab = "details",
   editor,
@@ -51,6 +52,7 @@ export function AdminProducts({
   }[];
   selectedId?: string;
   manufacturers: string[];
+  categories: { slug: string; name: { ar: string; en: string } }[];
   initialView?: string;
   initialTab?: string;
   editor: React.ReactNode;
@@ -62,6 +64,9 @@ export function AdminProducts({
     [query, setQuery] = useState(""),
     [brandQuery, setBrandQuery] = useState(""),
     [newBrand, setNewBrand] = useState(""),
+    [categorySlug, setCategorySlug] = useState(""),
+    [categoryAr, setCategoryAr] = useState(""),
+    [categoryEn, setCategoryEn] = useState(""),
     [carMake, setCarMake] = useState(""),
     [carModel, setCarModel] = useState(""),
     [carYear, setCarYear] = useState(""),
@@ -293,6 +298,14 @@ export function AdminProducts({
         </button>
         <button
           type="button"
+          aria-current={view === "categories" ? "page" : undefined}
+          onClick={() => navigate("categories")}
+        >
+          <Tags size={17} />
+          فئات القطع
+        </button>
+        <button
+          type="button"
           aria-current={view === "excel" ? "page" : undefined}
           onClick={() => navigate("excel")}
         >
@@ -445,7 +458,11 @@ export function AdminProducts({
                               : styles.draft
                           }
                         >
-                          {p.status === "published" ? "منشور" : p.status === "draft" ? "مسودة" : p.status}
+                          {p.status === "published"
+                            ? "منشور"
+                            : p.status === "draft"
+                              ? "مسودة"
+                              : p.status}
                         </span>
                       </span>
                     </span>
@@ -478,10 +495,7 @@ export function AdminProducts({
                 />
               )}
             </div>
-            <nav
-              className={styles.productTabs}
-              aria-label="أدوات تعديل المنتج"
-            >
+            <nav className={styles.productTabs} aria-label="أدوات تعديل المنتج">
               <button
                 type="button"
                 aria-current={tab === "details" ? "page" : undefined}
@@ -584,6 +598,72 @@ export function AdminProducts({
               </label>
             </ApiForm>
             <p>You can also add a new brand directly from the product form.</p>
+          </section>
+        </div>
+      </div>
+      <div hidden={view !== "categories"}>
+        <div className={styles.brandLayout}>
+          <section className="panel stack">
+            <h2>فئات قطع الغيار</h2>
+            <p>
+              اختار فئة لكل منتج. هتظهر الفئات في ملف Excel وفلاتر العربيات.
+            </p>
+            <div className={styles.brands}>
+              {categories.map((category) => (
+                <span key={category.slug}>
+                  {category.name.ar} · {category.name.en} ({category.slug})
+                </span>
+              ))}
+            </div>
+          </section>
+          <section className="panel stack">
+            <h2>إضافة فئة جديدة</h2>
+            <ApiForm
+              action="admin-taxonomy"
+              label="حفظ الفئة"
+              extra={{
+                json: JSON.stringify({
+                  kind: "category",
+                  slug: categorySlug.trim(),
+                  localized: { ar: categoryAr.trim(), en: categoryEn.trim() },
+                }),
+              }}
+            >
+              <label>
+                اسم الفئة بالعربية
+                <input
+                  required
+                  maxLength={100}
+                  value={categoryAr}
+                  onChange={(e) => setCategoryAr(e.target.value)}
+                />
+              </label>
+              <label>
+                اسم الفئة بالإنجليزية
+                <input
+                  required
+                  maxLength={100}
+                  value={categoryEn}
+                  onChange={(e) => setCategoryEn(e.target.value)}
+                />
+              </label>
+              <label>
+                رمز الفئة لملفات Excel
+                <input
+                  required
+                  pattern="[a-z0-9-]+"
+                  maxLength={100}
+                  dir="ltr"
+                  placeholder="oil-filters"
+                  value={categorySlug}
+                  onChange={(e) =>
+                    setCategorySlug(
+                      e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""),
+                    )
+                  }
+                />
+              </label>
+            </ApiForm>
           </section>
         </div>
       </div>

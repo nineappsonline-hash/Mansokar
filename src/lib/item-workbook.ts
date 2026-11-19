@@ -9,6 +9,7 @@ export const itemColumns = [
   "name_ar",
   "name_en",
   "item_brand",
+  "category",
   "country_of_origin",
   "cost_price",
   "sale_price",
@@ -37,6 +38,7 @@ export async function exportItemWorkbook(
   products: (Product & { fitments?: string[]; images?: unknown[] })[],
   vehicles: Vehicle[],
   models: Model[],
+  categories: { slug: string; name: { ar: string; en: string } }[] = [],
 ) {
   const book = new ExcelJS.Workbook(),
     sheet = book.addWorksheet("Products");
@@ -62,6 +64,7 @@ export async function exportItemWorkbook(
         name_ar: p.name.ar,
         name_en: p.name.en,
         item_brand: p.manufacturer,
+        category: p.category,
         country_of_origin: p.specs.country_of_origin || "",
         cost_price: p.cost == null ? "" : p.cost / 100,
         sale_price: p.price / 100,
@@ -122,6 +125,7 @@ export async function exportItemWorkbook(
       name_ar: "فلتر زيت — مثال فقط",
       name_en: "Oil filter — example only",
       item_brand: "Example Brand",
+      category: "filters",
       country_of_origin: "Germany",
       cost_price: 500,
       sale_price: 750,
@@ -155,7 +159,11 @@ export async function exportItemWorkbook(
     ],
     [
       "Automatic fields",
-      "URL slug, descriptions and SEO are automatic. No category or part family input is needed.",
+      "URL slug, descriptions and SEO are automatic. Choose a category slug from the Categories sheet; part family is automatic.",
+    ],
+    [
+      "category",
+      "Choose a category slug from the Categories sheet. Use the same category on every row for a product. Existing workbooks without this column remain supported.",
     ],
     [
       "name_ar / name_en",
@@ -199,6 +207,11 @@ export async function exportItemWorkbook(
       "All fitment rows remain admin data. Public pages display only the current car context.",
     ],
   ].forEach((r) => guide.addRow(r));
+  const categorySheet = book.addWorksheet("Categories");
+  categorySheet.addRow(["category", "Arabic name", "English name"]);
+  categories.forEach((category) =>
+    categorySheet.addRow([category.slug, category.name.ar, category.name.en]),
+  );
   const cars = book.addWorksheet("Car models");
   cars.addRow(["car_make", "car_model", "English model", "Arabic model"]);
   models.forEach((m) => cars.addRow([m.brand, m.slug, m.name.en, m.name.ar]));
@@ -411,6 +424,7 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
     const common = {
       name,
       manufacturer: v.item_brand,
+      category: v.category || extra.category || "",
       price: amount("sale_price"),
       cost: amount("cost_price", true),
       sale: amount("discount_price", true),
@@ -485,7 +499,7 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
         item_key: v.item_key || sku,
         slug: extra.slug || "",
         family: extra.family || sku,
-        category: extra.category || "spare-parts",
+        category: common.category,
         description: extra.description || name,
         spreadsheet: true,
         applications_input: app ? [app] : [],

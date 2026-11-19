@@ -76,7 +76,7 @@ export function prepareItemRows(
       warranty: row.specs.warranty_months
         ? auto.warranty
         : (row.warranty ?? old?.warranty ?? null),
-      category: old?.category || row.category,
+      category: row.category || old?.category || "spare-parts",
       family: old?.family || row.family,
       specs: applicationSpecs({ ...old?.specs, ...row.specs }, applications),
     };

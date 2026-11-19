@@ -11,12 +11,13 @@ export async function GET(request: Request) {
   try {
     await requireAdmin();
     await enforceRate(request, "admin-export", 10);
-    const [products, fitments, images] = await Promise.all([
+    const [products, fitments, images, categories] = await Promise.all([
       allRows<Product>("products"),
       allRows<{ product_id: string; vehicle_config_id: string }>(
         "product_fitments",
       ),
       allRows<any>("product_images"),
+      allRows<{ slug: string; name: { ar: string; en: string } }>("categories"),
     ]);
     const byProduct = new Map<string, string[]>();
     for (const f of fitments)
@@ -67,6 +68,7 @@ export async function GET(request: Request) {
                   })),
               vehicles,
               models,
+              categories,
             ),
           )
         : "\uFEFF" + exportCsv(rows),

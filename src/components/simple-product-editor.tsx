@@ -12,6 +12,7 @@ import type { Vehicle } from "@/lib/catalog";
 export function SimpleProductEditor({
   initial,
   manufacturers,
+  categories,
   vehicles,
   selected,
   brands,
@@ -19,6 +20,7 @@ export function SimpleProductEditor({
 }: {
   initial: any;
   manufacturers: string[];
+  categories: { slug: string; name: { ar: string; en: string } }[];
   vehicles: Vehicle[];
   selected: string[];
   brands: { slug: string; name: string; ar?: string }[];
@@ -30,6 +32,7 @@ export function SimpleProductEditor({
       : {
           name: { ar: "", en: "" },
           manufacturer: "GM",
+          category: "spare-parts",
           price: 0,
           cost: null,
           sale: null,
@@ -75,16 +78,15 @@ export function SimpleProductEditor({
         (!value.name.en.trim() ||
           !value.name.ar.trim() ||
           !value.manufacturer.trim() ||
+          !value.category ||
           !value.partNumber.trim()) && (
           <p>
-            كمّل الحقول المطلوبة في بيانات المنتج قبل الحفظ. تقدر
-            تختار العربيات والسنين دلوقتي.
+            كمّل الحقول المطلوبة في بيانات المنتج قبل الحفظ. تقدر تختار العربيات
+            والسنين دلوقتي.
           </p>
         )}
       {applications.some((a) => !a.years.length) && (
-        <p>
-          اختار سنة واحدة على الأقل لكل موديل، أو احذف الموديل من القائمة.
-        </p>
+        <p>اختار سنة واحدة على الأقل لكل موديل، أو احذف الموديل من القائمة.</p>
       )}
       <ApiForm
         action="admin-product"
@@ -93,6 +95,7 @@ export function SimpleProductEditor({
           !value.name.en.trim() ||
           !value.name.ar.trim() ||
           !value.manufacturer.trim() ||
+          !value.category ||
           !value.partNumber.trim() ||
           applications.some((a) => !a.years.length)
         }
@@ -158,6 +161,22 @@ export function SimpleProductEditor({
                   Add “{value.manufacturer.trim()}” as a new item brand
                 </button>
               )}
+            <label>
+              فئة القطعة
+              <select
+                required
+                value={value.category || "spare-parts"}
+                onChange={(e) =>
+                  setValue({ ...value, category: e.target.value })
+                }
+              >
+                {categories.map((category) => (
+                  <option key={category.slug} value={category.slug}>
+                    {category.name.ar} · {category.name.en}
+                  </option>
+                ))}
+              </select>
+            </label>
             <label>
               الضمان بالشهور (اتركه فارغًا لو مش متوفر)
               <input
@@ -257,7 +276,8 @@ export function SimpleProductEditor({
             <details className="stack">
               <summary>إعدادات إضافية: حالة المنتج وSEO</summary>
               <p>
-                بيانات البحث بتتولد تلقائيًا، وتقدر تخصصها من هنا. إتاحة الطلب بتتحدد من الاختيار الموجود فوق.
+                بيانات البحث بتتولد تلقائيًا، وتقدر تخصصها من هنا. إتاحة الطلب
+                بتتحدد من الاختيار الموجود فوق.
               </p>
               <label>
                 Verified condition
