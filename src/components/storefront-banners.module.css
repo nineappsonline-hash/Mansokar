@@ -247,8 +247,8 @@
   margin: 0 0 26px;
   padding-inline-start: 15px;
   border-inline-start: 2px solid #b79a6a;
-  color: #f3f0e9;
-  font-size: 16px;
+  color: #e6cba4;
+  font-size: 18px;
   font-weight: 600;
   line-height: 1.75;
   text-wrap: pretty;
@@ -407,7 +407,7 @@
   }
   .paymentCopy p {
     margin-bottom: 20px;
-    font-size: 15px;
+    font-size: 17px;
   }
   .payments.payments {
     padding-bottom: 0;
