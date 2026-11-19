@@ -309,6 +309,49 @@ export async function categoryCatalog(): Promise<CategoryRecord[]> {
     (a, b) => a.sort_order - b.sort_order || a.slug.localeCompare(b.slug),
   );
 }
+export type CategoryImage = { path: string; alt: { ar: string; en: string } };
+export function categoryImageFromSeo(seo: unknown): CategoryImage | null {
+  if (!seo || typeof seo !== "object") return null;
+  const image = (seo as Record<string, unknown>).image;
+  if (!image || typeof image !== "object") return null;
+  const { path, alt } = image as { path?: unknown; alt?: unknown };
+  if (typeof path !== "string" || !/^[a-f0-9-]+\.jpg$/.test(path)) return null;
+  if (!alt || typeof alt !== "object") return null;
+  const localized = alt as Record<string, unknown>;
+  if (typeof localized.ar !== "string" || typeof localized.en !== "string")
+    return null;
+  return { path, alt: { ar: localized.ar, en: localized.en } };
+}
+export async function categoryImageUrls(categories: CategoryRecord[]) {
+  const entries = categories.flatMap((category) => {
+    const image = categoryImageFromSeo(category.seo);
+    return image ? [{ slug: category.slug, ...image }] : [];
+  });
+  if (!configured() || !entries.length)
+    return {} as Record<
+      string,
+      { url: string; alt: { ar: string; en: string } }
+    >;
+  const result: Record<
+    string,
+    { url: string; alt: { ar: string; en: string } }
+  > = {};
+  for (let offset = 0; offset < entries.length; offset += 100) {
+    const batch = entries.slice(offset, offset + 100);
+    const signed = await service()
+      .storage.from("catalog-images")
+      .createSignedUrls(
+        batch.map((item) => item.path),
+        600,
+      );
+    if (signed.error) continue;
+    batch.forEach((item, index) => {
+      const url = signed.data[index]?.signedUrl;
+      if (url) result[item.slug] = { url, alt: item.alt };
+    });
+  }
+  return result;
+}
 export async function siteMedia(
   slots: string[],
 ): Promise<Record<string, { url: string; alt: { ar: string; en: string } }>> {

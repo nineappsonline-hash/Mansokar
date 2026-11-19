@@ -24,6 +24,8 @@ import {
   allRows,
   vehicleCatalog,
   siteMedia,
+  categoryImageUrls,
+  categoryImageFromSeo,
 } from "@/lib/db";
 import { AuthForm, ApiForm } from "@/components/forms";
 import {
@@ -218,6 +220,20 @@ export default async function Admin({
       allRows<any>("product_images", "id,product_id,path,alt,position"),
       vehicleCatalog(),
     ]);
+    const categoryUrls = await categoryImageUrls(categories);
+    const categoryImages = Object.fromEntries(
+      categories.flatMap((category: any) => {
+        const image = categoryImageFromSeo(category.seo);
+        return image
+          ? [
+              [
+                category.slug,
+                { ...image, url: categoryUrls[category.slug]?.url },
+              ],
+            ]
+          : [];
+      }),
+    );
     const exportYears = [
       ...new Set([
         ...vehicles.map((vehicle: any) => vehicle.year),
@@ -321,6 +337,7 @@ export default async function Admin({
           carModels={models}
           manufacturers={manufacturers.map((m) => m.name)}
           categories={categories}
+          categoryImages={categoryImages}
           selectedId={selected?.id}
           initialView={
             view === "brands" || view === "categories" || view === "excel"

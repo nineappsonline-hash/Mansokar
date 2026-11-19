@@ -1422,6 +1422,53 @@ export async function POST(
         const { error } = await commit(input);
         if (error) throw error;
         details = { id: input.id };
+      } else if (action === "admin-category-image") {
+        const input = z
+          .object({
+            slug: z
+              .string()
+              .regex(/^[a-z0-9-]+$/)
+              .max(100),
+            path: z
+              .string()
+              .regex(/^[a-f0-9-]+\.jpg$/)
+              .nullable(),
+            alt: z.object({
+              ar: z.string().trim().min(1).max(500),
+              en: z.string().trim().min(1).max(500),
+            }),
+          })
+          .parse(JSON.parse(b.json));
+        const { data: category, error: categoryError } = await db
+          .from("categories")
+          .select("seo")
+          .eq("slug", input.slug)
+          .single();
+        if (categoryError || !category) throw Error("Category not found");
+        if (input.path) {
+          const { error: imageError } = await db.storage
+            .from("catalog-images")
+            .createSignedUrl(input.path, 60);
+          if (imageError)
+            throw Error("Upload a valid image before assigning it");
+        }
+        const seo =
+          category.seo &&
+          typeof category.seo === "object" &&
+          !Array.isArray(category.seo)
+            ? category.seo
+            : {};
+        const { error } = await db
+          .from("categories")
+          .update({
+            seo: {
+              ...seo,
+              image: input.path ? { path: input.path, alt: input.alt } : null,
+            },
+          })
+          .eq("slug", input.slug);
+        if (error) throw error;
+        details = { slug: input.slug, image: Boolean(input.path) };
       } else if (action === "admin-taxonomy") {
         const input = z
           .object({

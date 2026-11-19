@@ -78,6 +78,7 @@ import {
   storefrontSettings,
   productImages,
   categoryCatalog,
+  categoryImageUrls,
   searchCatalog,
 } from "@/lib/db";
 import { t, statusLabel } from "@/lib/i18n";
@@ -502,6 +503,10 @@ export default async function Page({ params, searchParams }: Props) {
   ];
   const branding = await siteMedia(mediaSlots);
   const categories = await categoryCatalog();
+  const categoryImages =
+    path[0] === "categories" || modelListing || route === "catalog"
+      ? await categoryImageUrls(categories)
+      : {};
   const selectedId =
     q.vehicle ??
     (["make", "model", "year"].some((key) => Object.hasOwn(q, key))
@@ -780,6 +785,17 @@ export default async function Page({ params, searchParams }: Props) {
         </h1>
         {currentCategory && (
           <>
+            {categoryImages[currentCategory.slug] && (
+              <div className="category-hero-image">
+                <img
+                  src={categoryImages[currentCategory.slug].url}
+                  alt={
+                    categoryImages[currentCategory.slug].alt[locale] ||
+                    currentCategory.name[locale]
+                  }
+                />
+              </div>
+            )}
             <p className="lead">{currentCategory.description?.[locale]}</p>
             <nav
               className="admin-nav"
@@ -806,6 +822,37 @@ export default async function Page({ params, searchParams }: Props) {
                 ))}
             </nav>
           </>
+        )}
+        {(modelListing || route === "catalog") && categories.length > 0 && (
+          <nav
+            className="category-image-links"
+            aria-label={
+              locale === "ar" ? "تصفح حسب الفئة" : "Browse by category"
+            }
+          >
+            {categories.map((item) => {
+              const image = categoryImages[item.slug];
+              const params = new URLSearchParams();
+              if (modelListing) {
+                if (q.year) params.set("year", q.year);
+              } else {
+                if (q.make) params.set("make", q.make);
+                if (q.model) params.set("model", q.model);
+                if (q.year) params.set("year", q.year);
+              }
+              params.set("category", item.slug);
+              return (
+                <Link
+                  key={item.slug}
+                  className={category === item.slug ? "active" : ""}
+                  href={`/${locale}/${route}?${params}`}
+                >
+                  {image && <img src={image.url} alt="" loading="lazy" />}
+                  <span>{item.name[locale]}</span>
+                </Link>
+              );
+            })}
+          </nav>
         )}
         <details
           open={!modelListing}

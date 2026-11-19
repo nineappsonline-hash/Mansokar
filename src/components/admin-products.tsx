@@ -14,6 +14,7 @@ import {
 import type { Vehicle } from "@/lib/catalog";
 import { readApplications } from "@/lib/product-applications";
 import { ApiForm } from "./forms";
+import { CategoryImageEditor } from "./category-image-editor";
 import { ProductEditorTab } from "./product-editor-context";
 import styles from "./admin-products.module.css";
 export function AdminProducts({
@@ -26,6 +27,7 @@ export function AdminProducts({
   selectedId,
   manufacturers,
   categories,
+  categoryImages,
   initialView = "products",
   initialTab = "details",
   editor,
@@ -53,6 +55,10 @@ export function AdminProducts({
   selectedId?: string;
   manufacturers: string[];
   categories: { slug: string; name: { ar: string; en: string } }[];
+  categoryImages: Record<
+    string,
+    { path: string; url?: string; alt: { ar: string; en: string } }
+  >;
   initialView?: string;
   initialTab?: string;
   editor: React.ReactNode;
@@ -666,6 +672,9 @@ export function AdminProducts({
             </ApiForm>
           </section>
         </div>
+      </div>
+      <div hidden={view !== "categories"}>
+        <CategoryImageEditor categories={categories} initial={categoryImages} />
       </div>
       <div hidden={view !== "excel"}>{excel}</div>
     </div>
