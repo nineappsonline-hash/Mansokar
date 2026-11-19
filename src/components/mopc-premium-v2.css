@@ -1,14 +1,14 @@
 /* MOPC Premium V2 storefront — scoped to customer-facing pages only.
-   Figma direction: deep navy #0B1C30, lime #D5F06D, warm canvas #F5F6F2.
+   Storefront palette: deep navy, warm white, restrained champagne.
    Existing catalog images, vehicle compatibility, checkout and payment logic remain unchanged. */
 .mopc-cyan.mopc-cyan.mopc-cyan {
   --mopc-v2-navy: #0b1c30;
   --mopc-v2-navy-soft: #17334d;
-  --mopc-v2-lime: #d5f06d;
-  --mopc-v2-canvas: #f5f6f2;
+  --mopc-v2-lime: #b79a6a;
+  --mopc-v2-canvas: #faf9f6;
   --mopc-v2-ink: #17283a;
   --mopc-v2-muted: #64788a;
-  --mopc-v2-border: #dde5e5;
+  --mopc-v2-border: #e6e3dc;
   --bg: var(--mopc-v2-canvas);
   --surface: #fff;
   --light: var(--mopc-v2-ink);
@@ -20,7 +20,7 @@
 }
 .mopc-cyan.mopc-cyan.mopc-cyan :is(h1,h2,h3) { color: var(--mopc-v2-ink); letter-spacing: -.015em; }
 .mopc-cyan.mopc-cyan.mopc-cyan :is(button,a,input,select,textarea):focus-visible {
-  outline: 3px solid #9dbf34;
+  outline: 3px solid #b79a6a;
   outline-offset: 3px;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan :is(.button,.purchase-buttons .button,.purchase-actions .button) {
@@ -52,12 +52,12 @@
   transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .product-card:hover {
-  border-color: #b3c5b5;
+  border-color: #c6b89f;
   box-shadow: 0 18px 42px -25px rgba(11,28,48,.32);
   transform: translateY(-2px);
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .product-card :is(.product-art,.product-image) {
-  background: #e9eeeb;
+  background: #f7f5f0;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .product-card :is(h3,.product-price) { color: var(--mopc-v2-ink); }
 .mopc-cyan.mopc-cyan.mopc-cyan :is(.part-row,.product-assurances,.product-specifications) {
@@ -66,7 +66,7 @@
 .mopc-cyan.mopc-cyan.mopc-cyan :is(.breadcrumbs,.part-number,.product-meta) { color: var(--mopc-v2-muted); }
 .mopc-cyan.mopc-cyan.mopc-cyan :is(input,select,textarea) {
   border-radius: 12px;
-  accent-color: #8da72f;
+  accent-color: #b79a6a;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan :is(.header,.site-header) {
   background: var(--mopc-v2-navy);
@@ -82,7 +82,7 @@
   --mopc-hero: var(--mopc-v2-navy);
   --mopc-lime: var(--mopc-v2-lime);
   --mopc-canvas: var(--mopc-v2-canvas);
-  --mopc-soft: #e9eeeb;
+  --mopc-soft: #f7f5f0;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-hero {
   background: var(--mopc-v2-navy);
@@ -98,16 +98,28 @@
 .mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-hero-copy h1 em {
   color: var(--mopc-v2-lime);
 }
-.mopc-cyan.mopc-cyan.mopc-cyan .cyan-home :is(.cyan-hero-primary,.cyan-button) {
-  background: var(--mopc-v2-lime);
+.mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-hero-primary {
+  background: #f4efe5;
   color: var(--mopc-v2-navy);
-  border: 1px solid var(--mopc-v2-lime);
+  border: 1px solid #ded3bf;
   border-radius: 13px;
   font-weight: 800;
 }
-.mopc-cyan.mopc-cyan.mopc-cyan .cyan-home :is(.cyan-hero-primary,.cyan-button):hover {
-  background: #e2f6a0;
+.mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-hero-primary:hover {
+  background: #fffaf0;
   color: var(--mopc-v2-navy);
+}
+.mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-button {
+  background: var(--mopc-v2-navy);
+  color: #fff;
+  border: 1px solid var(--mopc-v2-navy);
+  border-radius: 13px;
+  font-weight: 800;
+}
+.mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-button:hover {
+  background: var(--mopc-v2-navy-soft);
+  border-color: var(--mopc-v2-navy-soft);
+  color: #fff;
 }
 .mopc-cyan.mopc-cyan.mopc-cyan .cyan-home .cyan-finder-region {
   background: #fff;
@@ -169,7 +181,7 @@
   padding: 8px 13px;
   border: 1px solid rgba(213,240,109,.42);
   border-radius: 100px;
-  color: #d5f06d;
+  color: #b79a6a;
   background: rgba(11,28,48,.42);
   font-size: 12px;
   font-weight: 800;
@@ -187,7 +199,7 @@
 .mopc-cyan .cyan-home .cyan-hero-copy h1 em { display: block; }
 .mopc-cyan .cyan-home .cyan-section-title { color: #17283a; }
 .mopc-cyan .cyan-home .cyan-brand-tile:focus-visible {
-  outline: 3px solid #d5f06d;
+  outline: 3px solid #b79a6a;
   outline-offset: 4px;
 }
 @media (max-width: 768px) {

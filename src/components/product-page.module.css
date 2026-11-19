@@ -79,7 +79,7 @@
   border-radius: 7px;
 }
 .page.page :global(.gallery-thumbs button[aria-pressed="true"]) {
-  border-color: #216383;
+  border-color: #766143;
 }
 :global(.mopc-cyan.mopc-cyan) .page.page :global(.purchase-panel) {
   padding: 0;
@@ -99,7 +99,7 @@
 }
 .page.page :global(.purchase-heading > .eyebrow) {
   display: inline-block;
-  color: #216383;
+  color: #766143;
   font-size: 11px;
   margin: 0 0 8px;
   letter-spacing: 0;
@@ -322,7 +322,7 @@
   content: "−";
 }
 .disclosure > summary:focus-visible {
-  outline: 2px solid #91d0e6;
+  outline: 2px solid #b79a6a;
   outline-offset: -4px;
 }
 .page.page :global(.product-story) {
@@ -471,10 +471,10 @@
     margin-top: 0;
   }
   .page.page :global(.mobile-buy-bar .button) {
-    background: var(--mopc-blue-satin);
-    color: #0b1c30;
-    border-color: #75b8d1;
-    box-shadow: var(--mopc-blue-depth);
+    background: var(--mopc-action);
+    color: #fff;
+    border-color: #0d2033;
+    box-shadow: var(--mopc-action-shadow);
     border-radius: 7px;
     font-size: 13px;
     min-height: 42px;

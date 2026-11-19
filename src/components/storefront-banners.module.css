@@ -9,10 +9,10 @@
   align-items: center;
   padding: 32px;
   margin-block: 28px 0;
-  border: 1px solid #e0e6ed;
+  border: 1px solid #e8e3d9;
   border-radius: 18px;
   background:
-    radial-gradient(ellipse at 100% 0%, #eaf6fb, transparent 45%), #fff;
+    radial-gradient(ellipse at 100% 0%, #f5f1e9, transparent 45%), #fff;
   box-shadow: 0 12px 36px #0b1c3006;
 }
 .benefits::before {
@@ -20,13 +20,13 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background-image: radial-gradient(#adc0d144 0.8px, transparent 0.8px);
+  background-image: radial-gradient(#b79a6a36 0.8px, transparent 0.8px);
   background-size: 14px 14px;
   mask-image: linear-gradient(90deg, transparent 55%, #000);
 }
 .eyebrow {
   display: block;
-  color: #216383;
+  color: #766143;
   font-size: 10px;
   font-weight: 750;
   letter-spacing: 0.08em;
@@ -34,7 +34,7 @@
 }
 .benefitsIntro {
   padding-inline-end: 26px;
-  border-inline-end: 1px solid #e4e9ee;
+  border-inline-end: 1px solid #ebe5dc;
 }
 .benefitsIntro h2 {
   margin: 10px 0 16px;
@@ -47,7 +47,7 @@
   width: 44px;
   height: 3px;
   border-radius: 4px;
-  background: #75bfd9;
+  background: #b79a6a;
 }
 .benefitGrid {
   display: grid;
@@ -73,7 +73,7 @@
   margin: 0;
   font-size: 11px;
   line-height: 1.7;
-  color: #586c80;
+  color: #5d6b78;
 }
 .iconScene {
   position: relative;
@@ -89,14 +89,14 @@
   position: absolute;
   inset: 9px;
   border-radius: 50%;
-  background: #d9f0f9;
+  background: #f3eadb;
   filter: blur(11px);
   opacity: 0.65;
 }
 .orbit {
   position: absolute;
   inset: 1px;
-  border: 1px dashed #c9d4df;
+  border: 1px dashed #d8cbb6;
   border-radius: 50%;
   transform: rotate(-25deg) scaleY(0.86);
 }
@@ -109,9 +109,9 @@
   border: 1px solid #ffffff;
   border-radius: 15px;
   color: #17344e;
-  background: linear-gradient(145deg, #fff, #e8eef4);
+  background: linear-gradient(145deg, #fff, #f5f1e9);
   box-shadow:
-    3px 6px 0 #d7e0e8,
+    3px 6px 0 #e2dacf,
     5px 12px 16px #0b1c3015;
   transform: rotate(-7deg);
   animation: icon-arrive 4s both;
@@ -126,9 +126,9 @@
   left: 11px;
   width: 6px;
   height: 6px;
-  background: #75bfd9;
+  background: #b79a6a;
   border-radius: 50%;
-  box-shadow: 0 0 0 4px #75bfd912;
+  box-shadow: 0 0 0 4px #b79a6a12;
   animation: satellite-arrive 4s both;
 }
 .iconDetail {
@@ -141,7 +141,7 @@
   height: 18px;
   border: 2px solid #fff;
   border-radius: 50%;
-  background: #428daf;
+  background: #8c7047;
   color: #fff;
   box-shadow: 0 3px 6px #0b1c3018;
 }
@@ -152,17 +152,17 @@
   border-radius: 50%;
 }
 .coins .iconPlate {
-  color: #216383;
-  background: linear-gradient(135deg, #f0faff, #b9e5f5);
+  color: #766143;
+  background: linear-gradient(135deg, #fffaf0, #e8d9bc);
   box-shadow:
-    3px 6px 0 #75bfd9,
+    3px 6px 0 #b79a6a,
     5px 12px 16px #0b1c3015;
 }
 .payment .iconPlate {
   color: #fff;
-  background: linear-gradient(140deg, #2e536e, #102438);
+  background: linear-gradient(140deg, #2a4256, #102438);
   box-shadow:
-    3px 6px 0 #a8bac9,
+    3px 6px 0 #c5b69f,
     5px 12px 16px #0b1c3015;
 }
 .payment .iconPlate svg {
@@ -212,7 +212,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #91d0e6;
+  color: #b79a6a;
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.09em;
@@ -221,7 +221,7 @@
   content: "";
   width: 22px;
   height: 1px;
-  background: #91d0e6;
+  background: #b79a6a;
 }
 :global(.mopc-cyan.mopc-cyan.mopc-cyan) .payments .paymentCopy h2 {
   margin: 16px 0 14px;
@@ -249,24 +249,24 @@
   gap: 20px;
   padding: 12px 20px;
   min-height: 46px;
-  border: 1px solid #75b8d1;
+  border: 1px solid #ded3bf;
   border-radius: 7px;
-  background: var(--mopc-blue-satin);
-  color: #0b1c30;
+  background: #f4efe5;
+  color: #0d2033;
   font-size: 13px;
   font-weight: 650;
-  box-shadow: var(--mopc-blue-depth);
+  box-shadow: none;
   transition:
     background 0.2s ease,
     border-color 0.2s ease;
 }
 .paymentLink:hover {
-  background: var(--mopc-blue-satin-hover);
-  border-color: #56a7c7;
-  color: #0b1c30;
+  background: #fffaf0;
+  border-color: #b79a6a;
+  color: #0d2033;
 }
 .paymentLink:focus-visible {
-  outline: 2px solid #91d0e6;
+  outline: 2px solid #b79a6a;
   outline-offset: 4px;
 }
 .paymentArt {
@@ -382,7 +382,7 @@
   font-family: Georgia, serif;
   font-size: 19px;
   font-style: italic;
-  color: #91d0e6;
+  color: #b79a6a;
 }
 .paymentOptions {
   position: absolute;
@@ -409,7 +409,7 @@
   background: #ffffff20;
 }
 .paymentOptions svg {
-  color: #91d0e6;
+  color: #b79a6a;
 }
 @keyframes icon-arrive {
   0% {

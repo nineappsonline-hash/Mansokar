@@ -3,9 +3,9 @@
   --mopc-ink: #18232b;
   --mopc-navy: #101d29;
   --mopc-hero: #142838;
-  --mopc-lime: #91d0e6;
-  --mopc-canvas: #f5f7f8;
-  --mopc-soft: #e9f0f0;
+  --mopc-lime: #b79a6a;
+  --mopc-canvas: #faf9f6;
+  --mopc-soft: #f5f1e9;
   background: var(--mopc-canvas);
   color: var(--mopc-ink);
   overflow: clip;
@@ -19,11 +19,11 @@
 .cyan-home .cyan-hero-copy h1 { color: #fff; font-weight: 800; line-height: 1.18; letter-spacing: -.035em; }
 .cyan-home .cyan-hero-copy h1 em { color: var(--mopc-lime); font-style: normal; }
 .cyan-home .cyan-hero-primary, .cyan-home .cyan-button {
-  background: var(--mopc-lime); color: var(--mopc-ink);
+  background: #0d2033; color: #fff;
   border: 0; border-radius: 12px; font-weight: 800;
 }
 .cyan-home .cyan-hero-primary:hover, .cyan-home .cyan-button:hover {
-  background: #cfeaf3; color: var(--mopc-ink);
+  background: #19364f; color: #fff;
 }
 .cyan-home .cyan-hero-secondary { color: #fff; }
 .cyan-home .cyan-finder-region {
@@ -57,7 +57,7 @@
   background: #fff; color: #253b45; border: 1px solid #e4ecee;
   border-radius: 18px; padding: 20px; box-shadow: 0 10px 24px rgba(16,29,41,.04);
 }
-.cyan-home .cyan-trust-strip svg, .cyan-home .cyan-benefits svg { color: #216383; }
+.cyan-home .cyan-trust-strip svg, .cyan-home .cyan-benefits svg { color: #766143; }
 .cyan-home .cyan-all-products { color: #2c5861; }
 .cyan-home .cyan-featured .product-card { background: #fff; border-radius: 18px; overflow: hidden; }
 .cyan-home .cyan-featured .product-info { padding: 16px; }

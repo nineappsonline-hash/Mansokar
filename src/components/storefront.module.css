@@ -946,7 +946,7 @@
   border-radius: 8px;
 }
 .store :global(.fit-card.confirmed) {
-  background: #eaf6fb;
+  background: #f5f1e9;
   border-color: #bfdbca;
   color: #367050;
 }
@@ -1432,7 +1432,7 @@
   padding: 16px 18px;
   border: 1px solid #d2e6ef;
   border-radius: 12px;
-  background: linear-gradient(120deg, #eff8fc, #f8fcfe);
+  background: linear-gradient(120deg, #f7f4ee, #f8fcfe);
   color: #284b60;
 }
 .store :global(.fit-card::before) {
@@ -1443,13 +1443,13 @@
   gap: 8px;
   font-size: 10px;
   letter-spacing: 0.16em;
-  color: #216383;
+  color: #766143;
 }
 .store :global(.fit-card .status-dot) {
   width: 6px;
   height: 6px;
-  background: #78c7e5;
-  box-shadow: 0 0 0 3px #78c7e51f;
+  background: #b79a6a;
+  box-shadow: 0 0 0 3px #b79a6a1f;
 }
 .store :global(.fit-card p) {
   margin: 0;
@@ -1460,7 +1460,7 @@
 }
 .store :global(.fit-card.confirmed) {
   border-color: #b9dcea;
-  background: linear-gradient(120deg, #eaf6fb, #f7fcfe);
+  background: linear-gradient(120deg, #f5f1e9, #faf8f4);
 }
 .store :global(.purchase-actions) {
   margin-top: 22px;

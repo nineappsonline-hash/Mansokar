@@ -1698,44 +1698,44 @@
 
 /* MOPC 2026 — shared chrome; retains all existing layout and navigation behavior. */
 .theme:global(.mopc-cyan) {
-  --bg: #f5f7f8;
+  --bg: #faf9f6;
   --surface: #fff;
-  --elevated: #e9f0f0;
+  --elevated: #f5f1e9;
   --light: #18232b;
   --muted: #587078;
   --border: #e3eaea;
-  --amber: #78c7e5;
+  --amber: #b79a6a;
   color: #18232b;
-  background: #f5f7f8;
+  background: #faf9f6;
 }
 .theme:global(.mopc-cyan) :global(.header) { background: #101d29; }
 .theme:global(.mopc-cyan) :global(.cyan-subnav) { background: #fff; border-bottom-color: #e3eaea; }
 .theme:global(.mopc-cyan) :global(.cyan-subnav .nav-active) { background: #233b4a; box-shadow: none; color: #fff; }
 .theme:global(.mopc-cyan) :global(.cyan-subnav nav > a:hover),
-.theme:global(.mopc-cyan) :global(.brand-nav-menu > summary:hover) { color: #216383; }
+.theme:global(.mopc-cyan) :global(.brand-nav-menu > summary:hover) { color: #766143; }
 .theme:global(.mopc-cyan) :global(.header-search-box .hero-search) { border-radius: 13px; background: #fff; border-color: #e3eaea; }
-.theme:global(.mopc-cyan) :global(.cart-count) { background: #91d0e6; border-color: #91d0e6; color: #18232b; }
-.theme:global(.mopc-cyan) :global(.button) { background: #233b4a; border-color: #233b4a; color: #fff; }
-.theme:global(.mopc-cyan) :global(.button:hover) { background: #365869; border-color: #365869; color: #fff; }
-.theme:global(.mopc-cyan) :global(.cyan-home) { background: #f5f7f8; }
+.theme:global(.mopc-cyan) :global(.cart-count) { background: #b79a6a; border-color: #b79a6a; color: #18232b; }
+.theme:global(.mopc-cyan) :global(.button) { background: #0d2033; border-color: #0d2033; color: #fff; }
+.theme:global(.mopc-cyan) :global(.button:hover) { background: #19364f; border-color: #19364f; color: #fff; }
+.theme:global(.mopc-cyan) :global(.cyan-home) { background: #faf9f6; }
 .theme:global(.mopc-cyan) :global(.cyan-hero) { background: #142838; }
-.theme:global(.mopc-cyan) :global(.cyan-hero h1 > em) { color: #91d0e6; font-style: normal; }
-.theme:global(.mopc-cyan) :global(.cyan-hero h1 > em::after) { border-color: #91d0e6; }
+.theme:global(.mopc-cyan) :global(.cyan-hero h1 > em) { color: #b79a6a; font-style: normal; }
+.theme:global(.mopc-cyan) :global(.cyan-hero h1 > em::after) { border-color: #b79a6a; }
 .theme:global(.mopc-cyan) :global(.cyan-vehicle-finder) { background: #fff; box-shadow: 0 18px 45px #101d2929; }
 .theme:global(.mopc-cyan) :global(.cyan-vehicle-finder > label) { background: #f2f5f5; border-color: #e3eaea; }
 .theme:global(.mopc-cyan) :global(.cyan-vehicle-finder > button),
-.theme:global(.mopc-cyan) :global(.cyan-button) { background: var(--mopc-blue-satin); color: #0b1c30; border-color: #75b8d1; box-shadow: var(--mopc-blue-depth); }
-.theme:global(.mopc-cyan) :global(.cyan-button:hover) { background: var(--mopc-blue-satin-hover); border-color: #56a7c7; color: #0b1c30; }
-.theme:global(.mopc-cyan) :global(.cyan-vehicle-finder > button:hover) { background: var(--mopc-blue-satin-hover); color: #0b1c30; }
-.theme:global(.mopc-cyan) :global(.cyan-section-title::after) { background: #91d0e6; }
+.theme:global(.mopc-cyan) :global(.cyan-button) { background: var(--mopc-action); color: #fff; border-color: #0d2033; box-shadow: var(--mopc-action-shadow); }
+.theme:global(.mopc-cyan) :global(.cyan-button:hover) { background: var(--mopc-action-hover); border-color: #19364f; color: #fff; }
+.theme:global(.mopc-cyan) :global(.cyan-vehicle-finder > button:hover) { background: var(--mopc-action-hover); color: #fff; }
+.theme:global(.mopc-cyan) :global(.cyan-section-title::after) { background: #b79a6a; }
 .theme:global(.mopc-cyan) :global(.cyan-trust-strip) { background: #fff; border: 1px solid #e3eaea; }
-.theme:global(.mopc-cyan) :global(.cyan-trust-strip svg) { color: #216383; }
+.theme:global(.mopc-cyan) :global(.cyan-trust-strip svg) { color: #766143; }
 .theme:global(.mopc-cyan) :global(.cyan-trust-strip > div:not(:last-child)) { border-color: #dce6e4; }
 .theme:global(.mopc-cyan) :global(.cyan-featured) { background: #fff; border-color: #e3eaea; }
-.theme:global(.mopc-cyan) :global(.product-card:hover) { border-color: #91d0e6; }
+.theme:global(.mopc-cyan) :global(.product-card:hover) { border-color: #b79a6a; }
 .theme:global(.mopc-cyan) :global(.product-card .product-brand) { background: #233b4a; border-color: #233b4a; }
 .theme:global(.mopc-cyan) :global(.cyan-benefits > div) { background: #fff; border: 1px solid #e3eaea; }
-.theme:global(.mopc-cyan) :global(.cyan-benefits .cyan-benefit-accent) { background: #eaf6fb; color: #216383; }
+.theme:global(.mopc-cyan) :global(.cyan-benefits .cyan-benefit-accent) { background: #f5f1e9; color: #766143; }
 .theme:global(.mopc-cyan) :global(.footer) { background: #101d29; }
 .theme:global(.mopc-cyan) :global(.cyan-newsletter) { background-color: #142838; }
-.theme:global(.mopc-cyan) :global(.footer a:hover) { color: #91d0e6; }
+.theme:global(.mopc-cyan) :global(.footer a:hover) { color: #b79a6a; }

@@ -117,7 +117,7 @@
   text-decoration: none;
 }
 .title a:hover {
-  color: #216383;
+  color: #766143;
 }
 .partNumber {
   display: flex;
@@ -137,8 +137,8 @@
 }
 .vehicles {
   padding: 8px 9px;
-  background: #f0f4f8;
-  border: 1px solid #dce5ee;
+  background: #f7f5f0;
+  border: 1px solid #e5dfd5;
   border-radius: 8px;
 }
 .vehicleApplications {
@@ -157,7 +157,7 @@
   height: 34px;
   flex-shrink: 0;
   background: #fff;
-  border: 1px solid #dce5ee;
+  border: 1px solid #e5dfd5;
   border-radius: 7px;
   color: #334c61;
 }
@@ -214,7 +214,7 @@
   gap: 7px;
   margin: 0 16px;
   padding: 10px 0;
-  border-top: 1px solid #e7ecf0;
+  border-top: 1px solid #eae5dc;
 }
 .price {
   display: flex;
@@ -372,7 +372,7 @@
   .card
   .footer
   :global(.purchase-buy:hover) {
-  background: #f0f4f8;
+  background: #f7f5f0;
   border-color: #52677a;
 }
 :global(.mopc-cyan) .card .footer :global(.purchase-buttons svg) {

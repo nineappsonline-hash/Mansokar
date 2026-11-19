@@ -528,13 +528,13 @@
 /* MOPC Figma 05 — responsive cart and checkout visual system.
    Existing payment, delivery and order logic is intentionally unchanged. */
 .commerce.commerce {
-  --amber: #216383;
+  --amber: #766143;
   color: #18232b;
   max-width: 1280px;
 }
 .header { border-bottom-color: #e3eaea; }
 .header h1 { color: #18232b; font-weight: 800; }
-.eyebrow { color: #216383; }
+.eyebrow { color: #766143; }
 .cartLayout { grid-template-columns: minmax(0,1fr) 410px; gap: 28px; }
 .items,
 .summary {
@@ -544,7 +544,7 @@
   box-shadow: 0 12px 30px #101d290c;
 }
 .itemsHeading { border-bottom-color: #e3eaea; }
-.itemsHeading > span { background: #eaf6fb; color: #216383; }
+.itemsHeading > span { background: #f5f1e9; color: #766143; }
 .cart.cart :global(.cart-row) { padding: 22px; gap: 18px; }
 .cart.cart :global(.cart-row + .cart-row) { border-top-color: #e3eaea; }
 .cart.cart :global(.cart-row-image) {
@@ -554,7 +554,7 @@
 }
 .cart.cart :global(.cart-row-info a) { color: #18232b; font-weight: 750; }
 .cart.cart :global(.cart-row-info .muted) { color: #3f5961; }
-.cart.cart :global(.cart-vehicle) { background: #eaf6fb; color: #216383; }
+.cart.cart :global(.cart-vehicle) { background: #f5f1e9; color: #766143; }
 .checkout.checkout :global(.checkout-header h1) { color: #18232b; font-weight: 800; }
 .checkout.checkout :global(.checkout-header) { border-bottom-color: #e3eaea; }
 .checkout.checkout :global(.checkout-stepper) {
@@ -565,7 +565,7 @@
   background: #233b4a;
   border-color: #233b4a;
   color: #fff;
-  box-shadow: 0 0 0 4px #eaf6fb;
+  box-shadow: 0 0 0 4px #f5f1e9;
 }
 .checkout.checkout :global(.checkout-layout) {
   grid-template-columns: minmax(0,1fr) 410px;
@@ -581,17 +581,17 @@
 .checkout.checkout :global(.checkout-panel-head) { border-bottom-color: #e3eaea; }
 .checkout.checkout :global(.checkout-panel-icon),
 .checkout.checkout :global(.checkout-summary-icon) {
-  background: #eaf6fb;
-  border-color: #c9e8f3;
-  color: #216383;
+  background: #f5f1e9;
+  border-color: #e4d8c5;
+  color: #766143;
 }
 .checkout.checkout :global(.checkout-panel-title),
 .checkout.checkout :global(.checkout-summary-head h2) { color: #18232b; font-weight: 800; }
-.checkout.checkout :global(.checkout-panel-kicker) { color: #216383; }
+.checkout.checkout :global(.checkout-panel-kicker) { color: #766143; }
 .checkout.checkout :global(.checkout-input),
 .checkout.checkout :global(.checkout-select),
 .checkout.checkout :global(.checkout-textarea) {
-  background: #f5f7f8;
+  background: #faf9f6;
   border: 1px solid #e3eaea;
   border-radius: 11px;
   min-height: 52px;
@@ -599,24 +599,24 @@
 .checkout.checkout :global(.checkout-input:focus),
 .checkout.checkout :global(.checkout-select:focus),
 .checkout.checkout :global(.checkout-textarea:focus) {
-  border-color: #73bbd8;
-  box-shadow: 0 0 0 3px #91d0e655;
+  border-color: #b79a6a;
+  box-shadow: 0 0 0 3px #b79a6a55;
 }
 .checkout.checkout :global(.payment-method-card.selected),
 .commerce.commerce .deliverySelected {
-  background: #eaf6fb;
-  border-color: #78bed9;
-  box-shadow: 0 0 0 1px #78bed9;
+  background: #f5f1e9;
+  border-color: #b79a6a;
+  box-shadow: 0 0 0 1px #b79a6a;
 }
 .checkout.checkout :global(.checkout-summary-empty),
 .checkout.checkout :global(.checkout-assurances) {
-  background: #f5f7f8;
+  background: #faf9f6;
   border-color: #e3eaea;
 }
-.commerce.commerce .deliveryOption:hover { border-color: #78bed9; }
-.deliveryOption input { accent-color: #216383; }
+.commerce.commerce .deliveryOption:hover { border-color: #b79a6a; }
+.deliveryOption input { accent-color: #766143; }
 .commerce a:focus-visible,
-.commerce button:focus-visible { outline-color: #216383; }
+.commerce button:focus-visible { outline-color: #766143; }
 @media (max-width: 960px) {
   .cartLayout,
   .checkout.checkout :global(.checkout-layout) { grid-template-columns: minmax(0,1fr); }
@@ -669,9 +669,9 @@
   flex-direction: column;
   gap: 3px;
   padding: 9px 11px;
-  background: #eaf6fb;
+  background: #f5f1e9;
   border-radius: 9px;
-  color: #216383;
+  color: #766143;
 }
 .checkout.checkout :global(.order-item-price) {
   font-weight: 800;
@@ -720,8 +720,8 @@
   width: fit-content;
   padding: 5px 8px;
   border-radius: 7px;
-  background: #eaf6fb;
-  color: #216383;
+  background: #f5f1e9;
+  color: #766143;
 }
 .cart.cart :global(.cart-fitment-note) {
   color: #806030;
@@ -750,8 +750,8 @@
   gap: 3px;
   margin: 4px 0;
   padding: 9px 11px;
-  background: #eaf6fb;
-  color: #216383;
+  background: #f5f1e9;
+  color: #766143;
   border-radius: 9px;
   max-height: 180px;
   overflow-y: auto;

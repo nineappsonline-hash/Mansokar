@@ -13,13 +13,13 @@
 }
 .panel.panel :global(.eyebrow) {
   display: none;
-  color: #216383;
+  color: #766143;
   font-size: 10px;
   letter-spacing: 0.1em;
 }
 .panel.panel :global(.status-dot) {
-  background: #78c7e5;
-  box-shadow: 0 0 0 3px #78c7e514;
+  background: #b79a6a;
+  box-shadow: 0 0 0 3px #b79a6a14;
 }
 .applications {
   margin-top: 0;
