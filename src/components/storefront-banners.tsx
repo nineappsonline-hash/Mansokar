@@ -10,7 +10,6 @@ import {
   Headset,
   ShieldCheck,
   Truck,
-  CalendarDays,
 } from "lucide-react";
 import type { Locale } from "@/lib/catalog";
 import styles from "./storefront-banners.module.css";
@@ -151,29 +150,14 @@ export function PaymentBanner({ locale }: { locale: Locale }) {
         </Link>
       </div>
       <div className={styles.paymentArt} aria-hidden="true">
-        <div className={styles.artFrame}>
-          <div className={styles.artHeader}>
-            <span>MOPC</span>
-            <span>01 / 02</span>
-          </div>
-          <div className={styles.artHeading}>
-            <span>{ar ? "اختيارات تناسبك" : "WAYS TO PAY"}</span>
-            <span className={styles.artRule} />
-          </div>
-          <div className={styles.artMethods}>
-            <div className={styles.artMethod}>
-              <span className={styles.artMethodIcon}><CreditCard size={21} /></span>
-              <span>{ar ? "كروت بنكية" : "Bank cards"}</span>
-              <small>01</small>
-            </div>
-            <div className={styles.artMethod}>
-              <span className={styles.artMethodIcon}><CalendarDays size={21} /></span>
-              <span>{ar ? "خيارات تقسيط" : "Installment options"}</span>
-              <small>02</small>
-            </div>
-          </div>
-          <div className={styles.artFooter}>PAYMENT, YOUR WAY.</div>
-        </div>
+        <img
+          src="/images/payment-editorial-navy.png"
+          alt=""
+          width={1536}
+          height={1024}
+          loading="lazy"
+          decoding="async"
+        />
       </div>
     </BannerMotion>
   );

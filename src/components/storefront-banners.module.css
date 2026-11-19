@@ -278,117 +278,31 @@
   outline-offset: 4px;
 }
 .paymentArt {
-  position: relative;
-  justify-self: center;
-  width: min(100%, 400px);
-  padding: 12px;
-  direction: ltr;
-}
-.paymentArt::before {
-  content: "";
   position: absolute;
-  inset: 0;
-  border: 1px solid #a49a8952;
-  border-radius: 15px;
-  transform: translate(11px, -11px);
-  pointer-events: none;
-}
-.artFrame {
-  position: relative;
+  z-index: 0;
+  inset-block: 0;
+  left: 0;
+  width: 58%;
   overflow: hidden;
-  padding: 22px 24px 18px;
-  border: 1px solid #536476;
-  border-radius: 14px;
-  background: linear-gradient(145deg, #1c354c, #14283b 62%, #102235);
-  box-shadow: 0 20px 32px #00000024, inset 0 1px 0 #ffffff1a;
-  animation: card-arrive 1.6s ease-out both;
-}
-.artFrame::before {
-  content: "";
-  position: absolute;
-  width: 270px;
-  height: 270px;
-  inset: -155px -115px auto auto;
-  border: 1px solid #ffffff0c;
-  border-radius: 50%;
-  box-shadow: 0 0 0 30px #ffffff04, 0 0 0 65px #ffffff03;
   pointer-events: none;
+  mask-image: linear-gradient(to right, #000 62%, transparent 100%);
 }
-.artHeader {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #ffffff20;
-  color: #f7f4ee;
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: .18em;
+.paymentArt img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 42% 54%;
+  animation: image-arrive 1.8s ease-out both;
 }
-.artHeader span:last-child {
-  color: #c7ab80;
-  font-size: 10px;
-  font-weight: 500;
+.payments:dir(ltr) .paymentArt {
+  left: auto;
+  right: 0;
+  transform: scaleX(-1);
 }
-.artHeading {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin: 21px 0 14px;
-  color: #e6cba4;
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: .02em;
-}
-.artRule {
-  flex: 1;
-  height: 1px;
-  background: #c7ab8050;
-}
-.artMethods {
-  position: relative;
-  display: grid;
-  gap: 8px;
-}
-.artMethod {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  min-height: 49px;
-  padding: 7px 12px;
-  border: 1px solid #ffffff1c;
-  border-radius: 8px;
-  background: #ffffff0b;
-  color: #f7f8fa;
-  font-size: 12px;
-  font-weight: 600;
-}
-.artMethodIcon {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 6px;
-  background: #c4ab8440;
-  color: #ead2ad;
-}
-.artMethod small {
-  color: #c7ab80;
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-  letter-spacing: .08em;
-}
-.artFooter {
-  position: relative;
-  margin-top: 17px;
-  color: #aab8c5;
-  font-family: Arial, sans-serif;
-  font-size: 8px;
-  letter-spacing: .17em;
+@keyframes image-arrive {
+  from { opacity: .45; scale: 1.035; }
+  to { opacity: 1; scale: 1; }
 }
 @keyframes icon-arrive {
   0% {
@@ -491,15 +405,22 @@
   .paymentCopy p {
     margin-bottom: 20px;
   }
-  .paymentArt {
-    width: min(100%, 340px);
-    margin-inline: auto;
+  .payments.payments {
+    padding-bottom: 0;
+    gap: 0;
   }
-  .artFrame {
-    padding: 18px 18px 16px;
+  .paymentArt,
+  .payments:dir(ltr) .paymentArt {
+    position: relative;
+    inset: auto;
+    width: calc(100% + 48px);
+    height: 230px;
+    margin: 10px -24px 0;
+    transform: none;
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 24%);
   }
-  .artHeading {
-    margin-block: 16px 12px;
+  .paymentArt img {
+    object-position: 31% 52%;
   }
 }
 @media (max-width: 360px) {
