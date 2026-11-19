@@ -1445,6 +1445,53 @@ export async function POST(
         const { error } = await commit(input);
         if (error) throw error;
         details = { id: input.id };
+      } else if (action === "admin-category-delete") {
+        const input = z
+          .object({
+            slug: z
+              .string()
+              .regex(/^[a-z0-9-]+$/)
+              .max(100),
+          })
+          .parse(JSON.parse(b.json));
+        if (input.slug === "spare-parts")
+          throw Error("الفئة الأساسية لا يمكن حذفها");
+        const [products, children, coupons] = await Promise.all([
+          db
+            .from("products")
+            .select("id", { count: "exact", head: true })
+            .eq("category", input.slug),
+          db
+            .from("categories")
+            .select("slug", { count: "exact", head: true })
+            .eq("parent_slug", input.slug),
+          db
+            .from("coupons")
+            .select("code", { count: "exact", head: true })
+            .eq("scope_category", input.slug),
+        ]);
+        for (const result of [products, children, coupons])
+          if (result.error) throw result.error;
+        if (products.count)
+          throw Error(
+            `انقل ${products.count} منتج إلى فئة أخرى قبل حذف هذه الفئة`,
+          );
+        if (children.count)
+          throw Error(
+            `Move or delete ${children.count} child categories first`,
+          );
+        if (coupons.count)
+          throw Error(
+            `Update ${coupons.count} coupons that use this category first`,
+          );
+        const { data: deleted, error } = await db
+          .from("categories")
+          .delete()
+          .eq("slug", input.slug)
+          .select("slug");
+        if (error) throw error;
+        if (!deleted?.length) throw Error("Category not found");
+        details = { slug: input.slug, deleted: true };
       } else if (action === "admin-category-image") {
         const input = z
           .object({
@@ -1496,6 +1543,7 @@ export async function POST(
         const input = z
           .object({
             kind: z.enum(["manufacturer", "category"]),
+            mode: z.enum(["create", "update"]).optional(),
             parent_slug: z
               .string()
               .regex(/^[a-z0-9-]+$/)
@@ -1531,7 +1579,20 @@ export async function POST(
               .optional(),
           })
           .parse(JSON.parse(b.json));
-        const { error } = await commit(input);
+        if (input.kind === "category" && input.mode) {
+          const { data: existing, error: lookupError } = await db
+            .from("categories")
+            .select("slug")
+            .eq("slug", input.slug!)
+            .maybeSingle();
+          if (lookupError) throw lookupError;
+          if (input.mode === "create" && existing)
+            throw Error("رمز الفئة مستخدم بالفعل. اختار رمزًا مختلفًا.");
+          if (input.mode === "update" && !existing)
+            throw Error("الفئة غير موجودة");
+        }
+        const { mode: ignoredMode, ...taxonomy } = input;
+        const { error } = await commit(taxonomy);
         if (error) throw error;
         details = { kind: input.kind };
       } else if (action === "admin-payment-reconcile") {
