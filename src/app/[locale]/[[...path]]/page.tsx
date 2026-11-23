@@ -20,7 +20,6 @@ import {
   publicProductSlug,
   carContext,
 } from "@/lib/public-product";
-import { ResponsiveListingFilters } from "@/components/responsive-listing-filters";
 import { CatalogCarFilters } from "@/components/catalog-car-filters";
 import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
@@ -576,8 +575,8 @@ export default async function Page({ params, searchParams }: Props) {
     vehicleModels,
     brands,
   );
-  const cards = (items: Product[], listing = false) => (
-    <div className={listing ? "product-grid listing-product-grid" : "product-grid"}>
+  const cards = (items: Product[]) => (
+    <div className="product-grid">
       {items.map((p, i) => (
         <Reveal key={p.id} delay={(i % 4) * 0.06}>
           <Card
@@ -855,7 +854,15 @@ export default async function Page({ params, searchParams }: Props) {
             })}
           </nav>
         )}
-        <ResponsiveListingFilters label={locale === "ar" ? "بحث وتصفية المنتجات" : "Search & filter products"}>
+        <details
+          open={!modelListing}
+          className={modelListing ? "model-product-filters" : undefined}
+        >
+          <summary hidden={!modelListing}>
+            {locale === "ar"
+              ? "بحث وتصفية المنتجات"
+              : "Search & filter products"}
+          </summary>
           <form className="catalog-filters panel">
             <CatalogCarFilters
               key={`${q.make ?? vehicle?.brand ?? ""}/${q.model ?? vehicle?.model ?? ""}/${q.year ?? vehicle?.year ?? ""}`}
@@ -942,7 +949,7 @@ export default async function Page({ params, searchParams }: Props) {
               {locale === "ar" ? "مسح الفلاتر" : "Reset filters"}
             </Link>
           </form>
-        </ResponsiveListingFilters>
+        </details>
         <div className="results-heading">
           <p>
             {serverResults?.total ?? filtered.length}{" "}
@@ -968,7 +975,6 @@ export default async function Page({ params, searchParams }: Props) {
             serverResults
               ? filtered
               : filtered.slice((page - 1) * 12, page * 12),
-            true,
           )
         ) : (
           <div className="panel">
