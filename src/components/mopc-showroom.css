@@ -369,33 +369,3 @@
     min-height: 0;
   }
 }
-
-/* Catalog-only responsive layout. */
-.listing-responsive-filters > summary {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  list-style: none;
-  padding: 13px 16px;
-  border: 1px solid #dce5eb;
-  border-radius: 12px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-.listing-responsive-filters > summary::-webkit-details-marker { display: none; }
-.listing-responsive-filters > summary::after {
-  content: "+";
-  margin-inline-start: auto;
-  font-size: 20px;
-}
-.listing-responsive-filters[open] > summary::after { content: "−"; }
-@media (min-width: 768px) {
-  .listing-responsive-filters > summary { display: none; }
-}
-@media (min-width: 1024px) {
-  .mopc-cyan.mopc-cyan.mopc-cyan .product-grid.listing-product-grid,
-  .product-grid.listing-product-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-  }
-}
