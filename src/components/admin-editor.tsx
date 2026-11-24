@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { emptyImportMessage, importFeedback } from "@/lib/import-feedback";
 import { ApiForm } from "./forms";
 import uploadStyles from "./product-upload.module.css";
@@ -58,6 +58,9 @@ export function Importer({
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [validated, setValidated] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+  const [interactive, setInteractive] = useState(false);
+  useEffect(() => setInteractive(true), []);
   const [filters, setFilters] = useState({
     make: "",
     model: "",
@@ -298,18 +301,20 @@ export function Importer({
         CSV / XLSX (max 1 MB)
         <input
           type="file"
+          ref={fileInput}
           accept=".csv,.xlsx"
-          disabled={busy}
+          disabled={busy || !interactive}
           onChange={(e) => {
             const selected = e.target.files?.[0] || null;
             if (!selected) return;
-            e.currentTarget.value = "";
             setFile(selected);
             update("[]");
             void submit(false, selected);
           }}
         />
       </label>
+      {!interactive && <p role="alert">Loading import controls… If this message remains, reload the page.</p>}
+      <button type="button" className="button secondary" disabled={busy || !interactive} onClick={() => { if (fileInput.current) { fileInput.current.value = ""; fileInput.current.click(); } }}>Choose another file</button>
       <p role="status" aria-live="polite" className="prose" style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
         {file && <strong>{file.name} ({Math.ceil(file.size / 1024)} KB)<br /></strong>}
         {message}
@@ -335,7 +340,7 @@ export function Importer({
         <button
           className="button secondary"
           disabled={busy || (!file && json.trim() === "[]")}
-          onClick={() => submit(false)}
+          onClick={() => submit(false, fileInput.current?.files?.[0] ?? file)}
         >
           {busy && !validated ? "Checking…" : "Check file"}
         </button>
