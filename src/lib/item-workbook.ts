@@ -172,7 +172,7 @@ export async function exportItemWorkbook(
     ],
     [
       "Cars",
-      "Repeat the same part names, item brand, part number, type and item details on another row for each make/model. Leave item_key and SKU blank for new items; existing exported SKUs update items. Enter start_year and end_year (2015 and 2020 includes every year). For non-contiguous years use years instead (2021, 2023); do not mix both. Enter All in car_make for every saved make, in car_model for every model of the selected make, or in years for every saved year of each matched model. Blank lower-level fields alongside All also mean All. All never creates new makes, models or years; it uses only saved catalog options listed in Car models and Model years sheets. Models without matching saved years are skipped and counted in the preview. Missing explicit makes/models are created on confirmed import. Use existing codes or names to avoid duplicates.",
+      "Repeat the same part names, item brand, part number, type and item details on another row for each make/model. Leave item_key and SKU blank for new items; existing exported SKUs update items. Enter start_year and end_year (2015 and 2020 includes every year). For non-contiguous years use years instead (2021, 2023); do not mix both. Enter All in car_make for every saved make, in car_model for every model of the selected make, or in years for every saved year of each matched model. When car_make and car_model are both filled and all three year fields are blank, years defaults to All saved years. Blank lower-level fields alongside All also mean All. All never creates new makes, models or years; it uses only saved catalog options listed in Car models and Model years sheets. Models without matching saved years are skipped and counted in the preview. Missing explicit makes/models are created on confirmed import. Use existing codes or names to avoid duplicates.",
     ],
     [
       "Prices",
@@ -464,7 +464,7 @@ export function parseItemSheet(sheet: ExcelJS.Worksheet) {
       throw Error(
         `Row ${n}: use All by itself for car years, or enter specific years`,
       );
-    const yearAll = yearFields.some((value) => all(value || ""));
+    const yearAll = yearFields.some((value) => all(value || "")) || Boolean(v.car_make && v.car_model && yearFields.every((value) => !value));
     if (
       yearAll &&
       [v.years, v.start_year, v.end_year].some((value) => value && !all(value))
