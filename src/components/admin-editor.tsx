@@ -297,29 +297,32 @@ export function Importer({
           </button>
         </div>
       </fieldset>
-      <form action="/api/admin-import-preview" method="post" encType="multipart/form-data" target="_blank" className="stack">
-      <label>
-        CSV / XLSX (max 1 MB)
-        <input
-          type="file"
-          ref={fileInput}
-          name="file"
-          required
-          accept=".csv,.xlsx"
-          disabled={busy}
-          onChange={(e) => {
-            const selected = e.target.files?.[0] || null;
-            if (!selected) return;
-            setFile(selected);
-            update("[]");
-            void submit(false, selected);
-          }}
-        />
-      </label>
-      <button type="submit" className="button secondary" disabled={busy}>Check file directly (opens result in new tab)</button>
-      </form>
-      {!interactive && <p role="alert">Automatic import controls are loading. You can still check the file directly above.</p>}
-      <button type="button" className="button secondary" disabled={busy || !interactive} onClick={() => { if (fileInput.current) { fileInput.current.value = ""; fileInput.current.click(); } }}>Choose another file</button>
+      <div className="stack" style={{border:"2px dashed var(--border)",borderRadius:12,padding:24,textAlign:"center"}}
+        onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "copy"; }}
+        onDrop={(e) => {
+          e.preventDefault();
+          if (busy) return;
+          const selected = e.dataTransfer.files[0];
+          if (!selected) { setMessage("No file received from the operating system."); return; }
+          setFile(selected);
+          update("[]");
+          void submit(false, selected);
+        }}>
+        <strong>Drag and drop your Excel file here</strong>
+        <span>اسحب ملف Excel من مدير الملفات وحطه هنا مباشرة</span>
+        <label>
+          Or choose CSV / XLSX (max 1 MB)
+          <input type="file" ref={fileInput} accept=".csv,.xlsx" disabled={busy}
+            onChange={(e) => {
+              const selected = e.currentTarget.files?.[0];
+              if (!selected) { setMessage("No file received from the file picker. Try drag and drop."); return; }
+              setFile(selected);
+              update("[]");
+              void submit(false, selected);
+            }} />
+        </label>
+      </div>
+      {!interactive && <p role="alert">Loading import controls…</p>}
       <p role="status" aria-live="polite" className="prose" style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
         {file && <strong>{file.name} ({Math.ceil(file.size / 1024)} KB)<br /></strong>}
         {message}
