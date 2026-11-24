@@ -24,7 +24,7 @@ export function applicationSpecs(
     ),
     ...Object.fromEntries(
       applications
-        .filter((a) => a.years.length)
+        
         .map((a) => [
           `car_years:${a.model_id}`,
           [...new Set(a.years)].sort((a, b) => a - b).join(","),
