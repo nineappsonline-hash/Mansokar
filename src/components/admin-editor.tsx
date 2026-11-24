@@ -58,6 +58,7 @@ export function Importer({
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
   const [validated, setValidated] = useState(false);
+  const [compatibilityPreview, setCompatibilityPreview] = useState<{sku:string;name:string;make:string;model:string;years:number[]}[]>([]);
   const fileInput = useRef<HTMLInputElement>(null);
   const [interactive, setInteractive] = useState(false);
   useEffect(() => setInteractive(true), []);
@@ -103,7 +104,7 @@ export function Importer({
         ? "Importing checked products…"
         : "Reading and checking your file…",
     );
-    if (!commit) setValidated(false);
+    if (!commit) { setValidated(false); setCompatibilityPreview([]); }
     try {
       let checkedJson = json;
       if (!commit && selectedFile) {
@@ -132,6 +133,7 @@ export function Importer({
       const data = await response.json();
       if (!response.ok) throw Error(importFeedback(data));
       setMessage(data.message);
+      setCompatibilityPreview(commit ? [] : (data.compatibilityPreview ?? []));
       setValidated(!commit);
     } catch (error) {
       setValidated(false);
@@ -155,7 +157,7 @@ export function Importer({
         Leave both SKU and item_key blank for new products; both are automatic.
         For multiple cars, repeat the same part names, item brand, part number,
         type and item details on each car row. Enter start_year and end_year
-        (both included). Enter All for a make, model or year to match saved
+        (both included). Blank years with a specified make and model mean all saved years. Enter All for a make, model or year to match saved
         options; preview the expanded matches before importing. Missing explicit
         cars are created on confirmed import. Warranty is entered once in
         months. Prices are in Egyptian pounds. SKU, URL, descriptions and SEO
@@ -327,6 +329,10 @@ export function Importer({
         {file && <strong>{file.name} ({Math.ceil(file.size / 1024)} KB)<br /></strong>}
         {message}
       </p>
+      {validated && compatibilityPreview.length > 0 && <details open>
+        <summary>Compatibility preview — {compatibilityPreview.length} matches (review before importing)</summary>
+        <div style={{maxHeight:420,overflow:"auto"}}><table style={{width:"100%"}}><thead><tr><th>Product / SKU</th><th>Make</th><th>Model</th><th>Years</th></tr></thead><tbody>{compatibilityPreview.map((app,i) => <tr key={i}><td>{app.name}<br/><small>{app.sku}</small></td><td>{app.make}</td><td>{app.model}</td><td>{app.years.join(", ")}</td></tr>)}</tbody></table></div>
+      </details>}
       <details>
         <summary>Advanced: review parsed spreadsheet data</summary>
         <label>
