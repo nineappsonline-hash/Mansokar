@@ -297,13 +297,16 @@ export function Importer({
           </button>
         </div>
       </fieldset>
+      <form action="/api/admin-import-preview" method="post" encType="multipart/form-data" target="_blank" className="stack">
       <label>
         CSV / XLSX (max 1 MB)
         <input
           type="file"
           ref={fileInput}
+          name="file"
+          required
           accept=".csv,.xlsx"
-          disabled={busy || !interactive}
+          disabled={busy}
           onChange={(e) => {
             const selected = e.target.files?.[0] || null;
             if (!selected) return;
@@ -313,7 +316,9 @@ export function Importer({
           }}
         />
       </label>
-      {!interactive && <p role="alert">Loading import controls… If this message remains, reload the page.</p>}
+      <button type="submit" className="button secondary" disabled={busy}>Check file directly (opens result in new tab)</button>
+      </form>
+      {!interactive && <p role="alert">Automatic import controls are loading. You can still check the file directly above.</p>}
       <button type="button" className="button secondary" disabled={busy || !interactive} onClick={() => { if (fileInput.current) { fileInput.current.value = ""; fileInput.current.click(); } }}>Choose another file</button>
       <p role="status" aria-live="polite" className="prose" style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
         {file && <strong>{file.name} ({Math.ceil(file.size / 1024)} KB)<br /></strong>}
