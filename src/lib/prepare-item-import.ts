@@ -24,7 +24,7 @@ export function prepareItemRows(
         z.object({
           make: z.string().min(1).max(100),
           model: z.string().min(1).max(100),
-          years: z.array(z.number().int().min(1950).max(2100)).min(1).max(151),
+          years: z.array(z.number().int().min(1950).max(2100)).max(151),
         }),
       )
       .max(1000)
