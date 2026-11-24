@@ -23,7 +23,7 @@ export function productCardVehicles(
     if (
       !verified &&
       (!application ||
-        (context.year && !application.years.includes(context.year)))
+        (context.year && application.years.length > 0 && !application.years.includes(context.year)))
     )
       return [];
     const model = catalog.models.find((m) => m.id === context.modelId);
