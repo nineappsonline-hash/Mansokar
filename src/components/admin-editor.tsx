@@ -93,7 +93,7 @@ export function Importer({
     .sort((a, b) => a.name.en.localeCompare(b.name.en));
   const brandName = (slug: string) =>
     carBrands.find((brand) => brand.slug === slug)?.name || slug;
-  async function submit(commit: boolean) {
+  async function submit(commit: boolean, selectedFile: File | null = file) {
     setBusy(true);
     setMessage(
       commit
@@ -103,10 +103,10 @@ export function Importer({
     if (!commit) setValidated(false);
     try {
       let checkedJson = json;
-      if (!commit && file) {
-        if (file.size > 1_000_000) throw Error("Maximum file size is 1 MB");
+      if (!commit && selectedFile) {
+        if (selectedFile.size > 1_000_000) throw Error("Maximum file size is 1 MB");
         const upload = new FormData();
-        upload.append("file", file);
+        upload.append("file", selectedFile);
         const parsed = await fetch("/api/admin-file", {
           method: "POST",
           body: upload,
@@ -302,16 +302,18 @@ export function Importer({
           disabled={busy}
           onChange={(e) => {
             const selected = e.target.files?.[0] || null;
+            if (!selected) return;
+            e.currentTarget.value = "";
             setFile(selected);
             update("[]");
-            setMessage(
-              selected
-                ? `${selected.name} selected. Click Check file to read and validate its products.`
-                : "",
-            );
+            void submit(false, selected);
           }}
         />
       </label>
+      <p role="status" aria-live="polite" className="prose" style={{ whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>
+        {file && <strong>{file.name} ({Math.ceil(file.size / 1024)} KB)<br /></strong>}
+        {message}
+      </p>
       <details>
         <summary>Advanced: review parsed spreadsheet data</summary>
         <label>
@@ -345,9 +347,7 @@ export function Importer({
           Import checked products
         </button>
       </div>
-      <p role="status" className="prose" style={{ whiteSpace: "pre-wrap" }}>
-        {message}
-      </p>
+
     </div>
   );
 }
