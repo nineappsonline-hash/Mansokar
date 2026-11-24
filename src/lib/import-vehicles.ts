@@ -108,8 +108,8 @@ export function planImportVehicles(
                   ? input.years.filter((year) => savedYears.includes(year))
                   : input.years;
             if (!years.length) {
-              if (wildcard) {
-                skippedModels.add(model.id);
+              if (wildcard || input.years === "all") {
+                skippedModels.add(`${brand.slug}/${model.slug}`);
                 continue;
               }
               throw Error(
@@ -119,7 +119,7 @@ export function planImportVehicles(
             expanded.push({ make: brand.slug, model: model.slug, years });
           }
         }
-        if (!expanded.length)
+        if (!expanded.length && input.years !== "all")
           throw Error(`No saved car models match ${input.make}/${input.model}`);
         if (expanded.length > 1000)
           throw Error(
