@@ -59,6 +59,7 @@ export function prepareItemRows(
         : null,
       vehicles: applications.flatMap((a) => {
         const m = models.find((m) => m.id === a.model_id)!;
+        if (!a.years.length) return [{name: {ar: `${m.brand} ${m.name.ar}`, en: `${m.brand} ${m.name.en}`}}];
         return [...a.years]
           .sort((a, b) => a - b)
           .map((year) => ({
