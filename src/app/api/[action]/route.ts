@@ -1037,6 +1037,7 @@ export async function POST(
         >["additions"] = [];
         let expandedMatches = 0;
         let skippedModels = 0;
+        let skippedModelNames: string[] = [];
         let compatibilityPreview: { sku: string; name: string; make: string; model: string; years: number[] }[] = [];
         if (modern) {
           const [
@@ -1063,6 +1064,7 @@ export async function POST(
           compatibilityPreview = plan.rows.flatMap((row) => (row.applications_input ?? []).map((app: {make: string; model: string; years: number[]}) => ({sku: row.sku, name: row.name?.en || row.name?.ar || "", ...app})));
           vehicleAdditions = plan.additions;
           skippedModels = plan.skippedModels.length;
+          skippedModelNames = plan.skippedModels;
           expandedMatches = plan.rows.reduce(
             (count, row) => count + (row.applications_input?.length || 0),
             0,
@@ -1158,7 +1160,7 @@ export async function POST(
         if (action === "admin-import-preview")
           return NextResponse.json({
             compatibilityPreview,
-            message: `Dry run: ${result.rows.length} valid items; ${expandedMatches} car model matches; ${vehicleAdditions.length} new car models will be created; ${skippedModels} models without matching saved years skipped. No changes saved.`,
+            message: `Dry run: ${result.rows.length} valid items; ${expandedMatches} car model matches; ${vehicleAdditions.length} new car models will be created; ${skippedModels} models without matching saved years skipped${skippedModelNames.length ? ` (${skippedModelNames.join(", ")}) — no compatibility added for these models` : ""}. No changes saved.`,
           });
         if (modern) {
           const { error } = await db.from("manufacturers").upsert(
