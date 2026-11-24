@@ -65,10 +65,22 @@ export async function POST(
         },
         { status: 503 },
       );
-    const raw = (await readLimited(request, 2_000_000)).toString("utf8");
-    if (raw.length > 2_000_000)
-      return NextResponse.json({ error: "Request too large" }, { status: 413 });
-    const b = JSON.parse(raw);
+    let b: any;
+    if (action === "admin-import-preview" && request.headers.get("content-type")?.startsWith("multipart/form-data")) {
+      await requireAdmin();
+      const { limitedFormData } = await import("@/lib/body");
+      const { parseSpreadsheet } = await import("@/lib/spreadsheets");
+      const form = await limitedFormData(request, 1_100_000);
+      const file = form.get("file");
+      if (!(file instanceof File) || file.size > 1_000_000)
+        throw Error("Maximum upload is 1 MB");
+      b = { rows: await parseSpreadsheet(await file.arrayBuffer(), file.name) };
+    } else {
+      const raw = (await readLimited(request, 2_000_000)).toString("utf8");
+      if (raw.length > 2_000_000)
+        return NextResponse.json({ error: "Request too large" }, { status: 413 });
+      b = JSON.parse(raw);
+    }
     responseLocale = (b.ui_locale ?? b.locale) === "ar" ? "ar" : "en";
     // Authenticate privileged requests before loading the vehicle catalog or
     // executing any privileged database operation. A client-supplied action
