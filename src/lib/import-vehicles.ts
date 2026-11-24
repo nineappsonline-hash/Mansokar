@@ -108,6 +108,10 @@ export function planImportVehicles(
                   ? input.years.filter((year) => savedYears.includes(year))
                   : input.years;
             if (!years.length) {
+              if (input.years === "all" && !wildcard) {
+                expanded.push({ make: brand.slug, model: model.slug, years: [] });
+                continue;
+              }
               if (wildcard || input.years === "all") {
                 skippedModels.add(`${brand.slug}/${model.slug}`);
                 continue;
