@@ -74,7 +74,7 @@ export function publicProduct(
       readApplications(p.specs).some(
         (a) =>
           a.model_id === context.modelId &&
-          (!context.year || a.years.includes(context.year)),
+          (!context.year || !a.years.length || a.years.includes(context.year)),
       ));
   const name = matches
     ? {
