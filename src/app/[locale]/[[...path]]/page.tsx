@@ -170,7 +170,7 @@ export async function generateMetadata({
       );
       if (
         application &&
-        (!context.year || application.years.includes(context.year))
+        (!context.year || !application.years.length || application.years.includes(context.year))
       ) {
         yearKeywords = context.year
           ? [context.name[locale === "ar" ? "ar" : "en"]]
@@ -701,7 +701,7 @@ export default async function Page({ params, searchParams }: Props) {
               m &&
               (!q.make || m.brand === q.make) &&
               (!q.model || m.slug === q.model) &&
-              (!q.year || a.years.includes(Number(q.year)))
+              (!q.year || !a.years.length || a.years.includes(Number(q.year)))
             );
           }) ||
           vehicles.some(
