@@ -331,7 +331,7 @@ export function Importer({
       </p>
       {validated && compatibilityPreview.length > 0 && <details open>
         <summary>Compatibility preview — {compatibilityPreview.length} matches (review before importing)</summary>
-        <div style={{maxHeight:420,overflow:"auto"}}><table style={{width:"100%"}}><thead><tr><th>Product / SKU</th><th>Make</th><th>Model</th><th>Years</th></tr></thead><tbody>{compatibilityPreview.map((app,i) => <tr key={i}><td>{app.name}<br/><small>{app.sku}</small></td><td>{app.make}</td><td>{app.model}</td><td>{app.years.join(", ")}</td></tr>)}</tbody></table></div>
+        <div style={{maxHeight:420,overflow:"auto"}}><table style={{width:"100%"}}><thead><tr><th>Product / SKU</th><th>Make</th><th>Model</th><th>Years</th></tr></thead><tbody>{compatibilityPreview.map((app,i) => <tr key={i}><td>{app.name}<br/><small>{app.sku}</small></td><td>{app.make}</td><td>{app.model}</td><td>{app.years.length ? app.years.join(", ") : "Model only / بدون سنوات"}</td></tr>)}</tbody></table></div>
       </details>}
       <details>
         <summary>Advanced: review parsed spreadsheet data</summary>
