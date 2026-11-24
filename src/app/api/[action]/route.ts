@@ -1037,6 +1037,7 @@ export async function POST(
         >["additions"] = [];
         let expandedMatches = 0;
         let skippedModels = 0;
+        let compatibilityPreview: { sku: string; name: string; make: string; model: string; years: number[] }[] = [];
         if (modern) {
           const [
             { models, brands, vehicles: vehicleConfigs },
@@ -1059,6 +1060,7 @@ export async function POST(
             ...savedYears,
             ...configYears,
           ]);
+          compatibilityPreview = plan.rows.flatMap((row) => (row.applications_input ?? []).map((app: {make: string; model: string; years: number[]}) => ({sku: row.sku, name: row.name?.en || row.name?.ar || "", ...app})));
           vehicleAdditions = plan.additions;
           skippedModels = plan.skippedModels.length;
           expandedMatches = plan.rows.reduce(
@@ -1155,6 +1157,7 @@ export async function POST(
         }
         if (action === "admin-import-preview")
           return NextResponse.json({
+            compatibilityPreview,
             message: `Dry run: ${result.rows.length} valid items; ${expandedMatches} car model matches; ${vehicleAdditions.length} new car models will be created; ${skippedModels} models without matching saved years skipped. No changes saved.`,
           });
         if (modern) {
