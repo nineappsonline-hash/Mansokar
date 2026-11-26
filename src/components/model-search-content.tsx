@@ -6,11 +6,15 @@ export function ModelSearchContent({
   name,
   total,
   years,
+  categoryName,
+  modelHref,
 }: {
   locale: Locale;
   name: string;
   total: number;
   years: number[];
+  categoryName?: string;
+  modelHref?: string;
 }) {
   const ar = locale === "ar";
   return (
@@ -18,12 +22,16 @@ export function ModelSearchContent({
       className={styles.content}
       aria-label={ar ? "دليل اختيار القطعة" : "Choosing a matching part"}
     >
-      <h2>{ar ? `اختيار قطع غيار ${name}` : `Choosing ${name} spare parts`}</h2>
+      <h2>
+        {categoryName
+          ? (ar ? `دليل اختيار ${categoryName} ${name}` : `Choosing ${name} ${categoryName}`)
+          : (ar ? `اختيار قطع غيار ${name}` : `Choosing ${name} spare parts`)}
+      </h2>
       <p>
         {total
           ? ar
-            ? `توجد ${total} نتيجة منشورة مرتبطة بهذا الموديل في كتالوج موبِك. اختار سنة عربيتك وراجع رقم القطعة والموتور وأي استثناءات قبل الطلب.`
-            : `The MOPC catalog has ${total} published results linked to this model. Choose your year and check the part number, engine and any exclusions before ordering.`
+            ? `توجد ${total} نتيجة في الكتالوج مرتبطة بـ${categoryName ? `${categoryName} ` : "قطع غيار "}${name} في البحث الحالي. راجع رقم القطعة والموتور وأي استثناءات قبل الطلب.`
+            : `The current catalog search has ${total} results for ${name} ${categoryName ?? "spare parts"}. Check part number, engine and any exclusions before ordering.`
           : ar
             ? "مفيش قطع منشورة مرتبطة بهذا الموديل حاليًا. تواصل معنا برقم القطعة وبيانات العربية للمراجعة؛ عدم وجود رابط توافق لا يعني أن القطعة مناسبة."
             : "No published parts are linked to this model yet. Send the part number and vehicle details for review; a missing compatibility record does not mean a part fits."}
@@ -41,6 +49,21 @@ export function ModelSearchContent({
           </p>
         </details>
       )}
+      {categoryName && (
+        <>
+          <h3>{ar ? `قبل شراء ${categoryName} للعربية دي` : `Before buying ${categoryName} for this vehicle`}</h3>
+          <p>
+            {ar
+              ? "ابدأ برقم القطعة المكتوب على القطعة القديمة أو العبوة، وطابقه مع الرقم والماركة الموجودين في صفحة المنتج. راجع مكان تركيب القطعة (أمامي أو خلفي، يمين أو شمال) لو مناسب لنوعها، ومحتويات العبوة والعدد قبل مقارنة الأسعار."
+              : "Start with the reference number on the old part or its packaging, and compare it with the product number and maker. Check the fitting position (front or rear, left or right) where relevant, as well as package contents and quantity before comparing prices."}
+          </p>
+          <p>
+            {ar
+              ? "المنتجات اللي ملهاش سنوات محددة في الكتالوج لا يعني تلقائيًا إنها تناسب كل موتور أو فئة. نتيجة البحث وموديل العربية مش بديل عن التحقق من رقم القطعة ومواصفات العربية."
+              : "A product listed without specific model years does not automatically fit every engine or trim. Search results and the model name alone are not a substitute for checking the part number and exact vehicle configuration."}
+          </p>
+        </>
+      )}
       <h3>{ar ? "إزاي أتأكد من التوافق؟" : "How can I confirm fitment?"}</h3>
       <p>
         {ar
@@ -51,6 +74,17 @@ export function ModelSearchContent({
         className={styles.links}
         aria-label={ar ? "أدلة ومساعدة" : "Guides and assistance"}
       >
+        {categoryName && modelHref && (
+          <Link href={modelHref}>
+            {ar ? `كل قطع غيار ${name}` : `All ${name} spare parts`}
+          </Link>
+        )}
+        <Link href={`/${locale}/guides/item-brand-and-country-of-origin`}>
+          {ar ? "ماركة القطعة وبلد المنشأ" : "Part maker and country of origin"}
+        </Link>
+        <Link href={`/${locale}/guides/compare-spare-part-prices`}>
+          {ar ? "مقارنة الأسعار" : "Compare part prices"}
+        </Link>
         <Link href={`/${locale}/guides/check-part-compatibility`}>
           {ar ? "دليل التوافق" : "Fitment guide"}
         </Link>
