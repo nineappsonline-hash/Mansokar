@@ -76,7 +76,7 @@ import {
   fitment,
   fitmentFlags,
   memberActiveVehicle,
-  relatedProducts,
+  relatedProductGroups,
   policyPages,
   publishedCmsPage,
   currentUser,
@@ -697,8 +697,7 @@ export default async function Page({ params, searchParams }: Props) {
             ? primary[0].policy_refs
             : ["policies/shipping", "policies/returns", "policies/warranty"],
         ),
-        relatedProducts(primary[0].id, "together", vehicle?.id),
-        relatedProducts(primary[0].id, "alternative", vehicle?.id),
+        relatedProductGroups(primary[0].id, vehicle?.id),
       ])
     : null;
   const family = primary[0]
@@ -1342,8 +1341,9 @@ export default async function Page({ params, searchParams }: Props) {
 
     // Independent product sections can fetch concurrently. A missing image
     // must not block a product page, while policy/shipping data errors stay visible.
-    const [media, areas, policies, together, curatedAlternatives] =
+    const [media, areas, policies, relationGroups] =
       await productDetailsPromise!;
+    const { together, alternative: curatedAlternatives } = relationGroups;
     const alternatives = (
       curatedAlternatives.length ? curatedAlternatives : products
     ).filter(
