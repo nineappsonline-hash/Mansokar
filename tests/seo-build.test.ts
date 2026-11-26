@@ -9,6 +9,7 @@ import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml"
 import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale } from "../src/lib/seo-inventory";
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
 import { demoProducts } from "../src/lib/catalog";
+import { brandModelBuyingNotes } from "../src/lib/vehicle-coverage";
 
 const brand = { slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] };
 const modelNames = [
@@ -361,4 +362,25 @@ test("catalog sitemap indexes eligible inventory and photos without leaking draf
   assert.ok(xml.includes("<image:loc>https://mopc.store/product-media/img-a2</image:loc>"));
   assert.ok(xml.includes("<image:loc>https://cdn.example.org/b1.webp</image:loc>"));
   assert.ok(!xml.includes("draft.webp"));
+});
+
+test("brand buying advice is curated per actual model and never invents fitment", () => {
+  const notes = brandModelBuyingNotes("chevrolet", [
+    { slug: "captiva", name: { ar: "كابتيفا", en: "Captiva" } },
+    { slug: "unknown-model", name: { ar: "موديل", en: "Unknown model" } },
+    { slug: "cruze", name: { ar: "كروز", en: "Cruze" } },
+  ]);
+  assert.deepEqual(notes.map((entry) => entry.slug), ["captiva", "cruze"]);
+  assert.match(notes[0].note.ar, /سنة الصنع/);
+  assert.match(notes[0].note.en, /part number/);
+  assert.equal(brandModelBuyingNotes("unlisted-make", [{ slug: "captiva", name: { ar: "كابتيفا", en: "Captiva" } }]).length, 0);
+});
+
+test("brand page replaces blanket original-parts promises with model-specific labels", () => {
+  const source = readFileSync("src/components/car-model-page.tsx", "utf8");
+  assert.ok(source.includes("brandModelBuyingNotes"));
+  assert.ok(source.includes("model-buying-notes-heading"));
+  assert.ok(source.includes("/brands/"));
+  assert.ok(!source.includes("Original & After Market parts"));
+  assert.ok(!source.includes("الأصلية و"));
 });
