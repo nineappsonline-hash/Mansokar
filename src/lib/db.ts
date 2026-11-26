@@ -502,7 +502,7 @@ export async function relatedProducts(
 /** Published CMS copy is public, but remains fresh per request after edits.
  * Both metadata and content share this read on the same render.
  */
-export const publishedCmsPage = cache(async (slug: string) => {
+const sharedPublishedCmsPage = unstable_cache(async (slug: string) => {
   if (!configured()) return null;
   const { data, error } = await service()
     .from("cms_pages")
@@ -512,7 +512,8 @@ export const publishedCmsPage = cache(async (slug: string) => {
     .maybeSingle();
   if (error) throw error;
   return data;
-});
+}, ["mopc-public-cms-page-v1"], { revalidate: 60, tags: ["mopc-public-cms"] });
+export const publishedCmsPage = cache(async (slug: string) => sharedPublishedCmsPage(slug));
 export async function policyPages(slugs: string[]) {
   if (!configured() || !slugs.length) return [];
   const { data, error } = await service()
