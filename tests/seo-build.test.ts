@@ -709,3 +709,12 @@ test("product and category pages do not request unused brand/slideshow media", (
   assert.ok(page.includes('const [vehicleData, categories] = await Promise.all(['));
   assert.ok(page.includes("siteMedia(mediaSlots)"));
 });
+
+test("catalog products share one batched cover query with a safe per-card fallback", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(page.includes("firstProductImages(productIds).catch(() => null)"));
+  assert.ok(page.includes("const [flags, catalogCovers] = await Promise.all(["));
+  assert.ok(page.includes("cover={catalogCovers?.[p.id]}"));
+  assert.ok(page.includes("mediaResolved={catalogCovers !== null}"));
+  assert.ok(page.includes("isCatalog\n      ? firstProductImages(productIds)"));
+});
