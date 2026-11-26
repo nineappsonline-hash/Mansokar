@@ -16,6 +16,7 @@ import {
 } from "../src/lib/seo-policy";
 import { sitemapXml, sitemapIndex } from "../src/lib/sitemap-xml";
 import { collectSearchPages } from "../src/lib/seo-inventory";
+import { siteCopy } from "../src/lib/site-copy";
 import {
   merchantFeed,
   validGtin,
@@ -390,4 +391,16 @@ test("XML sitemaps are unpublished in previews and unapproved environments", asy
   assert.equal(sitemapPublished({ STORE_LAUNCH_APPROVED: "false", VERCEL_ENV: "production", NEXT_PUBLIC_SUPABASE_URL: "https://db.example" }), false);
   assert.equal(sitemapPublished({ STORE_LAUNCH_APPROVED: "true", VERCEL_ENV: "production" }), false);
   assert.equal(sitemapPublished({ STORE_LAUNCH_APPROVED: "true", VERCEL_ENV: "production", NEXT_PUBLIC_SUPABASE_URL: "https://db.example" }), true);
+});
+
+
+test("search snippets never promise universal genuine parts or warranties", () => {
+  for (const locale of ["ar", "en"] as const) {
+    assert.ok(siteCopy[locale].heading.length > 15);
+    assert.ok(siteCopy[locale].description.length > 70);
+    assert.doesNotMatch(
+      siteCopy[locale].heading + " " + siteCopy[locale].description,
+      /قطع غيار أصلية|ضمان الوكيل أو المورد|genuine car parts|agent or supplier warranties/i,
+    );
+  }
 });
