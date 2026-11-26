@@ -32,6 +32,29 @@ test("canonical pagination on make/model/category URLs retains page number but e
   assert.equal(canonicalPage("/ar/brands/opel/astra-j/filters", { page: "1" }), "/ar/brands/opel/astra-j/filters");
 });
 
+test("HTML sitemap differentiates repeated part names with their maker and part number", () => {
+  const entries = collectSearchPages({
+    brands: [], modelNames: [], categories: [], cms: [], guides: [],
+    products: [
+      { ...demoProducts[0], demo: false, status: "published", price: 10000,
+        name: { ar: "فلتر زيت", en: "Oil Filter" }, manufacturer: "GM", partNumber: "12345678",
+        slug: "oil-filter-gm-p-11111111-1111-4111-8111-111111111111" },
+      { ...demoProducts[0], id: "22222222-2222-4222-8222-222222222222", demo: false,
+        status: "published", price: 10000, name: { ar: "فلتر زيت", en: "Oil Filter" },
+        manufacturer: "Bosch", partNumber: "87654321",
+        slug: "oil-filter-bosch-p-22222222-2222-4222-8222-222222222222" },
+    ],
+  });
+  const products = entries.filter((entry) => entry.kind === "product");
+  assert.equal(products.length, 2);
+  assert.equal(products[0].title.ar, "فلتر زيت");
+  assert.notEqual(products[0].linkTitle?.ar, products[1].linkTitle?.ar);
+  assert.ok(products[0].linkTitle?.ar.includes("12345678"));
+  assert.ok(products[1].linkTitle?.en.includes("Bosch"));
+  const html = readFileSync("src/components/site-map.tsx", "utf8");
+  assert.ok(html.includes("p.linkTitle?.[locale] ?? p.title[locale]"));
+});
+
 test("index XML has expected groups and correctly escapes origin", () => {
   const xml = sitemapIndex("https://mopc.store");
   assert.ok(xml.includes("https://mopc.store/sitemaps/vehicles.xml"));
