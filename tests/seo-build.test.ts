@@ -235,10 +235,10 @@ test("CMS metadata and sitemap use the same verified language availability", () 
 test("streaming loading shell never injects extra H1 headings into indexable pages", () => {
   const source = readFileSync("src/app/loading.tsx", "utf8");
   const css = readFileSync("src/app/loading.module.css", "utf8");
-  assert.doesNotMatch(source, /<h1\\b/i);
-  assert.match(source, /loadingTitle/);
-  assert.match(source, /styles\\.ar/);
-  assert.match(source, /styles\\.en/);
-  assert.match(css, /\\.copy \\.loadingTitle/);
-  assert.doesNotMatch(css, /\\.copy h1/);
+  assert.ok(!source.includes("<h1"));
+  assert.ok(source.includes("loadingTitle"));
+  assert.ok(source.includes("styles.ar"));
+  assert.ok(source.includes("styles.en"));
+  assert.ok(css.includes(".copy .loadingTitle"));
+  assert.ok(!css.includes(".copy h1"));
 });
