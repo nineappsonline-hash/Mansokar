@@ -1,5 +1,7 @@
 name: Temporary storefront browser measurements
 on:
+  pull_request:
+    branches: [main]
   push:
     branches:
       - perf/browser-navigation-timings-20261127
