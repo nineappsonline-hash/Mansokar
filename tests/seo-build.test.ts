@@ -1332,6 +1332,13 @@ test("browser network audit checks real storefront requests without purchasing a
   assert.ok(!audit.includes("page.click("));
   assert.ok(!audit.includes("page.fill("));
   assert.ok(audit.includes("browser-network.json"));
+  // Remote ImageKit/other CDN product photos must count towards the mobile
+  // image budget: the same-origin-only total understates actual bytes.
+  assert.ok(audit.includes("const allImages = allRequests.filter"));
+  assert.ok(audit.includes("imageAllOrigins: sum(allImages)"));
+  assert.ok(audit.includes("heaviestImages: heavy(allImages)"));
+  assert.ok(audit.includes("heaviestRequests: heavy(allRequests)"));
+  assert.ok(audit.includes("INP is not measured"));
 });
 
 test("Google merchant readiness requires admin and shares actual feed eligibility rules", () => {
