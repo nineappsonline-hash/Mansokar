@@ -1,25 +1,32 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import { searchCatalog } from "./db";
+import { service } from "./db";
 
 /** Public navigation counts only, cached briefly so each request does not
- * repeat one search RPC per category. Never cache user filters or vehicle cookies.
+ * repeat one aggregate RPC per visit. Never cache user filters or vehicle cookies.
  * A short TTL lets newly published inventory become discoverable promptly.
  */
 export const cachedModelCategoryTotals = unstable_cache(
   async (make: string, model: string, categorySlugs: string[]) => {
-    const base = { make, model, size: 1 };
-    const [modelInventory, ...categories] = await Promise.all([
-      searchCatalog(base),
-      ...categorySlugs.map((category) => searchCatalog({ ...base, category })),
-    ]);
+    // Single scoped aggregate replaces one search RPC per category.
+    // This counts only published products with recorded model applications
+    // and includes parent-category totals, just like search_products_by_car.
+    const { data, error } = await service().rpc("model_category_inventory_counts", {
+      p_make: make,
+      p_model: model,
+    });
+    if (error) throw error;
+    const result = data as {
+      modelTotal?: number;
+      categoryTotals?: Record<string, number>;
+    } | null;
     return {
-      modelTotal: modelInventory.total,
+      modelTotal: result?.modelTotal ?? 0,
       categoryTotals: Object.fromEntries(
-        categorySlugs.map((category, i) => [category, categories[i].total]),
+        categorySlugs.map((slug) => [slug, result?.categoryTotals?.[slug] ?? 0]),
       ) as Record<string, number>,
     };
   },
-  ["mopc-public-model-category-totals-v1"],
+  ["mopc-public-model-category-totals-v2"],
   { revalidate: 60 },
 );
