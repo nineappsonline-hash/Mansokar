@@ -93,3 +93,13 @@ export function productQualityIssues(
 export function hasModelApplication(specs: Record<string, string>, modelId: string) {
   return readApplications(specs).some((application) => application.model_id === modelId);
 }
+
+/** Category landing pages require real search inventory and a translated label. */
+export function categoryLandingIndexable(
+  total: number,
+  name: Pick<Product, "name">["name"] | undefined,
+  locale: Locale,
+) {
+  return Number.isFinite(total) && total > 0 &&
+    Boolean(name && translatedProduct({ name }, locale));
+}
