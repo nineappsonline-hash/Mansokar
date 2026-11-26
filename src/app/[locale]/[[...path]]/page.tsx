@@ -925,8 +925,45 @@ export default async function Page({ params, searchParams }: Props) {
           })()
         : null;
     const page = Math.max(1, Math.min(10000, Number(q.page) || 1));
+    const publicModelCollection =
+      modelListing && listingBrand && listingModel &&
+      !q.q && !q.year && !q.sort && !q.manufacturer && !q.type &&
+      !q.min && !q.max && !q.vehicle
+        ? (() => {
+            const url = new URL(canonicalPage(`/${locale}/${route}`, q), siteOrigin()).href;
+            const visible = (serverResults
+              ? filtered
+              : filtered.slice((page - 1) * 12, page * 12)).slice(0, 12);
+            const name = `${currentCategory?.name[locale] ?? (locale === "ar" ? "قطع غيار" : "Spare parts")} ${locale === "ar" ? listingBrand.ar : listingBrand.name} ${listingModel.name[locale]}`;
+            return {
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              "@id": `${url}#collection`,
+              url,
+              name,
+              mainEntity: {
+                "@type": "ItemList",
+                numberOfItems: visible.length,
+                itemListElement: visible.map((item, index) => ({
+                  "@type": "ListItem",
+                  position: (page - 1) * 12 + index + 1,
+                  name: item.name[locale],
+                  url: new URL(`/${locale}/products/${publicProductSlug(item)}`, siteOrigin()).href,
+                })),
+              },
+            };
+          })()
+        : null;
     content = (
       <div className="shell section">
+        {publicModelCollection && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(publicModelCollection).replace(/</g, "\\u003c"),
+            }}
+          />
+        )}
         <Breadcrumb
           locale={locale}
           items={
