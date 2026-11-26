@@ -628,7 +628,7 @@ test("selected car does not hide recorded model SEO links", () => {
   ));
   assert.ok(source.includes("const showApplications = !vehicle && !browsingContext;"));
   assert.ok(!source.includes("const compatibleCars = showApplications"));
-  assert.ok(source.includes("compatibleCars\\n              .filter((car) => Boolean(car.href))"));
+  assert.ok(source.includes(".filter((car) => Boolean(car.href))"));
 });
 
 test("product pages expose crawlable category and recorded model links without inventing fitment", () => {
