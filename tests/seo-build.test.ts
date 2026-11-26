@@ -599,7 +599,7 @@ test("model category browse links follow locale-specific sitemap eligibility ins
   const source = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(source.includes("indexableModelCategoryPaths"));
   assert.ok(source.includes("modelCategoryBrowsePaths({"));
-  assert.ok(source.includes("searchCatalog({ ...base, category: item.slug })"));
+  assert.ok(source.includes("cachedModelCategoryTotals("));
   assert.ok(!source.includes("searchPagesForLocale(await searchPages(), locale)"));
   assert.ok(source.includes(".filter((item) => !modelListing || indexableModelCategoryPaths?.has("));
 });
@@ -687,4 +687,25 @@ test("product and home data sources fetch independently in parallel without hidi
   assert.ok(page.includes("heroSlideshow("));
   assert.ok(!page.includes("const areas = await deliveryAreas()"));
   assert.ok(!page.includes("const slideshow = await heroSlideshow("));
+});
+
+test("model category totals cache is public, short-lived and not affected by user filters", () => {
+  const source = readFileSync("src/lib/model-category-totals.ts", "utf8");
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(source.includes("unstable_cache("));
+  assert.ok(source.includes("{ revalidate: 60 }"));
+  assert.ok(source.includes("const base = { make, model, size: 1 }"));
+  assert.ok(source.includes("categorySlugs.map((category) => searchCatalog({ ...base, category }))"));
+  assert.ok(page.includes("categories.map((item) => item.slug)"));
+  assert.ok(page.includes("counts.categoryTotals[item.slug] ?? 0"));
+  assert.ok(!page.includes("searchPagesForLocale(await searchPages(), locale)"));
+});
+
+test("product and category pages do not request unused brand/slideshow media", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(page.includes('const home = !route;'));
+  assert.ok(page.includes('const brandLanding = path[0] === "brands" && path.length === 2;'));
+  assert.ok(page.includes('home ? storefrontSettings() : Promise.resolve(null)'));
+  assert.ok(page.includes('const [vehicleData, categories] = await Promise.all(['));
+  assert.ok(page.includes("siteMedia(mediaSlots)"));
 });
