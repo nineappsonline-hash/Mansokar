@@ -1,4 +1,5 @@
 import type { Locale, Product } from "./catalog";
+import { readApplications } from "./product-applications";
 export function translatedProduct(p: Pick<Product, "name">, locale: Locale) {
   const name = p.name?.[locale]?.trim() || "";
   return (
@@ -86,4 +87,9 @@ export function productQualityIssues(
     ...(!merchantPriceReady(p) ? ["fractional_price_review"] : []),
     ...(!verifiedCondition(p) ? ["unknown_condition"] : []),
   ];
+}
+
+/** A model-wide application is valid even when no production years were provided. */
+export function hasModelApplication(specs: Record<string, string>, modelId: string) {
+  return readApplications(specs).some((application) => application.model_id === modelId);
 }
