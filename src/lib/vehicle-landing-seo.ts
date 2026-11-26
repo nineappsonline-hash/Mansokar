@@ -19,6 +19,6 @@ export function modelCategorySearchCopy(input: {
     };
   return {
     title: `${fullName} ${category} category in Egypt`,
-    description: `Browse MOPC's ${category} category for ${fullName}. This is a filtered selection from the model catalogue. Confirm part number, engine and model year before buying.`,
+    description: `Browse MOPC's ${category} for ${fullName}. This filtered selection covers recorded model parts. Check part number, engine and year before buying.`,
   };
 }
