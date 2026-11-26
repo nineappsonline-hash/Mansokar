@@ -90,6 +90,7 @@ export function HeroSlideshow({
             sizes="100vw"
             preload={i === 0}
             loading={i === 0 ? undefined : "lazy"}
+            fetchPriority={i === 0 ? "high" : "low"}
             className={i === active ? "hero-slide is-active" : "hero-slide"}
             data-slide-index={i}
           />
