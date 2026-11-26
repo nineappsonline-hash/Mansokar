@@ -874,3 +874,18 @@ test("disabled analytics never hydrates the analytics client bundle", () => {
   assert.ok(!shell.includes('enabled={process.env.ANALYTICS_ENABLED === "true"}'));
   assert.ok(shell.includes('<CartSync />'));
 });
+
+test("admin-only style overrides do not block public storefront CSS", () => {
+  const global = readFileSync("src/app/globals.css", "utf8");
+  const admin = readFileSync("src/app/admin/admin-overrides.css", "utf8");
+  const page = readFileSync("src/app/admin/page.tsx", "utf8");
+  assert.ok(page.includes('import "./admin-overrides.css"'));
+  assert.ok(admin.includes(".admin-overview-redesign"));
+  assert.ok(admin.includes(".admin-orders-list"));
+  assert.ok(admin.includes(".mopc-orders-table"));
+  assert.ok(admin.includes(".admin-product-editor"));
+  assert.ok(!global.includes("/* MOPC Admin overview — Figma design:"));
+  assert.ok(!global.includes(".admin-overview-redesign .admin-overview-section"));
+  assert.ok(global.includes(".category-hero-image { width: 100%;"));
+  assert.ok(global.includes(".category-image-links { display: flex;"));
+});
