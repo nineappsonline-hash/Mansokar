@@ -694,13 +694,13 @@ test("SEO requests share SKU lookup and cache only short-lived public homepage d
 
 test("product and home data sources fetch independently in parallel without hiding critical failures", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
-  assert.ok(page.includes("const [media, areas, policies, together, curatedAlternatives] ="));
+  assert.ok(page.includes("const [media, areas, policies, relationGroups] ="));
   assert.ok(page.includes("const productDetailsPromise = path[0] === \"products\" && primary[0]"));
   assert.ok(page.includes("await productDetailsPromise!;"));
   assert.ok(page.includes("productImages(primary[0].id).catch(() => [])"));
   assert.ok(page.includes("deliveryAreas(),"));
-  assert.ok(page.includes("relatedProducts(primary[0].id, \"together\", vehicle?.id)"));
-  assert.ok(page.includes("relatedProducts(primary[0].id, \"alternative\", vehicle?.id)"));
+  assert.ok(page.includes("relatedProductGroups(primary[0].id, vehicle?.id)"));
+  assert.ok(page.includes("const { together, alternative: curatedAlternatives } = relationGroups;"));
   assert.ok(page.includes("const homeDataPromise = !route"));
   assert.ok(page.includes("const [registeredYears, slideshow] = await homeDataPromise!;"));
   assert.ok(page.includes("const selectedIdPromise = (async () =>"));
@@ -708,6 +708,14 @@ test("product and home data sources fetch independently in parallel without hidi
   assert.ok(page.includes("heroSlideshow("));
   assert.ok(!page.includes("const areas = await deliveryAreas()"));
   assert.ok(!page.includes("const slideshow = await heroSlideshow("));
+});
+
+test("SKU relation groups retain verified together recommendations and batch related products", () => {
+  const db = readFileSync("src/lib/db.ts", "utf8");
+  assert.ok(db.includes("export async function relatedProductGroups(id: string, vehicle?: string)"));
+  assert.ok(db.includes('.in("kind", ["alternative", "together"])'));
+  assert.ok(db.includes("if (!vehicle || !togetherIds.size)"));
+  assert.ok(db.includes("flags[product.id]"));
 });
 
 test("product photos share request data with metadata and vehicle-free cross-sells skip database", () => {
