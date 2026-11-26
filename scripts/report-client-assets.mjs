@@ -79,6 +79,7 @@ if (!existsSync(staticRoot)) {
   // Next 16 also writes per-page client reference manifests beneath server/app.
   // Extract route-scoped module chunk references without importing any app code.
   let referenceCount = 0;
+  let inspectedExample = false;
   walk(appServer, (file) => {
     if (!file.endsWith("_client-reference-manifest.js")) return;
     referenceCount++;
@@ -86,6 +87,11 @@ if (!existsSync(staticRoot)) {
       const context = { __RSC_MANIFEST: {} };
       runInNewContext(readFileSync(file, "utf8"), { globalThis: context }, { timeout: 500 });
       for (const [route, manifest] of Object.entries(context.__RSC_MANIFEST || {})) {
+        if (!inspectedExample && route.includes("[locale]")) {
+          const modules = Object.values(manifest.clientModules || {});
+          console.log("[asset-report] sample manifest:", route, "keys:", Object.keys(manifest).join(","), "modules:", modules.length, "sample chunks:", JSON.stringify(modules.slice(0, 2).map((m) => m.chunks)).slice(0, 900));
+          inspectedExample = true;
+        }
         const paths = [];
         for (const mod of Object.values(manifest.clientModules || {})) {
           for (const chunk of mod.chunks || []) {
