@@ -1,41 +1,9 @@
 "use client";
 import commerce from "./commerce.module.css";
-import { InstaPayButton } from "./instapay-button";
-import {
-  shippingGovernorates,
-  shippingWindow,
-  type ShippingArea,
-} from "@/lib/shipping";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Locale, Vehicle } from "@/lib/catalog";
-import { money } from "@/lib/catalog";
 import { t } from "@/lib/i18n";
-import {
-  InstallmentProviders,
-  WALLET_NUMBER,
-  isManualPayment,
-  type PaymentMethod,
-} from "@/lib/payments";
-import {
-  ArrowRight,
-  Barcode,
-  CreditCard,
-  Headphones,
-  Lock,
-  Mail,
-  MapPin,
-  Package,
-  Phone,
-  ReceiptText,
-  RotateCcw,
-  ShieldCheck,
-  ShoppingBag,
-  Smartphone,
-  Ticket,
-  Truck,
-  Upload,
-} from "lucide-react";
 export function ApiForm({
   action,
   children,
