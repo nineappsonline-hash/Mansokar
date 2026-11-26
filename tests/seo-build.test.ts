@@ -1050,3 +1050,21 @@ test("Merchant Center public feed serves only approved products and keeps admin 
   assert.ok(policy.includes("!images.length"));
   assert.ok(readiness.includes("await requireAdmin()"));
 });
+
+test("phase 9 monitors live crawl, canonical, sitemap and Product Offers without buying", () => {
+  const pkg = JSON.parse(readFileSync("package.json", "utf8"));
+  const audit = readFileSync("scripts/audit-seo-indexing.mjs", "utf8");
+  const workflow = readFileSync(".github/workflows/mopc-seo-crawl-audit.yml", "utf8");
+  assert.equal(pkg.scripts["seo:live-audit"], "node scripts/audit-seo-indexing.mjs");
+  assert.ok(pkg.scripts.prebuild.includes("node --check scripts/audit-seo-indexing.mjs"));
+  assert.ok(audit.includes("root redirect"));
+  assert.ok(audit.includes("robots.txt"));
+  assert.ok(audit.includes("sitemap.xml"));
+  assert.ok(audit.includes("Product JSON-LD"));
+  assert.ok(audit.includes('product.offers.priceCurrency === "EGP"'));
+  assert.ok(audit.includes('status: "FAIL"'));
+  assert.ok(!audit.includes("fetch(new URL(\"/checkout"));
+  assert.ok(workflow.includes("workflow_dispatch:"));
+  assert.ok(workflow.includes("schedule:"));
+  assert.ok(workflow.includes("actions/upload-artifact@v4"));
+});
