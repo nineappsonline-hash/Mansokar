@@ -9,7 +9,7 @@ import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml"
 import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale, duplicateModelCategory } from "../src/lib/seo-inventory";
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
 import { demoProducts } from "../src/lib/catalog";
-import { brandModelBuyingNotes } from "../src/lib/vehicle-coverage";
+import { brandModelBuyingNotes, targetModel } from "../src/lib/vehicle-coverage";
 import { brandModelListSchema } from "../src/lib/brand-model-schema";
 import { modelCategorySearchCopy } from "../src/lib/vehicle-landing-seo";
 import { modelCategoryBrowsePaths } from "../src/lib/model-category-navigation";
@@ -654,6 +654,26 @@ test("model landing JSON-LD lists only actual page products with canonical URLs"
   assert.ok(page.includes('publicProductSlug(item)'));
   assert.ok(page.includes('{publicModelCollection && ('));
   assert.ok(!page.includes('aggregateRating: { ratingValue:'));
+});
+
+test("model landings use curated tips for real catalog model slugs without inventing fitments", () => {
+  for (const [brandSlug, modelSlug] of [
+    ["opel", "astra-j"],
+    ["opel", "insignia-a"],
+    ["chevrolet", "cruze"],
+    ["chevrolet", "captiva"],
+    ["chevrolet", "malibu"],
+  ]) {
+    const record = targetModel(brandSlug, modelSlug);
+    assert.ok(record?.note.ar, `missing Arabic note for ${brandSlug}/${modelSlug}`);
+    assert.ok(record?.note.en, `missing English note for ${brandSlug}/${modelSlug}`);
+  }
+  const component = readFileSync("src/components/model-search-content.tsx", "utf8");
+  const source = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(component.includes("buyingNote?: string;"));
+  assert.ok(component.includes("{buyingNote && ("));
+  assert.ok(component.includes("<p>{buyingNote}</p>"));
+  assert.ok(source.includes("buyingNote={targetModel(listingBrand.slug, listingModel.slug)?.note[locale]}"));
 });
 
 test("model category browse links follow locale-specific sitemap eligibility instead of all categories", () => {
