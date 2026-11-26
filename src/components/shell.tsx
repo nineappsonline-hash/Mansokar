@@ -29,18 +29,25 @@ export async function Shell({
   children,
   home = false,
   navBrands = [],
+  shellData,
 }: {
   locale: Locale;
   vehicle?: Vehicle;
   children: React.ReactNode;
   home?: boolean;
   navBrands?: { slug: string; name: string; ar: string }[];
+  shellData?: Promise<[
+    Awaited<ReturnType<typeof storefrontSettings>>,
+    Awaited<ReturnType<typeof siteMedia>>,
+  ]>;
 }) {
   const w = t(locale);
-  const [settings, media] = await Promise.all([
+  // Reuse the request started by the route so the shared header and footer
+  // don't introduce a fresh database/storage waterfall after page rendering.
+  const [settings, media] = await (shellData ?? Promise.all([
     storefrontSettings(),
     siteMedia(["logo"]),
-  ]);
+  ]));
   return (
     <div
       className={`${styles.store} ${cyan.theme} mopc-cyan${home ? " storefront-home" : ""}`}
