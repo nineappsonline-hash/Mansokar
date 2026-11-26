@@ -114,6 +114,7 @@ test("untranslated categories and model names do not create fabricated hreflang 
     cms: [], guides: [],
     products: [{ ...({
       id: "a", sku: "A", slug: "a", name: { ar: "فلتر زيت", en: "Oil filter" },
+      description: { ar: "فلتر زيت موثق", en: "Recorded oil filter" },
       manufacturer: "Brand", category: "filters", family: "filters", type: "aftermarket",
       price: 10000, sale: null, partNumber: "P1", demo: false, orderable: true,
       status: "published", specs: {},
