@@ -715,6 +715,8 @@ export function Gallery({
       <div className="product-art large">
         <img
           src="/images/part-placeholder.svg"
+          width={800}
+          height={600}
           alt={
             locale === "ar"
               ? "صورة توضيحية عامة؛ صورة المنتج غير متاحة"
@@ -732,7 +734,15 @@ export function Gallery({
         aria-label={locale === "ar" ? "تكبير الصورة" : "Enlarge image"}
         onClick={() => dialog.current?.showModal()}
       >
-        <img src={items[index].url} alt={items[index].alt[locale]} />
+        <img
+          src={items[index].url}
+          alt={items[index].alt[locale]}
+          width={800}
+          height={600}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
         <span>
           {media.length
             ? locale === "ar"
@@ -752,7 +762,14 @@ export function Gallery({
               aria-pressed={i === index}
               onClick={() => setIndex(i)}
             >
-              <img src={item.url} alt={item.alt[locale]} />
+              <img
+                src={item.url}
+                alt={item.alt[locale]}
+                width={96}
+                height={72}
+                loading="lazy"
+                decoding="async"
+              />
             </button>
           ))}
         </div>
@@ -783,7 +800,14 @@ export function Gallery({
         >
           <X />
         </button>
-        <img src={items[index].url} alt={items[index].alt[locale]} />
+        <img
+          src={items[index].url}
+          alt={items[index].alt[locale]}
+          width={1200}
+          height={900}
+          loading="lazy"
+          decoding="async"
+        />
         {items.length > 1 && (
           <div className="gallery-nav">
             <button
