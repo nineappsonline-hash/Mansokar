@@ -187,7 +187,7 @@ test("Excel All expands saved makes, models and model years without inventing ca
   set("years", "");
   let plan = planImportVehicles(await read(), models, brands, years);
   assert.equal(plan.additions.length, 0);
-  assert.deepEqual(plan.skippedModels, ["opel-insignia"]);
+  assert.deepEqual(plan.skippedModels, ["opel/insignia"]);
   assert.deepEqual(
     plan.rows[0].applications_input.map((app: any) => app.model).sort(),
     ["astra", "captiva", "cruze"],
