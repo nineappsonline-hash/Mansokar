@@ -14,6 +14,27 @@ export function rootLocaleRedirect(url: URL) {
   return target;
 }
 
+/** Redirect retired model spellings, preserving category, year and search
+ * parameters. Only enable after the historical product application references
+ * have been migrated to the canonical model in the live database.
+ */
+export function legacyVehicleModelRedirect(url: URL) {
+  const match = url.pathname.match(
+    /^\/(ar|en)\/brands\/(chevrolet|opel)\/([a-z0-9-]+)(\/[^/]+)?\/?$/,
+  );
+  if (!match) return null;
+  const [, locale, brand, model, category = ""] = match;
+  const canonical = brand === "chevrolet" && model === "cruz"
+    ? "cruze"
+    : brand === "opel" && model === "insginia-a"
+      ? "insignia-a"
+      : null;
+  if (!canonical) return null;
+  const target = new URL(url.href);
+  target.pathname = `/${locale}/brands/${brand}/${canonical}${category}`;
+  return target;
+}
+
 export function migrationRedirect(
   url: URL,
   env: Record<string, string | undefined> = process.env,
