@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Locale } from "@/lib/catalog";
-import type { SearchPage } from "@/lib/seo-inventory";
+import { searchPagesForLocale, type SearchPage } from "@/lib/seo-inventory";
 export function SiteMap({
   pages,
   locale,
@@ -10,7 +10,8 @@ export function SiteMap({
   locale: Locale;
   page?: number;
 }) {
-  const products = pages.filter((p) => p.kind === "product");
+  const visiblePages = searchPagesForLocale(pages, locale);
+  const products = visiblePages.filter((p) => p.kind === "product");
   const count = Math.max(1, Math.ceil(products.length / 100));
   const current = Math.min(
     Math.max(1, Number.isFinite(page) ? Math.trunc(page) : 1),
@@ -40,7 +41,7 @@ export function SiteMap({
         const entries =
           g.kind === "product"
             ? products.slice((current - 1) * 100, current * 100)
-            : pages.filter((p) => p.kind === g.kind);
+            : visiblePages.filter((p) => p.kind === g.kind);
         return entries.length > 0 ? (
           <section className="panel stack" key={g.kind}>
             <h2>{locale === "ar" ? g.ar : g.en}</h2>
