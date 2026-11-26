@@ -906,7 +906,7 @@ test("local gallery thumbnails use responsive sizing while full-resolution hero 
   const detail = readFileSync("src/components/product-detail-controls.tsx", "utf8");
   const gallery = detail.slice(detail.indexOf("export function Gallery("), detail.indexOf("export function MobileBuyBar("));
   assert.ok(gallery.includes('from "next/image"') || detail.includes('import Image from "next/image"'));
-  assert.ok(gallery.includes('item.url) ? ('));
+  assert.ok(gallery.includes('item.url.startsWith("/product-media/")'));
   assert.ok(gallery.includes('sizes="54px"'));
   assert.ok(gallery.includes('<Image'));
   assert.ok(gallery.includes('src={items[index].url}'));
