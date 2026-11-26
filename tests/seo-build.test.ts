@@ -12,6 +12,7 @@ import { demoProducts } from "../src/lib/catalog";
 import { brandModelBuyingNotes } from "../src/lib/vehicle-coverage";
 import { brandModelListSchema } from "../src/lib/brand-model-schema";
 import { modelCategorySearchCopy } from "../src/lib/vehicle-landing-seo";
+import { modelCategoryBrowsePaths } from "../src/lib/model-category-navigation";
 import { planImportVehicles } from "../src/lib/import-vehicles";
 import { canonicalVehicleModelSlug, resolveImportModelAlias } from "../src/lib/vehicle-model-aliases";
 
@@ -597,6 +598,37 @@ test("model category browse links follow locale-specific sitemap eligibility ins
   ), false);
   const source = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(source.includes("indexableModelCategoryPaths"));
-  assert.ok(source.includes("searchPagesForLocale(await searchPages(), locale)"));
+  assert.ok(source.includes("modelCategoryBrowsePaths({"));
+  assert.ok(source.includes("searchCatalog({ ...base, category: item.slug })"));
+  assert.ok(!source.includes("searchPagesForLocale(await searchPages(), locale)"));
   assert.ok(source.includes(".filter((item) => !modelListing || indexableModelCategoryPaths?.has("));
+});
+
+test("scoped model category navigation excludes empty, duplicate and untranslated landing pages", () => {
+  const input = {
+    locale: "ar" as const,
+    make: "opel",
+    model: "astra-j",
+    makeName: { ar: "أوبل", en: "Opel" },
+    modelName: { ar: "أسترا J", en: "Astra J" },
+    modelTotal: 5,
+    categories: [
+      { slug: "filters", name: { ar: "فلاتر", en: "Filters" }, total: 3 },
+      { slug: "brakes", name: { ar: "فرامل", en: "Brakes" }, total: 0 },
+      { slug: "all", name: { ar: "كل القطع", en: "All parts" }, total: 5 },
+    ],
+  };
+  assert.deepEqual([...modelCategoryBrowsePaths(input)], ["/brands/opel/astra-j/filters"]);
+  assert.equal(modelCategoryBrowsePaths({ ...input, modelTotal: 0 }).size, 0);
+  assert.deepEqual([...modelCategoryBrowsePaths({
+    ...input,
+    locale: "en",
+    categories: [
+      { slug: "filters", name: { ar: "فلاتر", en: "فلاتر" }, total: 3 },
+      { slug: "brakes", name: { ar: "فرامل", en: "Brakes" }, total: 2 },
+    ],
+  })], ["/brands/opel/astra-j/brakes"]);
+  assert.equal(modelCategoryBrowsePaths({
+    ...input, locale: "en", modelName: { ar: "أسترا J", en: "أسترا J" },
+  }).size, 0);
 });
