@@ -21,6 +21,22 @@ jobs:
           PERF_BASE_URL: https://mopc.store
           PERF_LOCALE: ar
         run: npm run perf:routes
+      - name: Verify exact largest PNG via Next Image optimizer
+        run: |
+          set -euo pipefail
+          test_url="https://mopc.store/_next/image"
+          remote="https://i.postimg.cc/4yB1Rkmg/OP-9845406480.png"
+          curl --fail --location --silent --show-error --get "$test_url" \
+            --data-urlencode "url=$remote" \
+            --data-urlencode "w=384" --data-urlencode "q=75" \
+            --output /tmp/mopc-optimized-product.img \
+            --write-out 'remote_product status=%{http_code} bytes=%{size_download} mime=%{content_type}\n'
+          curl --fail --location --silent --show-error --get "$test_url" \
+            --data-urlencode "url=/images/payment-editorial-navy.png" \
+            --data-urlencode "w=828" --data-urlencode "q=75" \
+            --output /tmp/mopc-optimized-payment.img \
+            --write-out 'payment_banner status=%{http_code} bytes=%{size_download} mime=%{content_type}\n'
+          file /tmp/mopc-optimized-*.img
       - name: Upload browser report
         if: always()
         uses: actions/upload-artifact@v4
