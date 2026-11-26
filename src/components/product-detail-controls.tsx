@@ -271,7 +271,7 @@ export function Gallery({
               aria-pressed={i === index}
               onClick={() => setIndex(i)}
             >
-              {/^\\/product-media\\/[0-9a-f-]{36}$/i.test(item.url) ? (
+              {item.url.startsWith("/product-media/") && /^[0-9a-f-]{36}$/i.test(item.url.slice("/product-media/".length)) ? (
                 <Image
                   src={item.url}
                   alt={item.alt[locale]}
