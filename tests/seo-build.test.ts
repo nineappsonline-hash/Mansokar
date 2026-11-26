@@ -1079,3 +1079,12 @@ test("phase 9 HTML sitemap exposes every product page directly and guides in the
   assert.ok(shell.includes('`/${locale}/guides`'));
   assert.ok(policy.includes('(?:ar|en)\\/site-map$'));
 });
+
+test("Googlebot sitemap fetches use bounded shared edge caching without blocking fresh updates", () => {
+  for (const route of ["src/app/sitemap.xml/route.ts", "src/app/sitemaps/[group]/route.ts"]) {
+    const code = readFileSync(route, "utf8");
+    assert.ok(code.includes('"Content-Type": "application/xml; charset=utf-8"'));
+    assert.ok(code.includes("public, max-age=0, s-maxage=600, stale-while-revalidate=3600"));
+    assert.ok(code.includes("sitemapPublished()"));
+  }
+});
