@@ -991,3 +991,20 @@ test("bundle report correlates Next App Router client manifests to emitted route
   assert.ok(audit.includes("manifestSources"));
   assert.ok(audit.includes("NOT first-view downloads"));
 });
+
+test("browser network audit checks real storefront requests without purchasing anything", () => {
+  const config = JSON.parse(readFileSync("package.json", "utf8"));
+  const audit = readFileSync("scripts/audit-browser-network.mjs", "utf8");
+  assert.equal(config.scripts["perf:routes"], "node scripts/audit-browser-network.mjs");
+  assert.ok(audit.includes('context.newCDPSession(page)'));
+  assert.ok(audit.includes('Network.loadingFinished'));
+  assert.ok(audit.includes('new PerformanceObserver('));
+  assert.ok(audit.includes('await audit("home"'));
+  assert.ok(audit.includes('await audit("catalog"'));
+  assert.ok(audit.includes('await audit("product"'));
+  assert.ok(audit.includes('await audit("checkout-view-only"'));
+  assert.ok(!audit.includes("page.click("));
+  assert.ok(!audit.includes("page.fill("));
+  assert.ok(!audit.includes("page.locator(\\"button\\""));
+  assert.ok(audit.includes("browser-network.json"));
+});
