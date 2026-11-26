@@ -555,3 +555,13 @@ test("live SEO audit inspects actual sitemaps and canonical links without write 
   assert.ok(source.includes("AbortSignal.timeout"));
   assert.ok(!source.includes('method: "POST"'));
 });
+
+test("product pages expose crawlable category and recorded model links without inventing fitment", () => {
+  const source = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(source.includes('href={`/${locale}/categories/${p.category}`}'));
+  assert.ok(source.includes('compatibleCars\n              .filter((car) => Boolean(car.href))'));
+  assert.ok(source.includes('new Map('));
+  assert.ok(source.includes(').values()].slice(0, 6)'));
+  assert.ok(source.includes('href={car.href!}'));
+  assert.ok(source.includes('Verify the part number, model year and engine'));
+});
