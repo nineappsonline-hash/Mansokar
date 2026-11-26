@@ -2,7 +2,7 @@
 import { useState, type CSSProperties } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
+
 import {
   CalendarDays,
   CarFront,
@@ -31,7 +31,6 @@ export function ModelYearCards({
   const [active, setActive] = useState<string | null>(null);
   const [query, setQuery] = useState(initialQuery);
   const [sort, setSort] = useState(initialSort);
-  const reduced = useReducedMotion();
   const ar = locale === "ar";
   const normalize = (value: string) =>
     value
@@ -184,27 +183,11 @@ export function ModelYearCards({
                   ? "تصفح كل قطع هذا الموديل"
                   : "Browse all parts for this model"}
               </Link>
-              <motion.div
+              <div
                 className={styles.expansion}
                 id={panelId}
-                initial={false}
-                animate={open ? "open" : "closed"}
-                variants={{
-                  open: { height: "auto", opacity: 1 },
-                  closed: { height: 0, opacity: 0 },
-                }}
-                transition={
-                  reduced
-                    ? { duration: 0 }
-                    : {
-                        height: {
-                          duration: 0.52,
-                          ease: [0.22, 1, 0.36, 1],
-                        },
-                        opacity: { duration: 0.3, ease: "easeOut" },
-                      }
-                }
                 inert={!open}
+                aria-hidden={!open}
               >
                 <div className={styles.inner}>
                   <div className={styles.yearsPanel}>
@@ -270,7 +253,7 @@ export function ModelYearCards({
                     </Link>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </article>
           );
         })}
