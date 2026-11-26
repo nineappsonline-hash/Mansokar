@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
+import { canonicalVehicleModelSlug, resolveImportModelAlias } from "./vehicle-model-aliases";
 type Model = {
   id: string;
   brand: string;
@@ -68,7 +69,7 @@ export function planImportVehicles(
         const expanded: { make: string; model: string; years: number[] }[] = [];
         for (const brand of matchingBrands) {
           if (!brand) continue;
-          const candidates = isAll(input.model)
+          const matches = isAll(input.model)
             ? savedModels.filter((model) => model.brand === brand.slug)
             : allModels.filter(
                 (model) =>
@@ -77,6 +78,23 @@ export function planImportVehicles(
                     (name) => norm(name) === norm(input.model),
                   ),
               );
+          // Prefer the already-registered canonical model for known spelling
+          // aliases. This affects NEW imports only: existing legacy references
+          // remain intact until an audited database migration moves them.
+          const aliasSlug = canonicalVehicleModelSlug(brand.slug, code(input.model));
+          const registeredAliasTarget = allModels.find(
+            (model) => model.brand === brand.slug && model.slug === aliasSlug,
+          );
+          const candidates = isAll(input.model)
+            ? matches
+            : matches.length
+              ? [...new Map(matches.map((model) => {
+                  const preferred = resolveImportModelAlias(brand.slug, model, allModels);
+                  return [preferred.id, preferred] as const;
+                })).values()]
+              : registeredAliasTarget && aliasSlug !== code(input.model)
+                ? [registeredAliasTarget]
+                : [];
           if (isAll(input.model) && !candidates.length)
             throw Error(`All car models has no saved models for ${brand.slug}`);
           if (!candidates.length && isAll(input.make)) continue;
