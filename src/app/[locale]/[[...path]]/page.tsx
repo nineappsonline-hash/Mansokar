@@ -568,6 +568,12 @@ export default async function Page({ params, searchParams }: Props) {
     w = t(locale),
     q = { ...(await searchParams) },
     route = path.join("/");
+  // Start site identity fetches immediately. Shell consumes the same promise
+  // later instead of waiting until the content has finished loading.
+  const shellDataPromise = Promise.all([
+    storefrontSettings(),
+    siteMedia(["logo"]),
+  ]);
   const [vehicleData, categories] = await Promise.all([
     vehicleCatalog(),
     categoryCatalog(),
@@ -611,7 +617,7 @@ export default async function Page({ params, searchParams }: Props) {
         ]
       : [];
   const [settings, branding, categoryImages] = await Promise.all([
-    home ? storefrontSettings() : Promise.resolve(null),
+    home ? shellDataPromise.then(([storeSettings]) => storeSettings) : Promise.resolve(null),
     siteMedia(mediaSlots),
     path[0] === "categories" || modelListing || route === "catalog"
       ? categoryImageUrls(categories)
@@ -2289,7 +2295,7 @@ export default async function Page({ params, searchParams }: Props) {
       );
   } else notFound();
   return (
-    <Shell locale={locale} vehicle={vehicle} home={!route} navBrands={brands}>
+    <Shell locale={locale} vehicle={vehicle} home={!route} navBrands={brands} shellData={shellDataPromise}>
       {content}
     </Shell>
   );
