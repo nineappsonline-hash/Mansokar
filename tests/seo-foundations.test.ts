@@ -404,3 +404,14 @@ test("search snippets never promise universal genuine parts or warranties", () =
     );
   }
 });
+
+test("vehicle search RPC respects yearless All model applications", () => {
+  const sql = readFileSync("supabase/migrations/20261126144500_fix_yearless_car_model_search.sql", "utf8");
+  assert.ok(sql.includes("search_products_by_car"));
+  assert.ok(sql.includes("p.specs ? ('car_years:'||m.id)"));
+  assert.ok(sql.includes("btrim(coalesce(p.specs->>('car_years:'||m.id),''))=''"));
+  assert.ok(sql.includes("p_year::text=any(string_to_array("));
+  assert.ok(sql.includes("Unexpected search_products_by_car body"));
+  assert.ok(!sql.includes("DELETE FROM public.products"));
+  assert.ok(!sql.includes("UPDATE public.products"));
+});
