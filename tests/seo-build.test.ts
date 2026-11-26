@@ -965,3 +965,14 @@ test("production builds generate measurable client JS/CSS transfer-size reports"
   assert.ok(report.includes("manifest.pages || {}"));
   assert.ok(report.includes("largest: assets.sort("));
 });
+
+test("decorative home banners render on server with no hydration or viewport observer", () => {
+  const banner = readFileSync("src/components/banner-motion.tsx", "utf8");
+  const sections = readFileSync("src/components/storefront-banners.tsx", "utf8");
+  assert.ok(!banner.includes('"use client"'));
+  assert.ok(!banner.includes("IntersectionObserver"));
+  assert.ok(!banner.includes("useEffect("));
+  assert.ok(banner.includes('data-in-view="true"'));
+  assert.ok(banner.includes("aria-labelledby={labelledBy}"));
+  assert.ok(sections.includes("<BannerMotion"));
+});
