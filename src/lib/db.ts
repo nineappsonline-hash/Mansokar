@@ -382,9 +382,9 @@ export async function categoryImageUrls(categories: CategoryRecord[]) {
   }
   return result;
 }
-export async function siteMedia(
+const cachedPublicSiteMedia = unstable_cache(async (
   slots: string[],
-): Promise<Record<string, { url: string; alt: { ar: string; en: string } }>> {
+): Promise<Record<string, { url: string; alt: { ar: string; en: string } }>> => {
   if (!configured() || !slots.length) return {};
   const unique = [...new Set(slots)];
   const result: Record<
@@ -413,6 +413,11 @@ export async function siteMedia(
     }
   }
   return result;
+}, ["mopc-public-site-media-v1"], { revalidate: 120, tags: ["mopc-public-site-media"] });
+/** Signed media URLs expire after 600s; the public cache refreshes after 120s. */
+export async function siteMedia(slots: string[]) {
+  if (!slots.length) return {};
+  return cachedPublicSiteMedia([...new Set(slots)].sort());
 }
 export async function searchCatalog(filters: {
   make?: string;
