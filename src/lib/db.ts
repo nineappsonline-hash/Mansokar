@@ -289,6 +289,31 @@ export async function productImages(productId: string) {
     alt: row.alt as { ar: string; en: string },
   }));
 }
+/** Fetch the first recorded photo for each requested product in bounded batches.
+ * Featured cards can reuse these results rather than opening one query per SKU.
+ */
+export async function firstProductImages(productIds: string[]) {
+  const ids = [...new Set(productIds)].filter(Boolean);
+  const result: Record<string, { url: string; alt: { ar: string; en: string } }> = {};
+  if (!configured() || !ids.length) return result;
+  for (let offset = 0; offset < ids.length; offset += 100) {
+    const { data, error } = await service()
+      .from("product_images")
+      .select("id,product_id,path,alt,position")
+      .in("product_id", ids.slice(offset, offset + 100))
+      .order("position", { ascending: true })
+      .order("id", { ascending: true });
+    if (error) throw error;
+    for (const row of data ?? []) {
+      if (result[row.product_id]) continue;
+      result[row.product_id] = {
+        url: isRemoteImageUrl(row.path) ? row.path : `/product-media/${row.id}`,
+        alt: row.alt as { ar: string; en: string },
+      };
+    }
+  }
+  return result;
+}
 export type CategoryRecord = {
   slug: string;
   name: { ar: string; en: string };
