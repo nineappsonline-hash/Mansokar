@@ -933,7 +933,7 @@ export default async function Page({ params, searchParams }: Props) {
       !q.q && !q.year && !q.sort && !q.manufacturer && !q.type &&
       !q.min && !q.max && !q.vehicle
         ? (() => {
-            const url = new URL(canonicalPage(`/${locale}/${route}`, q), siteOrigin()).href;
+            // q also contains server-side make/model/category filters. Only the actual\n            // public page number should determine the structured-data URL.\n            const url = new URL(canonicalPage(`/${locale}/${route}`, { page: q.page }), siteOrigin()).href;
             const visible = (serverResults
               ? filtered
               : filtered.slice((page - 1) * 12, page * 12)).slice(0, 12);
