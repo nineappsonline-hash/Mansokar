@@ -784,3 +784,22 @@ test("sitewide shell imports small navigation controls without hydrating product
   assert.ok(!slim.includes('from "./controls"'));
   assert.ok(slim.includes("window.addEventListener(\"store-change\", persist)"));
 });
+
+test("global support loads its heavy form only after customer interaction", () => {
+  const shell = readFileSync("src/components/shell.tsx", "utf8");
+  const launcher = readFileSync("src/components/lazy-chat-widget.tsx", "utf8");
+  const panel = readFileSync("src/components/chat-widget.tsx", "utf8");
+  assert.ok(shell.includes('from "./lazy-chat-widget"'));
+  assert.ok(!shell.includes('from "./chat-widget"'));
+  assert.ok(launcher.includes('dynamic('));
+  assert.ok(launcher.includes('import("./chat-widget")'));
+  assert.ok(launcher.includes("onClick={() => setOpened(true)}"));
+  assert.ok(panel.includes("initiallyOpen = false"));
+  assert.ok(panel.includes("useState(initiallyOpen)"));
+});
+test("built-in car brand logos use responsive optimized images", () => {
+  const home = readFileSync("src/components/cyan-home.tsx", "utf8");
+  assert.ok(home.includes('src={\n                      b.logo ||'));
+  assert.ok(home.includes('unoptimized={Boolean(b.logo)}'));
+  assert.ok(home.includes('sizes="(max-width:640px) 120px, 160px"'));
+});
