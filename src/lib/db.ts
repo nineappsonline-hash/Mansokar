@@ -481,7 +481,7 @@ export async function relatedProducts(
   kind: "alternative" | "together",
   vehicle?: string,
 ) {
-  if (!configured()) return [];
+  if (!configured() || (kind === "together" && !vehicle)) return [];
   const { data, error } = await service()
     .from("product_relations")
     .select("related_id")
