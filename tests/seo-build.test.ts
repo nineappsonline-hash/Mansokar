@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { canonicalPage, categoryLandingIndexable } from "../src/lib/seo-policy";
 import { sitemapPublished } from "../src/lib/sitemap-visibility";
 import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml";
-import { collectSearchPages } from "../src/lib/seo-inventory";
+import { collectSearchPages, cmsTranslatedLocales } from "../src/lib/seo-inventory";
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
 import { demoProducts } from "../src/lib/catalog";
 
@@ -206,4 +206,26 @@ test("separate registered models and eligible products receive independent accur
     "opel/astra-j/brakes": 1,
     "opel/corsa/brakes": 1,
   });
+});
+
+
+test("CMS metadata and sitemap use the same verified language availability", () => {
+  const title = { ar: "معلومات الشحن", en: "معلومات الشحن" };
+  assert.deepEqual(cmsTranslatedLocales(title), ["ar"]);
+  assert.deepEqual(cmsTranslatedLocales({ ar: "معلومات الشحن", en: "Shipping details" }), ["ar", "en"]);
+  const pages = collectSearchPages({
+    brands: [], modelNames: [], categories: [], guides: [], products: [],
+    cms: [{
+      slug: "guides/shipping-help",
+      title,
+      published: true,
+      seo_updated_at: null,
+    }],
+  });
+  const guide = pages.find((page) => page.path === "/guides/shipping-help");
+  assert.deepEqual(guide?.locales, ["ar"]);
+  const xml = sitemapXml(pages, "https://mopc.store", "guides");
+  assert.ok(xml.includes("https://mopc.store/ar/guides/shipping-help"));
+  assert.ok(!xml.includes("https://mopc.store/en/guides/shipping-help"));
+  assert.ok(!xml.includes('hreflang="en-EG" href="https://mopc.store/en/guides/shipping-help"'));
 });
