@@ -133,7 +133,7 @@ export async function CyanHome({
           {ar ? "تصفح حسب الماركة" : "Shop by car make"}
         </h2>
         <div className="cyan-brand-grid">
-          {orderedBrands.map((b) => (
+          {orderedBrands.map((b, index) => (
             <Link
               className={`cyan-brand-tile cyan-brand-${b.slug}`}
               href={`/${locale}/brands/${b.slug}`}
@@ -148,7 +148,10 @@ export async function CyanHome({
                 }
                 alt=""
                 fill
-                sizes="(max-width:640px) 80vw, 20vw"
+                // Two-column mobile grid; only the final tile spans both columns.
+                sizes={index === orderedBrands.length - 1
+                  ? "(max-width:640px) 100vw, (max-width:1180px) 33vw, 20vw"
+                  : "(max-width:640px) 50vw, (max-width:1180px) 33vw, 20vw"}
               />
               <span className="cyan-brand-logo">
                 {b.logo || order.includes(b.slug) ? (
