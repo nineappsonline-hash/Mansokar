@@ -134,6 +134,8 @@ export async function catalog(
   if (error) throw error;
   return (data ?? []) as unknown as Product[];
 }
+/** Share one published SKU lookup between generateMetadata and the product page. */
+export const catalogBySlug = cache((slug: string) => catalog({ slug }));
 export async function fitmentFlags(
   ids: string[],
   vehicleId?: string,
