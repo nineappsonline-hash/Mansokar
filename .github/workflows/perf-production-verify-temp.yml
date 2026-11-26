@@ -1,0 +1,30 @@
+name: Temporary verify optimized MOPC production
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify-image-delivery:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Measure live optimized images
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_LOCALE: ar
+        run: npm run perf:routes
+      - name: Upload browser report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mopc-optimized-production
+          path: reports/browser-network.json
+          if-no-files-found: ignore
