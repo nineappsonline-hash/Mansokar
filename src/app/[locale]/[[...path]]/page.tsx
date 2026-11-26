@@ -1256,8 +1256,9 @@ export default async function Page({ params, searchParams }: Props) {
     );
     const confirmed = flags[p.id];
     const showApplications = !vehicle && !browsingContext;
-    const compatibleCars = showApplications
-      ? productCardVehicles(raw, { brands, models: vehicleModels }, locale).map(
+    // Keep verified model links available even when a visitor has selected
+    // a car: selection only changes the fitment panel, not crawlable links.
+    const compatibleCars = productCardVehicles(raw, { brands, models: vehicleModels }, locale).map(
           (car) => {
             const model = vehicleModels.find((m) => m.id === car.id);
             const brand = brands.find((b) => b.slug === model?.brand);
@@ -1279,8 +1280,7 @@ export default async function Page({ params, searchParams }: Props) {
               logo,
             };
           },
-        )
-      : [];
+        );
     const activeVehicle =
       vehicle ??
       (browsingContext
