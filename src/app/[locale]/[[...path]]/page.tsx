@@ -1282,27 +1282,20 @@ export default async function Page({ params, searchParams }: Props) {
       return locale === "ar" ? "لسه ما اخترتش عربيتك" : "No vehicle selected";
     }
 
-    let media: {
-      url: string;
-      alt: { ar: string; en: string };
-    }[] = [];
-    try {
-      media = await productImages(p.id);
-    } catch {
-      /* A missing photo does not conceal the product. */
-    }
-    const areas = await deliveryAreas();
-    const policies = await policyPages(
-      p.policy_refs?.length
-        ? p.policy_refs
-        : ["policies/shipping", "policies/returns", "policies/warranty"],
-    );
-    const together = await relatedProducts(p.id, "together", vehicle?.id);
-    const curatedAlternatives = await relatedProducts(
-      p.id,
-      "alternative",
-      vehicle?.id,
-    );
+    // Independent product sections can fetch concurrently. A missing image
+    // must not block a product page, while policy/shipping data errors stay visible.
+    const [media, areas, policies, together, curatedAlternatives] =
+      await Promise.all([
+        productImages(p.id).catch(() => []),
+        deliveryAreas(),
+        policyPages(
+          p.policy_refs?.length
+            ? p.policy_refs
+            : ["policies/shipping", "policies/returns", "policies/warranty"],
+        ),
+        relatedProducts(p.id, "together", vehicle?.id),
+        relatedProducts(p.id, "alternative", vehicle?.id),
+      ]);
     const alternatives = (
       curatedAlternatives.length ? curatedAlternatives : products
     ).filter(
