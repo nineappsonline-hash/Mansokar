@@ -1,5 +1,5 @@
 import "./mopc-home-2026.css";
-import { productImages } from "@/lib/db";
+import { firstProductImages } from "@/lib/db";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, CarFront, Search } from "lucide-react";
@@ -57,12 +57,13 @@ export async function CyanHome({
       (order.includes(a.slug) ? order.indexOf(a.slug) : 99) -
       (order.includes(b.slug) ? order.indexOf(b.slug) : 99),
   );
-  const candidates = await Promise.all(
-    products.map(async (product) => ({
-      product,
-      media: (await productImages(product.id).catch(() => []))[0],
-    })),
+  const covers = await firstProductImages(products.map((product) => product.id)).catch(
+    () => ({} as Awaited<ReturnType<typeof firstProductImages>>),
   );
+  const candidates = products.map((product) => ({
+    product,
+    media: covers[product.id],
+  }));
   const featured = [
     ...candidates.filter((p) => p.media),
     ...candidates.filter((p) => !p.media),
@@ -193,6 +194,7 @@ export async function CyanHome({
               product={p}
               carCatalog={{ brands, models }}
               cover={media}
+              mediaResolved
               locale={locale}
               vehicle={vehicle}
               confirmed={fitments[p.id]}
