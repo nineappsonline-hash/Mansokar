@@ -864,6 +864,14 @@ test("product photos share request data with metadata and vehicle-free cross-sel
   assert.ok(db.includes('if (!configured() || (kind === "together" && !vehicle)) return [];'));
 });
 
+test("metadata queries model/category inventory concurrently and keeps canonical duplicate handling", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(page.includes("const [selected, allModel] = await Promise.all(["));
+  assert.ok(page.includes("categoryForModel\n            ? searchCatalog({ make: brand.slug, model: path[2], size: 1 })"));
+  assert.ok(page.includes("duplicateModelCategoryLanding = allModel.total === selected.total"));
+  assert.ok(page.includes("modelHasInventory = selected.total > 0"));
+});
+
 test("model category totals cache is public, short-lived and not affected by user filters", () => {
   const source = readFileSync("src/lib/model-category-totals.ts", "utf8");
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
