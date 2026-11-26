@@ -39,7 +39,7 @@ import { ShippingEstimate } from "@/components/shipping-estimate";
 import { ProductCard as Card } from "@/components/product-card";
 import { Pagination } from "@/components/pagination";
 import { PurchaseButtons } from "@/components/purchase-buttons";
-import { Reveal } from "@/components/motion-primitives";
+
 import Image from "next/image";
 import { modelPhoto, partArt } from "@/lib/visuals";
 import Link from "next/link";
@@ -674,8 +674,8 @@ export default async function Page({ params, searchParams }: Props) {
   );
   const cards = (items: Product[]) => (
     <div className="product-grid">
-      {items.map((p, i) => (
-        <Reveal key={p.id} delay={(i % 4) * 0.06}>
+      {items.map((p) => (
+        <div key={p.id}>
           <Card
             product={p}
             carCatalog={{ brands, models: vehicleModels }}
@@ -685,7 +685,7 @@ export default async function Page({ params, searchParams }: Props) {
             context={browsingContext}
             contextMatched={Boolean(serverResults && q.make && q.model)}
           />
-        </Reveal>
+        </div>
       ))}
     </div>
   );
