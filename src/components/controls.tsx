@@ -697,6 +697,7 @@ export function Gallery({
   demo?: boolean;
 }) {
   const [index, setIndex] = useState(0);
+  const [zoomOpen, setZoomOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const [touch, setTouch] = useState(0);
   const items = media.length
@@ -732,7 +733,10 @@ export function Gallery({
       <button
         className="product-art large"
         aria-label={locale === "ar" ? "تكبير الصورة" : "Enlarge image"}
-        onClick={() => dialog.current?.showModal()}
+        onClick={() => {
+          setZoomOpen(true);
+          dialog.current?.showModal();
+        }}
       >
         <img
           src={items[index].url}
@@ -780,6 +784,7 @@ export function Gallery({
           locale === "ar" ? "صورة المنتج المكبرة" : "Enlarged product image"
         }
         className="lightbox"
+        onClose={() => setZoomOpen(false)}
         onClick={(e) => {
           if (e.target === dialog.current) dialog.current?.close();
         }}
@@ -800,14 +805,15 @@ export function Gallery({
         >
           <X />
         </button>
-        <img
-          src={items[index].url}
-          alt={items[index].alt[locale]}
-          width={1200}
-          height={900}
-          loading="lazy"
-          decoding="async"
-        />
+        {zoomOpen && (
+          <img
+            src={items[index].url}
+            alt={items[index].alt[locale]}
+            width={1200}
+            height={900}
+            decoding="async"
+          />
+        )}
         {items.length > 1 && (
           <div className="gallery-nav">
             <button
