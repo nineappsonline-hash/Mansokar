@@ -851,3 +851,26 @@ test("non-orderable public catalog products never advertise purchasable offers",
   assert.equal(unavailable?.["@type"], "Product");
   assert.equal(unavailable?.mpn, p.partNumber);
 });
+
+test("EGP piaster-priced merchant offers match user-visible prices", async () => {
+  const { money } = await import("../src/lib/catalog");
+  const { feedExclusionReasons, merchantFeed } = await import("../src/lib/merchant-feed");
+  const item = {
+    ...p,
+    price: 50998,
+    sale: null,
+    orderable: true,
+    status: "published" as const,
+    specs: { stock_status: "in_stock", product_condition: "new" },
+  };
+  assert.match(money(item.price, "ar"), /509\\.98/);
+  assert.ok(!feedExclusionReasons(item, "ar", ["/part.jpg"]).length);
+  assert.equal(
+    productStructuredData(item, "ar", "https://mopc.store", [])?.offers?.price,
+    "509.98",
+  );
+  assert.match(
+    merchantFeed([{ product: item, images: ["/part.jpg"] }], "ar", "https://mopc.store"),
+    /<g:price>509\\.98 EGP<\\/g:price>/,
+  );
+});
