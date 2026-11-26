@@ -845,6 +845,15 @@ test("automated product headline prioritizes part number, model and maker over l
   assert.equal(productSerpTitle("طقم فرامل GM | أوبل 2012–2022 | 12345678", "موبِك").includes("12345678"), true);
 });
 
+test("automatic SERP titles omit the store suffix before losing a part reference", () => {
+  const title = "عمة هواء كامله GM | شيفروليه كابتيفا 2019–2023 | 23995320";
+  const result = productSerpTitle(title, "موبِك");
+  assert.ok(result.length < 65, result);
+  assert.ok(result.includes("23995320"));
+  assert.ok(result.includes("GM"));
+  assert.ok(result.includes("شيفروليه"));
+});
+
 test("non-orderable public catalog products never advertise purchasable offers", () => {
   const available = productStructuredData(
     { ...p, orderable: true },
