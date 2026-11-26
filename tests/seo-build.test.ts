@@ -749,3 +749,26 @@ test("shell identity is fetched in parallel once and shared with homepage and he
   assert.ok(shell.includes("const [settings, media] = await (shellData ?? Promise.all(["));
   assert.ok(page.indexOf("const shellDataPromise = Promise.all([") < page.indexOf("await vehicleCatalog()") || page.indexOf("const shellDataPromise = Promise.all([") < page.indexOf("const [vehicleData, categories] = await Promise.all(["));
 });
+
+test("measured mobile image and font bottlenecks are addressed without modifying brand artwork", () => {
+  const logo = readFileSync("src/components/brand-logo.tsx", "utf8");
+  const css = readFileSync("src/app/globals.css", "utf8");
+  assert.ok(logo.includes('import Image from "next/image"'));
+  assert.ok(logo.includes('src={src || "/images/mopc/logo-dark.png"}'));
+  assert.ok(logo.includes('sizes="180px"'));
+  assert.ok(logo.includes("unoptimized={!original}"));
+  assert.ok(!logo.includes("width={2172}"));
+  assert.ok(!css.includes('fonts.googleapis.com/css2?family=Almarai'));
+  assert.ok(css.includes('src: url(/fonts/ibm-plex-sans-arabic-arabic-400.woff2)'));
+});
+
+test("model year expansion does not require motion/react in client bundle", () => {
+  const component = readFileSync("src/components/model-year-cards.tsx", "utf8");
+  const css = readFileSync("src/components/model-year-cards.module.css", "utf8");
+  assert.ok(!component.includes('from "motion/react"'));
+  assert.ok(component.includes('inert={!open}'));
+  assert.ok(component.includes('aria-hidden={!open}'));
+  assert.ok(css.includes("grid-template-rows: 0fr;"));
+  assert.ok(css.includes("grid-template-rows: 1fr;"));
+  assert.ok(css.includes("prefers-reduced-motion: reduce"));
+});
