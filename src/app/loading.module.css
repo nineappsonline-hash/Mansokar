@@ -176,7 +176,7 @@
   font-weight: 500;
   color: #ecac8c;
 }
-.copy h1 {
+.copy .loadingTitle {
   margin: 0;
   color: #f5f7fa;
   font-size: clamp(23px, 3vw, 30px);
@@ -274,7 +274,7 @@
   .name {
     font-size: 22px;
   }
-  .copy h1 {
+  .copy .loadingTitle {
     font-size: 24px;
   }
   .footer {
@@ -297,7 +297,7 @@
   .name {
     font-size: 19px;
   }
-  .copy h1 {
+  .copy .loadingTitle {
     font-size: 21px;
   }
   .eyebrow {
