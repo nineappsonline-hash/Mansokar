@@ -5,6 +5,7 @@ import {
 import styles from "./product-card.module.css";
 import { FavoriteButton } from "./favorite-button";
 import Link from "next/link";
+import Image from "next/image";
 import { BadgeCheck, CarFront } from "lucide-react";
 import { vehicleBrandLogo } from "@/lib/vehicle-brand-logo";
 import { productImages } from "@/lib/db";
@@ -82,6 +83,10 @@ export async function ProductCard({
   const photo =
     media?.url ??
     (p.demo ? partArt(p.category) : "/images/part-placeholder.svg");
+  // Oversized postimg PNGs should be served through Next's on-demand
+  // optimizer. Leave other remote hosts untouched to preserve their own
+  // transforms and avoid additional quota/cost for already-compressed WebP.
+  const optimizeRemotePng = /^https:\/\/i\.postimg\.cc\/[^?#]+\.png(?:[?#]|$)/i.test(photo);
   const photoAlt =
     media?.alt[locale] ??
     (p.demo
@@ -103,15 +108,28 @@ export async function ProductCard({
         data-analytics="select_item"
         data-productid={p.id}
       >
-        <img
-          src={photo}
-          alt={photoAlt}
-          loading="lazy"
-          decoding="async"
-          width={320}
-          height={240}
-          className="product-card-image"
-        />
+        {optimizeRemotePng ? (
+          <Image
+            src={photo}
+            alt={photoAlt}
+            loading="lazy"
+            width={320}
+            height={240}
+            sizes="(max-width: 540px) 108px, 320px"
+            quality={75}
+            className="product-card-image"
+          />
+        ) : (
+          <img
+            src={photo}
+            alt={photoAlt}
+            loading="lazy"
+            decoding="async"
+            width={320}
+            height={240}
+            className="product-card-image"
+          />
+        )}
         {p.demo && <span className={styles.demo}>{w.demoProduct}</span>}
         {p.sale !== null && p.price > 0 && (
           <b className={styles.discount}>
