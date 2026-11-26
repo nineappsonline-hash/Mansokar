@@ -690,15 +690,18 @@ export default async function Page({ params, searchParams }: Props) {
     vehicleModels,
     brands,
   );
-  const cards = (items: Product[]) => (
+  const cards = (
+    items: Product[],
+    covers: Awaited<ReturnType<typeof firstProductImages>> | null = catalogCovers,
+  ) => (
     <div className="product-grid">
       {items.map((p) => (
         <div key={p.id}>
           <Card
             product={p}
             carCatalog={{ brands, models: vehicleModels }}
-            cover={catalogCovers?.[p.id]}
-            mediaResolved={catalogCovers !== null}
+            cover={covers?.[p.id]}
+            mediaResolved={covers !== null}
             locale={locale}
             vehicle={vehicle}
             confirmed={flags[p.id]}
@@ -1327,6 +1330,11 @@ export default async function Page({ params, searchParams }: Props) {
         x.family === p.family &&
         x.manufacturer !== p.manufacturer,
     );
+    // Fetch both related sections in one batch instead of one query per card.
+    // If this optional query fails, cards retain their existing image fallback.
+    const relatedCovers = await firstProductImages(
+      [...new Set([...together, ...alternatives].map((item) => item.id))],
+    ).catch(() => null);
     const savings =
       p.sale !== null && p.sale < p.price
         ? Math.round(((p.price - p.sale) / p.price) * 100)
@@ -1637,6 +1645,8 @@ export default async function Page({ params, searchParams }: Props) {
                     key={item.id}
                     product={item}
                     carCatalog={{ brands, models: vehicleModels }}
+                    cover={relatedCovers?.[item.id]}
+                    mediaResolved={relatedCovers !== null}
                     locale={locale}
                     vehicle={vehicle}
                     confirmed={true}
@@ -1664,7 +1674,7 @@ export default async function Page({ params, searchParams }: Props) {
               </div>
               <Link href={`/${locale}/compare`}>{w.compare} ↗</Link>
             </div>
-            {cards(alternatives)}
+            {cards(alternatives, relatedCovers)}
           </section>
         )}
       </div>
