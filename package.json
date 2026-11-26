@@ -15,7 +15,8 @@
     "db:reset": "supabase db reset",
     "seed:generate": "node --import tsx scripts/seed.ts",
     "format": "prettier --write src tests scripts *.json *.ts *.mjs docs/*.md README.md",
-    "prebuild": "node --check scripts/audit-browser-network.mjs && node --import tsx tests/product-seo.test.ts && node --import tsx tests/seo-build.test.ts"
+    "prebuild": "node --check scripts/audit-browser-network.mjs && node --check scripts/audit-seo-indexing.mjs && node --import tsx tests/product-seo.test.ts && node --import tsx tests/seo-build.test.ts",
+    "seo:live-audit": "node scripts/audit-seo-indexing.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
