@@ -980,6 +980,20 @@ test("model category totals cache is public, short-lived and not affected by use
   assert.ok(!page.includes("searchPagesForLocale(await searchPages(), locale)"));
 });
 
+test("published SKU, policies and related inventory start before independent layout/catalog waits", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  const kickoff = page.indexOf('const productDetailsPromise = path[0] === "products"');
+  const catalogs = page.indexOf("const [vehicleData, categories] = await Promise.all([");
+  const family = page.indexOf('const familyPromise = path[0] === "products"');
+  const consumption = page.indexOf("const family = await familyPromise;");
+  assert.ok(kickoff > 0 && family > kickoff && catalogs > family && consumption > catalogs);
+  assert.ok(page.includes("Promise.all([productLookupPromise, selectedIdPromise]).then("));
+  assert.ok(page.includes("relatedProductGroups(raw.id, selectedId)"));
+  assert.ok(page.includes("productImages(raw.id).catch(() => [])"));
+  assert.ok(page.includes("policyPages("));
+  assert.ok(page.includes("deliveryAreas()"));
+});
+
 test("product and category pages do not request unused brand/slideshow media", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes('const home = !route;'));
