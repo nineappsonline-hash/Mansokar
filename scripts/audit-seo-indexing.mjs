@@ -78,11 +78,19 @@ await inspect("robots.txt", async () => {
   pass("robots.txt", "200; sitemap advertised; admin disallowed; public crawl allowed");
 });
 let sitemapProducts = "";
+let sitemapVehicles = "";
 await inspect("sitemap index", async () => {
   const { response, body } = await fetchPage("/sitemap.xml");
   if (response.status !== 200 || !body.includes("<sitemapindex") || !body.includes("/sitemaps/products.xml"))
     throw Error(`Missing sitemap index or product sitemap: HTTP ${response.status}`);
   pass("sitemap index", "200; index references product sitemap");
+});
+await inspect("vehicle sitemap", async () => {
+  const { response, body } = await fetchPage("/sitemaps/vehicles.xml");
+  if (response.status !== 200 || !body.includes("<urlset") || !body.includes("/brands/"))
+    throw Error(`Vehicle sitemap missing or empty: HTTP ${response.status}`);
+  sitemapVehicles = body;
+  pass("vehicle sitemap", "200; model URLs discoverable in XML");
 });
 await inspect("product sitemap", async () => {
   const { response, body } = await fetchPage("/sitemaps/products.xml");
@@ -101,6 +109,48 @@ await inspect("Arabic homepage canonical", async () => {
     throw Error("Arabic homepage unexpectedly noindex");
   pass("Arabic homepage canonical", "200; /ar canonical; indexable");
 });
+// Crawl a bounded bilingual sample of actual model pages advertised by XML.
+const modelSitemapUrls = [...new Set(
+  [...sitemapVehicles.matchAll(/<loc>(https?:\\/\\/[^<]*\\/(?:ar|en)\\/brands\\/[^<]+)<\\/loc>/g)]
+    .map((match) => match[1].replaceAll("&amp;", "&"))
+    .filter((url) => {
+      const pathname = new URL(url).pathname;
+      return new URL(url).origin === origin &&
+        /^\\/(?:ar|en)\\/brands\\/[^/]+\\/[^/]+$/.test(pathname);
+    }),
+)];
+const modelSample = [
+  ...modelSitemapUrls.filter((url) => new URL(url).pathname.startsWith("/ar/")).slice(0, 3),
+  ...modelSitemapUrls.filter((url) => new URL(url).pathname.startsWith("/en/")).slice(0, 3),
+];
+if (sitemapVehicles && !modelSample.length)
+  fail("vehicle samples", "Vehicle sitemap contains no model landing pages");
+let modelPagesPassed = 0;
+for (const url of modelSample) {
+  const path = new URL(url).pathname;
+  await inspect(`model landing ${path}`, async () => {
+    const { response, body } = await fetchPage(url);
+    if (response.status !== 200) throw Error(`Model HTTP ${response.status}`);
+    const canonical = linkCanonical(body);
+    if (!canonical || new URL(canonical, origin).href !== url)
+      throw Error(`Model canonical mismatch: ${canonical}`);
+    if (hasNoindex(body) || /\\bnoindex\\b/i.test(response.headers.get("x-robots-tag") || ""))
+      throw Error("Model unexpectedly noindex");
+    const collection = structuredObjects(body).find((item) =>
+      item?.["@type"] === "CollectionPage" && item?.mainEntity?.["@type"] === "ItemList"
+    );
+    if (!collection || !Array.isArray(collection.mainEntity.itemListElement) ||
+        collection.mainEntity.itemListElement.length === 0)
+      throw Error("No valid CollectionPage / nonempty ItemList JSON-LD");
+    if (!collection.mainEntity.itemListElement.every((item) =>
+      item["@type"] === "ListItem" && item.position > 0 &&
+      /^https:\\/\\/mopc\\.store\\/(?:ar|en)\\/products\\//.test(item.url || "")
+    )) throw Error("Model ItemList contains invalid product links");
+    modelPagesPassed++;
+    pass(`model landing ${path}`, "200; canonical; indexable; populated CollectionPage");
+  });
+}
+
 const matches = [...sitemapProducts.matchAll(/<loc>(https?:\/\/[^<]*\/(?:ar|en)\/products\/[^<]+)<\/loc>/g)]
   .map((match) => match[1].replaceAll("&amp;", "&"))
   .filter((url) => new URL(url).origin === origin);
@@ -136,6 +186,7 @@ if (!matches.length) fail("product samples", "No Arabic products in sitemap to s
 const report = {
   measuredAt: new Date().toISOString(), origin,
   note: "Read-only HTTP checks. Google URL Inspection is separate, and indexed snapshots can lag the live website.",
+  modelPagesPassed, modelPagesAttempted: modelSample.length,
   eligibleProductSamplesPassed: sampled, eligibleProductSamplesAttempted: sampleUrls.length,
   checks,
 };
