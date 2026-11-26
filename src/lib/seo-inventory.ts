@@ -36,6 +36,33 @@ export function vehicleLandingLocales(
   );
 }
 
+/** HTML sitemap labels use verified compatibility, not inferred model names.
+ * Multi-model parts must not be presented as exclusive to the first car.
+ */
+export function productSitemapLinkTitle(
+  product: Pick<Product, "name" | "manufacturer" | "partNumber">,
+  compatibleModels: Text[] = [],
+): Text {
+  const unique = [...new Map(compatibleModels.map((name) =>
+    [`${name.ar.trim()}|${name.en.trim()}`, name],
+  )).values()];
+  const modelLabel = (locale: "ar" | "en") => {
+    const names = unique.slice(0, 2).map((name) => name[locale].trim());
+    const joined = names.join(locale === "ar" ? "، " : ", ");
+    return unique.length > 2
+      ? `${joined}${locale === "ar" ? " وموديلات أخرى" : " and other models"}`
+      : joined;
+  };
+  return {
+    ar: unique.length
+      ? `${product.name.ar} – ${modelLabel("ar")} – ${product.manufacturer}`
+      : `${product.name.ar} – ${product.manufacturer} – رقم القطعة ${product.partNumber}`,
+    en: unique.length
+      ? `${product.name.en} – ${modelLabel("en")} – ${product.manufacturer}`
+      : `${product.name.en} – ${product.manufacturer} – Part ${product.partNumber}`,
+  };
+}
+
 export function publicCmsPath(slug: string) {
   return (
     /^(about|contact|faq|guides)$/.test(slug) ||
@@ -78,6 +105,7 @@ export function collectSearchPages(input: {
   products: Product[];
   modelCounts?: Record<string, number>;
   modelCategoryCounts?: Record<string, number>;
+  productVehicleLabels?: Record<string, Text[]>;
   productDates?: Record<string, string | undefined>;
   productImages?: { id: string; product_id: string; path: string }[];
 }): SearchPage[] {
@@ -216,10 +244,7 @@ export function collectSearchPages(input: {
     ...publishedProducts.map((p) => ({
         path: `/products/${p.slug}`,
         title: p.name,
-        linkTitle: {
-          ar: `${p.name.ar} – ${p.manufacturer} – رقم القطعة ${p.partNumber}`,
-          en: `${p.name.en} – ${p.manufacturer} – Part ${p.partNumber}`,
-        },
+        linkTitle: productSitemapLinkTitle(p, input.productVehicleLabels?.[p.id]),
         locales: (["ar", "en"] as const).filter((locale) =>
           translatedProduct(p, locale),
         ),
