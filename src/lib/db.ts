@@ -525,7 +525,7 @@ export async function deliveryAreas() {
   return data ?? [];
 }
 
-export async function heroSlideshow(fallbackUrl: string) {
+const sharedHeroSlideshow = unstable_cache(async function loadPublicHeroSlideshow(fallbackUrl: string) {
   const fallback = {
     slides: [
       {
@@ -604,4 +604,17 @@ export async function heroSlideshow(fallbackUrl: string) {
     void rowsError;
     void settingsError;
   }
+}, ["mopc-public-hero-slideshow-v1"], { revalidate: 120, tags: ["mopc-public-hero"] });
+export async function heroSlideshow(fallbackUrl: string) {
+  return sharedHeroSlideshow(fallbackUrl);
 }
+
+/** Public model-year options for homepage; never include a user's saved car. */
+const cachedPublicModelYears = unstable_cache(
+  async () => configured()
+    ? allRows<{ model_id: string; year: number }>("vehicle_model_years", "model_id,year")
+    : [],
+  ["mopc-public-model-years-v1"],
+  { revalidate: 60, tags: ["mopc-public-model-years"] },
+);
+export const publicModelYears = cache(async () => cachedPublicModelYears());
