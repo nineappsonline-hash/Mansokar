@@ -641,6 +641,21 @@ test("product pages expose crawlable category and recorded model links without i
   assert.ok(source.includes('Verify the part number, model year and engine'));
 });
 
+test("model landing JSON-LD lists only actual page products with canonical URLs", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(page.includes('const publicModelCollection ='));
+  assert.ok(page.includes('modelListing && listingBrand && listingModel &&'));
+  assert.ok(page.includes('!q.q && !q.year && !q.sort && !q.manufacturer && !q.type'));
+  assert.ok(page.includes('canonicalPage(`/${locale}/${route}`, q)'));
+  assert.ok(page.includes('"@type": "CollectionPage"'));
+  assert.ok(page.includes('"@type": "ItemList"'));
+  assert.ok(page.includes('"@type": "ListItem"'));
+  assert.ok(page.includes('numberOfItems: visible.length'));
+  assert.ok(page.includes('publicProductSlug(item)'));
+  assert.ok(page.includes('{publicModelCollection && ('));
+  assert.ok(!page.includes('aggregateRating: { ratingValue:'));
+});
+
 test("model category browse links follow locale-specific sitemap eligibility instead of all categories", () => {
   const pages = collectSearchPages({
     brands: [brand], modelNames, categories,
