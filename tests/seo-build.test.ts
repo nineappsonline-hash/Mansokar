@@ -705,7 +705,7 @@ test("product and category pages do not request unused brand/slideshow media", (
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes('const home = !route;'));
   assert.ok(page.includes('const brandLanding = path[0] === "brands" && path.length === 2;'));
-  assert.ok(page.includes('home ? storefrontSettings() : Promise.resolve(null)'));
+  assert.ok(page.includes('home ? shellDataPromise.then(([storeSettings]) => storeSettings) : Promise.resolve(null)'));
   assert.ok(page.includes('const [vehicleData, categories] = await Promise.all(['));
   assert.ok(page.includes("siteMedia(mediaSlots)"));
 });
@@ -737,4 +737,15 @@ test("homepage regular items and special offers load concurrently", () => {
   assert.ok(page.includes("!route ? catalog({ limit: 10 }) : Promise.resolve([] as Product[])"));
   assert.ok(page.includes("...homeProducts, ...homeOffers"));
   assert.ok(!page.includes("...(await catalog({ limit: 10 })), ...homeOffers"));
+});
+
+test("shell identity is fetched in parallel once and shared with homepage and header", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  const shell = readFileSync("src/components/shell.tsx", "utf8");
+  assert.ok(page.includes("const shellDataPromise = Promise.all(["));
+  assert.ok(page.includes('siteMedia(["logo"])'));
+  assert.ok(page.includes("shellData={shellDataPromise}"));
+  assert.ok(shell.includes("shellData?: Promise<["));
+  assert.ok(shell.includes("const [settings, media] = await (shellData ?? Promise.all(["));
+  assert.ok(page.indexOf("const shellDataPromise = Promise.all([") < page.indexOf("await vehicleCatalog()") || page.indexOf("const shellDataPromise = Promise.all([") < page.indexOf("const [vehicleData, categories] = await Promise.all(["));
 });
