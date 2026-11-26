@@ -41,7 +41,6 @@ export function productSerpTitle(
   if (noYearRanges !== base) {
     const withStore = suffix ? `${noYearRanges} | ${suffix}` : noYearRanges;
     if (withStore.length <= 60) return withStore;
-    if (noYearRanges.length < base.length) return noYearRanges;
   }
   // Use compact separators and a standard "with" abbreviation only when
   // they bring the generated title into the SERP budget. Keep the full
@@ -50,6 +49,7 @@ export function productSerpTitle(
     .replace(/\s+with\s+/gi, " w/")
     .replace(/\s+\|\s+/g, "|");
   if (compact.length <= 60) return compact;
+  if (noYearRanges.length < base.length) return noYearRanges;
   // Only drop the store suffix if it would consume search-result title space;
   // product names and references remain intact.
   return base.length < titled.length ? base : titled;
