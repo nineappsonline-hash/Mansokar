@@ -670,6 +670,19 @@ test("catalog listing avoids per-card motion hydration and homepage car years us
   assert.ok(!page.includes("...registeredYears\n                .filter((y) => y.model_id === m.id)"));
 });
 
+test("SEO requests share SKU lookup and cache only short-lived public homepage data", () => {
+  const db = readFileSync("src/lib/db.ts", "utf8");
+  const root = readFileSync("src/app/layout.tsx", "utf8");
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(db.includes("export const catalogBySlug = cache((slug: string) => catalog({ slug }));"));
+  assert.ok(root.includes("catalogBySlug(segments[2])"));
+  assert.ok(page.includes("catalogBySlug(path[1])"));
+  assert.ok(db.includes('["mopc-public-hero-slideshow-v1"], { revalidate: 120'));
+  assert.ok(db.includes('["mopc-public-model-years-v1"]'));
+  assert.ok(db.includes("revalidate: 60, tags:"));
+  assert.ok(page.includes("publicModelYears()"));
+});
+
 test("product and home data sources fetch independently in parallel without hiding critical failures", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes("const [media, areas, policies, together, curatedAlternatives] ="));
