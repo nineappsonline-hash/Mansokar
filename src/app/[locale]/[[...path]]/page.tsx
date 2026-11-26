@@ -569,6 +569,14 @@ export default async function Page({ params, searchParams }: Props) {
     w = t(locale),
     q = { ...(await searchParams) },
     route = path.join("/");
+  // Start vehicle selection independently of public catalog queries.
+  // The member lookup remains request-bound and is never shared-cached.
+  const selectedIdPromise = (async () =>
+    q.vehicle ??
+    (["make", "model", "year"].some((key) => Object.hasOwn(q, key))
+      ? undefined
+      : ((await cookies()).get("vehicle")?.value ??
+        (await memberActiveVehicle()))))();
   // Start site identity fetches immediately. Shell consumes the same promise
   // later instead of waiting until the content has finished loading.
   const shellDataPromise = Promise.all([
@@ -624,12 +632,21 @@ export default async function Page({ params, searchParams }: Props) {
       ? categoryImageUrls(categories)
       : Promise.resolve({} as Awaited<ReturnType<typeof categoryImageUrls>>),
   ]);
-  const selectedId =
-    q.vehicle ??
-    (["make", "model", "year"].some((key) => Object.hasOwn(q, key))
-      ? undefined
-      : ((await cookies()).get("vehicle")?.value ??
-        (await memberActiveVehicle())));
+  // Begin homepage-only years and slideshow queries while product inventory loads.
+  const homeDataPromise = !route
+    ? Promise.all([
+        configured()
+          ? allRows<{ model_id: string; year: number }>(
+              "vehicle_model_years",
+              "model_id,year",
+            )
+          : Promise.resolve([] as { model_id: string; year: number }[]),
+        heroSlideshow(
+          branding.hero?.url ?? settings!.heroImage ?? "/images/cyan/hero-blue.webp",
+        ),
+      ])
+    : null;
+  const selectedId = await selectedIdPromise;
   const vehicle = vehicles.find((v) => v.id === selectedId);
   const isCatalog =
     modelListing ||
@@ -721,17 +738,7 @@ export default async function Page({ params, searchParams }: Props) {
   );
   let content: React.ReactNode;
   if (!route) {
-    const [registeredYears, slideshow] = await Promise.all([
-      configured()
-        ? allRows<{ model_id: string; year: number }>(
-            "vehicle_model_years",
-            "model_id,year",
-          )
-        : Promise.resolve([]),
-      heroSlideshow(
-        branding.hero?.url ?? settings!.heroImage ?? "/images/cyan/hero-blue.webp",
-      ),
-    ]);
+    const [registeredYears, slideshow] = await homeDataPromise!;
     // Group year records once; avoid rescanning every vehicle and year for
     // each model when building the homepage's car selector.
     const yearsByModelId = new Map<string, Set<number>>();
