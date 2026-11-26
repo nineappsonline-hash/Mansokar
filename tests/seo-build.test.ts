@@ -532,7 +532,8 @@ test("vehicle sitemap keeps model landing but omits duplicated all-in-one-catego
 test("model-category snippets distinguish filtered listings from complete model overview", () => {
   const a = modelCategorySearchCopy({ locale: "ar", make: "شيفروليه", model: "كروز", category: "قطع غيار" });
   const b = modelCategorySearchCopy({ locale: "en", make: "Chevrolet", model: "Cruze", category: "Spare parts" });
-  assert.ok(a.title.includes("قسم قطع غيار"));
+  assert.ok(a.title.includes("قسم قطع غيار لموديل شيفروليه كروز"));
+  assert.ok(!a.title.includes("لـشيفروليه"));
   assert.ok(a.description.includes("جزء من المنتجات"));
   assert.ok(b.title.includes("category"));
   assert.ok(b.description.includes("filtered selection"));
