@@ -290,3 +290,28 @@ test("indexing is enabled only by explicit launch configuration and never for pr
     false,
   );
 });
+
+
+test("SEO health recognizes compatibility with a known model even when no years are specified", () => {
+  const modelOnly = {
+    ...product,
+    id: "11111111-1111-4111-8111-111111111112",
+    specs: { "car_years:astra-j": "" },
+  };
+  const matching = seoHealthRows(
+    [modelOnly],
+    [],
+    [],
+    ["astra-j"],
+    "https://mopc.store",
+  )[0];
+  assert.ok(!matching.issues.includes("unknown_compatibility"));
+  const unknownModel = seoHealthRows(
+    [modelOnly],
+    [],
+    [],
+    ["other-model"],
+    "https://mopc.store",
+  )[0];
+  assert.ok(unknownModel.issues.includes("unknown_compatibility"));
+});
