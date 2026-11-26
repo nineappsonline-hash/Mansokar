@@ -71,6 +71,7 @@ import {
   siteMedia,
   heroSlideshow,
   catalog,
+  catalogBySlug,
   fitment,
   fitmentFlags,
   memberActiveVehicle,
@@ -140,7 +141,7 @@ export async function generateMetadata({
     );
   const rawProductMeta =
     path[0] === "products" && path.length === 2
-      ? ((await catalog({ slug: path[1] }))[0] ?? null)
+      ? ((await catalogBySlug(path[1]))[0] ?? null)
       : null;
   if (path[0] === "products" && path.length === 2 && !rawProductMeta)
     notFound();
@@ -673,7 +674,7 @@ export default async function Page({ params, searchParams }: Props) {
   // alongside the product lookup instead of serializing database requests.
   const [primary, homeOffers, homeProducts] = await Promise.all([
     path[0] === "products"
-      ? catalog({ slug: path[1] })
+      ? catalogBySlug(path[1])
       : Promise.resolve([] as Product[]),
     !route
       ? configured()
