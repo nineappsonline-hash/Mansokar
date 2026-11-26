@@ -54,11 +54,13 @@ export function productSitemapLinkTitle(
       : joined;
   };
   return {
+    // Repeated part names and manufacturers are common in real inventory.
+    // Keep the recorded part number visible even when fitment is known.
     ar: unique.length
-      ? `${product.name.ar} – ${modelLabel("ar")} – ${product.manufacturer}`
+      ? `${product.name.ar} – ${modelLabel("ar")} – ${product.manufacturer} – رقم القطعة ${product.partNumber}`
       : `${product.name.ar} – ${product.manufacturer} – رقم القطعة ${product.partNumber}`,
     en: unique.length
-      ? `${product.name.en} – ${modelLabel("en")} – ${product.manufacturer}`
+      ? `${product.name.en} – ${modelLabel("en")} – ${product.manufacturer} – Part ${product.partNumber}`
       : `${product.name.en} – ${product.manufacturer} – Part ${product.partNumber}`,
   };
 }
