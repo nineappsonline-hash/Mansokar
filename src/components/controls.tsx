@@ -109,7 +109,7 @@ export function ProductActions({
   vehicle,
   context,
 }: {
-  product: Product;
+  product: Pick<Product, "id" | "orderable" | "family">;
   locale: Locale;
   vehicle?: Vehicle;
   context?: CarContext;
@@ -899,7 +899,7 @@ export function MobileBuyBar({
   product,
   locale,
 }: {
-  product: Product;
+  product: Pick<Product, "id" | "orderable" | "price" | "sale">;
   locale: Locale;
 }) {
   const [added, setAdded] = useState(false);
