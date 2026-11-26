@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { canonicalPage, categoryLandingIndexable } from "../src/lib/seo-policy";
@@ -228,4 +229,16 @@ test("CMS metadata and sitemap use the same verified language availability", () 
   assert.ok(xml.includes("https://mopc.store/ar/guides/shipping-help"));
   assert.ok(!xml.includes("https://mopc.store/en/guides/shipping-help"));
   assert.ok(!xml.includes('hreflang="en-EG" href="https://mopc.store/en/guides/shipping-help"'));
+});
+
+
+test("streaming loading shell never injects extra H1 headings into indexable pages", () => {
+  const source = readFileSync("src/app/loading.tsx", "utf8");
+  const css = readFileSync("src/app/loading.module.css", "utf8");
+  assert.doesNotMatch(source, /<h1\\b/i);
+  assert.match(source, /loadingTitle/);
+  assert.match(source, /styles\\.ar/);
+  assert.match(source, /styles\\.en/);
+  assert.match(css, /\\.copy \\.loadingTitle/);
+  assert.doesNotMatch(css, /\\.copy h1/);
 });
