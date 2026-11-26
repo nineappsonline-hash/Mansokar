@@ -120,8 +120,16 @@ export async function CyanHome({
             <div id="vehicle-finder" className="cyan-finder-region">
               <HomeVehicleFinder
                 locale={locale}
-                brands={brands}
-                models={models}
+                brands={brands.map((brand) => ({
+                  slug: brand.slug,
+                  label: ar ? brand.ar : brand.name,
+                }))}
+                models={models.map((model) => ({
+                  brand: model.brand,
+                  slug: model.slug,
+                  label: model.name[locale],
+                  years: model.years,
+                }))}
               />
             </div>
           </div>
