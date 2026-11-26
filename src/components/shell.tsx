@@ -216,6 +216,7 @@ export async function Shell({
                 `/${locale}/contact`,
               ],
               [locale === "ar" ? "أسئلة شائعة" : "FAQs", `/${locale}/faq`],
+              [locale === "ar" ? "أدلة شراء قطع الغيار" : "Buying guides", `/${locale}/guides`],
               [
                 locale === "ar" ? "خريطة الموقع" : "Site map",
                 `/${locale}/site-map`,
