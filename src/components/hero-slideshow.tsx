@@ -81,20 +81,26 @@ export function HeroSlideshow({
         className="cinematic-backdrop hero-slideshow-images"
         aria-hidden="true"
       >
-        {slides.map((slide, i) => (
-          <Image
-            key={slide.id}
-            src={slide.url}
-            alt=""
-            fill
-            sizes="100vw"
-            preload={i === 0}
-            loading={i === 0 ? undefined : "lazy"}
-            fetchPriority={i === 0 ? "high" : "low"}
-            className={i === active ? "hero-slide is-active" : "hero-slide"}
-            data-slide-index={i}
-          />
-        ))}
+        {slides.map((slide, i) =>
+          // Every slide occupies the viewport even when CSS makes it
+          // transparent. Browser lazy loading therefore fetches all of them.
+          // Keep the first slide ready for LCP, and only mount later slides
+          // when they are actually selected by autoplay or the controls.
+          i === 0 || i === active ? (
+            <Image
+              key={slide.id}
+              src={slide.url}
+              alt=""
+              fill
+              sizes="100vw"
+              preload={i === 0}
+              loading={i === 0 ? undefined : "lazy"}
+              fetchPriority={i === 0 ? "high" : "low"}
+              className={i === active ? "hero-slide is-active" : "hero-slide"}
+              data-slide-index={i}
+            />
+          ) : null,
+        )}
       </div>
       <div
         className="hero-slideshow-region"
