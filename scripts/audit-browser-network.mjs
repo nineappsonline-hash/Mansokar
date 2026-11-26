@@ -183,11 +183,42 @@ try {
     return links[0] || null;
   }
 
+  // Sample canonical storefront pages from XML rather than one card.
+  async function sitemapPaths(path, kind) {
+    try {
+      const response = await fetch(makeUrl(path), { signal: AbortSignal.timeout(15000) });
+      if (!response.ok) throw Error("HTTP " + response.status);
+      const xml = await response.text();
+      const urls = [...xml.matchAll(/<loc>\s*([^<]+)\s*<\/loc>/g)]
+        .map((m) => m[1].replaceAll("&amp;", "&"))
+        .map((value) => { try { return new URL(value); } catch { return null; } })
+        .filter((url) => url?.origin === root.origin);
+      const pattern = kind === "model"
+        ? new RegExp("^/" + locale + "/brands/[^/]+/[^/]+/?$")
+        : new RegExp("^/" + locale + "/products/[^/]+/?$");
+      return [...new Set(urls.filter((url) => pattern.test(url.pathname)).map((url) => url.pathname))];
+    } catch (error) {
+      console.warn("[browser-perf] Sitemap unavailable: " + path + ": " + String(error));
+      return [];
+    }
+  }
+  const modelPaths = await sitemapPaths("/sitemaps/vehicles.xml", "model");
+  const productPaths = await sitemapPaths("/sitemaps/products.xml", "product");
   const homeProduct = await audit("home", pathFor(""));
   const catalogProduct = await audit("catalog", pathFor("/catalog"));
   const product = process.env.PERF_PRODUCT_URL || catalogProduct || homeProduct;
   if (product) await audit("product", product);
   else console.warn("[browser-perf] No publicly linked product detected. Set PERF_PRODUCT_URL to test one.");
+  const spread = (items, count) => [...new Set(Array.from(
+    { length: Math.min(items.length, count) },
+    (_, i) => items[Math.floor(i * (items.length - 1) / Math.max(1, Math.min(items.length, count) - 1))]
+  ))];
+  for (const [i, path] of spread(modelPaths, 3).entries())
+    await audit("model-" + (i + 1), path);
+  for (const [i, path] of spread(productPaths.filter(
+    (path) => !product || new URL(product, root).pathname !== path
+  ), 3).entries())
+    await audit("product-sample-" + (i + 1), path);
   await audit("checkout-view-only", pathFor("/checkout"));
 } finally {
   await browser.close();

@@ -377,11 +377,21 @@ test("model-category SEO pages are generated only when catalog fitment inventory
     cms: [],
     guides: [],
     products: [],
-    modelCounts: { "opel/astra-j": 1 },
+    modelCounts: { "opel/astra-j": 2 },
     modelCategoryCounts: { "opel/astra-j/filters": 1, "opel/astra-j/brakes": 0 },
   });
   assert.ok(pages.some((page) => page.path === "/brands/opel/astra-j/filters"));
   assert.ok(!pages.some((page) => page.path === "/brands/opel/astra-j/brakes"));
+  // Do not create a duplicate landing page when the category has all the model inventory.
+  const duplicate = collectSearchPages({
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] }],
+    modelNames: [{ brand: "opel", slug: "astra-j", name: { ar: "أسترا J", en: "Astra J" } }],
+    categories: [{ slug: "filters", name: { ar: "فلاتر", en: "Filters" } }],
+    cms: [], guides: [], products: [],
+    modelCounts: { "opel/astra-j": 1 },
+    modelCategoryCounts: { "opel/astra-j/filters": 1 },
+  });
+  assert.ok(!duplicate.some((page) => page.path === "/brands/opel/astra-j/filters"));
   const pagesWithoutCounts = collectSearchPages({
     brands: [{ slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] }],
     modelNames: [],

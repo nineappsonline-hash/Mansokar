@@ -187,7 +187,7 @@ test("Excel All expands saved makes, models and model years without inventing ca
   set("years", "");
   let plan = planImportVehicles(await read(), models, brands, years);
   assert.equal(plan.additions.length, 0);
-  assert.deepEqual(plan.skippedModels, ["opel-insignia"]);
+  assert.deepEqual(plan.skippedModels, ["opel/insignia"]);
   assert.deepEqual(
     plan.rows[0].applications_input.map((app: any) => app.model).sort(),
     ["astra", "captiva", "cruze"],
@@ -223,21 +223,22 @@ test("Excel All expands saved makes, models and model years without inventing ca
   set("years", "all");
   set("car_make", "Unknown Make");
   set("car_model", "Unknown Model");
-  await assert.throws(
-    () =>
-      planImportVehicles(
-        plan.rows.map((row: any) => ({
-          ...row,
-          applications_input: [
-            { make: "Unknown Make", model: "Unknown Model", years: "all" },
-          ],
-        })),
-        models,
-        brands,
-        years,
-      ),
-    /no saved years/,
+  // Explicit make/model with All supports models that have no defined years.
+  const unspecifiedYears = planImportVehicles(
+    plan.rows.map((row: any) => ({
+      ...row,
+      applications_input: [
+        { make: "Unknown Make", model: "Unknown Model", years: "all" },
+      ],
+    })),
+    models,
+    brands,
+    years,
   );
+  assert.deepEqual(unspecifiedYears.rows[0].applications_input, [
+    { make: "unknown-make", model: "unknown-model", years: [] },
+  ]);
+  assert.equal(unspecifiedYears.additions.length, 1);
   set("years", "all, 2020");
   await assert.rejects(read(), /use All by itself/);
 });
