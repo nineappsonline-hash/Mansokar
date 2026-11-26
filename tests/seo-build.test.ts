@@ -539,3 +539,19 @@ test("model-category snippets distinguish filtered listings from complete model 
   assert.ok(b.description.includes("filtered selection"));
   assert.ok(!a.title.includes("أصلية"));
 });
+
+test("robots sitemap is advertised only when the same crawl gate publishes it", () => {
+  const source = readFileSync("src/app/robots.ts", "utf8");
+  assert.match(source, /const crawlEnabled = sitemapPublished\(\)/);
+  assert.match(source, /crawlEnabled \? \{ sitemap: siteOrigin\(\) \+ "\/sitemap\.xml" \} : \{\}/);
+  assert.doesNotMatch(source, /^\s*sitemap: siteOrigin\(\) \+ "\/sitemap\.xml",\s*$/m);
+});
+
+test("live SEO audit inspects actual sitemaps and canonical links without write operations", () => {
+  const source = readFileSync("scripts/seo-live-audit.mjs", "utf8");
+  assert.ok(source.includes('get("/robots.txt")'));
+  assert.ok(source.includes('get("/sitemap.xml")'));
+  assert.ok(source.includes("canonical(page.body)"));
+  assert.ok(source.includes("AbortSignal.timeout"));
+  assert.ok(!source.includes('method: "POST"'));
+});
