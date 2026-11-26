@@ -10,6 +10,7 @@ import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales, search
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
 import { demoProducts } from "../src/lib/catalog";
 import { brandModelBuyingNotes } from "../src/lib/vehicle-coverage";
+import { brandModelListSchema } from "../src/lib/brand-model-schema";
 
 const brand = { slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] };
 const modelNames = [
@@ -383,4 +384,39 @@ test("brand page replaces blanket original-parts promises with model-specific la
   assert.ok(source.includes("/brands/"));
   assert.ok(!source.includes("Original & After Market parts"));
   assert.ok(!source.includes("الأصلية و"));
+});
+
+test("brand model structured data uses only registered displayed models and genuine URLs", () => {
+  const schema = brandModelListSchema({
+    locale: "ar",
+    make: { slug: "mg", ar: "إم جي", name: "MG" },
+    models: [
+      { slug: "5", name: { ar: "5", en: "5" } },
+      { slug: "hs", name: { ar: "HS", en: "HS" } },
+      { slug: "", name: { ar: "", en: "" } },
+    ],
+    origin: "https://mopc.store",
+  });
+  assert.equal(schema["@type"], "ItemList");
+  assert.equal(schema.numberOfItems, 2);
+  assert.deepEqual(schema.itemListElement.map((row) => row.position), [1, 2]);
+  assert.deepEqual(schema.itemListElement.map((row) => row.url), [
+    "https://mopc.store/ar/brands/mg/5",
+    "https://mopc.store/ar/brands/mg/hs",
+  ]);
+  assert.ok(schema.itemListElement[0].name.includes("إم جي 5"));
+  const english = brandModelListSchema({
+    locale: "en",
+    make: { slug: "chevrolet", ar: "شيفروليه", name: "Chevrolet" },
+    models: [{ slug: "captiva", name: { ar: "كابتيفا", en: "Captiva" } }],
+    origin: "https://mopc.store",
+  });
+  assert.equal(english.itemListElement[0].url, "https://mopc.store/en/brands/chevrolet/captiva");
+  assert.equal(english.itemListElement[0].name, "Chevrolet Captiva");
+});
+
+test("car brand page publishes ItemList markup but does not claim product-level fitment", () => {
+  const source = readFileSync("src/components/car-model-page.tsx", "utf8");
+  assert.match(source, /brandModelListSchema/);
+  assert.match(source, /application\/ld\+json/);
 });
