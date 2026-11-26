@@ -1,4 +1,5 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
@@ -201,7 +202,7 @@ export async function requireAdmin() {
   if (error || !data?.enabled) throw Error("Forbidden");
   return user;
 }
-export const vehicleCatalog = cache(async function vehicleCatalog() {
+const sharedVehicleCatalog = unstable_cache(async function loadPublicVehicleCatalog() {
   const { brands: baseBrands, vehicles: baseVehicles } =
     await import("./catalog");
   if (!configured())
@@ -257,7 +258,8 @@ export const vehicleCatalog = cache(async function vehicleCatalog() {
       };
     }),
   };
-});
+}, ["mopc-public-vehicle-catalog-v1"], { revalidate: 60, tags: ["mopc-public-vehicles"] });
+export const vehicleCatalog = cache(async () => sharedVehicleCatalog());
 export const storefrontSettings = cache(
   async (): Promise<{
     storeName?: { ar: string; en: string };
@@ -322,7 +324,7 @@ export type CategoryRecord = {
   description: { ar?: string; en?: string };
   seo?: unknown;
 };
-export async function categoryCatalog(): Promise<CategoryRecord[]> {
+const sharedCategoryCatalog = unstable_cache(async function loadPublicCategoryCatalog(): Promise<CategoryRecord[]> {
   if (!configured())
     return (await import("./catalog")).categories.map((c, i) => ({
       ...c,
@@ -333,7 +335,8 @@ export async function categoryCatalog(): Promise<CategoryRecord[]> {
   return (await allRows<CategoryRecord>("categories")).sort(
     (a, b) => a.sort_order - b.sort_order || a.slug.localeCompare(b.slug),
   );
-}
+}, ["mopc-public-category-catalog-v1"], { revalidate: 60, tags: ["mopc-public-categories"] });
+export const categoryCatalog = cache(async () => sharedCategoryCatalog());
 export type CategoryImage = { path: string; alt: { ar: string; en: string } };
 export function categoryImageFromSeo(seo: unknown): CategoryImage | null {
   if (!seo || typeof seo !== "object") return null;
