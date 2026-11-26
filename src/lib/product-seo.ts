@@ -33,11 +33,11 @@ export function productSerpTitle(
   storeName: string,
   manual = false,
 ) {
-  const base = baseTitle.replace(/\\s+/g, " ").trim();
+  const base = baseTitle.replace(/\s+/g, " ").trim();
   const suffix = storeName.trim();
   const titled = suffix ? `${base} | ${suffix}` : base;
   if (manual || titled.length <= 66) return titled;
-  const noYearRanges = base.replace(/\\s+(?:19|20)\\d{2}\\s*[–—-]\\s*(?:19|20)\\d{2}(?=\\s*(?:[|،;,]|$))/g, "");
+  const noYearRanges = base.replace(/\s+(?:19|20)\d{2}\s*[–—-]\s*(?:19|20)\d{2}(?=\s*(?:[|،;,]|$))/g, "");
   if (noYearRanges !== base) {
     const withStore = suffix ? `${noYearRanges} | ${suffix}` : noYearRanges;
     if (withStore.length <= 66) return withStore;
