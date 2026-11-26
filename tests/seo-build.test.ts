@@ -555,6 +555,15 @@ test("model-category snippets distinguish filtered listings from complete model 
   assert.ok(a.description.includes("جزء من المنتجات"));
   assert.ok(b.title.includes("category"));
   assert.ok(b.description.includes("filtered selection"));
+  assert.ok(b.description.length <= 160, b.description);
+  for (const model of ["Cruze", "Malibu"]) {
+    for (const category of ["Mechanical Parts", "Spare parts"]) {
+      const copy = modelCategorySearchCopy({
+        locale: "en", make: "Chevrolet", model, category,
+      });
+      assert.ok(copy.description.length <= 160, copy.description);
+    }
+  }
   assert.ok(!a.title.includes("أصلية"));
 });
 
