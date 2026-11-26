@@ -926,7 +926,7 @@ export default async function Page({ params, searchParams }: Props) {
         : null;
     const page = Math.max(1, Math.min(10000, Number(q.page) || 1));
     const publicModelCollection =
-      modelListing && listingBrand && listingModel &&
+      modelListing && listingBrand && listingModel && !vehicle &&
       !q.q && !q.year && !q.sort && !q.manufacturer && !q.type &&
       !q.min && !q.max && !q.vehicle
         ? (() => {
