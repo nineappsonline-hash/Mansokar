@@ -7,12 +7,14 @@ import styles from "./chat-widget.module.css";
 export function ChatWidget({
   locale,
   enabled,
+  initiallyOpen = false,
 }: {
   locale: Locale;
   enabled: boolean;
+  initiallyOpen?: boolean;
 }) {
   const ar = locale === "ar";
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(initiallyOpen);
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
   const [feedback, setFeedback] = useState("");
