@@ -1007,3 +1007,22 @@ test("browser network audit checks real storefront requests without purchasing a
   assert.ok(!audit.includes("page.fill("));
   assert.ok(audit.includes("browser-network.json"));
 });
+
+test("Google merchant readiness requires admin and shares actual feed eligibility rules", () => {
+  const report = readFileSync("src/app/api/admin/merchant-readiness/route.ts", "utf8");
+  const helper = readFileSync("src/lib/merchant-readiness.ts", "utf8");
+  const feed = readFileSync("src/app/api/merchant-feed/route.ts", "utf8");
+  assert.ok(report.includes("await requireAdmin()"));
+  assert.ok(report.includes('status: 401'));
+  assert.ok(report.includes('"private, no-store"'));
+  assert.ok(report.includes('merchantReadiness(rows, "ar")'));
+  assert.ok(report.includes('merchantReadiness(rows, "en")'));
+  assert.ok(report.includes('process.env.MERCHANT_FEED_ENABLED === "true"'));
+  assert.ok(report.includes('process.env.MERCHANT_SHIPPING_CONFIGURED === "true"'));
+  assert.ok(report.includes('process.env.MERCHANT_EG_ELIGIBILITY_CONFIRMED === "true"'));
+  assert.ok(report.includes("policyStatus.missing.length === 0"));
+  assert.ok(helper.includes("feedExclusionReasons(product, locale, images)"));
+  assert.ok(helper.includes("merchantImagesByProduct("));
+  assert.ok(feed.includes("merchantImagesByProduct(images, isRemoteImageUrl)"));
+  assert.ok(!feed.includes("images.filter((i) => i.product_id === product.id)"));
+});
