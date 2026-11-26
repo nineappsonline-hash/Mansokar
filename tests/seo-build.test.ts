@@ -1068,3 +1068,14 @@ test("phase 9 monitors live crawl, canonical, sitemap and Product Offers without
   assert.ok(workflow.includes("schedule:"));
   assert.ok(workflow.includes("actions/upload-artifact@v4"));
 });
+
+test("phase 9 HTML sitemap exposes every product page directly and guides in the footer", () => {
+  const htmlMap = readFileSync("src/components/site-map.tsx", "utf8");
+  const shell = readFileSync("src/components/shell.tsx", "utf8");
+  const policy = readFileSync("src/lib/seo-policy.ts", "utf8");
+  assert.ok(htmlMap.includes("Array.from({ length: count }"));
+  assert.ok(htmlMap.includes('aria-current={number === current ? "page" : undefined}'));
+  assert.ok(htmlMap.includes("site-map?page="));
+  assert.ok(shell.includes('`/${locale}/guides`'));
+  assert.ok(policy.includes('(?:ar|en)\\/site-map$'));
+});
