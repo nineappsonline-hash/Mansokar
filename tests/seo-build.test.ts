@@ -954,3 +954,14 @@ test("product-card add-to-cart islands serialize only one language of the produc
   assert.ok(buy.includes("productLabel"));
   assert.ok(favorites.includes("<PurchaseButtons product={p} locale={locale} />"));
 });
+
+test("production builds generate measurable client JS/CSS transfer-size reports", () => {
+  const config = JSON.parse(readFileSync("package.json", "utf8"));
+  const report = readFileSync("scripts/report-client-assets.mjs", "utf8");
+  assert.equal(config.scripts.postbuild, "node scripts/report-client-assets.mjs");
+  assert.ok(report.includes('app-build-manifest.json'));
+  assert.ok(report.includes("gzipSync("));
+  assert.ok(report.includes("client-asset-report.json"));
+  assert.ok(report.includes("manifest.pages || {}"));
+  assert.ok(report.includes("largest: assets.sort("));
+});
