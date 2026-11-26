@@ -184,11 +184,22 @@
   transform: rotate(180deg);
 }
 .expansion {
-  overflow: hidden;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows .35s ease, opacity .22s ease;
+}
+.open .expansion {
+  grid-template-rows: 1fr;
+  opacity: 1;
 }
 .inner {
+  overflow: hidden;
   min-height: 0;
   padding: 0 18px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .expansion { transition: none; }
 }
 .yearsPanel {
   padding: 17px 0 20px;
