@@ -803,3 +803,23 @@ test("built-in car brand logos use responsive optimized images", () => {
   assert.ok(home.includes('unoptimized={Boolean(b.logo)}'));
   assert.ok(home.includes('sizes="(max-width:640px) 120px, 160px"'));
 });
+
+test("product image zoom is not mounted until opened, avoiding hidden full-size assets", () => {
+  const controls = readFileSync("src/components/controls.tsx", "utf8");
+  const gallery = controls.slice(controls.indexOf("export function Gallery("), controls.indexOf("export function VehicleSync("));
+  assert.ok(gallery.includes("const [zoomOpen, setZoomOpen] = useState(false)"));
+  assert.ok(gallery.includes("onClose={() => setZoomOpen(false)}"));
+  assert.ok(gallery.includes("{zoomOpen && ("));
+  assert.ok(gallery.includes('loading="eager"'));
+  assert.ok(gallery.includes('fetchPriority="high"'));
+});
+
+test("product action client islands receive only fields needed for cart and purchase", () => {
+  const controls = readFileSync("src/components/controls.tsx", "utf8");
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(controls.includes('Pick<Product, "id" | "orderable" | "family">'));
+  assert.ok(controls.includes('Pick<Product, "id" | "orderable" | "price" | "sale">'));
+  assert.ok(page.includes("product={{ id: p.id, orderable: p.orderable, family: p.family }}"));
+  assert.ok(page.includes("product={{ id: p.id, orderable: p.orderable, price: p.price, sale: p.sale }}"));
+  assert.ok(!page.includes("<MobileBuyBar product={p}"));
+});
