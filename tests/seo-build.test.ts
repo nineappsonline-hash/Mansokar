@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { canonicalPage, categoryLandingIndexable } from "../src/lib/seo-policy";
 import { sitemapPublished } from "../src/lib/sitemap-visibility";
 import { knownBrandRoute } from "../src/lib/seo-brand-route";
-import { rootLocaleRedirect } from "../src/lib/site-url";
+import { rootLocaleRedirect, legacyVehicleModelRedirect } from "../src/lib/site-url";
 import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml";
 import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale } from "../src/lib/seo-inventory";
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
@@ -476,4 +476,22 @@ test("vehicle consolidation SQL is opt-in, transactional and retains legacy reco
   assert.ok(sql.includes("public.vehicle_configs"));
   assert.ok(sql.includes("public.products"));
   assert.ok(!/DELETE FROM public\\.vehicle_models/i.test(sql));
+});
+
+test("old vehicle typo routes redirect permanently to canonical model and category paths", () => {
+  const cases = [
+    ["https://mopc.store/ar/brands/chevrolet/cruz", "https://mopc.store/ar/brands/chevrolet/cruze"],
+    ["https://mopc.store/en/brands/chevrolet/cruz/spare-parts", "https://mopc.store/en/brands/chevrolet/cruze/spare-parts"],
+    ["https://mopc.store/ar/brands/opel/insginia-a?year=2015", "https://mopc.store/ar/brands/opel/insignia-a?year=2015"],
+    ["https://mopc.store/en/brands/opel/insginia-a/mechanical-parts?page=2", "https://mopc.store/en/brands/opel/insignia-a/mechanical-parts?page=2"],
+  ] as const;
+  for (const [from, to] of cases)
+    assert.equal(legacyVehicleModelRedirect(new URL(from))?.href, to);
+  for (const unchanged of [
+    "https://mopc.store/ar/brands/chevrolet/cruze",
+    "https://mopc.store/ar/brands/opel/insignia-a",
+    "https://mopc.store/ar/brands/opel/insginia-a/filters/deeper",
+    "https://mopc.store/api/vehicles",
+    "https://mopc.store/en/brands/mg/5",
+  ]) assert.equal(legacyVehicleModelRedirect(new URL(unchanged)), null);
 });
