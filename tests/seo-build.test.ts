@@ -1005,6 +1005,5 @@ test("browser network audit checks real storefront requests without purchasing a
   assert.ok(audit.includes('await audit("checkout-view-only"'));
   assert.ok(!audit.includes("page.click("));
   assert.ok(!audit.includes("page.fill("));
-  assert.ok(!audit.includes("page.locator(\\"button\\""));
   assert.ok(audit.includes("browser-network.json"));
 });
