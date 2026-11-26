@@ -29,16 +29,17 @@ const wait = (ms) => new Promise((done) => setTimeout(done, ms));
 const browser = await chromium.launch({ headless: true });
 const results = [];
 try {
-  const context = await browser.newContext({
-    viewport,
-    deviceScaleFactor: desktop ? 1 : 2,
-    isMobile: !desktop,
-    hasTouch: !desktop,
-    serviceWorkers: "block",
-    locale: locale === "ar" ? "ar-EG" : "en-US",
-  });
-
   async function audit(label, path) {
+    // A fresh browser context prevents cached assets from one route
+    // distorting the next route's cold first-view network measurements.
+    const context = await browser.newContext({
+      viewport,
+      deviceScaleFactor: desktop ? 1 : 2,
+      isMobile: !desktop,
+      hasTouch: !desktop,
+      serviceWorkers: "block",
+      locale: locale === "ar" ? "ar-EG" : "en-US",
+    });
     const page = await context.newPage();
     const failures = [];
     const cdp = await context.newCDPSession(page);
@@ -160,7 +161,7 @@ try {
     const links = await page.locator(`a[href*="/${locale}/products/"]`).evaluateAll((elements) =>
       elements.map((item) => item.getAttribute("href")).filter(Boolean)
     ).catch(() => []);
-    await page.close();
+    await context.close();
     return links[0] || null;
   }
 
