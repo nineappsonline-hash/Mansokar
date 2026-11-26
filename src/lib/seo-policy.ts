@@ -65,11 +65,13 @@ export function verifiedCondition(p: Product) {
     ? `https://schema.org/${values[value]}`
     : undefined;
 }
+/** Amounts are stored as integer piasters; Merchant Center accepts EGP
+ * with two decimal places, not only whole-pound amounts.
+ */
 export function merchantPriceReady(p: Pick<Product, "price" | "sale">) {
   return (
     Number.isSafeInteger(p.sale ?? p.price) &&
-    (p.sale ?? p.price) >= 0 &&
-    (p.sale ?? p.price) % 100 === 0
+    (p.sale ?? p.price) >= 0
   );
 }
 export function productQualityIssues(
@@ -84,7 +86,7 @@ export function productQualityIssues(
     ...(!photoCount ? ["missing_photos"] : []),
     ...(!hasFitment ? ["unknown_compatibility"] : []),
     ...(!verifiedAvailability(p) ? ["unknown_stock"] : []),
-    ...(!merchantPriceReady(p) ? ["fractional_price_review"] : []),
+    ...(!merchantPriceReady(p) ? ["invalid_price"] : []),
     ...(!verifiedCondition(p) ? ["unknown_condition"] : []),
   ];
 }
