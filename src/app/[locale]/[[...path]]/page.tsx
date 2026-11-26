@@ -566,11 +566,15 @@ export default async function Page({ params, searchParams }: Props) {
     w = t(locale),
     q = { ...(await searchParams) },
     route = path.join("/");
+  const [vehicleData, categories] = await Promise.all([
+    vehicleCatalog(),
+    categoryCatalog(),
+  ]);
   const {
     brands: storedBrands,
     vehicles,
     models: vehicleModels,
-  } = await vehicleCatalog();
+  } = vehicleData;
   const brands = coveredBrands(storedBrands);
   const modelListing = path[0] === "brands" && (path.length === 3 || path.length === 4);
   const listingBrand = modelListing
@@ -584,26 +588,33 @@ export default async function Page({ params, searchParams }: Props) {
     q.make = listingBrand.slug;
     q.model = listingModel.slug;
     if (path.length === 4) {
-      if (!path[3] || !((await categoryCatalog()).some((item) => item.slug === path[3]))) notFound();
+      if (!path[3] || !categories.some((item) => item.slug === path[3])) notFound();
       q.category = path[3];
     }
   }
-  const settings = await storefrontSettings();
-  const mediaSlots = [
-    "hero",
-    ...brands.flatMap((b) => [`brand-${b.slug}-photo`, `brand-${b.slug}-logo`]),
-    ...(path[0] === "brands" && path[1]
-      ? (brands
-          .find((b) => b.slug === path[1])
-          ?.models.map((m) => `model-${path[1]}-${m}`) ?? [])
-      : []),
-  ];
-  const branding = await siteMedia(mediaSlots);
-  const categories = await categoryCatalog();
-  const categoryImages =
+  // Only the homepage needs slideshow/media for every make. Brand landings
+  // require media for their own models; product/category routes need neither.
+  const home = !route;
+  const brandLanding = path[0] === "brands" && path.length === 2;
+  const mediaSlots = home
+    ? ["hero", ...brands.flatMap((b) => [
+        `brand-${b.slug}-photo`, `brand-${b.slug}-logo`,
+      ])]
+    : brandLanding
+      ? [
+          `brand-${path[1]}-logo`,
+          ...(brands.find((b) => b.slug === path[1])?.models.map(
+            (model) => `model-${path[1]}-${model}`,
+          ) ?? []),
+        ]
+      : [];
+  const [settings, branding, categoryImages] = await Promise.all([
+    home ? storefrontSettings() : Promise.resolve(null),
+    siteMedia(mediaSlots),
     path[0] === "categories" || modelListing || route === "catalog"
-      ? await categoryImageUrls(categories)
-      : {};
+      ? categoryImageUrls(categories)
+      : Promise.resolve({} as Awaited<ReturnType<typeof categoryImageUrls>>),
+  ]);
   const selectedId =
     q.vehicle ??
     (["make", "model", "year"].some((key) => Object.hasOwn(q, key))
@@ -699,7 +710,7 @@ export default async function Page({ params, searchParams }: Props) {
           )
         : Promise.resolve([]),
       heroSlideshow(
-        branding.hero?.url ?? settings.heroImage ?? "/images/cyan/hero-blue.webp",
+        branding.hero?.url ?? settings!.heroImage ?? "/images/cyan/hero-blue.webp",
       ),
     ]);
     // Group year records once; avoid rescanning every vehicle and year for
@@ -724,8 +735,8 @@ export default async function Page({ params, searchParams }: Props) {
         fitments={flags}
         products={products}
         slides={slideshow.slides}
-        heroTitle={settings.heroTitle?.[locale]}
-        heroIntro={settings.heroIntro?.[locale]}
+        heroTitle={settings!.heroTitle?.[locale]}
+        heroIntro={settings!.heroIntro?.[locale]}
         intervalSeconds={slideshow.intervalSeconds}
         autoplay={slideshow.autoplay}
         campaigns={<Campaigns locale={locale} />}
