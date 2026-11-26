@@ -1,5 +1,7 @@
 name: Temporary MOPC preview performance audit
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [perf/optimize-heavy-images-cache-20261127]
 permissions:
