@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { requireAdmin, allRows, service } from "@/lib/db";
-import { siteOrigin } from "@/lib/site-url";
+import { TARGET_ORIGIN } from "@/lib/site-url";
 import { merchantFeed, feedExclusionReasons } from "@/lib/merchant-feed";
 import { isRemoteImageUrl } from "@/lib/image-links";
 import { merchantImagesByProduct } from "@/lib/merchant-readiness";
@@ -77,7 +77,7 @@ export async function GET(request: Request) {
         },
         { status: 503, headers },
       );
-    return new Response(merchantFeed(rows, locale, siteOrigin()), {
+    return new Response(merchantFeed(rows, locale, TARGET_ORIGIN), {
       headers: { ...headers, "Content-Type": "application/xml; charset=utf-8" },
     });
   } catch (error) {
