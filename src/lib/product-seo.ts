@@ -110,7 +110,9 @@ export function productStructuredData(
           ],
         }
       : {}),
-    offers: merchantPriceReady(p)
+    // A published catalog entry may be visible but not available to order.
+    // Only advertise a purchasable Offer when checkout is actually enabled.
+    offers: p.orderable && merchantPriceReady(p)
       ? {
           "@type": "Offer",
           url,
