@@ -202,7 +202,7 @@ test("orderable stocked SKU exposes truthful Product Offer without invented rati
   assert.equal(data.url, `https://mopc.store/ar/products/${p.slug}`);
   const json = JSON.stringify(data);
   assert.ok(!json.includes("aggregateRating"));
-  assert.ok(!json.includes("\\"review\\""));
+  assert.ok(!json.includes('"review"'));
   assert.equal(productStructuredData({ ...stocked, orderable: false }, "ar", "https://mopc.store", [])!.offers, undefined);
 });
 
