@@ -48,14 +48,21 @@ if (!existsSync(staticRoot)) {
   function record(route, paths, source) {
     const unique = [...new Set(paths.map(normalize))];
     const files = unique.map((path) => byPath.get(path)).filter(Boolean);
+    // Next 16 may provide empty clientModules.chunks arrays. Measure the
+    // emitted app route-entry JS separately (shared and async chunks excluded).
+    const routeEntryPrefix = "static/chunks/app" + route.slice(0, -"/page".length) + "/page-";
+    const entryFiles = route.endsWith("/page")
+      ? assets.filter((asset) => asset.type === "js" && asset.path.startsWith(routeEntryPrefix))
+      : [];
+    const attributed = [...new Map([...files, ...entryFiles].map((file) => [file.path, file])).values()];
     const missing = unique.filter((path) => !byPath.has(path));
     // Only include files actually emitted by the build. Some references are
     // runtime/inlined identifiers and cannot be counted as static downloads.
-    if (!files.length) return;
+    if (!attributed.length) return;
     const current = pages[route];
     const combined = current
-      ? [...new Map([...current.files, ...files].map((file) => [file.path, file])).values()]
-      : files;
+      ? [...new Map([...current.files, ...attributed].map((file) => [file.path, file])).values()]
+      : attributed;
     pages[route] = {
       source,
       count: combined.length,
@@ -79,7 +86,6 @@ if (!existsSync(staticRoot)) {
   // Next 16 also writes per-page client reference manifests beneath server/app.
   // Extract route-scoped module chunk references without importing any app code.
   let referenceCount = 0;
-  let inspectedExample = false;
   walk(appServer, (file) => {
     if (!file.endsWith("_client-reference-manifest.js")) return;
     referenceCount++;
@@ -87,11 +93,6 @@ if (!existsSync(staticRoot)) {
       const context = { __RSC_MANIFEST: {} };
       runInNewContext(readFileSync(file, "utf8"), { globalThis: context }, { timeout: 500 });
       for (const [route, manifest] of Object.entries(context.__RSC_MANIFEST || {})) {
-        if (!inspectedExample && route.includes("[locale]")) {
-          const modules = Object.values(manifest.clientModules || {});
-          console.log("[asset-report] sample manifest:", route, "keys:", Object.keys(manifest).join(","), "modules:", modules.length, "sample chunks:", JSON.stringify(modules.slice(0, 2).map((m) => m.chunks)).slice(0, 900));
-          inspectedExample = true;
-        }
         const paths = [];
         for (const mod of Object.values(manifest.clientModules || {})) {
           for (const chunk of mod.chunks || []) {
@@ -115,7 +116,7 @@ if (!existsSync(staticRoot)) {
   manifestSources.push(referenceCount + " client-reference manifest files");
 
   const report = {
-    note: "Route sizes represent build-referenced assets (including chunks loaded later), NOT first-view downloads. Compare actual first-view requests with browser network or Lighthouse. Files are shared between routes and must not be summed.",
+    note: "Route entries plus referenced CSS/chunks, excluding shared JS runtime and any unlisted async JS. NOT first-view downloads. These are incomplete route-attribution estimates, not total page payloads; measure browser network/Lighthouse.",
     manifestSources,
     totals: {
       js: { count: assets.filter((a) => a.type === "js").length, gzip: total(assets.filter((a) => a.type === "js")) },
