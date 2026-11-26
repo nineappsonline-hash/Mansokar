@@ -12,7 +12,7 @@ export const siteCopy = {
     name: "MOPC",
     heading: "Car Spare Parts in Egypt by Make and Model",
     description:
-      "Shop Opel, Chevrolet, Peugeot, Citroën and MG car spare parts in Egypt. Search by part number, make and model, then review fitment, prices and product-specific terms before ordering.",
+      "Shop Opel, Chevrolet, Peugeot, Citroën and MG spare parts in Egypt. Search by part number or car model, check compatibility and compare prices.",
   },
 } satisfies Record<
   Locale,
