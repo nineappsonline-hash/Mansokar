@@ -1,15 +1,15 @@
 "use client";
 import { useState } from "react";
 import { CarFront, Layers3, CalendarDays, Search } from "lucide-react";
-import type { Locale, Text } from "@/lib/catalog";
+import type { Locale } from "@/lib/catalog";
 export function HomeVehicleFinder({
   locale,
   brands,
   models,
 }: {
   locale: Locale;
-  brands: { slug: string; name: string; ar: string }[];
-  models: { brand: string; slug: string; name: Text; years: number[] }[];
+  brands: { slug: string; label: string }[];
+  models: { brand: string; slug: string; label: string; years: number[] }[];
 }) {
   const [make, setMake] = useState(""),
     [model, setModel] = useState(""),
@@ -39,7 +39,7 @@ export function HomeVehicleFinder({
           <option value="">{ar ? "اختار الماركة" : "Choose make"}</option>
           {brands.map((b) => (
             <option key={b.slug} value={b.slug}>
-              {ar ? b.ar : b.name}
+              {b.label}
             </option>
           ))}
         </select>
@@ -62,7 +62,7 @@ export function HomeVehicleFinder({
             .filter((m) => m.brand === make)
             .map((m) => (
               <option key={m.slug} value={m.slug}>
-                {m.name[locale]}
+                {m.label}
               </option>
             ))}
         </select>
