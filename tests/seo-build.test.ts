@@ -322,3 +322,43 @@ test("HTML site map never advertises a locale missing from XML sitemap", () => {
   assert.ok(!enPages.some((p) => p.path === "/brands/opel/astra-j"));
   assert.ok(enPages.some((p) => p.path === "/brands/opel"));
 });
+
+test("catalog sitemap indexes eligible inventory and photos without leaking draft or demo products", () => {
+  const base = {
+    ...demoProducts[0], status: "published", demo: false,
+    name: { ar: "فلتر هواء", en: "Air filter" },
+    manufacturer: "GM", partNumber: "GM-1234", price: 15000,
+  } as const;
+  const products = [
+    { ...base, id: "a", slug: "filter-a", category: "filters" },
+    { ...base, id: "b", slug: "filter-b", category: "filters" },
+    { ...base, id: "c", slug: "brake-c", category: "brakes", status: "draft" as const },
+    { ...base, id: "d", slug: "brake-d", category: "brakes", demo: true },
+  ];
+  const pages = collectSearchPages({
+    brands: [], modelNames: [],
+    categories: [
+      { slug: "filters", name: { ar: "فلاتر", en: "Filters" } },
+      { slug: "brakes", name: { ar: "فرامل", en: "Brakes" } },
+    ],
+    products, cms: [], guides: [],
+    productImages: [
+      { id: "img-a1", product_id: "a", path: "/private/a1.webp" },
+      { id: "img-b1", product_id: "b", path: "https://cdn.example.org/b1.webp" },
+      { id: "img-a2", product_id: "a", path: "/private/a2.webp" },
+      { id: "img-c1", product_id: "c", path: "/private/draft.webp" },
+    ],
+  });
+  assert.ok(pages.some((p) => p.path === "/categories/filters"));
+  assert.ok(!pages.some((p) => p.path === "/categories/brakes"));
+  assert.ok(pages.some((p) => p.path === "/products/filter-a"));
+  assert.ok(!pages.some((p) => p.path === "/products/brake-c"));
+  assert.ok(!pages.some((p) => p.path === "/products/brake-d"));
+  const a = pages.find((p) => p.path === "/products/filter-a");
+  assert.deepEqual(a?.images, ["/product-media/img-a1", "/product-media/img-a2"]);
+  const xml = sitemapXml(pages, "https://mopc.store", "products");
+  assert.ok(xml.includes("<image:loc>https://mopc.store/product-media/img-a1</image:loc>"));
+  assert.ok(xml.includes("<image:loc>https://mopc.store/product-media/img-a2</image:loc>"));
+  assert.ok(xml.includes("<image:loc>https://cdn.example.org/b1.webp</image:loc>"));
+  assert.ok(!xml.includes("draft.webp"));
+});
