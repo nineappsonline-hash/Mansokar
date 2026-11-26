@@ -26,6 +26,7 @@ import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
 import { searchPages } from "@/lib/seo-pages";
 import { cmsTranslatedLocales, vehicleLandingLocales } from "@/lib/seo-inventory";
+import { modelCategorySearchCopy } from "@/lib/vehicle-landing-seo";
 import { ContactForm } from "@/components/contact-form";
 import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
 import { buyingGuides } from "@/lib/buying-guides";
@@ -191,6 +192,7 @@ export async function generateMetadata({
       ? await productImages(productMeta.id).catch(() => [])
       : [];
   let modelHasInventory = true;
+  let duplicateModelCategoryLanding = false;
   let categoryHasInventory = true;
   let categoryPageLocales: Locale[] | undefined;
   let modelPageLocales: Locale[] | undefined;
@@ -264,14 +266,25 @@ export async function generateMetadata({
       if (!path[2] && configured())
         modelHasInventory =
           (await searchCatalog({ make: brand.slug, size: 1 })).total > 0;
-      if (path[2] && configured())
-        modelHasInventory =
-          (await searchCatalog({
+      if (path[2] && configured()) {
+        const selectedCount = (await searchCatalog({
+          make: brand.slug,
+          model: path[2],
+          category: categoryForModel?.slug,
+          size: 1,
+        })).total;
+        modelHasInventory = selectedCount > 0;
+        if (categoryForModel && selectedCount > 0) {
+          const allModelCount = (await searchCatalog({
             make: brand.slug,
             model: path[2],
-            category: categoryForModel?.slug,
             size: 1,
-          })).total > 0;
+          })).total;
+          // If selecting a category does not narrow the inventory, the
+          // parent model landing is the preferred search page.
+          duplicateModelCategoryLanding = allModelCount === selectedCount;
+        }
+      }
       const target = targetModel(brand.slug, path[2]);
       const nameAr =
         brand.ar +
@@ -279,25 +292,34 @@ export async function generateMetadata({
       const nameEn =
         brand.name +
         (path[2] ? " " + (model?.name.en ?? target?.name.en ?? path[2]) : "");
+      const arCategoryCopy = categoryForModel
+        ? modelCategorySearchCopy({
+            locale: "ar",
+            make: brand.ar,
+            model: model?.name.ar ?? target?.name.ar ?? path[2] ?? "",
+            category: categoryForModel.name.ar,
+          })
+        : null;
+      const enCategoryCopy = categoryForModel
+        ? modelCategorySearchCopy({
+            locale: "en",
+            make: brand.name,
+            model: model?.name.en ?? target?.name.en ?? path[2] ?? "",
+            category: categoryForModel.name.en,
+          })
+        : null;
       pageMeta = {
         title: {
-          ar: categoryForModel
-            ? categoryForModel.name.ar + " " + nameAr + " في مصر"
-            : "قطع غيار " + nameAr + " في مصر",
-          en: categoryForModel
-            ? nameEn + " " + categoryForModel.name.en + " in Egypt"
-            : nameEn + " spare parts in Egypt",
+          ar: arCategoryCopy?.title ?? "قطع غيار " + nameAr + " في مصر",
+          en: enCategoryCopy?.title ?? nameEn + " spare parts in Egypt",
         },
         description: {
-          ar:
-            "استعرض " + (categoryForModel?.name.ar ?? "قطع غيار") + " " +
-            nameAr + " المتاحة في الكتالوج، وراجع سنة الصنع والموتور قبل الشراء.",
-          en:
-            "Browse " + nameEn + " " + (categoryForModel?.name.en ?? "spare parts") +
-            " in the catalog, and check vehicle year and engine before buying.",
+          ar: arCategoryCopy?.description ??
+            "استعرض قطع غيار " + nameAr + " المتاحة في الكتالوج، وراجع سنة الصنع والموتور قبل الشراء.",
+          en: enCategoryCopy?.description ??
+            "Browse " + nameEn + " spare parts in the catalog, and check vehicle year and engine before buying.",
         },
-      };
-    }
+      };    }
   }
   const guide =
     path[0] === "guides" && path.length === 2
@@ -467,7 +489,7 @@ export async function generateMetadata({
               siteName,
               title: pageMeta?.title?.[l] ?? routeTitles[slug] ?? siteName,
               description: metaDescription ?? identity.description,
-              url: canonicalPage(`/${l}/${slug}`, filters),
+              url: canonicalPage(duplicateModelCategoryLanding ? `/${l}/brands/${path[1]}/${path[2]}` : `/${l}/${slug}`, filters),
               locale: l === "ar" ? "ar_EG" : "en_EG",
               images: [{ url: "/images/mopc/logo.png", alt: "MOPC · موبِك" }],
             },
@@ -482,9 +504,11 @@ export async function generateMetadata({
       canonical: canonicalPage(
         productMeta
           ? `/${l}/products/${productMeta.slug}`
-          : slug
-            ? `/${l}/${slug}`
-            : `/${l}`,
+          : duplicateModelCategoryLanding
+            ? `/${l}/brands/${path[1]}/${path[2]}`
+            : slug
+              ? `/${l}/${slug}`
+              : `/${l}`,
         filters,
       ),
       languages: Object.fromEntries(
@@ -501,9 +525,11 @@ export async function generateMetadata({
             canonicalPage(
               productMeta
                 ? `/${lang}/products/${productMeta.slug}`
-                : slug
-                  ? `/${lang}/${slug}`
-                  : `/${lang}`,
+                : duplicateModelCategoryLanding
+                  ? `/${lang}/brands/${path[1]}/${path[2]}`
+                  : slug
+                    ? `/${lang}/${slug}`
+                    : `/${lang}`,
               filters,
             ),
           ]),
