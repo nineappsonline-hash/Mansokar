@@ -70,6 +70,7 @@ import {
   allRows,
   siteMedia,
   heroSlideshow,
+  publicModelYears,
   catalog,
   catalogBySlug,
   fitment,
@@ -636,12 +637,7 @@ export default async function Page({ params, searchParams }: Props) {
   // Begin homepage-only years and slideshow queries while product inventory loads.
   const homeDataPromise = !route
     ? Promise.all([
-        configured()
-          ? allRows<{ model_id: string; year: number }>(
-              "vehicle_model_years",
-              "model_id,year",
-            )
-          : Promise.resolve([] as { model_id: string; year: number }[]),
+        publicModelYears(),
         heroSlideshow(
           branding.hero?.url ?? settings!.heroImage ?? "/images/cyan/hero-blue.webp",
         ),
