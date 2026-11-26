@@ -4,6 +4,7 @@ import { demoProducts } from "../src/lib/catalog";
 import {
   productAnswers,
   productSearchCopy,
+  productSerpTitle,
   productStructuredData,
   recordedPartReferences,
 } from "../src/lib/product-seo";
@@ -814,4 +815,20 @@ test("recorded alternate part numbers are deduplicated, bounded and never mislab
   assert.ok(!additionalProperty?.some((item) => item.name === "Verified OEM number"));
   assert.ok(!additionalProperty?.some((item) => item.value === "OP-123"));
   assert.deepEqual(recordedPartReferences({ ...p, partNumbers: [] }), []);
+});
+
+test("automated product headline prioritizes part number, model and maker over long year-range decoration", () => {
+  const source = "خرطوم هواء تربو بالحساس 1.4 AVORTEX | أوبل استرا j 2012–2022 | 392000871";
+  const compact = productSerpTitle(source, "موبِك");
+  assert.ok(compact.length < 70, compact);
+  assert.ok(compact.includes("AVORTEX"));
+  assert.ok(compact.includes("أوبل استرا j"));
+  assert.ok(compact.includes("392000871"));
+  assert.ok(!compact.includes("2012–2022")); // still present in the item body and meta description
+  const short = "فلتر هواء WIX | أوبل أسترا J | WA9653";
+  assert.equal(productSerpTitle(short, "موبِك"), short + " | موبِك");
+  const manual = productSerpTitle(source, "موبِك", true);
+  assert.ok(manual.includes("2012–2022"));
+  assert.ok(manual.endsWith("| موبِك"));
+  assert.equal(productSerpTitle("طقم فرامل GM | أوبل 2012–2022 | 12345678", "موبِك").includes("12345678"), true);
 });

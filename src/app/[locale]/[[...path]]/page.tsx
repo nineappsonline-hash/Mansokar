@@ -31,7 +31,7 @@ import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
 import { buyingGuides } from "@/lib/buying-guides";
 import { BuyingGuide } from "@/components/buying-guide";
 import { InstallmentsGuide } from "@/components/installments-guide";
-import { productSearchCopy, productStructuredData, recordedPartReferences } from "@/lib/product-seo";
+import { productSearchCopy, productSerpTitle, productStructuredData, recordedPartReferences } from "@/lib/product-seo";
 import { builtInPolicy } from "@/lib/policy-content";
 import { ShippingEstimate } from "@/components/shipping-estimate";
 import { ProductCard as Card } from "@/components/product-card";
@@ -378,6 +378,9 @@ export async function generateMetadata({
   const identity = siteCopy[l];
   const siteName = settings.storeName?.[l] || identity.name;
   const homeTitle = `${identity.heading} | ${siteName}`;
+  const productHeadline = productCopy && rawProductMeta
+    ? productSerpTitle(productCopy.title, siteName, Boolean(rawProductMeta.seo?.manual))
+    : null;
   // Fallback only when the CMS/category record has no meaningful description.
   const fallbackDescription =
     slug === "policies/privacy"
@@ -414,8 +417,9 @@ export async function generateMetadata({
       : undefined,
     description: metaDescription,
     title:
-      productCopy?.title ??
-      pageMeta?.title?.[locale] ??
+      productHeadline
+        ? { absolute: productHeadline }
+        : pageMeta?.title?.[locale] ??
       (slug
         ? (routeTitles[slug] ?? slug.split("/").at(-1)?.replaceAll("-", " "))
         : { absolute: homeTitle }),
@@ -423,7 +427,7 @@ export async function generateMetadata({
       ? {
           openGraph: {
             type: "website",
-            title: productCopy.title,
+            title: productHeadline ?? productCopy.title,
             description: productCopy.description,
             url: `/${l}/products/${productMeta.slug}`,
             locale: l === "ar" ? "ar_EG" : "en_EG",
@@ -431,7 +435,7 @@ export async function generateMetadata({
           },
           twitter: {
             card: productMedia.length ? "summary_large_image" : "summary",
-            title: productCopy.title,
+            title: productHeadline ?? productCopy.title,
             description: productCopy.description,
             images: productMedia.map((m) => m.url),
           },

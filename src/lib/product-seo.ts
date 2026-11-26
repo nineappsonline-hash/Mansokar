@@ -23,6 +23,31 @@ export function recordedPartReferences(p: Pick<Product, "partNumber" | "partNumb
     .slice(0, 12);
 }
 
+/** Search result headline: preserve item, maker, car model and part number.
+ * For overlong automatic headlines only, move model-year ranges to the
+ * description/body instead of hiding the distinguishing part number.
+ * Never rewrite merchant-authored titles here.
+ */
+export function productSerpTitle(
+  baseTitle: string,
+  storeName: string,
+  manual = false,
+) {
+  const base = baseTitle.replace(/\s+/g, " ").trim();
+  const suffix = storeName.trim();
+  const titled = suffix ? `${base} | ${suffix}` : base;
+  if (manual || titled.length <= 66) return titled;
+  const noYearRanges = base.replace(/\s+(?:19|20)\d{2}\s*[–—-]\s*(?:19|20)\d{2}(?=\s*(?:[|،;,]|$))/g, "");
+  if (noYearRanges !== base) {
+    const withStore = suffix ? `${noYearRanges} | ${suffix}` : noYearRanges;
+    if (withStore.length <= 66) return withStore;
+    if (noYearRanges.length <= 66) return noYearRanges;
+  }
+  // Only drop the store suffix if it would consume search-result title space;
+  // product names and references remain intact.
+  return base.length <= 66 ? base : titled;
+}
+
 export function productSearchCopy(p: Product, locale: Locale) {
   return {
     title:
