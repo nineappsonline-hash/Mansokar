@@ -41,6 +41,27 @@ export function publicCmsPath(slug: string) {
     /^policies\/(privacy|terms|shipping|returns|warranty)$/.test(slug)
   );
 }
+/** Avoid duplicate indexable landing pages when a model has inventory in
+ * exactly one category.  When published product counts match, the model page
+ * already represents the complete category inventory.
+ *
+ * Missing counts are never treated as proof of duplicate content.
+ */
+export function duplicateModelCategory(
+  make: string,
+  model: string,
+  category: string,
+  modelCounts?: Record<string, number>,
+  categoryCounts?: Record<string, number>,
+) {
+  const total = modelCounts?.[`${make}/${model}`];
+  const matching = categoryCounts?.[`${make}/${model}/${category}`];
+  return typeof total === "number" &&
+    total > 0 &&
+    typeof matching === "number" &&
+    matching === total;
+}
+
 export function collectSearchPages(input: {
   brands: { slug: string; name: string; ar: string; models: string[] }[];
   modelNames: { brand: string; slug: string; name: Text }[];
@@ -164,7 +185,14 @@ export function collectSearchPages(input: {
       ...b.models.flatMap((model) =>
         input.categories
           .filter((category) =>
-            (input.modelCategoryCounts?.[`${b.slug}/${model}/${category.slug}`] ?? 0) > 0,
+            (input.modelCategoryCounts?.[`${b.slug}/${model}/${category.slug}`] ?? 0) > 0 &&
+            !duplicateModelCategory(
+              b.slug,
+              model,
+              category.slug,
+              input.modelCounts,
+              input.modelCategoryCounts,
+            ),
           )
           .map((category) => ({
             path: `/brands/${b.slug}/${model}/${category.slug}`,
