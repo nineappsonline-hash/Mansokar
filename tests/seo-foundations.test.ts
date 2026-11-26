@@ -72,6 +72,22 @@ test("pagination is self canonical while facets resolve to the base and product 
     "/ar/brands/opel/astra",
   );
   assert.equal(
+    canonicalPage("/ar/brands/opel/astra/filters", { page: "2" }),
+    "/ar/brands/opel/astra/filters?page=2",
+  );
+  assert.equal(
+    canonicalPage("/en/brands/opel/astra/filters", { page: "3", utm_source: "search" }),
+    "/en/brands/opel/astra/filters?page=3",
+  );
+  assert.equal(
+    canonicalPage("/ar/brands/opel/astra/filters", { page: "2", year: "2020" }),
+    "/ar/brands/opel/astra/filters",
+  );
+  assert.equal(
+    canonicalPage("/ar/brands/opel/astra/filters", { page: "1" }),
+    "/ar/brands/opel/astra/filters",
+  );
+  assert.equal(
     eligibleProduct(
       { ...product, name: { ar: "فلتر زيت", en: "فلتر زيت" } },
       "en",
