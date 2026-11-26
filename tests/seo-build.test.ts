@@ -730,3 +730,11 @@ test("product relation sections reuse a batched cover map with a safe fallback",
   const card = readFileSync("src/components/product-card.tsx", "utf8");
   assert.ok(card.includes("mediaResolved ? cover :"));
 });
+
+test("homepage regular items and special offers load concurrently", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(page.includes("const [primary, homeOffers, homeProducts] = await Promise.all(["));
+  assert.ok(page.includes("!route ? catalog({ limit: 10 }) : Promise.resolve([] as Product[])"));
+  assert.ok(page.includes("...homeProducts, ...homeOffers"));
+  assert.ok(!page.includes("...(await catalog({ limit: 10 })), ...homeOffers"));
+});
