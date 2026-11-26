@@ -611,6 +611,10 @@ test("model-category snippets distinguish filtered listings from complete model 
   assert.ok(mechanical.title.length <= 70, mechanical.title);
   assert.ok(a.title.length <= 70, a.title);
   assert.ok(b.title.length <= 70, b.title);
+  // The shared metadata layout appends the store name once.
+  assert.ok(!a.title.includes("موبِك"));
+  assert.ok(!mechanical.title.includes("موبِك"));
+  assert.ok(!b.title.includes("MOPC"));
   assert.ok(!a.title.includes("أصلية"));
 });
 
