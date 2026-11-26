@@ -645,30 +645,29 @@ export default async function Page({ params, searchParams }: Props) {
           page: Number(q.page),
         })
       : null;
-  const primary =
-    path[0] === "products" ? await catalog({ slug: path[1] }) : [];
+  // Homepage offers and regular inventory are independent; fetch both
+  // alongside the product lookup instead of serializing database requests.
+  const [primary, homeOffers, homeProducts] = await Promise.all([
+    path[0] === "products"
+      ? catalog({ slug: path[1] })
+      : Promise.resolve([] as Product[]),
+    !route
+      ? configured()
+        ? searchCatalog({ offers: true, vehicle: vehicle?.id, size: 4 })
+            .then((result) => result.products)
+        : catalog().then((items) => items.filter((p) => p.sale !== null))
+      : Promise.resolve([] as Product[]),
+    !route ? catalog({ limit: 10 }) : Promise.resolve([] as Product[]),
+  ]);
   const family = primary[0]
     ? await catalog({ family: primary[0].family, limit: 12 })
-    : [];
-  const homeOffers = !route
-    ? configured()
-      ? (await searchCatalog({ offers: true, vehicle: vehicle?.id, size: 4 }))
-          .products
-      : (await catalog()).filter((p) => p.sale !== null)
     : [];
   const products =
     serverResults?.products ??
     (primary.length
       ? [...new Map([...primary, ...family].map((p) => [p.id, p])).values()]
       : !route
-        ? [
-            ...new Map(
-              [...(await catalog({ limit: 10 })), ...homeOffers].map((p) => [
-                p.id,
-                p,
-              ]),
-            ).values(),
-          ]
+        ? [...new Map([...homeProducts, ...homeOffers].map((p) => [p.id, p])).values()]
         : isCatalog
           ? await catalog()
           : []);
