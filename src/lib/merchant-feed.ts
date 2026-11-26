@@ -22,7 +22,7 @@ export function feedExclusionReasons(
   images: string[],
 ) {
   return [
-    ...(!merchantPriceReady(p) ? ["fractional_price_review"] : []),
+    ...(!merchantPriceReady(p) ? ["invalid_price"] : []),
     ...(!eligibleProduct(p, locale) ? ["not_eligible_for_locale"] : []),
     ...(/^أصلي$/u.test(p.manufacturer.trim()) ? ["brand_unverified"] : []),
     ...(!p.orderable ? ["not_orderable"] : []),
