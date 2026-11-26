@@ -3,6 +3,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { canonicalPage, categoryLandingIndexable } from "../src/lib/seo-policy";
 import { sitemapPublished } from "../src/lib/sitemap-visibility";
+import { knownBrandRoute } from "../src/lib/seo-brand-route";
+import { rootLocaleRedirect } from "../src/lib/site-url";
 import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml";
 import { collectSearchPages, cmsTranslatedLocales } from "../src/lib/seo-inventory";
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
@@ -241,4 +243,24 @@ test("streaming loading shell never injects extra H1 headings into indexable pag
   assert.ok(source.includes("styles.en"));
   assert.ok(css.includes(".copy .loadingTitle"));
   assert.ok(!css.includes(".copy h1"));
+});
+
+test("brand/category route allows five segments but rejects nonexistent makes and models", () => {
+  const brands = [{ slug: "opel" }];
+  const models = [{ brand: "opel", slug: "astra-j" }];
+  assert.equal(knownBrandRoute(["ar", "brands", "opel"], brands, models), true);
+  assert.equal(knownBrandRoute(["ar", "brands", "opel", "astra-j"], brands, models), true);
+  assert.equal(knownBrandRoute(["ar", "brands", "opel", "astra-j", "filters"], brands, models), true);
+  assert.equal(knownBrandRoute(["en", "brands", "opel", "astra-j", "mechanical-parts"], brands, models), true);
+  assert.equal(knownBrandRoute(["ar", "brands", "opel", "astra-j", "filters", "extra"], brands, models), false);
+  assert.equal(knownBrandRoute(["ar", "brands", "missing", "astra-j", "filters"], brands, models), false);
+  assert.equal(knownBrandRoute(["ar", "brands", "opel", "missing", "filters"], brands, models), false);
+  assert.equal(knownBrandRoute(["ar", "brands", "opel", "", "filters"], brands, models), false);
+});
+
+test("bare homepage always redirects to locale canonical while preserving non-root requests", () => {
+  assert.equal(rootLocaleRedirect(new URL("https://mopc.store/"))?.href, "https://mopc.store/ar");
+  assert.equal(rootLocaleRedirect(new URL("https://mopc.store/?source=ad"))?.href, "https://mopc.store/ar?source=ad");
+  assert.equal(rootLocaleRedirect(new URL("https://mopc.store/ar")), null);
+  assert.equal(rootLocaleRedirect(new URL("https://mopc.store/ar/brands/opel/astra-j/filters")), null);
 });

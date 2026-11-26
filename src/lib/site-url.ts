@@ -6,6 +6,14 @@ export function siteOrigin(
     ? TARGET_ORIGIN
     : new URL(env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").origin;
 }
+/** Canonicalize the bare homepage at the edge, before Next.js can stream a 200. */
+export function rootLocaleRedirect(url: URL) {
+  if (url.pathname !== "/") return null;
+  const target = new URL(url.href);
+  target.pathname = "/ar";
+  return target;
+}
+
 export function migrationRedirect(
   url: URL,
   env: Record<string, string | undefined> = process.env,
