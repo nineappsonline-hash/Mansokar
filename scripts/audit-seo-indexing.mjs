@@ -111,12 +111,12 @@ await inspect("Arabic homepage canonical", async () => {
 });
 // Crawl a bounded bilingual sample of actual model pages advertised by XML.
 const modelSitemapUrls = [...new Set(
-  [...sitemapVehicles.matchAll(/<loc>(https?:\\/\\/[^<]*\\/(?:ar|en)\\/brands\\/[^<]+)<\\/loc>/g)]
+  [...sitemapVehicles.matchAll(/<loc>(https?:\/\/[^<]*\/(?:ar|en)\/brands\/[^<]+)<\/loc>/g)]
     .map((match) => match[1].replaceAll("&amp;", "&"))
     .filter((url) => {
       const pathname = new URL(url).pathname;
       return new URL(url).origin === origin &&
-        /^\\/(?:ar|en)\\/brands\\/[^/]+\\/[^/]+$/.test(pathname);
+        /^\/(?:ar|en)\/brands\/[^/]+\/[^/]+$/.test(pathname);
     }),
 )];
 const modelSample = [
@@ -134,7 +134,7 @@ for (const url of modelSample) {
     const canonical = linkCanonical(body);
     if (!canonical || new URL(canonical, origin).href !== url)
       throw Error(`Model canonical mismatch: ${canonical}`);
-    if (hasNoindex(body) || /\\bnoindex\\b/i.test(response.headers.get("x-robots-tag") || ""))
+    if (hasNoindex(body) || /\bnoindex\b/i.test(response.headers.get("x-robots-tag") || ""))
       throw Error("Model unexpectedly noindex");
     const collection = structuredObjects(body).find((item) =>
       item?.["@type"] === "CollectionPage" && item?.mainEntity?.["@type"] === "ItemList"
@@ -144,7 +144,7 @@ for (const url of modelSample) {
       throw Error("No valid CollectionPage / nonempty ItemList JSON-LD");
     if (!collection.mainEntity.itemListElement.every((item) =>
       item["@type"] === "ListItem" && item.position > 0 &&
-      /^https:\\/\\/mopc\\.store\\/(?:ar|en)\\/products\\//.test(item.url || "")
+      /^https:\/\/mopc\.store\/(?:ar|en)\/products\//.test(item.url || "")
     )) throw Error("Model ItemList contains invalid product links");
     modelPagesPassed++;
     pass(`model landing ${path}`, "200; canonical; indexable; populated CollectionPage");
