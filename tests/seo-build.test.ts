@@ -714,7 +714,19 @@ test("catalog products share one batched cover query with a safe per-card fallba
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes("firstProductImages(productIds).catch(() => null)"));
   assert.ok(page.includes("const [flags, catalogCovers] = await Promise.all(["));
-  assert.ok(page.includes("cover={catalogCovers?.[p.id]}"));
-  assert.ok(page.includes("mediaResolved={catalogCovers !== null}"));
+  assert.ok(page.includes("cover={covers?.[p.id]}"));
+  assert.ok(page.includes("mediaResolved={covers !== null}"));
   assert.ok(page.includes("isCatalog\n      ? firstProductImages(productIds)"));
+});
+
+test("product relation sections reuse a batched cover map with a safe fallback", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(page.includes("const relatedCovers = await firstProductImages("));
+  assert.ok(page.includes("[...new Set([...together, ...alternatives].map((item) => item.id))]"));
+  assert.ok(page.includes(").catch(() => null);"));
+  assert.ok(page.includes("cover={relatedCovers?.[item.id]}"));
+  assert.ok(page.includes("mediaResolved={relatedCovers !== null}"));
+  assert.ok(page.includes("{cards(alternatives, relatedCovers)}"));
+  const card = readFileSync("src/components/product-card.tsx", "utf8");
+  assert.ok(card.includes("mediaResolved ? cover :"));
 });
