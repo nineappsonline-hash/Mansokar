@@ -621,6 +621,16 @@ test("live SEO audit inspects actual sitemaps and canonical links without write 
   assert.ok(!source.includes('method: "POST"'));
 });
 
+test("selected car does not hide recorded model SEO links", () => {
+  const source = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(source.includes(
+    "const compatibleCars = productCardVehicles(raw, { brands, models: vehicleModels }, locale).map(",
+  ));
+  assert.ok(source.includes("const showApplications = !vehicle && !browsingContext;"));
+  assert.ok(!source.includes("const compatibleCars = showApplications"));
+  assert.ok(source.includes("compatibleCars\\n              .filter((car) => Boolean(car.href))"));
+});
+
 test("product pages expose crawlable category and recorded model links without inventing fitment", () => {
   const source = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(source.includes('href={`/${locale}/categories/${p.category}`}'));
