@@ -27,6 +27,6 @@ export function modelCategorySearchCopy(input: {
   }
   return {
     title: `${fullName} ${category} | MOPC Egypt`,
-    description: `Shop ${category} for ${fullName} at MOPC. Browse the recorded model selection, compare part numbers and makers, and check the year and engine before ordering.`,
+    description: `Browse ${category} for ${fullName} at MOPC. Compare part numbers and makers; check year, engine and fitment before ordering.`,
   };
 }
