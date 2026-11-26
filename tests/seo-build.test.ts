@@ -460,3 +460,20 @@ test("new Excel imports avoid duplicate Cruz/Cruze and Insignia spelling model f
   const legacyOnly = planImportVehicles([rows[0]], [models[0]], brands, [{ model_id: "legacy-cruz", year: 2019 }]);
   assert.deepEqual(legacyOnly.rows[0].applications_input, [{ make: "chevrolet", model: "cruz", years: [2019] }]);
 });
+
+test("vehicle consolidation SQL is opt-in, transactional and retains legacy records until audit", () => {
+  const audit = readFileSync("scripts/seo/vehicle-model-alias-audit.sql", "utf8");
+  const sql = readFileSync("scripts/seo/vehicle-model-alias-merge.sql", "utf8");
+  assert.ok(audit.includes("legacy_product_fitments"));
+  assert.ok(audit.includes("legacy_garage_vehicles"));
+  assert.ok(audit.includes("legacy_product_applications"));
+  assert.ok(sql.includes("BEGIN;"));
+  assert.ok(sql.includes("COMMIT;"));
+  assert.ok(sql.includes("mopc.allow_vehicle_alias_merge"));
+  assert.ok(sql.includes("Overlapping exact configs"));
+  assert.ok(sql.includes("public.vehicle_generations"));
+  assert.ok(sql.includes("public.vehicle_model_years"));
+  assert.ok(sql.includes("public.vehicle_configs"));
+  assert.ok(sql.includes("public.products"));
+  assert.ok(!/DELETE FROM public\\.vehicle_models/i.test(sql));
+});
