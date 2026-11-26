@@ -984,6 +984,9 @@ test("bundle report correlates Next App Router client manifests to emitted route
   assert.ok(audit.includes("manifest.entryCSSFiles || {}"));
   assert.ok(audit.includes("runInNewContext("));
   assert.ok(audit.includes("jsGzip:"));
+  assert.ok(audit.includes("const routeEntryPrefix ="));
+  assert.ok(audit.includes("entryFiles"));
+  assert.ok(audit.includes("excluding shared JS runtime"));
   assert.ok(audit.includes("cssGzip:"));
   assert.ok(audit.includes("manifestSources"));
   assert.ok(audit.includes("NOT first-view downloads"));
