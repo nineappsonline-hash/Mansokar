@@ -58,7 +58,7 @@ export function productSearchCopy(p: Product, locale: Locale) {
       (locale === "ar"
         ? `${p.name.ar} من ${p.manufacturer}، رقم القطعة ${p.partNumber}. السعر ${money(p.sale ?? p.price, locale)}. راجع سنة الصنع والموتور والتوافق قبل الطلب. ${p.description.ar}`
         : `${p.name.en} by ${p.manufacturer}, part ${p.partNumber}. ${money(p.sale ?? p.price, locale)}. Check vehicle year, engine and compatibility before ordering. ${p.description.en}`
-      ).slice(0, 300),
+      ).slice(0, 155).trimEnd(),
   };
 }
 
