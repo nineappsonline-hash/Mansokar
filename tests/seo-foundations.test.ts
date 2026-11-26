@@ -383,3 +383,11 @@ test("model-category SEO pages are generated only when catalog fitment inventory
   });
   assert.ok(!pagesWithoutCounts.some((page) => page.path === "/brands/opel/astra-j/filters"));
 });
+
+test("XML sitemaps are unpublished in previews and unapproved environments", async () => {
+  const { sitemapPublished } = await import("../src/lib/sitemap-visibility");
+  assert.equal(sitemapPublished({ STORE_LAUNCH_APPROVED: "true", VERCEL_ENV: "preview", NEXT_PUBLIC_SUPABASE_URL: "https://db.example" }), false);
+  assert.equal(sitemapPublished({ STORE_LAUNCH_APPROVED: "false", VERCEL_ENV: "production", NEXT_PUBLIC_SUPABASE_URL: "https://db.example" }), false);
+  assert.equal(sitemapPublished({ STORE_LAUNCH_APPROVED: "true", VERCEL_ENV: "production" }), false);
+  assert.equal(sitemapPublished({ STORE_LAUNCH_APPROVED: "true", VERCEL_ENV: "production", NEXT_PUBLIC_SUPABASE_URL: "https://db.example" }), true);
+});
