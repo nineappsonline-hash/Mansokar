@@ -15,7 +15,7 @@ export function modelCategorySearchCopy(input: {
   if (locale === "ar")
     return {
       title: `قسم ${category} لموديل ${fullName} في مصر`,
-      description: `تصفح المنتجات الموجودة في قسم ${category} لعربية ${fullName} في كتالوج موبِك. القسم جزء من المنتجات المسجلة للموديل؛ راجع رقم القطعة والموتور وسنة الصنع قبل الطلب.`,
+      description: `تصفح قسم ${category} لعربية ${fullName} في موبِك. ده جزء من المنتجات المسجلة للموديل؛ راجع رقم القطعة والموتور وسنة الصنع قبل الطلب.`,
     };
   return {
     title: `${fullName} ${category} category in Egypt`,
