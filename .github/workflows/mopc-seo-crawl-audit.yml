@@ -1,0 +1,32 @@
+name: MOPC production SEO crawl smoke audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 5 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  live-seo-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+      - name: Verify crawlability, canonicals, sitemaps and Product offers
+        run: npm run seo:live-audit
+        env:
+          SEO_BASE_URL: https://mopc.store
+          SEO_REPORT_PATH: reports/seo-live.json
+      - name: Upload diagnostic JSON (even when checks fail)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mopc-seo-live-report
+          path: reports/seo-live.json
+          retention-days: 30
+          if-no-files-found: warn
