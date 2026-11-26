@@ -889,3 +889,18 @@ test("admin-only style overrides do not block public storefront CSS", () => {
   assert.ok(global.includes(".category-hero-image { width: 100%;"));
   assert.ok(global.includes(".category-image-links { display: flex;"));
 });
+
+test("checkout payment bundle stays out of general forms used by public pages", () => {
+  const forms = readFileSync("src/components/forms.tsx", "utf8");
+  const checkout = readFileSync("src/components/checkout-form.tsx", "utf8");
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(forms.includes("export function ApiForm("));
+  assert.ok(forms.includes("export function AuthForm("));
+  assert.ok(forms.includes("export function RequestForm("));
+  assert.ok(!forms.includes("export function Checkout("));
+  assert.ok(checkout.includes("export function Checkout("));
+  assert.ok(checkout.includes("checkout-quote"));
+  assert.ok(checkout.includes("InstaPayButton"));
+  assert.ok(page.includes('import { Checkout } from "@/components/checkout-form"'));
+  assert.ok(!page.includes("RequestForm, Checkout, ApiForm"));
+});
