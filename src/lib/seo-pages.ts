@@ -45,7 +45,7 @@ export const searchPages = cache(async () => {
       (p) =>
         eligibleProduct(p) &&
         (readApplications(p.specs).some(
-          (a) => a.model_id === m.id && a.years.length,
+          (a) => a.model_id === m.id,
         ) ||
           fitments.some(
             (f) =>
