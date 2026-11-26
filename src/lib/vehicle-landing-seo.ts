@@ -18,15 +18,15 @@ export function modelCategorySearchCopy(input: {
   if (locale === "ar") {
     const isGeneric = category.trim() === "قطع غيار";
     const title = isGeneric
-      ? `قسم قطع الغيار ${fullName} | موبِك`
-      : `${category} ${fullName} | قطع غيار موبِك`;
+      ? `قسم قطع الغيار ${fullName}`
+      : `${category} ${fullName} | قطع غيار`;
     return {
       title,
       description: `تصفح ${category} ${fullName} في موبِك من المنتجات المسجلة للموديل. قارن اسم القطعة ورقمها وماركتها، وراجع سنة الصنع والموتور قبل الطلب.`,
     };
   }
   return {
-    title: `${fullName} ${category} | MOPC Egypt`,
+    title: `${fullName} ${category} in Egypt`,
     description: `Browse ${category} for ${fullName} at MOPC. Compare part numbers and makers; check year, engine and fitment before ordering.`,
   };
 }
