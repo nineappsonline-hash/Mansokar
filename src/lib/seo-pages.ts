@@ -12,6 +12,7 @@ import { buyingGuides } from "./buying-guides";
 import { coveredBrands, targetModel } from "./vehicle-coverage";
 import { collectSearchPages } from "./seo-inventory";
 import { sitemapFitmentCounts } from "./seo-fitment-counts";
+import { eligibleProduct } from "./seo-policy";
 import { publicProduct } from "./public-product";
 import { readApplications } from "./product-applications";
 // This is public inventory only: never include user cookies, cart, or order data.
@@ -77,6 +78,26 @@ const sharedSearchPages = unstable_cache(async () => {
     ids.add(model.id);
     compatibleIds.set(fitment.product_id, ids);
   }
+  // Sitemap timestamps come from actual eligible product revisions only,
+  // not the date of the request or unsupported model specifications.
+  const modelDates: Record<string, string> = {};
+  const modelCategoryDates: Record<string, string> = {};
+  const recordNewest = (dates: Record<string, string>, key: string, value: string) => {
+    if (!dates[key] || Date.parse(value) > Date.parse(dates[key]))
+      dates[key] = value;
+  };
+  for (const product of products) {
+    const changed = product.seo_updated_at;
+    if (!eligibleProduct(product) || !changed || !Number.isFinite(Date.parse(changed)))
+      continue;
+    for (const modelId of compatibleIds.get(product.id) ?? []) {
+      const matchingModel = modelById.get(modelId);
+      if (!matchingModel) continue;
+      const key = `${matchingModel.brand}/${matchingModel.slug}`;
+      recordNewest(modelDates, key, changed);
+      recordNewest(modelCategoryDates, `${key}/${product.category}`, changed);
+    }
+  }
   const brandBySlug = new Map(brands.map((brand) => [brand.slug, brand]));
   const productVehicleLabels = Object.fromEntries(products.map((product) => [
     product.id,
@@ -100,6 +121,8 @@ const sharedSearchPages = unstable_cache(async () => {
     categories,
     modelCounts,
     modelCategoryCounts,
+    modelDates,
+    modelCategoryDates,
     productVehicleLabels,
     productDates: Object.fromEntries(
       products.map((p) => [p.id, p.seo_updated_at ?? undefined]),
