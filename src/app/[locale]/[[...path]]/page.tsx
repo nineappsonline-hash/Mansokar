@@ -189,6 +189,8 @@ export async function generateMetadata({
       ? await productImages(productMeta.id).catch(() => [])
       : [];
   let modelHasInventory = true;
+  let categoryHasInventory = true;
+  let categoryPageLocales: Locale[] | undefined;
   let modelPageLocales: Locale[] | undefined;
   let pageMeta: {
     title?: Record<string, string>;
@@ -201,7 +203,12 @@ export async function generateMetadata({
         .select("name,description,seo")
         .eq("slug", path[1])
         .maybeSingle();
-      if (data)
+      if (data) {
+        categoryPageLocales = (["ar", "en"] as const).filter((lang) =>
+          translatedProduct({ name: data.name }, lang),
+        );
+        categoryHasInventory =
+          (await searchCatalog({ category: path[1], size: 1 })).total > 0;
         pageMeta = {
           title: {
             ar: data.seo?.title?.ar || data.name.ar,
@@ -209,6 +216,9 @@ export async function generateMetadata({
           },
           description: data.seo?.description ?? data.description,
         };
+      } else {
+        categoryHasInventory = false;
+      }
     } else if (!privatePage) {
       const { data } = await service()
         .from("cms_pages")
@@ -243,6 +253,9 @@ export async function generateMetadata({
     if (!brand || (path[2] && !model) || path.length > 4 ||
         (path.length === 4 && !categoryForModel)) notFound();
     if (brand && (!path[2] || model)) {
+      if (!path[2] && configured())
+        modelHasInventory =
+          (await searchCatalog({ make: brand.slug, size: 1 })).total > 0;
       if (path[2] && configured())
         modelHasInventory =
           (await searchCatalog({
@@ -450,7 +463,8 @@ export async function generateMetadata({
           .filter(
             (lang) =>
               (!rawProductMeta || translatedProduct(rawProductMeta, lang)) &&
-              (!modelPageLocales || modelPageLocales.includes(lang)),
+              (!modelPageLocales || modelPageLocales.includes(lang)) &&
+              (!categoryPageLocales || categoryPageLocales.includes(lang)),
           )
           .map((lang) => [
             `${lang}-EG`,
@@ -472,6 +486,8 @@ export async function generateMetadata({
         configured() &&
         !productMeta?.demo &&
         modelHasInventory &&
+        categoryHasInventory &&
+        (!categoryPageLocales || categoryPageLocales.includes(l)) &&
         (!modelPageLocales || modelPageLocales.includes(l)) &&
         (!rawProductMeta || eligibleProduct(rawProductMeta, l)) &&
         (!["about", "contact", "faq", "guides", "policies"].includes(path[0]) ||
