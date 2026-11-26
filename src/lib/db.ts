@@ -499,6 +499,40 @@ export async function relatedProducts(
   }
   return products;
 }
+/** Product detail can fetch both relation types with one relation query and
+ * one bounded product lookup. Preserve vehicle-verified together products.
+ * The result is request-bound: fitment is never shared across visitors.
+ */
+export async function relatedProductGroups(id: string, vehicle?: string) {
+  if (!configured()) return { together: [] as Product[], alternative: [] as Product[] };
+  const { data, error } = await service()
+    .from("product_relations")
+    .select("related_id,kind")
+    .eq("product_id", id)
+    .in("kind", ["alternative", "together"]);
+  if (error) throw error;
+  const alternativeIds = new Set(
+    data.filter((row) => row.kind === "alternative").map((row) => row.related_id),
+  );
+  const togetherIds = new Set(
+    vehicle
+      ? data.filter((row) => row.kind === "together").map((row) => row.related_id)
+      : [],
+  );
+  const ids = [...new Set([...alternativeIds, ...togetherIds])];
+  if (!ids.length) return { together: [] as Product[], alternative: [] as Product[] };
+  const products = await catalog({ ids });
+  const alternatives = products.filter((product) => alternativeIds.has(product.id));
+  if (!vehicle || !togetherIds.size)
+    return { together: [] as Product[], alternative: alternatives };
+  const candidates = products.filter((product) => togetherIds.has(product.id));
+  const flags = await fitmentFlags(candidates.map((product) => product.id), vehicle);
+  return {
+    together: candidates.filter((product) => flags[product.id]),
+    alternative: alternatives,
+  };
+}
+
 /** Published CMS copy is public, but remains fresh per request after edits.
  * Both metadata and content share this read on the same render.
  */
