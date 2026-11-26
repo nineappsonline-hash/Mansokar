@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { configured, service, siteMedia } from "@/lib/db";
 import type { Locale } from "@/lib/catalog";
-import { Reveal } from "./motion-primitives";
 export async function Campaigns({ locale }: { locale: Locale }) {
   if (!configured()) return null;
   const now = new Date().toISOString();
@@ -22,9 +21,8 @@ export async function Campaigns({ locale }: { locale: Locale }) {
       aria-label={locale === "ar" ? "حملات المتجر" : "Store campaigns"}
     >
       <div className="three-col">
-        {data.map((c, i) => (
-          <Reveal key={c.id} delay={i * 0.1}>
-            <article className="panel stack">
+        {data.map((c) => (
+            <article key={c.id} className="panel stack">
               {(media["campaign-" + c.id]?.url ?? c.image) && (
                 <img
                   src={media["campaign-" + c.id]?.url ?? c.image}
@@ -41,7 +39,6 @@ export async function Campaigns({ locale }: { locale: Locale }) {
                 </Link>
               )}
             </article>
-          </Reveal>
         ))}
       </div>
     </section>

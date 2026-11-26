@@ -104,6 +104,7 @@ export async function ProductCard({
       <FavoriteButton id={p.id} locale={locale} />
       <Link
         href={href}
+        prefetch={false}
         className={`product-art ${styles.photo}`}
         data-analytics="select_item"
         data-productid={p.id}
@@ -159,7 +160,7 @@ export async function ProductCard({
           )}
         </div>
         <Heading className={styles.title}>
-          <Link href={href} data-analytics="select_item" data-productid={p.id}>
+          <Link href={href} prefetch={false} data-analytics="select_item" data-productid={p.id}>
             {p.name[locale]}
           </Link>
         </Heading>
@@ -213,7 +214,7 @@ export async function ProductCard({
                 );
               })}
               {vehicleRows.length > 1 && (
-                <Link className={styles.more} href={href}>
+                <Link className={styles.more} href={href} prefetch={false}>
                   {locale === "ar"
                     ? `+${vehicleRows.length - 1} موديلات أخرى`
                     : `+${vehicleRows.length - 1} more models`}

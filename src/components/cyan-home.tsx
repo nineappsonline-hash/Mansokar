@@ -145,6 +145,7 @@ export async function CyanHome({
             <Link
               className={`cyan-brand-tile cyan-brand-${b.slug}`}
               href={`/${locale}/brands/${b.slug}`}
+              prefetch={false}
               key={b.slug}
             >
               <Image
