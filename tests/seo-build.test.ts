@@ -675,3 +675,16 @@ test("catalog listing avoids per-card motion hydration and homepage car years us
   assert.ok(page.includes("yearsByModelSlug.get("));
   assert.ok(!page.includes("...registeredYears\n                .filter((y) => y.model_id === m.id)"));
 });
+
+test("product and home data sources fetch independently in parallel without hiding critical failures", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(page.includes("const [media, areas, policies, together, curatedAlternatives] ="));
+  assert.ok(page.includes("productImages(p.id).catch(() => [])"));
+  assert.ok(page.includes("deliveryAreas(),"));
+  assert.ok(page.includes("relatedProducts(p.id, \"together\", vehicle?.id)"));
+  assert.ok(page.includes("relatedProducts(p.id, \"alternative\", vehicle?.id)"));
+  assert.ok(page.includes("const [registeredYears, slideshow] = await Promise.all(["));
+  assert.ok(page.includes("heroSlideshow("));
+  assert.ok(!page.includes("const areas = await deliveryAreas()"));
+  assert.ok(!page.includes("const slideshow = await heroSlideshow("));
+});
