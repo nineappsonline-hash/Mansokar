@@ -106,6 +106,20 @@ test("each SKU has localized metadata and merchant overrides", () => {
   );
 });
 
+test("generated long product titles retain maker, model and reference within 60 characters", () => {
+  const examples = [
+    ["Rear Crankshaft Seal with Housing GM | Chevrolet Captiva | 24563770", ["GM", "Chevrolet Captiva", "24563770"]],
+    ["خرطوم هواء تربو بالحساس 1.4 AVORTEX | أوبل استرا j | 392000871", ["AVORTEX", "أوبل استرا j", "392000871"]],
+  ] as const;
+  for (const [input, essentials] of examples) {
+    const title = productSerpTitle(input, "موبِك");
+    assert.ok(title.length <= 60, title);
+    for (const essential of essentials) assert.ok(title.includes(essential), title);
+  }
+  const manual = "A long merchant-authored product title which must remain unchanged";
+  assert.equal(productSerpTitle(manual, "MOPC", true), `${manual} | MOPC`);
+});
+
 test("one-model product SERP description stays concise while full fitment remains visible", async () => {
   const { publicProduct } = await import("../src/lib/public-product");
   const product = {
