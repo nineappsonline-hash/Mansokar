@@ -1035,3 +1035,18 @@ test("Merchant Center feed always exports canonical mopc.store landing-page link
   assert.ok(feed.includes('process.env.MERCHANT_FEED_ENABLED !== "true"'));
   assert.ok(feed.includes("crypto.timingSafeEqual("));
 });
+
+test("Merchant Center public feed serves only approved products and keeps admin routes protected", () => {
+  const feed = readFileSync("src/app/api/merchant-feed/route.ts", "utf8");
+  const policy = readFileSync("src/lib/merchant-feed.ts", "utf8");
+  const readiness = readFileSync("src/app/api/admin/merchant-readiness/route.ts", "utf8");
+  assert.ok(feed.includes('process.env.MERCHANT_FEED_PUBLIC === "true"'));
+  assert.ok(feed.includes("if (!publicFeed && !authorized) await requireAdmin()"));
+  assert.ok(feed.includes('process.env.MERCHANT_FEED_ENABLED !== "true"'));
+  assert.ok(feed.includes('process.env.MERCHANT_EG_ELIGIBILITY_CONFIRMED !== "true"'));
+  assert.ok(feed.includes('process.env.MERCHANT_SHIPPING_CONFIGURED !== "true"'));
+  assert.ok(feed.includes("feedExclusionReasons(r.product, locale, r.images)"));
+  assert.ok(policy.includes("eligibleProduct(p, locale)"));
+  assert.ok(policy.includes("!images.length"));
+  assert.ok(readiness.includes("await requireAdmin()"));
+});
