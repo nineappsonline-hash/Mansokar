@@ -182,6 +182,30 @@ test("product markup uses public identifiers, real images and EGP without claimi
   );
 });
 
+test("orderable stocked SKU exposes truthful Product Offer without invented ratings", () => {
+  const stocked = {
+    ...p,
+    status: "published" as const,
+    orderable: true,
+    specs: {
+      ...p.specs,
+      stock_status: "in_stock",
+      stock_quantity: "1000",
+      product_condition: "new",
+    },
+  };
+  const data = productStructuredData(stocked, "ar", "https://mopc.store", [])!;
+  assert.equal(data.offers?.priceCurrency, "EGP");
+  assert.equal(data.offers?.availability, "https://schema.org/InStock");
+  assert.equal(data.offers?.itemCondition, "https://schema.org/NewCondition");
+  assert.equal(data.offers?.price, "125.00");
+  assert.equal(data.url, `https://mopc.store/ar/products/${p.slug}`);
+  const json = JSON.stringify(data);
+  assert.ok(!json.includes("aggregateRating"));
+  assert.ok(!json.includes("\\"review\\""));
+  assert.equal(productStructuredData({ ...stocked, orderable: false }, "ar", "https://mopc.store", [])!.offers, undefined);
+});
+
 test("stable product media URLs are included in product schema and sitemap entries", async () => {
   const { collectSearchPages, sitemapEntries } =
     await import("../src/lib/seo-inventory");
