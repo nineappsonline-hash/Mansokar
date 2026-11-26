@@ -126,8 +126,8 @@ export function productAnswers(p: Product, locale: Locale) {
         ? "هل القطعة أصلية وإيه شروط ضمانها؟"
         : "Is this a genuine part, and what warranty applies?",
       answer: ar
-        ? `قطع الغيار في موبِك أصلية بضمان الوكيل أو المورد حسب المنتج. ${recordedWarranty}تفاصيل الضمان بتظهر في بيانات القطعة أو مستند الضمان؛ واحتفظ بالفاتورة وراجع سياسة الضمان قبل الطلب.`
-        : `MOPC lists genuine spare parts with an agent or supplier warranty according to the product. ${recordedWarranty}Check the product details or warranty document for coverage, keep the invoice, and review the warranty policy before ordering.`,
+        ? `راجع ماركة القطعة ورقمها وصور العبوة أو مستند المورد لو متاح لتأكيد المصدر، لأن اسم الماركة أو وصف «أصلي» لوحده مش إثبات. ${recordedWarranty}راجع شروط الضمان المكتوبة للمنتج أو اسألنا عن تفاصيلها قبل الشراء واحتفظ بالفاتورة.`
+        : `Check the item brand, part number and any available packaging or supplier documentation to confirm its source; a brand name or “genuine” label alone does not prove authenticity. ${recordedWarranty}Review the product-specific warranty terms or ask us to confirm them before ordering, and keep the invoice.`,
     },
     {
       question: ar
