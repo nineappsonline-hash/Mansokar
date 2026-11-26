@@ -677,7 +677,10 @@ test("product and home data sources fetch independently in parallel without hidi
   assert.ok(page.includes("deliveryAreas(),"));
   assert.ok(page.includes("relatedProducts(p.id, \"together\", vehicle?.id)"));
   assert.ok(page.includes("relatedProducts(p.id, \"alternative\", vehicle?.id)"));
-  assert.ok(page.includes("const [registeredYears, slideshow] = await Promise.all(["));
+  assert.ok(page.includes("const homeDataPromise = !route"));
+  assert.ok(page.includes("const [registeredYears, slideshow] = await homeDataPromise!;"));
+  assert.ok(page.includes("const selectedIdPromise = (async () =>"));
+  assert.ok(page.includes("const selectedId = await selectedIdPromise;"));
   assert.ok(page.includes("heroSlideshow("));
   assert.ok(!page.includes("const areas = await deliveryAreas()"));
   assert.ok(!page.includes("const slideshow = await heroSlideshow("));
