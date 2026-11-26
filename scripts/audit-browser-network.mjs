@@ -125,6 +125,12 @@ try {
     });
     const unique = [...new Map(sameOrigin.map((item) => [item.url, item])).values()];
     const group = (suffix) => unique.filter((item) => new URL(item.url).pathname.includes("/_next/static/") && new URL(item.url).pathname.endsWith(suffix));
+    // Site-origin counts help isolate the MOPC app, but product photography
+    // often arrives directly from an external image CDN. Capture those bytes
+    // too, otherwise the mobile image budget appears artificially small.
+    const allRequests = [...new Map(entries.map((item) => [item.url, item])).values()];
+    const allImages = allRequests.filter((item) => item.type === "Image");
+    const allFonts = allRequests.filter((item) => item.type === "Font");
     const assets = {
       js: group(".js"),
       css: group(".css"),
@@ -132,6 +138,9 @@ try {
       font: unique.filter((x) => x.type === "Font"),
     };
     const sum = (arr) => arr.reduce((n, e) => n + (e.encodedBytes || 0), 0);
+    const heavy = (arr) => [...arr]
+      .sort((a, b) => (b.encodedBytes || 0) - (a.encodedBytes || 0))
+      .slice(0, 8);
     const summary = {
       label,
       url: page.url(),
@@ -145,19 +154,28 @@ try {
         image: sum(assets.image),
         font: sum(assets.font),
         allSameOrigin: sum(unique),
+        // Includes external image hosts and Next image optimization responses.
+        imageAllOrigins: sum(allImages),
+        fontAllOrigins: sum(allFonts),
+        allOrigins: sum(allRequests),
       },
       counts: {
         js: assets.js.length,
         css: assets.css.length,
         image: assets.image.length,
+        imageAllOrigins: allImages.length,
         font: assets.font.length,
+        allOrigins: allRequests.length,
       },
-      heaviestScripts: [...assets.js].sort((a,b) => b.encodedBytes-a.encodedBytes).slice(0, 8),
+      heaviestScripts: heavy(assets.js),
+      heaviestImages: heavy(allImages),
+      // The critical product image may be a remote URL, not /product-media.
+      heaviestRequests: heavy(allRequests),
       cssFiles: assets.css,
       failures: [...new Set(failures)].slice(0, 30),
     };
     results.push(summary);
-    console.log(`[browser-perf] ${label}: HTTP ${summary.status}, JS ${(summary.bytes.js/1024).toFixed(1)} KB, CSS ${(summary.bytes.css/1024).toFixed(1)} KB, LCP ${summary.lcpMs?.toFixed(0) ?? "n/a"} ms, errors ${summary.failures.length}`);
+    console.log(`[browser-perf] ${label}: HTTP ${summary.status}, JS ${(summary.bytes.js/1024).toFixed(1)} KB, CSS ${(summary.bytes.css/1024).toFixed(1)} KB, all-origin images ${(summary.bytes.imageAllOrigins/1024).toFixed(1)} KB, LCP ${summary.lcpMs?.toFixed(0) ?? "n/a"} ms, errors ${summary.failures.length}`);
     const links = await page.locator(`a[href*="/${locale}/products/"]`).evaluateAll((elements) =>
       elements.map((item) => item.getAttribute("href")).filter(Boolean)
     ).catch(() => []);
@@ -176,7 +194,7 @@ try {
 }
 mkdirSync(resolve(output, ".."), { recursive: true });
 writeFileSync(output, JSON.stringify({
-  note: "Cold-context Chromium first-view request transfer totals. Does not equate to PageSpeed mobile lab score. Network variability, cache policy, bot protection, and Chrome/browser versions affect measurements.",
+  note: "Cold-context Chromium first-view request transfer totals, including third-party product images. LCP/CLS are lab observations, not field Core Web Vitals. INP is not measured without real user interaction. Network variability, cache policy, bot protection, and Chromium versions affect measurements.",
   measuredAt: new Date().toISOString(),
   base: root.origin,
   results,
