@@ -155,7 +155,8 @@ export function normalize(value: string) {
     .replace(/[^\p{L}\p{N}]/gu, "");
 }
 export function money(value: number, _locale: Locale) {
-  // Keep visible prices identical to checkout and Google Merchant feed.\n  return new Intl.NumberFormat("en-EG", {
+  // Keep visible prices identical to checkout and Google Merchant feed.
+  return new Intl.NumberFormat("en-EG", {
     style: "currency",
     currency: "EGP",
     minimumFractionDigits: 0,
