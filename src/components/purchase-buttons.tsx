@@ -9,13 +9,15 @@ import { t } from "@/lib/i18n";
 export function PurchaseButtons({
   product,
   locale,
+  label,
   quantity = 1,
   vehicle,
   context,
   compact = false,
 }: {
-  product: Pick<Product, "id" | "name" | "orderable">;
+  product: Pick<Product, "id" | "orderable"> & Partial<Pick<Product, "name">>;
   locale: Locale;
+  label?: string;
   quantity?: number;
   compact?: boolean;
   vehicle?: { make?: string; model?: string; year?: number };
@@ -26,6 +28,8 @@ export function PurchaseButtons({
   const [buying, setBuying] = useState(false);
   const [error, setError] = useState("");
   const w = t(locale);
+  // Product cards serialize a single locale label; other callers remain compatible.
+  const productLabel = label ?? product.name?.[locale] ?? "";
   function purchase(buyNow: boolean) {
     if (!product.orderable || buying) return;
     try {
@@ -52,7 +56,7 @@ export function PurchaseButtons({
           type="button"
           className="button purchase-add"
           disabled={!product.orderable || buying}
-          aria-label={`${added ? w.addedToCart : w.add}: ${product.name[locale]}`}
+          aria-label={`${added ? w.addedToCart : w.add}: ${productLabel}`}
           data-analytics="add_to_cart"
           data-productid={product.id}
           onClick={() => purchase(false)}
@@ -69,7 +73,7 @@ export function PurchaseButtons({
             type="button"
             className="button secondary purchase-buy"
             disabled={!product.orderable || buying}
-            aria-label={`${buying ? w.openingCheckout : w.buyNow}: ${product.name[locale]}`}
+            aria-label={`${buying ? w.openingCheckout : w.buyNow}: ${productLabel}`}
             onClick={() => purchase(true)}
           >
             <span>{buying ? w.openingCheckout : w.buyNow}</span>
@@ -82,7 +86,7 @@ export function PurchaseButtons({
         role="status"
         aria-live="polite"
       >
-        {error || (added ? `${w.addedToCart}: ${product.name[locale]}` : "")}
+        {error || (added ? `${w.addedToCart}: ${productLabel}` : "")}
       </span>
     </div>
   );
