@@ -695,10 +695,12 @@ test("SEO requests share SKU lookup and cache only short-lived public homepage d
 test("product and home data sources fetch independently in parallel without hiding critical failures", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes("const [media, areas, policies, together, curatedAlternatives] ="));
-  assert.ok(page.includes("productImages(p.id).catch(() => [])"));
+  assert.ok(page.includes("const productDetailsPromise = path[0] === \"products\" && primary[0]"));
+  assert.ok(page.includes("await productDetailsPromise!;"));
+  assert.ok(page.includes("productImages(primary[0].id).catch(() => [])"));
   assert.ok(page.includes("deliveryAreas(),"));
-  assert.ok(page.includes("relatedProducts(p.id, \"together\", vehicle?.id)"));
-  assert.ok(page.includes("relatedProducts(p.id, \"alternative\", vehicle?.id)"));
+  assert.ok(page.includes("relatedProducts(primary[0].id, \"together\", vehicle?.id)"));
+  assert.ok(page.includes("relatedProducts(primary[0].id, \"alternative\", vehicle?.id)"));
   assert.ok(page.includes("const homeDataPromise = !route"));
   assert.ok(page.includes("const [registeredYears, slideshow] = await homeDataPromise!;"));
   assert.ok(page.includes("const selectedIdPromise = (async () =>"));
@@ -706,6 +708,12 @@ test("product and home data sources fetch independently in parallel without hidi
   assert.ok(page.includes("heroSlideshow("));
   assert.ok(!page.includes("const areas = await deliveryAreas()"));
   assert.ok(!page.includes("const slideshow = await heroSlideshow("));
+});
+
+test("product photos share request data with metadata and vehicle-free cross-sells skip database", () => {
+  const db = readFileSync("src/lib/db.ts", "utf8");
+  assert.ok(db.includes("export const productImages = cache(async function loadProductImages"));
+  assert.ok(db.includes('if (!configured() || (kind === "together" && !vehicle)) return [];'));
 });
 
 test("model category totals cache is public, short-lived and not affected by user filters", () => {
