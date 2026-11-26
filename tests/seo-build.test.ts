@@ -553,6 +553,49 @@ test("old vehicle typo routes redirect permanently to canonical model and catego
   ]) assert.equal(legacyVehicleModelRedirect(new URL(unchanged)), null);
 });
 
+test("vehicle sitemap gives model landings real inventory lastmod without fabricated dates", () => {
+  const make = { slug: "chevrolet", name: "Chevrolet", ar: "شيفروليه", models: ["cruze"] };
+  const input = {
+    brands: [make],
+    modelNames: [{ brand: "chevrolet", slug: "cruze", name: { ar: "كروز", en: "Cruze" } }],
+    categories: [
+      { slug: "mechanical-parts", name: { ar: "قطع ميكانيكية", en: "Mechanical parts" } },
+      { slug: "spare-parts", name: { ar: "قطع غيار", en: "Spare parts" } },
+    ],
+    products: [], cms: [], guides: [],
+    modelCounts: { "chevrolet/cruze": 7 },
+    modelCategoryCounts: {
+      "chevrolet/cruze/mechanical-parts": 5,
+      "chevrolet/cruze/spare-parts": 2,
+    },
+    modelDates: { "chevrolet/cruze": "2026-11-26T18:59:09Z" },
+    modelCategoryDates: {
+      "chevrolet/cruze/mechanical-parts": "2026-11-25T12:00:00Z",
+    },
+  };
+  const pages = collectSearchPages(input);
+  assert.equal(
+    pages.find((p) => p.path === "/brands/chevrolet/cruze")?.lastModified,
+    "2026-11-26T18:59:09Z",
+  );
+  assert.equal(
+    pages.find((p) => p.path === "/brands/chevrolet/cruze/mechanical-parts")?.lastModified,
+    "2026-11-25T12:00:00Z",
+  );
+  assert.equal(
+    pages.find((p) => p.path === "/brands/chevrolet/cruze/spare-parts")?.lastModified,
+    undefined,
+  );
+  const xml = sitemapXml(pages, "https://mopc.store", "vehicles");
+  assert.ok(xml.includes("2026-11-26"));
+  assert.ok(xml.includes("2026-11-25"));
+  const source = readFileSync("src/lib/seo-pages.ts", "utf8");
+  assert.ok(source.includes("if (!eligibleProduct(product) || !changed"));
+  assert.ok(source.includes("for (const modelId of compatibleIds.get(product.id)"));
+  assert.ok(source.includes("recordNewest(modelDates, key, changed)"));
+  assert.ok(source.includes("recordNewest(modelCategoryDates"));
+});
+
 test("vehicle sitemap keeps model landing but omits duplicated all-in-one-category landings", () => {
   const make = { slug: "mg", name: "MG", ar: "إم جي", models: ["5", "6"] };
   const models = [
