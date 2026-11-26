@@ -1,5 +1,18 @@
 # MOPC vehicle-model alias consolidation
 
+# Production completion: 2026-11-26
+
+**Status: completed and independently verified on MOPC Supabase `egcrsphvijzibaamwoes`.** The steps below remain a reusable recovery/audit reference, not an outstanding request to run the migration again.
+
+- A restricted `mopc_maintenance.vehicle_alias_backup` snapshot (`mopc-aliases-20261126-v1`) was captured before the write, holding **4 model records, 385 product compatibility specs, 25 recorded model-year rows**, plus configurations, fitments, garage refs and the original Opel media row.
+- The guarded merge was executed transactionally. **72 legacy applications were moved**: 4 Chevrolet `cruz` and 68 Opel `insginia-a`. Post-merge counts: **114 Cruze** and **271 Insignia A** product applications.
+- Post-migration verification compared the original 72 year strings against the new canonical keys and found **zero mismatches**, zero legacy application references, zero legacy model years, and no config/garage/fitment row loss.
+- The original Opel model image was re-associated with `model-opel-insignia-a`. The two empty legacy model records were deleted in a separate guarded transaction **after** the redirect build reached Production READY.
+- PR #29 (commit `f8e114e32301b770edd74e779fd1e777da1799a5`) added 308 canonical redirects for the legacy make/model/category paths. Production checks show old paths resolve to canonical pages; the URL fetch tool follows same-origin redirects, so it reports final HTTP 200 and canonical target.
+- Post-cleanup `/sitemaps/vehicles.xml` is HTTP 200 with **76 URLs**; none contain legacy `cruz` or `insginia-a` slugs, while both canonical make/models remain present. 12 changed URLs were submitted to IndexNow (Bing peers); this does **not** notify Google.
+- Google Search Console URL Inspection currently still marks the brand/model pages as unknown to Google. Indexing/re-ranking is not verified and should be monitored separately.
+
+
 ## Scope
 
 Two spelling aliases in the live catalogue currently have separate product sets:
@@ -70,6 +83,4 @@ mandatory before reporting the historical data migration as completed.
 5. Reinspect with Google Search Console. Google may retain the old URLs until
    it recrawls them; a 308 does not instantly guarantee reindexing.
 
-**Status:** New-import alias protection can ship independently. Historical
-MOPC database consolidation is NOT performed until the MOPC database is
-connected and the preflight is inspected.
+**Historical note:** This was the rollout plan before MOPC Supabase was connected. The historical consolidation has since been performed and verified as recorded above.
