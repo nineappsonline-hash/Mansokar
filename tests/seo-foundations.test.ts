@@ -244,7 +244,7 @@ test("EGP piaster prices match the visible product page, JSON-LD and Merchant fe
     orderable: true,
     specs: { stock_status: "in_stock", product_condition: "new" },
   };
-  assert.match(money(priced.price, "ar"), /123\\.45/);
+  assert.ok(money(priced.price, "ar").includes("123.45"));
   assert.match(money(12300, "ar"), /123/);
   assert.ok(!feedExclusionReasons(priced, "ar", ["/image.jpg"]).includes("invalid_price"));
   const schema = productStructuredData(priced, "ar", "https://mopc.store", []);
