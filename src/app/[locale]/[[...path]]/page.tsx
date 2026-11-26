@@ -269,22 +269,25 @@ export async function generateMetadata({
         modelHasInventory =
           (await searchCatalog({ make: brand.slug, size: 1 })).total > 0;
       if (path[2] && configured()) {
-        const selectedCount = (await searchCatalog({
+        // Model-category metadata needs both totals, but neither depends on
+        // the other. Run the bounded queries concurrently instead of serially.
+        const selectedSearch = searchCatalog({
           make: brand.slug,
           model: path[2],
           category: categoryForModel?.slug,
           size: 1,
-        })).total;
-        modelHasInventory = selectedCount > 0;
-        if (categoryForModel && selectedCount > 0) {
-          const allModelCount = (await searchCatalog({
-            make: brand.slug,
-            model: path[2],
-            size: 1,
-          })).total;
+        });
+        const [selected, allModel] = await Promise.all([
+          selectedSearch,
+          categoryForModel
+            ? searchCatalog({ make: brand.slug, model: path[2], size: 1 })
+            : selectedSearch,
+        ]);
+        modelHasInventory = selected.total > 0;
+        if (categoryForModel && modelHasInventory) {
           // If selecting a category does not narrow the inventory, the
           // parent model landing is the preferred search page.
-          duplicateModelCategoryLanding = allModelCount === selectedCount;
+          duplicateModelCategoryLanding = allModel.total === selected.total;
         }
       }
       const target = targetModel(brand.slug, path[2]);
