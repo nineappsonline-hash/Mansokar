@@ -25,7 +25,7 @@ import { CatalogCarFilters } from "@/components/catalog-car-filters";
 import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
 import { searchPages } from "@/lib/seo-pages";
-import { cmsTranslatedLocales } from "@/lib/seo-inventory";
+import { cmsTranslatedLocales, vehicleLandingLocales } from "@/lib/seo-inventory";
 import { ContactForm } from "@/components/contact-form";
 import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
 import { buyingGuides } from "@/lib/buying-guides";
@@ -249,10 +249,13 @@ export async function generateMetadata({
     const categoryForModel = path[3]
       ? (await categoryCatalog()).find((category) => category.slug === path[3])
       : undefined;
-    if (path[2] && model) {
-      modelPageLocales = (["ar", "en"] as const).filter((lang) =>
-        translatedProduct({ name: model.name }, lang) &&
-        (!categoryForModel || translatedProduct({ name: categoryForModel.name }, lang)),
+    if (path[2] && model && brand) {
+      modelPageLocales = vehicleLandingLocales(
+        { ar: brand.ar, en: brand.name },
+        model.name,
+      ).filter((lang) =>
+        !categoryForModel ||
+        translatedProduct({ name: categoryForModel.name }, lang),
       );
     }
     if (!brand || (path[2] && !model) || path.length > 4 ||
