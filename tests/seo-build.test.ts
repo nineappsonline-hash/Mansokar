@@ -1026,3 +1026,12 @@ test("Google merchant readiness requires admin and shares actual feed eligibilit
   assert.ok(feed.includes("merchantImagesByProduct(images, isRemoteImageUrl)"));
   assert.ok(!feed.includes("images.filter((i) => i.product_id === product.id)"));
 });
+
+test("Merchant Center feed always exports canonical mopc.store landing-page links", () => {
+  const feed = readFileSync("src/app/api/merchant-feed/route.ts", "utf8");
+  assert.ok(feed.includes('import { TARGET_ORIGIN } from "@/lib/site-url"'));
+  assert.ok(feed.includes("merchantFeed(rows, locale, TARGET_ORIGIN)"));
+  assert.ok(feed.includes("merchantImagesByProduct(images, isRemoteImageUrl)"));
+  assert.ok(feed.includes('process.env.MERCHANT_FEED_ENABLED !== "true"'));
+  assert.ok(feed.includes("crypto.timingSafeEqual("));
+});
