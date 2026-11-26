@@ -61,6 +61,7 @@ const sharedSearchPages = unstable_cache(async () => {
   // Use only model applications and recorded fitments. Build this lookup
   // once for the whole sitemap; projected publicProduct strips car_years keys.
   const modelById = new Map(models.map((model) => [model.id, model]));
+  const modelByKey = new Map(models.map((model) => [`${model.brand}/${model.slug}`, model]));
   const vehicleById = new Map(vehicles.map((vehicle) => [vehicle.id, vehicle]));
   const compatibleIds = new Map<string, Set<string>>();
   for (const product of products) {
@@ -70,9 +71,7 @@ const sharedSearchPages = unstable_cache(async () => {
   for (const fitment of fitments) {
     const vehicle = vehicleById.get(fitment.vehicle_config_id);
     if (!vehicle) continue;
-    const model = models.find((item) =>
-      item.brand === vehicle.brand && item.slug === vehicle.model
-    );
+    const model = modelByKey.get(`${vehicle.brand}/${vehicle.model}`);
     if (!model) continue;
     const ids = compatibleIds.get(fitment.product_id) ?? new Set<string>();
     ids.add(model.id);
