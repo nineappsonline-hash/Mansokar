@@ -15,6 +15,22 @@ export const targetBrands: TargetBrand[] = [
     ar: "أوبل",
     models: [
       {
+        slug: "astra-j",
+        name: note("أسترا J", "Astra J"),
+        note: note(
+          "لو بتشتري قطعة لأوبل أسترا J، طابق رقم القطعة مع سنة الصنع والموتور ونوع الفتيس. ما تعتمدش على كلمة أسترا بس؛ التوافق المسجل للموديل مش معناه إن القطعة مناسبة لكل فئة أو موتور.",
+          "For Opel Astra J parts, match the manufacturer part number with model year, engine and gearbox. 'Astra' alone is not precise enough; a model listing does not confirm every trim or engine.",
+        ),
+      },
+      {
+        slug: "insignia-a",
+        name: note("إنسيجنيا A", "Insignia A"),
+        note: note(
+          "في قطع أوبل إنسيجنيا A راجع الجيل والموتور ونوع ناقل الحركة ومكان تركيب القطعة، وبعدين طابق رقم القطعة؛ مجرد تشابه اسم إنسيجنيا أو شكل القطعة مش دليل على التوافق.",
+          "For Opel Insignia A, check the generation, engine, transmission and fitting position, then verify the part number. A shared Insignia name or similar appearance does not establish compatibility.",
+        ),
+      },
+      {
         slug: "insignia",
         name: note("انسيجنيا", "Insignia"),
         note: note(
