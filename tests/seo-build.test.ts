@@ -588,11 +588,11 @@ test("vehicle sitemap keeps model landing but omits duplicated all-in-one-catego
 test("model-category snippets distinguish filtered listings from complete model overview", () => {
   const a = modelCategorySearchCopy({ locale: "ar", make: "شيفروليه", model: "كروز", category: "قطع غيار" });
   const b = modelCategorySearchCopy({ locale: "en", make: "Chevrolet", model: "Cruze", category: "Spare parts" });
-  assert.ok(a.title.includes("قسم قطع غيار لموديل شيفروليه كروز"));
-  assert.ok(!a.title.includes("لـشيفروليه"));
-  assert.ok(a.description.includes("جزء من المنتجات"));
-  assert.ok(b.title.includes("category"));
-  assert.ok(b.description.includes("filtered selection"));
+  assert.ok(a.title.includes("قسم قطع الغيار شيفروليه كروز"));
+  assert.ok(!a.title.includes("قطع غيار قطع غيار"));
+  assert.ok(a.description.includes("من المنتجات المسجلة للموديل"));
+  assert.ok(b.title.includes("Chevrolet Cruze Spare parts"));
+  assert.ok(b.description.includes("Compare part numbers"));
   assert.ok(b.description.length <= 160, b.description);
   for (const model of ["Cruze", "Malibu"]) {
     for (const category of ["Mechanical Parts", "Spare parts"]) {
@@ -602,6 +602,15 @@ test("model-category snippets distinguish filtered listings from complete model 
       assert.ok(copy.description.length <= 160, copy.description);
     }
   }
+  const mechanical = modelCategorySearchCopy({
+    locale: "ar", make: "أوبل", model: "أسترا J", category: "قطع ميكانيكية",
+  });
+  assert.ok(mechanical.title.startsWith("قطع ميكانيكية أوبل أسترا J"));
+  assert.ok(!mechanical.title.includes("لموديل"));
+  assert.ok(mechanical.description.includes("راجع سنة الصنع والموتور"));
+  assert.ok(mechanical.title.length <= 70, mechanical.title);
+  assert.ok(a.title.length <= 70, a.title);
+  assert.ok(b.title.length <= 70, b.title);
   assert.ok(!a.title.includes("أصلية"));
 });
 
