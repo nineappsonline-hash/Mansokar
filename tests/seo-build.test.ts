@@ -940,3 +940,17 @@ test("homepage vehicle selector serializes only selected-language labels and nee
   assert.ok(finder.includes('name="model"'));
   assert.ok(finder.includes('name="year"'));
 });
+
+test("product-card add-to-cart islands serialize only one language of the product name", () => {
+  const card = readFileSync("src/components/product-card.tsx", "utf8");
+  const buy = readFileSync("src/components/purchase-buttons.tsx", "utf8");
+  const favorites = readFileSync("src/components/favorites.tsx", "utf8");
+  assert.ok(card.includes("product={{ id: p.id, orderable: p.orderable }}"));
+  assert.ok(card.includes("label={p.name[locale]}"));
+  assert.ok(!card.includes("name: p.name, orderable: p.orderable"));
+  assert.ok(buy.includes('label?: string;'));
+  assert.ok(buy.includes('const productLabel = label ?? product.name?.[locale] ?? ""'));
+  assert.ok(buy.includes("addCartItem(product.id, quantity, buyNow, cartVehicle)"));
+  assert.ok(buy.includes("productLabel"));
+  assert.ok(favorites.includes("<PurchaseButtons product={p} locale={locale} />"));
+});
