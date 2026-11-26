@@ -8,6 +8,7 @@ export function ModelSearchContent({
   years,
   categoryName,
   modelHref,
+  buyingNote,
 }: {
   locale: Locale;
   name: string;
@@ -15,6 +16,7 @@ export function ModelSearchContent({
   years: number[];
   categoryName?: string;
   modelHref?: string;
+  buyingNote?: string;
 }) {
   const ar = locale === "ar";
   return (
@@ -36,6 +38,12 @@ export function ModelSearchContent({
             ? "مفيش قطع منشورة مرتبطة بهذا الموديل حاليًا. تواصل معنا برقم القطعة وبيانات العربية للمراجعة؛ عدم وجود رابط توافق لا يعني أن القطعة مناسبة."
             : "No published parts are linked to this model yet. Send the part number and vehicle details for review; a missing compatibility record does not mean a part fits."}
       </p>
+      {buyingNote && (
+        <section aria-label={ar ? "نصائح لموديل العربية" : "Model-specific buying advice"}>
+          <h3>{ar ? `إيه اللي تراجعه قبل شراء قطع ${name}؟` : `What to check for ${name} parts`}</h3>
+          <p>{buyingNote}</p>
+        </section>
+      )}
       {years.length > 0 && (
         <details>
           <summary>
