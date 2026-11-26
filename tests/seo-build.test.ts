@@ -55,6 +55,44 @@ test("HTML sitemap differentiates repeated part names with their maker and part 
   assert.ok(html.includes("p.linkTitle?.[locale] ?? p.title[locale]"));
 });
 
+test("verified car make and model lead sitemap anchors; unknown fitment safely keeps part number", () => {
+  const product = {
+    ...demoProducts[0], demo: false, status: "published" as const, price: 10000,
+    name: { ar: "فلتر زيت", en: "Oil Filter" }, manufacturer: "GM",
+    partNumber: "12345678",
+  };
+  const one = collectSearchPages({
+    brands: [], modelNames: [], categories: [], cms: [], guides: [],
+    products: [product],
+    productVehicleLabels: {
+      [product.id]: [{ ar: "أوبل أسترا J", en: "Opel Astra J" }],
+    },
+  }).find((entry) => entry.kind === "product");
+  assert.equal(one?.linkTitle?.ar, "فلتر زيت – أوبل أسترا J – GM");
+  assert.equal(one?.linkTitle?.en, "Oil Filter – Opel Astra J – GM");
+  assert.ok(!one?.linkTitle?.ar.includes("12345678"));
+
+  const several = collectSearchPages({
+    brands: [], modelNames: [], categories: [], cms: [], guides: [],
+    products: [product],
+    productVehicleLabels: {
+      [product.id]: [
+        { ar: "أوبل أسترا J", en: "Opel Astra J" },
+        { ar: "شيفروليه كروز", en: "Chevrolet Cruze" },
+        { ar: "شيفروليه ماليبو", en: "Chevrolet Malibu" },
+      ],
+    },
+  }).find((entry) => entry.kind === "product");
+  assert.ok(several?.linkTitle?.ar.includes("وموديلات أخرى"));
+  assert.ok(several?.linkTitle?.en.includes("and other models"));
+  assert.equal(one?.path, several?.path);
+  const unknown = collectSearchPages({
+    brands: [], modelNames: [], categories: [], cms: [], guides: [],
+    products: [product],
+  }).find((entry) => entry.kind === "product");
+  assert.ok(unknown?.linkTitle?.ar.includes("رقم القطعة 12345678"));
+});
+
 test("index XML has expected groups and correctly escapes origin", () => {
   const xml = sitemapIndex("https://mopc.store");
   assert.ok(xml.includes("https://mopc.store/sitemaps/vehicles.xml"));
