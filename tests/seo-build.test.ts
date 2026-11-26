@@ -565,3 +565,38 @@ test("product pages expose crawlable category and recorded model links without i
   assert.ok(source.includes('href={car.href!}'));
   assert.ok(source.includes('Verify the part number, model year and engine'));
 });
+
+test("model category browse links follow locale-specific sitemap eligibility instead of all categories", () => {
+  const pages = collectSearchPages({
+    brands: [brand], modelNames, categories,
+    products: [], cms: [], guides: [],
+    modelCounts: { "opel/astra-j": 5 },
+    modelCategoryCounts: {
+      "opel/astra-j/filters": 3,
+      "opel/astra-j/brakes": 0,
+    },
+  });
+  const allowed = new Set(
+    searchPagesForLocale(pages, "ar")
+      .filter((entry) => entry.path.startsWith("/brands/opel/astra-j/"))
+      .map((entry) => entry.path),
+  );
+  assert.deepEqual([...allowed], ["/brands/opel/astra-j/filters"]);
+  assert.equal(allowed.has("/brands/opel/astra-j/brakes"), false);
+
+  // If one category contains every recorded model product, the canonical
+  // model page is the landing page and the duplicate category is not linked.
+  const duplicate = collectSearchPages({
+    brands: [brand], modelNames, categories,
+    products: [], cms: [], guides: [],
+    modelCounts: { "opel/astra-j": 5 },
+    modelCategoryCounts: { "opel/astra-j/filters": 5 },
+  });
+  assert.equal(searchPagesForLocale(duplicate, "ar").some(
+    (entry) => entry.path === "/brands/opel/astra-j/filters",
+  ), false);
+  const source = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(source.includes("indexableModelCategoryPaths"));
+  assert.ok(source.includes("searchPagesForLocale(await searchPages(), locale)"));
+  assert.ok(source.includes(".filter((item) => !modelListing || indexableModelCategoryPaths?.has("));
+});
