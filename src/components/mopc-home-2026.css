@@ -41,6 +41,13 @@
 .cyan-home .cyan-vehicle-finder select option { background: #fff; color: #18232b; }
 .cyan-home .cyan-section-title { color: var(--mopc-ink); font-weight: 800; }
 .cyan-home .cyan-brands, .cyan-home .cyan-featured, .cyan-home .cyan-why { padding-block: clamp(42px,5vw,80px); }
+/* Defer layout/paint of content that is far below the initial viewport.
+   Intrinsic size reserves space to avoid jumps while scrolling. */
+.cyan-home .cyan-featured,
+.cyan-home .showroom-request {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 640px;
+}
 .cyan-home .cyan-brand-grid { gap: 22px; }
 .cyan-home .cyan-brand-tile {
   border-radius: 18px; overflow: hidden; background: #223b4a;
