@@ -1,4 +1,5 @@
 import { siteOrigin } from "@/lib/site-url";
+import { brandModelListSchema } from "@/lib/brand-model-schema";
 import { brandModelBuyingNotes } from "@/lib/vehicle-coverage";
 import Image from "next/image";
 import Link from "next/link";
@@ -63,6 +64,19 @@ export function CarModelPage({
           }).replace(/</g, "\\u003c"),
         }}
       />
+      {models.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(brandModelListSchema({
+              locale,
+              make: brand,
+              models,
+              origin: siteOrigin(),
+            })).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
       <section className={styles.hero}>
         <Image
           src={
