@@ -25,7 +25,8 @@ import { CatalogCarFilters } from "@/components/catalog-car-filters";
 import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
 import { searchPages } from "@/lib/seo-pages";
-import { cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale } from "@/lib/seo-inventory";
+import { cmsTranslatedLocales, vehicleLandingLocales } from "@/lib/seo-inventory";
+import { modelCategoryBrowsePaths } from "@/lib/model-category-navigation";
 import { modelCategorySearchCopy } from "@/lib/vehicle-landing-seo";
 import { ContactForm } from "@/components/contact-form";
 import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
@@ -827,14 +828,31 @@ export default async function Page({ params, searchParams }: Props) {
           Number(normalize(b.partNumber) === normalize(q.q!)) -
           Number(normalize(a.partNumber) === normalize(q.q!)),
       );
-    // Model-category navigation must match the indexable XML/HTML sitemap
-    // inventory; an empty or canonicalized duplicate is not a landing link.
+    // Avoid building the entire public sitemap (all catalog, image and CMS
+    // records) just to render a single model's category navigation.
     const indexableModelCategoryPaths = modelListing && listingBrand && listingModel
-      ? new Set(searchPagesForLocale(await searchPages(), locale)
-          .filter((item) => item.path.startsWith(
-            `/brands/${listingBrand.slug}/${listingModel.slug}/`,
-          ))
-          .map((item) => item.path))
+      ? await (async () => {
+          // The canonical model/category totals must ignore the current search
+          // query, optional year, sorting and pagination.
+          const base = { make: listingBrand.slug, model: listingModel.slug, size: 1 };
+          const [modelInventory, ...categoryInventory] = await Promise.all([
+            searchCatalog(base),
+            ...categories.map((item) => searchCatalog({ ...base, category: item.slug })),
+          ]);
+          return modelCategoryBrowsePaths({
+            locale,
+            make: listingBrand.slug,
+            model: listingModel.slug,
+            makeName: { ar: listingBrand.ar, en: listingBrand.name },
+            modelName: listingModel.name,
+            modelTotal: modelInventory.total,
+            categories: categories.map((item, index) => ({
+              slug: item.slug,
+              name: item.name,
+              total: categoryInventory[index].total,
+            })),
+          });
+        })()
       : null;
     const page = Math.max(1, Math.min(10000, Number(q.page) || 1));
     content = (
