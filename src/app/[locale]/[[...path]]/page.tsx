@@ -189,6 +189,7 @@ export async function generateMetadata({
       ? await productImages(productMeta.id).catch(() => [])
       : [];
   let modelHasInventory = true;
+  let modelPageLocales: Locale[] | undefined;
   let pageMeta: {
     title?: Record<string, string>;
     description?: Record<string, string>;
@@ -233,6 +234,12 @@ export async function generateMetadata({
     const categoryForModel = path[3]
       ? (await categoryCatalog()).find((category) => category.slug === path[3])
       : undefined;
+    if (path[2] && model) {
+      modelPageLocales = (["ar", "en"] as const).filter((lang) =>
+        translatedProduct({ name: model.name }, lang) &&
+        (!categoryForModel || translatedProduct({ name: categoryForModel.name }, lang)),
+      );
+    }
     if (!brand || (path[2] && !model) || path.length > 4 ||
         (path.length === 4 && !categoryForModel)) notFound();
     if (brand && (!path[2] || model)) {
@@ -442,7 +449,8 @@ export async function generateMetadata({
         (["ar", "en"] as const)
           .filter(
             (lang) =>
-              !rawProductMeta || translatedProduct(rawProductMeta, lang),
+              (!rawProductMeta || translatedProduct(rawProductMeta, lang)) &&
+              (!modelPageLocales || modelPageLocales.includes(lang)),
           )
           .map((lang) => [
             `${lang}-EG`,
@@ -464,6 +472,7 @@ export async function generateMetadata({
         configured() &&
         !productMeta?.demo &&
         modelHasInventory &&
+        (!modelPageLocales || modelPageLocales.includes(l)) &&
         (!rawProductMeta || eligibleProduct(rawProductMeta, l)) &&
         (!["about", "contact", "faq", "guides", "policies"].includes(path[0]) ||
           Boolean(pageMeta)),
