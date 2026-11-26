@@ -709,6 +709,7 @@ export default async function Page({ params, searchParams }: Props) {
             cover={covers?.[p.id]}
             mediaResolved={covers !== null}
             locale={locale}
+            headingLevel={isCatalog ? 2 : 3}
             vehicle={vehicle}
             confirmed={flags[p.id]}
             context={browsingContext}
