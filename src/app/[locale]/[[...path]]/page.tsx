@@ -93,14 +93,13 @@ import {
 import { t, statusLabel } from "@/lib/i18n";
 import { availablePayments } from "@/lib/payments";
 import { Shell } from "@/components/shell";
+import { Cart, Compare } from "@/components/controls";
 import {
   ProductActions,
-  Cart,
-  Compare,
   Gallery,
   CopyPart,
   MobileBuyBar,
-} from "@/components/controls";
+} from "@/components/product-detail-controls";
 import { OriginalBadge } from "@/components/original-badge";
 import { VehicleBadge } from "@/components/vehicle-badge";
 import { AuthForm, RequestForm, ApiForm } from "@/components/forms";
