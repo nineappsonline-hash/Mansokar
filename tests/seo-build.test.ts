@@ -6,11 +6,12 @@ import { sitemapPublished } from "../src/lib/sitemap-visibility";
 import { knownBrandRoute } from "../src/lib/seo-brand-route";
 import { rootLocaleRedirect, legacyVehicleModelRedirect } from "../src/lib/site-url";
 import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml";
-import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale } from "../src/lib/seo-inventory";
+import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale, duplicateModelCategory } from "../src/lib/seo-inventory";
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
 import { demoProducts } from "../src/lib/catalog";
 import { brandModelBuyingNotes } from "../src/lib/vehicle-coverage";
 import { brandModelListSchema } from "../src/lib/brand-model-schema";
+import { modelCategorySearchCopy } from "../src/lib/vehicle-landing-seo";
 import { planImportVehicles } from "../src/lib/import-vehicles";
 import { canonicalVehicleModelSlug, resolveImportModelAlias } from "../src/lib/vehicle-model-aliases";
 
@@ -53,7 +54,7 @@ test("vehicle sitemaps only include recorded inventory-backed model/categories",
 test("hreflang declarations are reciprocal for bilingual vehicle pages", () => {
   const pages = collectSearchPages({
     brands: [brand], modelNames, categories, cms: [], guides: [], products: [],
-    modelCounts: { "opel/astra-j": 1 },
+    modelCounts: { "opel/astra-j": 2 },
     modelCategoryCounts: { "opel/astra-j/filters": 1 },
   });
   const xml = sitemapXml(pages, "https://mopc.store", "vehicles");
@@ -128,7 +129,7 @@ test("untranslated categories and model names do not create fabricated hreflang 
       price: 10000, sale: null, partNumber: "P1", demo: false, orderable: true,
       status: "published", specs: {},
     } as const) }],
-    modelCounts: { "opel/astra-j": 1 },
+    modelCounts: { "opel/astra-j": 2 },
     modelCategoryCounts: { "opel/astra-j/filters": 1 },
   });
   const categoryPage = pages.find((page) => page.path === "/categories/filters");
@@ -286,7 +287,7 @@ test("numeric and short-code model URLs remain discoverable in both languages wh
     brands: makes, modelNames: models,
     categories: [{ slug: "filters", name: { ar: "فلاتر", en: "Filters" } }],
     products: [], cms: [], guides: [],
-    modelCounts: { "mg/5": 1, "mg/6": 2, "mg/hs": 1, "peugeot/2008": 1 },
+    modelCounts: { "mg/5": 2, "mg/6": 2, "mg/hs": 1, "peugeot/2008": 3 },
     modelCategoryCounts: { "mg/5/filters": 1, "peugeot/2008/filters": 2 },
   });
   const xml = sitemapXml(pages, "https://mopc.store", "vehicles");
@@ -304,7 +305,7 @@ test("brand display name does not conceal untranslated model or category locale"
     modelNames: [{ brand: "opel", slug: "astra-j", name: { ar: "استرا J", en: "استرا J" } }],
     categories: [{ slug: "filters", name: { ar: "فلاتر", en: "فلاتر" } }],
     products: [], cms: [], guides: [],
-    modelCounts: { "opel/astra-j": 1 },
+    modelCounts: { "opel/astra-j": 2 },
     modelCategoryCounts: { "opel/astra-j/filters": 1 },
   });
   const xml = sitemapXml(pages, "https://mopc.store", "vehicles");
@@ -494,4 +495,46 @@ test("old vehicle typo routes redirect permanently to canonical model and catego
     "https://mopc.store/api/vehicles",
     "https://mopc.store/en/brands/mg/5",
   ]) assert.equal(legacyVehicleModelRedirect(new URL(unchanged)), null);
+});
+
+test("vehicle sitemap keeps model landing but omits duplicated all-in-one-category landings", () => {
+  const make = { slug: "mg", name: "MG", ar: "إم جي", models: ["5", "6"] };
+  const models = [
+    { brand: "mg", slug: "5", name: { ar: "5", en: "5" } },
+    { brand: "mg", slug: "6", name: { ar: "6", en: "6" } },
+  ];
+  const listed = collectSearchPages({
+    brands: [make], modelNames: models,
+    categories: [
+      { slug: "spare-parts", name: { ar: "قطع غيار", en: "Spare parts" } },
+      { slug: "mechanical-parts", name: { ar: "قطع ميكانيكية", en: "Mechanical parts" } },
+    ],
+    cms: [], guides: [], products: [],
+    modelCounts: { "mg/5": 1, "mg/6": 5 },
+    modelCategoryCounts: {
+      "mg/5/spare-parts": 1,
+      "mg/6/spare-parts": 2,
+      "mg/6/mechanical-parts": 3,
+    },
+  });
+  assert.equal(duplicateModelCategory("mg", "5", "spare-parts", { "mg/5": 1 }, { "mg/5/spare-parts": 1 }), true);
+  assert.equal(duplicateModelCategory("mg", "5", "spare-parts"), false);
+  assert.equal(duplicateModelCategory("mg", "6", "spare-parts", { "mg/6": 5 }, { "mg/6/spare-parts": 2 }), false);
+  const xml = sitemapXml(listed, "https://mopc.store", "vehicles");
+  for (const lang of ["ar", "en"]) {
+    assert.ok(xml.includes(`<loc>https://mopc.store/${lang}/brands/mg/5</loc>`));
+    assert.ok(!xml.includes(`<loc>https://mopc.store/${lang}/brands/mg/5/spare-parts</loc>`));
+    assert.ok(xml.includes(`<loc>https://mopc.store/${lang}/brands/mg/6/spare-parts</loc>`));
+    assert.ok(xml.includes(`<loc>https://mopc.store/${lang}/brands/mg/6/mechanical-parts</loc>`));
+  }
+});
+
+test("model-category snippets distinguish filtered listings from complete model overview", () => {
+  const a = modelCategorySearchCopy({ locale: "ar", make: "شيفروليه", model: "كروز", category: "قطع غيار" });
+  const b = modelCategorySearchCopy({ locale: "en", make: "Chevrolet", model: "Cruze", category: "Spare parts" });
+  assert.ok(a.title.includes("قسم قطع غيار"));
+  assert.ok(a.description.includes("جزء من المنتجات"));
+  assert.ok(b.title.includes("category"));
+  assert.ok(b.description.includes("filtered selection"));
+  assert.ok(!a.title.includes("أصلية"));
 });
