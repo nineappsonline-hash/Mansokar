@@ -9,13 +9,13 @@
     "perf:routes": "node scripts/audit-browser-network.mjs",
     "start": "next start",
     "typecheck": "tsc --noEmit",
-    "test": "node --import tsx tests/domain.test.ts && node --import tsx tests/database.test.ts && node --import tsx tests/files.test.ts && node --import tsx tests/reporting.test.ts && node --import tsx tests/product-seo.test.ts && node --import tsx tests/seo-build.test.ts && node --import tsx tests/manual-transfer.test.ts && node --import tsx tests/admin-message-atomic.test.ts && node --import tsx tests/admin-delete-product-atomic.test.ts && node --import tsx tests/product-image-cleanup.test.ts && node --import tsx tests/product-image-cleanup-rpc.test.ts && node --import tsx tests/product-photos.test.ts && node --import tsx tests/product-fitment.test.ts && node --import tsx tests/vehicle-year-ranges.test.ts",
+    "test": "node --import tsx tests/domain.test.ts && node --import tsx tests/database.test.ts && node --import tsx tests/files.test.ts && node --import tsx tests/reporting.test.ts && node --import tsx tests/product-seo.test.ts && node --import tsx tests/seo-foundations.test.ts && node --import tsx tests/seo-build.test.ts && node --import tsx tests/manual-transfer.test.ts && node --import tsx tests/admin-message-atomic.test.ts && node --import tsx tests/admin-delete-product-atomic.test.ts && node --import tsx tests/product-image-cleanup.test.ts && node --import tsx tests/product-image-cleanup-rpc.test.ts && node --import tsx tests/product-photos.test.ts && node --import tsx tests/product-fitment.test.ts && node --import tsx tests/vehicle-year-ranges.test.ts",
     "setup": "npm ci && npm run dev",
     "db:start": "supabase start",
     "db:reset": "supabase db reset",
     "seed:generate": "node --import tsx scripts/seed.ts",
     "format": "prettier --write src tests scripts *.json *.ts *.mjs docs/*.md README.md",
-    "prebuild": "node --check scripts/audit-browser-network.mjs && node --import tsx tests/product-seo.test.ts && node --import tsx tests/seo-foundations.test.ts && node --import tsx tests/seo-build.test.ts"
+    "prebuild": "node --check scripts/audit-browser-network.mjs && node --import tsx tests/product-seo.test.ts && node --import tsx tests/seo-build.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "0.12.7",
