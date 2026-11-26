@@ -1811,6 +1811,8 @@ export default async function Page({ params, searchParams }: Props) {
       : [];
     content = (
       <div className="shell section checkout-shell">
+        {/* Route-only stylesheet: do not ship checkout forms/panels to every storefront page. */}
+        <link rel="stylesheet" href="/styles/checkout-only.css" precedence="default" />
         <Checkout
           locale={locale}
           addresses={addresses}
