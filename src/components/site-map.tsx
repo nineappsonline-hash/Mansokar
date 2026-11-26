@@ -48,7 +48,7 @@ export function SiteMap({
             <ul>
               {entries.map((p) => (
                 <li key={p.path}>
-                  <Link href={`/${locale}${p.path}`}>{p.title[locale]}</Link>
+                  <Link href={`/${locale}${p.path}`}>{p.linkTitle?.[locale] ?? p.title[locale]}</Link>
                 </li>
               ))}
             </ul>
