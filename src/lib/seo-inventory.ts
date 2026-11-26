@@ -69,6 +69,7 @@ export function collectSearchPages(input: {
       .map((c) => ({
         path: `/categories/${c.slug}`,
         title: c.name,
+        locales: (["ar", "en"] as const).filter((locale) => translatedProduct({ name: c.name }, locale)),
         kind: "category" as const,
       })),
     ...input.guides.map((g) => ({
@@ -96,7 +97,10 @@ export function collectSearchPages(input: {
             ? "guide"
             : "main") as SearchPage["kind"],
       })),
-    ...input.brands.flatMap((b) => [
+    ...input.brands.filter((brand) =>
+      input.modelCounts === undefined ||
+      brand.models.some((model) => (input.modelCounts?.[`${brand.slug}/${model}`] ?? 0) > 0),
+    ).flatMap((b) => [
       {
         path: `/brands/${b.slug}`,
         title: { ar: `قطع غيار ${b.ar}`, en: `${b.name} parts` },
@@ -114,6 +118,9 @@ export function collectSearchPages(input: {
           )?.name;
           return {
             path: `/brands/${b.slug}/${m}`,
+            locales: (["ar", "en"] as const).filter((locale) =>
+              translatedProduct({ name: name ?? { ar: m, en: m } }, locale),
+            ),
             title: {
               ar: `${b.ar} ${name?.ar ?? m}`,
               en: `${b.name} ${name?.en ?? m}`,
@@ -128,6 +135,10 @@ export function collectSearchPages(input: {
           )
           .map((category) => ({
             path: `/brands/${b.slug}/${model}/${category.slug}`,
+            locales: (["ar", "en"] as const).filter((locale) =>
+              translatedProduct({ name: category.name }, locale) &&
+              (locale === "ar" || translatedProduct({ name: input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name ?? { ar: model, en: model } }, locale)),
+            ),
             title: {
               ar: `${category.name.ar} ${b.ar} ${input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name.ar ?? model}`,
               en: `${b.name} ${input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name.en ?? model} ${category.name.en}`,
