@@ -82,6 +82,7 @@ import {
   vehicleCatalog,
   storefrontSettings,
   productImages,
+  firstProductImages,
   categoryCatalog,
   categoryImageUrls,
   searchCatalog,
@@ -671,10 +672,15 @@ export default async function Page({ params, searchParams }: Props) {
         : isCatalog
           ? await catalog()
           : []);
-  const flags = await fitmentFlags(
-    products.map((p) => p.id),
-    vehicle?.id,
-  );
+  const productIds = products.map((p) => p.id);
+  // A catalog page renders multiple cards. Fetch their covers in one bounded
+  // query instead of issuing one image request for every card.
+  const [flags, catalogCovers] = await Promise.all([
+    fitmentFlags(productIds, vehicle?.id),
+    isCatalog
+      ? firstProductImages(productIds).catch(() => null)
+      : Promise.resolve(null),
+  ]);
   const browsingContext = carContext(
     {
       make: q.make ?? vehicle?.brand,
@@ -691,6 +697,8 @@ export default async function Page({ params, searchParams }: Props) {
           <Card
             product={p}
             carCatalog={{ brands, models: vehicleModels }}
+            cover={catalogCovers?.[p.id]}
+            mediaResolved={catalogCovers !== null}
             locale={locale}
             vehicle={vehicle}
             confirmed={flags[p.id]}
