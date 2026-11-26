@@ -12,8 +12,10 @@ import {
   canonicalPage,
   eligibleProduct,
   verifiedAvailability,
+  hasModelApplication,
 } from "../src/lib/seo-policy";
 import { sitemapXml, sitemapIndex } from "../src/lib/sitemap-xml";
+import { collectSearchPages } from "../src/lib/seo-inventory";
 import {
   merchantFeed,
   validGtin,
@@ -315,3 +317,26 @@ test("SEO health recognizes compatibility with a known model even when no years 
   )[0];
   assert.ok(unknownModel.issues.includes("unknown_compatibility"));
 });
+
+test("model-only applications remain eligible for vehicle sitemap pages without invented years", () => {
+  assert.equal(hasModelApplication({ "car_years:model-id": "" }, "model-id"), true);
+  assert.equal(hasModelApplication({ "car_years:model-id": "2019,2020" }, "model-id"), true);
+  assert.equal(hasModelApplication({ "car_years:another": "" }, "model-id"), false);
+  const modelPages = collectSitemapFixture();
+  assert.ok(modelPages.some((entry) => entry.path === "/brands/opel/astra-j"));
+});
+
+function collectSitemapFixture() {
+  const modelCounts: Record<string, number> = {
+    "opel/astra-j": hasModelApplication({ "car_years:model-id": "" }, "model-id") ? 1 : 0,
+  };
+  return collectSearchPages({
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] }],
+    modelNames: [{ brand: "opel", slug: "astra-j", name: { ar: "أسترا J", en: "Astra J" } }],
+    categories: [],
+    cms: [],
+    guides: [],
+    products: [],
+    modelCounts,
+  });
+}
