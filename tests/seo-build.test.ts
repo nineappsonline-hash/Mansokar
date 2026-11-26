@@ -907,3 +907,21 @@ test("checkout payment bundle stays out of general forms used by public pages", 
   assert.ok(page.includes('import { Checkout } from "@/components/checkout-form"'));
   assert.ok(!page.includes("RequestForm, Checkout, ApiForm"));
 });
+
+test("every product card uses lightweight favorite toggle without hydrating favorites listing", () => {
+  const card = readFileSync("src/components/product-card.tsx", "utf8");
+  const toggle = readFileSync("src/components/favorite-button.tsx", "utf8");
+  const favorites = readFileSync("src/components/favorites.tsx", "utf8");
+  assert.ok(card.includes('import { FavoriteButton } from "./favorite-button"'));
+  assert.ok(!card.includes('from "./favorites"'));
+  assert.ok(toggle.includes("export function FavoriteButton("));
+  assert.ok(toggle.includes("export function useFavorites()"));
+  assert.ok(toggle.includes('window.dispatchEvent(new Event(event))'));
+  assert.ok(toggle.includes('window.addEventListener("storage", update)'));
+  assert.ok(toggle.includes("current.length >= 40"));
+  assert.ok(!toggle.includes("PurchaseButtons"));
+  assert.ok(!toggle.includes("/api/products?ids="));
+  assert.ok(favorites.includes('import { FavoriteButton, useFavorites } from "./favorite-button"'));
+  assert.ok(favorites.includes("export function Favorites("));
+  assert.ok(favorites.includes("PurchaseButtons"));
+});
