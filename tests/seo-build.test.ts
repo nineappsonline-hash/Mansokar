@@ -670,6 +670,15 @@ test("catalog listing avoids per-card motion hydration and homepage car years us
   assert.ok(!page.includes("...registeredYears\n                .filter((y) => y.model_id === m.id)"));
 });
 
+test("buying guides use bounded published product candidates rather than full inventory", () => {
+  const guide = readFileSync("src/components/buying-guide.tsx", "utf8");
+  assert.ok(guide.includes("catalog({ limit: 96 })"));
+  assert.ok(guide.includes("unstable_cache("));
+  assert.ok(guide.includes("revalidate: 120"));
+  assert.ok(guide.includes("modelIdsWithYears"));
+  assert.ok(!guide.includes("catalog({ all: true })"));
+});
+
 test("SEO requests share SKU lookup and cache only short-lived public homepage data", () => {
   const db = readFileSync("src/lib/db.ts", "utf8");
   const root = readFileSync("src/app/layout.tsx", "utf8");
