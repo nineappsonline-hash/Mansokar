@@ -834,3 +834,23 @@ test("mobile brand photos request widths matching their actual two-column grid",
   assert.ok(home.includes('"(max-width:640px) 100vw, (max-width:1180px) 33vw, 20vw"'));
   assert.ok(home.includes("index === orderedBrands.length - 1"));
 });
+
+test("storefront-only CSS does not block unrelated root routes", () => {
+  const root = readFileSync("src/app/layout.tsx", "utf8");
+  const shell = readFileSync("src/components/shell.tsx", "utf8");
+  assert.ok(root.includes('import "./globals.css"'));
+  assert.ok(!root.includes('import "@/components/mopc-premium-v2.css"'));
+  assert.ok(!root.includes('import "@/components/mopc-showroom.css"'));
+  assert.ok(shell.includes('import "./mopc-premium-v2.css"'));
+  assert.ok(shell.includes('import "./mopc-showroom.css"'));
+  assert.ok(shell.indexOf('import "./mopc-premium-v2.css"') < shell.indexOf('import "./mopc-showroom.css"'));
+});
+
+test("homepage postpones below-fold rendering while reserving stable space", () => {
+  const styles = readFileSync("src/components/mopc-home-2026.css", "utf8");
+  assert.ok(styles.includes(".cyan-home .cyan-featured,"));
+  assert.ok(styles.includes(".cyan-home .showroom-request {"));
+  assert.ok(styles.includes("content-visibility: auto;"));
+  assert.ok(styles.includes("contain-intrinsic-size: auto 640px;"));
+  assert.ok(!styles.includes(".cyan-home .cyan-hero { content-visibility: auto;"));
+});
