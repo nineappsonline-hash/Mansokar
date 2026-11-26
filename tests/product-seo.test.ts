@@ -754,3 +754,41 @@ test("Product JSON-LD publishes only checksum-valid GTIN identifiers", () => {
   assert.ok(!("gtin13" in bad));
   assert.ok(!("gtin" in bad));
 });
+
+
+test("automatic public SEO copy does not invent stock or genuine-part claims", async () => {
+  const { publicProduct } = await import("../src/lib/public-product");
+  const { automaticProduct } = await import("../src/lib/product-automation");
+  const raw = {
+    ...p,
+    orderable: false,
+    specs: {
+      ...p.specs,
+      "car_years:opel-astra": "",
+    },
+  };
+  const projected = publicProduct(raw, undefined, false, {
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل" }],
+    models: [{
+      id: "opel-astra",
+      brand: "opel",
+      slug: "astra",
+      name: { ar: "أسترا", en: "Astra" },
+    }],
+  });
+  for (const locale of ["ar", "en"] as const) {
+    assert.ok(projected.description[locale].includes(p.partNumber));
+    assert.ok(projected.description[locale].includes(locale === "ar" ? "أسترا" : "Astra"));
+    assert.doesNotMatch(projected.description[locale], /available to order|genuine spare parts|متاحة للطلب|قطعة غيار أصلية/i);
+  }
+  const generated = automaticProduct({
+    name: p.name,
+    manufacturer: p.manufacturer,
+    partNumber: p.partNumber,
+    vehicles: [],
+    months: null,
+    sku: p.sku,
+  });
+  assert.doesNotMatch(generated.description.en, /Order in Egypt|available to order/i);
+  assert.doesNotMatch(generated.description.ar, /متاح للطلب/i);
+});
