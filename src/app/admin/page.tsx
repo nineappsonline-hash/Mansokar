@@ -1,3 +1,4 @@
+import "./admin-overrides.css";
 import { orderSearchTerm } from "@/lib/admin-order-search";
 import { AdminCheckoutReadiness } from "@/components/admin-checkout-readiness";
 import { AdminOverview } from "@/components/admin-overview";
