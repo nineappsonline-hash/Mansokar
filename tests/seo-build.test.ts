@@ -68,9 +68,9 @@ test("verified car make and model lead sitemap anchors; unknown fitment safely k
       [product.id]: [{ ar: "أوبل أسترا J", en: "Opel Astra J" }],
     },
   }).find((entry) => entry.kind === "product");
-  assert.equal(one?.linkTitle?.ar, "فلتر زيت – أوبل أسترا J – GM");
-  assert.equal(one?.linkTitle?.en, "Oil Filter – Opel Astra J – GM");
-  assert.ok(!one?.linkTitle?.ar.includes("12345678"));
+  assert.equal(one?.linkTitle?.ar, "فلتر زيت – أوبل أسترا J – GM – رقم القطعة 12345678");
+  assert.equal(one?.linkTitle?.en, "Oil Filter – Opel Astra J – GM – Part 12345678");
+  assert.ok(one?.linkTitle?.ar.includes("12345678"));
 
   const several = collectSearchPages({
     brands: [], modelNames: [], categories: [], cms: [], guides: [],
@@ -85,12 +85,36 @@ test("verified car make and model lead sitemap anchors; unknown fitment safely k
   }).find((entry) => entry.kind === "product");
   assert.ok(several?.linkTitle?.ar.includes("وموديلات أخرى"));
   assert.ok(several?.linkTitle?.en.includes("and other models"));
+  assert.ok(several?.linkTitle?.ar.includes("رقم القطعة 12345678"));
+  assert.ok(several?.linkTitle?.en.includes("Part 12345678"));
   assert.equal(one?.path, several?.path);
   const unknown = collectSearchPages({
     brands: [], modelNames: [], categories: [], cms: [], guides: [],
     products: [product],
   }).find((entry) => entry.kind === "product");
   assert.ok(unknown?.linkTitle?.ar.includes("رقم القطعة 12345678"));
+});
+
+test("same car model and maker get distinct sitemap links for different part numbers", () => {
+  const common = {
+    ...demoProducts[0], demo: false, status: "published" as const, price: 10000,
+    name: { ar: "فلتر زيت", en: "Oil Filter" }, manufacturer: "GM",
+  };
+  const one = { ...common, id: "a", partNumber: "555111" };
+  const two = { ...common, id: "b", partNumber: "555222" };
+  const entries = collectSearchPages({
+    brands: [], modelNames: [], categories: [], cms: [], guides: [],
+    products: [one, two],
+    productVehicleLabels: {
+      a: [{ ar: "أوبل أسترا J", en: "Opel Astra J" }],
+      b: [{ ar: "أوبل أسترا J", en: "Opel Astra J" }],
+    },
+  }).filter((entry) => entry.kind === "product");
+  assert.equal(entries.length, 2);
+  assert.notEqual(entries[0].linkTitle?.ar, entries[1].linkTitle?.ar);
+  assert.notEqual(entries[0].linkTitle?.en, entries[1].linkTitle?.en);
+  assert.ok(entries[0].linkTitle?.ar.includes("555111"));
+  assert.ok(entries[1].linkTitle?.ar.includes("555222"));
 });
 
 test("index XML has expected groups and correctly escapes origin", () => {
