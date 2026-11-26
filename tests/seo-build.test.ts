@@ -6,7 +6,7 @@ import { sitemapPublished } from "../src/lib/sitemap-visibility";
 import { knownBrandRoute } from "../src/lib/seo-brand-route";
 import { rootLocaleRedirect } from "../src/lib/site-url";
 import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml";
-import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales } from "../src/lib/seo-inventory";
+import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale } from "../src/lib/seo-inventory";
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
 import { demoProducts } from "../src/lib/catalog";
 
@@ -307,4 +307,18 @@ test("brand display name does not conceal untranslated model or category locale"
   assert.ok(xml.includes("https://mopc.store/ar/brands/opel/astra-j"));
   assert.ok(!xml.includes("<loc>https://mopc.store/en/brands/opel/astra-j</loc>"));
   assert.ok(!xml.includes("https://mopc.store/en/brands/opel/astra-j/filters"));
+});
+
+test("HTML site map never advertises a locale missing from XML sitemap", () => {
+  const pages = collectSearchPages({
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] }],
+    modelNames: [{ brand: "opel", slug: "astra-j", name: { ar: "استرا J", en: "استرا J" } }],
+    categories: [], products: [], cms: [], guides: [],
+    modelCounts: { "opel/astra-j": 1 }, modelCategoryCounts: {},
+  });
+  const arPages = searchPagesForLocale(pages, "ar");
+  const enPages = searchPagesForLocale(pages, "en");
+  assert.ok(arPages.some((p) => p.path === "/brands/opel/astra-j"));
+  assert.ok(!enPages.some((p) => p.path === "/brands/opel/astra-j"));
+  assert.ok(enPages.some((p) => p.path === "/brands/opel"));
 });
