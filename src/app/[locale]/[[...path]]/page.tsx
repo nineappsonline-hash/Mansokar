@@ -685,6 +685,22 @@ export default async function Page({ params, searchParams }: Props) {
       : Promise.resolve([] as Product[]),
     !route ? catalog({ limit: 10 }) : Promise.resolve([] as Product[]),
   ]);
+  // Start public detail data immediately after finding the SKU, while the
+  // related product family and vehicle fitment are still loading. The same
+  // product photo request is shared with generateMetadata via React cache.
+  const productDetailsPromise = path[0] === "products" && primary[0]
+    ? Promise.all([
+        productImages(primary[0].id).catch(() => []),
+        deliveryAreas(),
+        policyPages(
+          primary[0].policy_refs?.length
+            ? primary[0].policy_refs
+            : ["policies/shipping", "policies/returns", "policies/warranty"],
+        ),
+        relatedProducts(primary[0].id, "together", vehicle?.id),
+        relatedProducts(primary[0].id, "alternative", vehicle?.id),
+      ])
+    : null;
   const family = primary[0]
     ? await catalog({ family: primary[0].family, limit: 12 })
     : [];
@@ -1327,17 +1343,7 @@ export default async function Page({ params, searchParams }: Props) {
     // Independent product sections can fetch concurrently. A missing image
     // must not block a product page, while policy/shipping data errors stay visible.
     const [media, areas, policies, together, curatedAlternatives] =
-      await Promise.all([
-        productImages(p.id).catch(() => []),
-        deliveryAreas(),
-        policyPages(
-          p.policy_refs?.length
-            ? p.policy_refs
-            : ["policies/shipping", "policies/returns", "policies/warranty"],
-        ),
-        relatedProducts(p.id, "together", vehicle?.id),
-        relatedProducts(p.id, "alternative", vehicle?.id),
-      ]);
+      await productDetailsPromise!;
     const alternatives = (
       curatedAlternatives.length ? curatedAlternatives : products
     ).filter(
