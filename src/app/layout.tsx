@@ -1,6 +1,7 @@
 import { siteCopy } from "@/lib/site-copy";
 import { siteOrigin } from "@/lib/site-url";
 import { siteIdentity } from "@/lib/site-identity";
+import { knownBrandRoute } from "@/lib/seo-brand-route";
 import { notFound } from "next/navigation";
 import { catalog, vehicleCatalog } from "@/lib/db";
 import { storefrontSettings } from "@/lib/db";
@@ -58,13 +59,7 @@ export default async function RootLayout({
   const segments = pathname.split("/").filter(Boolean);
   if (["ar", "en"].includes(segments[0]) && segments[1] === "brands") {
     const { brands, models } = await vehicleCatalog();
-    if (
-      !brands.some((b) => b.slug === segments[2]) ||
-      segments.length > 4 ||
-      (segments[3] &&
-        !models.some((m) => m.brand === segments[2] && m.slug === segments[3]))
-    )
-      notFound();
+    if (!knownBrandRoute(segments, brands, models)) notFound();
   }
   if (
     ["ar", "en"].includes(segments[0]) &&
