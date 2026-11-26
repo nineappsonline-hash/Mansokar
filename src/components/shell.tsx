@@ -59,10 +59,9 @@ export async function Shell({
     >
       <VehicleSync id={vehicle?.id} />
       <CartSync />
-      <Analytics
-        locale={locale}
-        enabled={process.env.ANALYTICS_ENABLED === "true"}
-      />
+      {process.env.ANALYTICS_ENABLED === "true" && (
+        <Analytics locale={locale} enabled />
+      )}
       <a href="#main" className="skip">
         {locale === "ar" ? "انتقل للمحتوى" : "Skip to content"}
       </a>
