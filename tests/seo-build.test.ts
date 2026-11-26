@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { canonicalPage, categoryLandingIndexable } from "../src/lib/seo-policy";
@@ -240,15 +240,9 @@ test("CMS metadata and sitemap use the same verified language availability", () 
 });
 
 
-test("streaming loading shell never injects extra H1 headings into indexable pages", () => {
-  const source = readFileSync("src/app/loading.tsx", "utf8");
-  const css = readFileSync("src/app/loading.module.css", "utf8");
-  assert.ok(!source.includes("<h1"));
-  assert.ok(source.includes("loadingTitle"));
-  assert.ok(source.includes("styles.ar"));
-  assert.ok(source.includes("styles.en"));
-  assert.ok(css.includes(".copy .loadingTitle"));
-  assert.ok(!css.includes(".copy h1"));
+test("global loading overlay is removed so navigation shows content directly", () => {
+  assert.equal(existsSync("src/app/loading.tsx"), false);
+  assert.equal(existsSync("src/app/loading.module.css"), false);
 });
 
 test("brand/category route allows five segments but rejects nonexistent makes and models", () => {
