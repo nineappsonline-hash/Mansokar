@@ -5,6 +5,8 @@ import { isRemoteImageUrl } from "./image-links";
 export type SearchPage = {
   path: string;
   title: Text;
+  /** Descriptive HTML sitemap anchor; does not change page titles or URLs. */
+  linkTitle?: Text;
   images?: string[];
   locales?: ("ar" | "en")[];
   lastModified?: string;
@@ -214,6 +216,10 @@ export function collectSearchPages(input: {
     ...publishedProducts.map((p) => ({
         path: `/products/${p.slug}`,
         title: p.name,
+        linkTitle: {
+          ar: `${p.name.ar} – ${p.manufacturer} – رقم القطعة ${p.partNumber}`,
+          en: `${p.name.en} – ${p.manufacturer} – Part ${p.partNumber}`,
+        },
         locales: (["ar", "en"] as const).filter((locale) =>
           translatedProduct(p, locale),
         ),
