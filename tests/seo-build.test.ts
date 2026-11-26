@@ -4,6 +4,8 @@ import { canonicalPage, categoryLandingIndexable } from "../src/lib/seo-policy";
 import { sitemapPublished } from "../src/lib/sitemap-visibility";
 import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml";
 import { collectSearchPages } from "../src/lib/seo-inventory";
+import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
+import { demoProducts } from "../src/lib/catalog";
 
 const brand = { slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] };
 const modelNames = [
@@ -142,4 +144,66 @@ test("empty categories and untranslated categories cannot be indexed", () => {
   assert.equal(categoryLandingIndexable(3, { ar: "فلاتر", en: "فلاتر" }, "en"), false);
   assert.equal(categoryLandingIndexable(3, undefined, "ar"), false);
   assert.equal(categoryLandingIndexable(Number.NaN, category, "ar"), false);
+});
+
+
+test("model-only fitments without years count once per model and category", () => {
+  const product = {
+    ...demoProducts[0], id: "filter1", demo: false,
+    status: "published", specs: { "car_years:astra-id": "" },
+  };
+  const counts = sitemapFitmentCounts({
+    models: [{ id: "astra-id", brand: "opel", slug: "astra-j" }],
+    vehicles: [{ id: "v1", brand: "opel", model: "astra-j" },
+      { id: "v2", brand: "opel", model: "astra-j" }],
+    products: [product, { ...product, id: "demo", demo: true }],
+    fitments: [
+      { product_id: "filter1", vehicle_config_id: "v1" },
+      { product_id: "filter1", vehicle_config_id: "v1" },
+      { product_id: "filter1", vehicle_config_id: "v2" },
+    ],
+  });
+  assert.deepEqual(counts.modelCounts, { "opel/astra-j": 1 });
+  assert.deepEqual(counts.modelCategoryCounts, {
+    [`opel/astra-j/${product.category}`]: 1,
+  });
+});
+
+test("separate registered models and eligible products receive independent accurate counts", () => {
+  const template = { ...demoProducts[0], demo: false, status: "published" };
+  const counts = sitemapFitmentCounts({
+    models: [
+      { id: "astra-id", brand: "opel", slug: "astra-j" },
+      { id: "corsa-id", brand: "opel", slug: "corsa" },
+    ],
+    vehicles: [
+      { id: "v1", brand: "opel", model: "astra-j" },
+      { id: "v2", brand: "opel", model: "corsa" },
+      { id: "orphan", brand: "another", model: "unknown" },
+    ],
+    products: [
+      { ...template, id: "a", category: "filters", specs: {
+        "car_years:astra-id": "", "car_years:corsa-id": "2020",
+      } },
+      { ...template, id: "b", category: "brakes", specs: {} },
+      { ...template, id: "c", demo: true, specs: { "car_years:astra-id": "" } },
+      { ...template, id: "d", status: "draft", specs: { "car_years:astra-id": "" } },
+    ],
+    fitments: [
+      { product_id: "b", vehicle_config_id: "v1" },
+      { product_id: "b", vehicle_config_id: "v2" },
+      { product_id: "b", vehicle_config_id: "orphan" },
+      { product_id: "not-found", vehicle_config_id: "v1" },
+    ],
+  });
+  assert.deepEqual(counts.modelCounts, {
+    "opel/astra-j": 2,
+    "opel/corsa": 2,
+  });
+  assert.deepEqual(counts.modelCategoryCounts, {
+    "opel/astra-j/filters": 1,
+    "opel/corsa/filters": 1,
+    "opel/astra-j/brakes": 1,
+    "opel/corsa/brakes": 1,
+  });
 });
