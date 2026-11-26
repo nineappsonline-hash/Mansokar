@@ -115,7 +115,12 @@ try {
         lcpMs: metrics.lcp,
         cls: metrics.cls,
         longTaskMs: metrics.longTasks,
-        domContentLoadedMs: nav?.domContentLoadedEventEnd || null,
+        domContentLoadedMs: nav?.domContentLoadedEventEnd ?? null,
+        // Navigation timing excludes the artificial networkidle/1800ms audit wait.
+        ttfbMs: nav ? Math.max(0, nav.responseStart - nav.requestStart) : null,
+        responseStartMs: nav?.responseStart ?? null,
+        fcpMs: performance.getEntriesByType("paint")
+          .find((entry) => entry.name === "first-contentful-paint")?.startTime ?? null,
       };
     }).catch(() => ({}));
 
@@ -145,6 +150,12 @@ try {
       label,
       url: page.url(),
       status: response?.status() || null,
+      documentCache: response ? {
+        vercel: response.headers()["x-vercel-cache"] || null,
+        cdn: response.headers()["x-cache"] || null,
+        cacheControl: response.headers()["cache-control"] || null,
+        age: response.headers()["age"] || null,
+      } : null,
       viewport,
       elapsedMs: Date.now() - started,
       ...observed,
@@ -175,7 +186,7 @@ try {
       failures: [...new Set(failures)].slice(0, 30),
     };
     results.push(summary);
-    console.log(`[browser-perf] ${label}: HTTP ${summary.status}, JS ${(summary.bytes.js/1024).toFixed(1)} KB, CSS ${(summary.bytes.css/1024).toFixed(1)} KB, all-origin images ${(summary.bytes.imageAllOrigins/1024).toFixed(1)} KB, LCP ${summary.lcpMs?.toFixed(0) ?? "n/a"} ms, errors ${summary.failures.length}`);
+    console.log(`[browser-perf] ${label}: HTTP ${summary.status}, JS ${(summary.bytes.js/1024).toFixed(1)} KB, CSS ${(summary.bytes.css/1024).toFixed(1)} KB, all-origin images ${(summary.bytes.imageAllOrigins/1024).toFixed(1)} KB, TTFB ${summary.ttfbMs?.toFixed(0) ?? "n/a"} ms, FCP ${summary.fcpMs?.toFixed(0) ?? "n/a"} ms, LCP ${summary.lcpMs?.toFixed(0) ?? "n/a"} ms, errors ${summary.failures.length}`);
     const links = await page.locator(`a[href*="/${locale}/products/"]`).evaluateAll((elements) =>
       elements.map((item) => item.getAttribute("href")).filter(Boolean)
     ).catch(() => []);
@@ -225,7 +236,7 @@ try {
 }
 mkdirSync(resolve(output, ".."), { recursive: true });
 writeFileSync(output, JSON.stringify({
-  note: "Cold-context Chromium first-view request transfer totals, including third-party product images. LCP/CLS are lab observations, not field Core Web Vitals. INP is not measured without real user interaction. Network variability, cache policy, bot protection, and Chromium versions affect measurements.",
+  note: "Cold-context Chromium first-view request transfer totals, including third-party product images. TTFB is browser navigation responseStart minus requestStart; FCP/LCP/CLS are lab observations, not field Core Web Vitals. INP is not measured without real user interaction. Network variability, cache policy, bot protection, and Chromium versions affect measurements.",
   measuredAt: new Date().toISOString(),
   base: root.origin,
   results,
