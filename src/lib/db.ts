@@ -280,7 +280,7 @@ export const storefrontSettings = cache(
     return { storeName: { ar: "موبِك", en: "MOPC" }, ...data?.value };
   },
 );
-export async function productImages(productId: string) {
+export const productImages = cache(async function loadProductImages(productId: string) {
   if (!configured()) return [];
   const { data, error } = await service()
     .from("product_images")
@@ -292,7 +292,7 @@ export async function productImages(productId: string) {
     url: isRemoteImageUrl(row.path) ? row.path : `/product-media/${row.id}`,
     alt: row.alt as { ar: string; en: string },
   }));
-}
+});
 /** Fetch the first recorded photo for each requested product in bounded batches.
  * Featured cards can reuse these results rather than opening one query per SKU.
  */
