@@ -12,7 +12,15 @@ import { dirname } from "node:path";
 const origin = new URL(process.env.SEO_BASE_URL || "https://mopc.store").origin;
 const output = process.env.SEO_REPORT_PATH || "reports/seo-live.json";
 const checks = [];
-const sampleSize = 4;
+const sampleSize = 8;
+// Known Google-indexed SKUs are checked while they remain in the live sitemap.
+// An intentionally retired listing must not trigger a false monitoring error.
+const indexedProductIds = [
+  "c4c0ce8c-7060-4591-9e4e-64650dfc7f15",
+  "dd33f9e5-f912-4b77-b474-5114fb4c4192",
+  "1f840aa9-ea09-4d10-b996-2282152fb18a",
+  "c1c18d2f-fd78-4f94-aca8-42d55e132175",
+];
 const timeoutMs = 20000;
 const fail = (label, reason) => checks.push({ label, status: "FAIL", reason });
 const pass = (label, note) => checks.push({ label, status: "PASS", note });
@@ -93,10 +101,20 @@ await inspect("Arabic homepage canonical", async () => {
     throw Error("Arabic homepage unexpectedly noindex");
   pass("Arabic homepage canonical", "200; /ar canonical; indexable");
 });
-const matches = [...sitemapProducts.matchAll(/<loc>(https?:\/\/[^<]*\/ar\/products\/[^<]+)<\/loc>/g)]
-  .map((match) => match[1].replaceAll("&amp;", "&"));
+const matches = [...sitemapProducts.matchAll(/<loc>(https?:\\/\\/[^<]*\\/(?:ar|en)\\/products\\/[^<]+)<\\/loc>/g)]
+  .map((match) => match[1].replaceAll("&amp;", "&"))
+  .filter((url) => new URL(url).origin === origin);
+const unique = [...new Set(matches)];
+const indexed = indexedProductIds.flatMap((id) =>
+  unique.filter((url) => url.endsWith(`-p-${id}`)),
+);
+const sampleUrls = [...new Set([
+  ...indexed,
+  ...unique.filter((url) => new URL(url).pathname.startsWith("/ar/products/")).slice(0, 2),
+  ...unique.filter((url) => new URL(url).pathname.startsWith("/en/products/")).slice(0, 2),
+])].slice(0, sampleSize);
 let sampled = 0;
-for (const url of [...new Set(matches)].slice(0, sampleSize)) {
+for (const url of sampleUrls) {
   const label = `product markup ${new URL(url).pathname.split("/").at(-1)}`;
   await inspect(label, async () => {
     const { response, body } = await fetchPage(url);
@@ -118,7 +136,7 @@ if (!matches.length) fail("product samples", "No Arabic products in sitemap to s
 const report = {
   measuredAt: new Date().toISOString(), origin,
   note: "Read-only HTTP checks. Google URL Inspection is separate, and indexed snapshots can lag the live website.",
-  eligibleProductSamplesPassed: sampled, eligibleProductSamplesAttempted: Math.min(matches.length, sampleSize),
+  eligibleProductSamplesPassed: sampled, eligibleProductSamplesAttempted: sampleUrls.length,
   checks,
 };
 mkdirSync(dirname(output), { recursive: true });
