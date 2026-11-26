@@ -872,6 +872,16 @@ test("metadata queries model/category inventory concurrently and keeps canonical
   assert.ok(page.includes("modelHasInventory = selected.total > 0"));
 });
 
+test("installments search titles remain within 60 characters including store suffix", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  const ar = "تقسيط قطع غيار السيارات في مصر: الطرق والشروط";
+  const en = "Car parts installments in Egypt: options and terms";
+  assert.ok(page.includes(ar));
+  assert.ok(page.includes(en));
+  assert.ok(`${ar} | موبِك`.length <= 60);
+  assert.ok(`${en} | MOPC`.length <= 60);
+});
+
 test("model category totals cache is public, short-lived and not affected by user filters", () => {
   const source = readFileSync("src/lib/model-category-totals.ts", "utf8");
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
