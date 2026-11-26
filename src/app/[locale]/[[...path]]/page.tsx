@@ -100,7 +100,8 @@ import {
 } from "@/components/controls";
 import { OriginalBadge } from "@/components/original-badge";
 import { VehicleBadge } from "@/components/vehicle-badge";
-import { AuthForm, RequestForm, Checkout, ApiForm } from "@/components/forms";
+import { AuthForm, RequestForm, ApiForm } from "@/components/forms";
+import { Checkout } from "@/components/checkout-form";
 import { PaymentStatus } from "@/components/payment-status";
 export const dynamic = "force-dynamic";
 type Props = {
