@@ -201,7 +201,7 @@ export async function requireAdmin() {
   if (error || !data?.enabled) throw Error("Forbidden");
   return user;
 }
-export async function vehicleCatalog() {
+export const vehicleCatalog = cache(async function vehicleCatalog() {
   const { brands: baseBrands, vehicles: baseVehicles } =
     await import("./catalog");
   if (!configured())
@@ -257,7 +257,7 @@ export async function vehicleCatalog() {
       };
     }),
   };
-}
+});
 export const storefrontSettings = cache(
   async (): Promise<{
     storeName?: { ar: string; en: string };
