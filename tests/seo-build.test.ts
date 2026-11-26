@@ -87,3 +87,47 @@ test("sitemaps stay unpublished unless launch, environment and catalog access al
   assert.equal(sitemapPublished({ ...production, STORE_LAUNCH_APPROVED: "false" }), false);
   assert.equal(sitemapPublished({ ...production, NEXT_PUBLIC_SUPABASE_URL: "" }), false);
 });
+
+
+test("no-inventory brands are excluded without hiding brands with confirmed model inventory", () => {
+  const pages = collectSearchPages({
+    brands: [
+      brand,
+      { slug: "empty", name: "Empty", ar: "فارغ", models: ["placeholder"] },
+    ],
+    modelNames,
+    categories,
+    cms: [], guides: [], products: [],
+    modelCounts: { "opel/astra-j": 2, "empty/placeholder": 0 },
+    modelCategoryCounts: { "opel/astra-j/filters": 2 },
+  });
+  assert.ok(pages.some((page) => page.path === "/brands/opel"));
+  assert.ok(!pages.some((page) => page.path === "/brands/empty"));
+  assert.ok(!sitemapXml(pages, "https://mopc.store", "vehicles").includes("/brands/empty"));
+});
+
+test("untranslated categories and model names do not create fabricated hreflang URLs", () => {
+  const pages = collectSearchPages({
+    brands: [brand],
+    modelNames: [{ brand: "opel", slug: "astra-j", name: { ar: "أسترا J", en: "أسترا J" } }],
+    categories: [{ slug: "filters", name: { ar: "فلاتر", en: "فلاتر" } }],
+    cms: [], guides: [],
+    products: [{ ...({
+      id: "a", sku: "A", slug: "a", name: { ar: "فلتر زيت", en: "Oil filter" },
+      manufacturer: "Brand", category: "filters", family: "filters", type: "aftermarket",
+      price: 10000, sale: null, partNumber: "P1", demo: false, orderable: true,
+      status: "published", specs: {},
+    } as const) }],
+    modelCounts: { "opel/astra-j": 1 },
+    modelCategoryCounts: { "opel/astra-j/filters": 1 },
+  });
+  const categoryPage = pages.find((page) => page.path === "/categories/filters");
+  assert.deepEqual(categoryPage?.locales, ["ar"]);
+  const modelPage = pages.find((page) => page.path === "/brands/opel/astra-j");
+  assert.deepEqual(modelPage?.locales, ["ar"]);
+  const modelCategoryPage = pages.find((page) => page.path === "/brands/opel/astra-j/filters");
+  assert.deepEqual(modelCategoryPage?.locales, ["ar"]);
+  const xml = sitemapXml(pages, "https://mopc.store", "vehicles");
+  assert.ok(xml.includes("https://mopc.store/ar/brands/opel/astra-j/filters"));
+  assert.ok(!xml.includes("https://mopc.store/en/brands/opel/astra-j/filters"));
+});
