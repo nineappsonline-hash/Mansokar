@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap");
+/* Arabic typography is self-hosted in /fonts; no render-blocking Google Fonts request. */
 @import "tailwindcss";
 @font-face {
   font-family: "IBM Plex Sans Arabic";
