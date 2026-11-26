@@ -4,7 +4,7 @@ import "./mopc-showroom.css";
 import { MobileNavigation } from "./mobile-navigation";
 import responsive from "./shell-responsive.module.css";
 import { SearchBox } from "./search";
-import { CartCount } from "./favorites";
+import { CartCount } from "./cart-count";
 import { Newsletter } from "./newsletter";
 import { LazyChatWidget } from "./lazy-chat-widget";
 import cyan from "./cyan-storefront.module.css";
