@@ -898,6 +898,9 @@ test("checkout payment bundle stays out of general forms used by public pages", 
   assert.ok(forms.includes("export function AuthForm("));
   assert.ok(forms.includes("export function RequestForm("));
   assert.ok(!forms.includes("export function Checkout("));
+  assert.ok(!forms.includes('from "./instapay-button"'));
+  assert.ok(!forms.includes('from "@/lib/payments"'));
+  assert.ok(!forms.includes('from "@/lib/shipping"'));
   assert.ok(checkout.includes("export function Checkout("));
   assert.ok(checkout.includes("checkout-quote"));
   assert.ok(checkout.includes("InstaPayButton"));
