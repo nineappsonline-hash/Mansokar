@@ -101,7 +101,7 @@ await inspect("Arabic homepage canonical", async () => {
     throw Error("Arabic homepage unexpectedly noindex");
   pass("Arabic homepage canonical", "200; /ar canonical; indexable");
 });
-const matches = [...sitemapProducts.matchAll(/<loc>(https?:\\/\\/[^<]*\\/(?:ar|en)\\/products\\/[^<]+)<\\/loc>/g)]
+const matches = [...sitemapProducts.matchAll(/<loc>(https?:\/\/[^<]*\/(?:ar|en)\/products\/[^<]+)<\/loc>/g)]
   .map((match) => match[1].replaceAll("&amp;", "&"))
   .filter((url) => new URL(url).origin === origin);
 const unique = [...new Set(matches)];
