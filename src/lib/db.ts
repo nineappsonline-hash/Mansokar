@@ -262,7 +262,9 @@ const sharedVehicleCatalog = unstable_cache(async function loadPublicVehicleCata
   };
 }, ["mopc-public-vehicle-catalog-v1"], { revalidate: 60, tags: ["mopc-public-vehicles"] });
 export const vehicleCatalog = cache(async () => sharedVehicleCatalog());
-export const storefrontSettings = cache(
+// Public branding only: share for 60 seconds across requests.
+// Never cache auth/session/order/cart data in this cross-request cache.
+const sharedStorefrontSettings = unstable_cache(
   async (): Promise<{
     storeName?: { ar: string; en: string };
     heroTitle?: { ar: string; en: string };
@@ -279,7 +281,10 @@ export const storefrontSettings = cache(
     if (error) throw error;
     return { storeName: { ar: "موبِك", en: "MOPC" }, ...data?.value };
   },
+  ["mopc-public-storefront-settings-v1"],
+  { revalidate: 60, tags: ["mopc-public-storefront-settings"] },
 );
+export const storefrontSettings = cache(() => sharedStorefrontSettings());
 const sharedProductImages = unstable_cache(async function loadProductImages(productId: string) {
   if (!configured()) return [];
   const { data, error } = await service()

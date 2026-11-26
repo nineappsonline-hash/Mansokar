@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { BannerMotion } from "./banner-motion";
 import type { CSSProperties } from "react";
 import {
@@ -150,13 +151,14 @@ export function PaymentBanner({ locale }: { locale: Locale }) {
         </Link>
       </div>
       <div className={styles.paymentArt} aria-hidden="true">
-        <img
+        <Image
           src="/images/payment-editorial-navy.png"
           alt=""
           width={1536}
           height={1024}
+          sizes="(max-width: 700px) 100vw, 58vw"
+          quality={75}
           loading="lazy"
-          decoding="async"
         />
       </div>
     </BannerMotion>
