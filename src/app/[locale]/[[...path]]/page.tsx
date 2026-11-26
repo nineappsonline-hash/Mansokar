@@ -1234,6 +1234,7 @@ export default async function Page({ params, searchParams }: Props) {
             total={serverResults?.total ?? filtered.length}
             categoryName={modelListing && path.length === 4 ? currentCategory?.name[locale] : undefined}
             modelHref={modelListing ? `/${locale}/brands/${listingBrand.slug}/${listingModel.slug}` : undefined}
+            buyingNote={targetModel(listingBrand.slug, listingModel.slug)?.note[locale]}
             years={vehicles
               .filter(
                 (v) =>
