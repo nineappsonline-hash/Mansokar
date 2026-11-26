@@ -737,3 +737,20 @@ test("canonical product metadata and descriptions include every recorded make, m
   assert.ok(manual.seo!.title!.en.includes("Opel Corsa 2021–2022"));
   assert.ok(manual.seo!.description!.ar.includes("أوبل أسترا 2015–2016, 2018"));
 });
+
+
+test("Product JSON-LD publishes only checksum-valid GTIN identifiers", () => {
+  const withGtin = {
+    ...p,
+    specs: { ...p.specs, gtin: "4006381333931" },
+  };
+  const valid = productStructuredData(withGtin, "ar", "https://mopc.store", [])!;
+  assert.equal((valid as Record<string, unknown>).gtin13, "4006381333931");
+
+  const bad = productStructuredData({
+    ...withGtin,
+    specs: { ...withGtin.specs, gtin: "4006381333932" },
+  }, "ar", "https://mopc.store", [])!;
+  assert.ok(!("gtin13" in bad));
+  assert.ok(!("gtin" in bad));
+});

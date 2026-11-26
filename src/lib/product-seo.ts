@@ -4,6 +4,7 @@ import {
   verifiedCondition,
 } from "./seo-policy";
 import { countryOfOrigin } from "./product-specifications";
+import { validGtin } from "./merchant-feed";
 import { money, type Locale, type Product } from "./catalog";
 
 export function productSearchCopy(p: Product, locale: Locale) {
@@ -37,6 +38,9 @@ export function productStructuredData(
     description: p.description[locale],
     sku: p.sku,
     ...(p.partNumber?.trim() ? { mpn: p.partNumber } : {}),
+    ...(p.specs?.gtin && validGtin(p.specs.gtin)
+      ? { [`gtin${p.specs.gtin.length}`]: p.specs.gtin }
+      : {}),
     ...(/^أصلي$/u.test(p.manufacturer.trim())
       ? {}
       : {
