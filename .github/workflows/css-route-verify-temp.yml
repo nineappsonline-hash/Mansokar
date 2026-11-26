@@ -1,0 +1,50 @@
+name: Temporary verify route-specific CSS delivery
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  browser-css:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Measure storefront CSS across routes
+        run: npm run perf:routes
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_LOCALE: ar
+      - name: Verify checkout stylesheet is requested only by checkout
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium } from '@playwright/test';
+          const browser = await chromium.launch({headless:true});
+          for (const route of ['/ar', '/ar/products/coolant-overflow-tank-gm-p-c4c0ce8c-7060-4591-9e4e-64650dfc7f15', '/ar/checkout']) {
+            const ctx = await browser.newContext({viewport:{width:390,height:844}});
+            const p = await ctx.newPage();
+            const responses=[];
+            p.on('response', r => {if(r.url().includes('checkout-only.css')) responses.push({status:r.status(),url:r.url()});});
+            const response = await p.goto('https://mopc.store'+route,{waitUntil:'networkidle',timeout:45000});
+            const styles=await p.locator('link[rel="stylesheet"]').evaluateAll(links=>links.map(x=>x.getAttribute('href')));
+            const expected=route==='/ar/checkout';
+            const present=styles.some(x=>x?.includes('checkout-only.css'));
+            console.log('CSS-CHECK',JSON.stringify({route,status:response.status(),stylesheets:styles.length,checkoutStylesheet:present,requests:responses}));
+            if(response.status()!==200||present!==expected|| (expected&&!responses.some(r=>r.status===200))) process.exitCode=1;
+            await ctx.close();
+          }
+          await browser.close();
+          NODE
+      - name: Upload route timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mopc-checkout-css-routes
+          path: reports/browser-network.json
+          if-no-files-found: ignore
