@@ -4,8 +4,8 @@ export const buyingGuides = [
   {
     slug: "genuine-parts-and-warranty",
     title: text(
-      "قطع الغيار الأصلية وضمانها في مصر: إزاي تراجع بيانات القطعة؟",
-      "Genuine spare parts and warranty in Egypt: what to check",
+      "قطع الغيار الأصلية والضمان: إيه اللي تراجعه؟",
+      "Genuine parts and warranty: what to check",
     ),
     description: text(
       "اعرف معنى «أصلي» في كتالوج موبِك، وإزاي تراجع رقم القطعة والتوافق ومدة الضمان وشروطه قبل الشراء.",
@@ -105,7 +105,7 @@ export const buyingGuides = [
     slug: "item-brand-and-country-of-origin",
     title: text(
       "ماركة قطعة الغيار وبلد المنشأ: إيه الفرق؟",
-      "Spare-part brand and country of origin: what is the difference?",
+      "Part brand vs country of origin: key differences",
     ),
     description: text(
       "افهم الفرق بين ماركة العربية وماركة القطعة وبلد التصنيع، وإيه البيانات اللي تراجعها قبل الشراء.",
@@ -202,7 +202,7 @@ export const buyingGuides = [
     slug: "identify-vehicle-configuration",
     title: text(
       "إزاي تحدد جيل العربية والموتور قبل طلب قطعة غيار؟",
-      "How to identify your vehicle generation and engine before ordering a part",
+      "Identify your car engine and generation",
     ),
     description: text(
       "جهّز الماركة والموديل والسنة والجيل والموتور والفتيس لتسهيل مراجعة توافق قطع الغيار.",
