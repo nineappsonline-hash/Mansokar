@@ -25,6 +25,7 @@ import { CatalogCarFilters } from "@/components/catalog-car-filters";
 import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
 import { searchPages } from "@/lib/seo-pages";
+import { cmsTranslatedLocales } from "@/lib/seo-inventory";
 import { ContactForm } from "@/components/contact-form";
 import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
 import { buyingGuides } from "@/lib/buying-guides";
@@ -193,6 +194,7 @@ export async function generateMetadata({
   let categoryHasInventory = true;
   let categoryPageLocales: Locale[] | undefined;
   let modelPageLocales: Locale[] | undefined;
+  let cmsPageLocales: Locale[] | undefined;
   let pageMeta: {
     title?: Record<string, string>;
     description?: Record<string, string>;
@@ -227,7 +229,8 @@ export async function generateMetadata({
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
-      if (data)
+      if (data) {
+        cmsPageLocales = cmsTranslatedLocales(data.title);
         pageMeta = {
           title: {
             ar: data.seo?.title?.ar || data.title.ar,
@@ -235,6 +238,7 @@ export async function generateMetadata({
           },
           description: data.seo?.description,
         };
+      }
     }
   }
   if (path[0] === "brands" && path[1] && !pageMeta) {
@@ -465,7 +469,8 @@ export async function generateMetadata({
             (lang) =>
               (!rawProductMeta || translatedProduct(rawProductMeta, lang)) &&
               (!modelPageLocales || modelPageLocales.includes(lang)) &&
-              (!categoryPageLocales || categoryPageLocales.includes(lang)),
+              (!categoryPageLocales || categoryPageLocales.includes(lang)) &&
+              (!cmsPageLocales || cmsPageLocales.includes(lang)),
           )
           .map((lang) => [
             `${lang}-EG`,
@@ -489,6 +494,7 @@ export async function generateMetadata({
         modelHasInventory &&
         categoryHasInventory &&
         (!categoryPageLocales || categoryPageLocales.includes(l)) &&
+        (!cmsPageLocales || cmsPageLocales.includes(l)) &&
         (!modelPageLocales || modelPageLocales.includes(l)) &&
         (!rawProductMeta || eligibleProduct(rawProductMeta, l)) &&
         (!["about", "contact", "faq", "guides", "policies"].includes(path[0]) ||
