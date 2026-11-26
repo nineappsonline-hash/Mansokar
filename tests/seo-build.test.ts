@@ -817,3 +817,20 @@ test("product action client islands receive only fields needed for cart and purc
   assert.ok(page.includes("product={{ id: p.id, orderable: p.orderable, price: p.price, sale: p.sale }}"));
   assert.ok(!page.includes("<MobileBuyBar product={p}"));
 });
+
+test("hero carousel never mounts unseen viewport images before they are selected", () => {
+  const hero = readFileSync("src/components/hero-slideshow.tsx", "utf8");
+  assert.ok(hero.includes("i === 0 || i === active ? ("));
+  assert.ok(hero.includes("preload={i === 0}"));
+  assert.ok(hero.includes('fetchPriority={i === 0 ? "high" : "low"}'));
+  assert.ok(hero.includes("onClick={() => select(active + 1)}"));
+  assert.ok(hero.includes("setIndex((current) => (current + 1) % slides.length)"));
+});
+
+test("mobile brand photos request widths matching their actual two-column grid", () => {
+  const home = readFileSync("src/components/cyan-home.tsx", "utf8");
+  assert.ok(home.includes("orderedBrands.map((b, index) => ("));
+  assert.ok(home.includes('"(max-width:640px) 50vw, (max-width:1180px) 33vw, 20vw"'));
+  assert.ok(home.includes('"(max-width:640px) 100vw, (max-width:1180px) 33vw, 20vw"'));
+  assert.ok(home.includes("index === orderedBrands.length - 1"));
+});
