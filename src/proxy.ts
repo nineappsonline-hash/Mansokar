@@ -1,11 +1,14 @@
 import {
   migrationRedirect,
+  rootLocaleRedirect,
   siteOrigin,
   indexingApproved,
 } from "@/lib/site-url";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 export async function proxy(request: NextRequest) {
+  const canonicalRoot = rootLocaleRedirect(request.nextUrl);
+  if (canonicalRoot) return NextResponse.redirect(canonicalRoot, 308);
   const redirect = migrationRedirect(request.nextUrl);
   if (redirect) return NextResponse.redirect(redirect, 308);
   const headers = new Headers(request.headers);
