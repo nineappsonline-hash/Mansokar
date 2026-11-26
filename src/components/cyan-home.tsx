@@ -152,7 +152,7 @@ export async function CyanHome({
               />
               <span className="cyan-brand-logo">
                 {b.logo || order.includes(b.slug) ? (
-                  <img
+                  <Image
                     src={
                       b.logo ||
                       (b.slug === "chevrolet"
@@ -162,6 +162,12 @@ export async function CyanHome({
                           : `/images/brands/${b.slug}.svg`)
                     }
                     alt={b.name}
+                    width={160}
+                    height={72}
+                    sizes="(max-width:640px) 120px, 160px"
+                    loading="lazy"
+                    // The uploaded merchant logo may use an unconfigured host.
+                    unoptimized={Boolean(b.logo)}
                   />
                 ) : (
                   <CarFront size={48} aria-hidden="true" />
