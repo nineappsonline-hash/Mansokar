@@ -3,7 +3,7 @@ import {
   type CardCarCatalog,
 } from "@/lib/product-card-vehicles";
 import styles from "./product-card.module.css";
-import { FavoriteButton } from "./favorites";
+import { FavoriteButton } from "./favorite-button";
 import Link from "next/link";
 import { BadgeCheck, CarFront } from "lucide-react";
 import { vehicleBrandLogo } from "@/lib/vehicle-brand-logo";
