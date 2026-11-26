@@ -1012,6 +1012,8 @@ export default async function Page({ params, searchParams }: Props) {
             locale={locale}
             name={`${locale === "ar" ? listingBrand.ar : listingBrand.name} ${listingModel.name[locale]}`}
             total={serverResults?.total ?? filtered.length}
+            categoryName={modelListing && path.length === 4 ? currentCategory?.name[locale] : undefined}
+            modelHref={modelListing ? `/${locale}/brands/${listingBrand.slug}/${listingModel.slug}` : undefined}
             years={vehicles
               .filter(
                 (v) =>
