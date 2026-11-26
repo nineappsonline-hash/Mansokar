@@ -1,5 +1,6 @@
 import "server-only";
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 import {
   allRows,
   catalog,
@@ -12,7 +13,10 @@ import { coveredBrands, targetModel } from "./vehicle-coverage";
 import { collectSearchPages } from "./seo-inventory";
 import { sitemapFitmentCounts } from "./seo-fitment-counts";
 import { publicProduct } from "./public-product";
-export const searchPages = cache(async () => {
+// This is public inventory only: never include user cookies, cart, or order data.
+// Bound shared caching prevents a full catalog/fitment/image crawl for every
+// paginated HTML site-map visit while refreshing published inventory regularly.
+const sharedSearchPages = unstable_cache(async () => {
   const [
     { brands: storedBrands, models, vehicles },
     categories,
@@ -69,4 +73,5 @@ export const searchPages = cache(async () => {
     cms,
     guides: buyingGuides,
   });
-});
+}, ["mopc-public-seo-inventory-v1"], { revalidate: 120, tags: ["mopc-seo-inventory"] });
+export const searchPages = cache(async () => sharedSearchPages());
