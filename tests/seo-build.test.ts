@@ -663,3 +663,15 @@ test("image loading priorities protect hero and main product LCP without eager t
   assert.ok(gallery.includes("width={96}"));
   assert.ok(gallery.includes("height={72}"));
 });
+
+test("catalog listing avoids per-card motion hydration and homepage car years use indexed lookups", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(!page.includes('import { Reveal } from "@/components/motion-primitives"'));
+  assert.ok(page.includes("{items.map((p) => ("));
+  assert.ok(!page.includes("<Reveal key={p.id}"));
+  assert.ok(page.includes("const yearsByModelId = new Map<string, Set<number>>()"));
+  assert.ok(page.includes("const yearsByModelSlug = new Map<string, Set<number>>()"));
+  assert.ok(page.includes("yearsByModelId.get(m.id)"));
+  assert.ok(page.includes("yearsByModelSlug.get("));
+  assert.ok(!page.includes("...registeredYears\n                .filter((y) => y.model_id === m.id)"));
+});
