@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
-import { indexingApproved, siteOrigin } from "@/lib/site-url";
+import { siteOrigin } from "@/lib/site-url";
+import { sitemapPublished } from "@/lib/sitemap-visibility";
 export default function robots(): MetadataRoute.Robots {
-  const crawlEnabled = indexingApproved() && !!process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const crawlEnabled = sitemapPublished();
   return {
     rules: [
       {
