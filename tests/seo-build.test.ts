@@ -772,3 +772,15 @@ test("model year expansion does not require motion/react in client bundle", () =
   assert.ok(css.includes("grid-template-rows: 1fr;"));
   assert.ok(css.includes("prefers-reduced-motion: reduce"));
 });
+
+test("sitewide shell imports small navigation controls without hydrating product controls", () => {
+  const shell = readFileSync("src/components/shell.tsx", "utf8");
+  const slim = readFileSync("src/components/shell-client-controls.tsx", "utf8");
+  assert.ok(shell.includes('from "./shell-client-controls"'));
+  assert.ok(!shell.includes('from "./controls"'));
+  for (const name of ["Language", "VehicleSync", "CartSync", "ClearVehicle"]) {
+    assert.ok(slim.includes(`export function ${name}(`));
+  }
+  assert.ok(!slim.includes('from "./controls"'));
+  assert.ok(slim.includes("window.addEventListener(\"store-change\", persist)"));
+});
