@@ -34,6 +34,7 @@ export async function ProductCard({
   cover,
   mediaResolved = false,
   carCatalog,
+  headingLevel = 3,
 }: {
   product: Product;
   carCatalog: CardCarCatalog;
@@ -44,6 +45,7 @@ export async function ProductCard({
   contextMatched?: boolean;
   cover?: { url: string; alt: { ar: string; en: string } };
   mediaResolved?: boolean;
+  headingLevel?: 2 | 3;
 }) {
   const p = publicProduct(raw, context, contextMatched || confirmed);
   const origin = p.specs.country_of_origin;
@@ -74,6 +76,7 @@ export async function ProductCard({
   } catch {
     /* A missing photo does not conceal the product. */
   }
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   const w = t(locale);
   const fitment = vehicle ? fitmentLabel(vehicle, !!confirmed, locale) : "";
   const photo =
@@ -137,11 +140,11 @@ export async function ProductCard({
             </span>
           )}
         </div>
-        <h3 className={styles.title}>
+        <Heading className={styles.title}>
           <Link href={href} data-analytics="select_item" data-productid={p.id}>
             {p.name[locale]}
           </Link>
-        </h3>
+        </Heading>
         <div className={styles.partNumber}>
           <span>{locale === "ar" ? "رقم القطعة" : "Part no."}</span>
           <bdi dir="ltr">{p.partNumber}</bdi>
