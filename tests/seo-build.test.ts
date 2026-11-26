@@ -1104,6 +1104,19 @@ test("Merchant Center public feed serves only approved products and keeps admin 
   assert.ok(readiness.includes("await requireAdmin()"));
 });
 
+test("live Product Offer smoke checks prioritize known Google-indexed SKUs in both languages", () => {
+  const audit = readFileSync("scripts/audit-seo-indexing.mjs", "utf8");
+  assert.ok(audit.includes("const sampleSize = 8;"));
+  assert.ok(audit.includes("const indexedProductIds = ["));
+  assert.ok(audit.includes('c4c0ce8c-7060-4591-9e4e-64650dfc7f15'));
+  assert.ok(audit.includes('1f840aa9-ea09-4d10-b996-2282152fb18a'));
+  assert.ok(audit.includes("(?:ar|en)"));
+  assert.ok(audit.includes("const sampleUrls = [...new Set(["));
+  assert.ok(audit.includes("for (const url of sampleUrls)"));
+  assert.ok(audit.includes("eligibleProductSamplesAttempted: sampleUrls.length"));
+  assert.ok(!audit.includes("method: \"POST\""));
+});
+
 test("phase 9 monitors live crawl, canonical, sitemap and Product Offers without buying", () => {
   const pkg = JSON.parse(readFileSync("package.json", "utf8"));
   const audit = readFileSync("scripts/audit-seo-indexing.mjs", "utf8");
