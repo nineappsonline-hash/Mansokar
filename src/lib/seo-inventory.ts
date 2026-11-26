@@ -18,6 +18,22 @@ export function cmsTranslatedLocales(title: Text): ("ar" | "en")[] {
   );
 }
 
+/** A vehicle landing page uses the translated make AND model together.
+ * Numeric/short-code models (MG 5, Peugeot 2008, C3, HS) are legitimate.
+ * Bare model names should not be rejected merely for lacking letters.
+ */
+export function vehicleLandingLocales(
+  make: { ar: string; en: string },
+  model: Text,
+): ("ar" | "en")[] {
+  return (["ar", "en"] as const).filter((locale) =>
+    translatedProduct({ name: {
+      ar: `${make.ar} ${model.ar}`,
+      en: `${make.en} ${model.en}`,
+    } }, locale),
+  );
+}
+
 export function publicCmsPath(slug: string) {
   return (
     /^(about|contact|faq|guides)$/.test(slug) ||
@@ -123,8 +139,9 @@ export function collectSearchPages(input: {
           )?.name;
           return {
             path: `/brands/${b.slug}/${m}`,
-            locales: (["ar", "en"] as const).filter((locale) =>
-              translatedProduct({ name: name ?? { ar: m, en: m } }, locale),
+            locales: vehicleLandingLocales(
+              { ar: b.ar, en: b.name },
+              name ?? { ar: m, en: m },
             ),
             title: {
               ar: `${b.ar} ${name?.ar ?? m}`,
@@ -140,9 +157,12 @@ export function collectSearchPages(input: {
           )
           .map((category) => ({
             path: `/brands/${b.slug}/${model}/${category.slug}`,
-            locales: (["ar", "en"] as const).filter((locale) =>
-              translatedProduct({ name: category.name }, locale) &&
-              (locale === "ar" || translatedProduct({ name: input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name ?? { ar: model, en: model } }, locale)),
+            locales: vehicleLandingLocales(
+              { ar: b.ar, en: b.name },
+              input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name ??
+                { ar: model, en: model },
+            ).filter((locale) =>
+              translatedProduct({ name: category.name }, locale),
             ),
             title: {
               ar: `${category.name.ar} ${b.ar} ${input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name.ar ?? model}`,
@@ -173,6 +193,13 @@ export function collectSearchPages(input: {
   ];
   return [...new Map(pages.map((p) => [p.path, p])).values()];
 }
+/** The HTML site map must never link to language URLs omitted from XML. */
+export function searchPagesForLocale(pages: SearchPage[], locale: "ar" | "en") {
+  return pages.filter((page) =>
+    !page.locales || page.locales.includes(locale),
+  );
+}
+
 export function sitemapEntries(pages: SearchPage[], base: string) {
   const origin = new URL(base).origin;
   return pages.flatMap((p) =>

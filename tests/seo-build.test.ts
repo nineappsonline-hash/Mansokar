@@ -6,7 +6,7 @@ import { sitemapPublished } from "../src/lib/sitemap-visibility";
 import { knownBrandRoute } from "../src/lib/seo-brand-route";
 import { rootLocaleRedirect } from "../src/lib/site-url";
 import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml";
-import { collectSearchPages, cmsTranslatedLocales } from "../src/lib/seo-inventory";
+import { collectSearchPages, cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale } from "../src/lib/seo-inventory";
 import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
 import { demoProducts } from "../src/lib/catalog";
 
@@ -263,4 +263,62 @@ test("bare homepage always redirects to locale canonical while preserving non-ro
   assert.equal(rootLocaleRedirect(new URL("https://mopc.store/?source=ad"))?.href, "https://mopc.store/ar?source=ad");
   assert.equal(rootLocaleRedirect(new URL("https://mopc.store/ar")), null);
   assert.equal(rootLocaleRedirect(new URL("https://mopc.store/ar/brands/opel/astra-j/filters")), null);
+});
+
+test("numeric and short-code model URLs remain discoverable in both languages when inventory exists", () => {
+  const makes = [
+    { slug: "mg", ar: "إم جي", name: "MG", models: ["5", "6", "hs"] },
+    { slug: "peugeot", ar: "بيجو", name: "Peugeot", models: ["2008"] },
+  ];
+  const models = [
+    { brand: "mg", slug: "5", name: { ar: "5", en: "5" } },
+    { brand: "mg", slug: "6", name: { ar: "6", en: "6" } },
+    { brand: "mg", slug: "hs", name: { ar: "HS", en: "HS" } },
+    { brand: "peugeot", slug: "2008", name: { ar: "2008", en: "2008" } },
+  ];
+  assert.deepEqual(vehicleLandingLocales({ ar: "إم جي", en: "MG" }, { ar: "5", en: "5" }), ["ar", "en"]);
+  assert.deepEqual(vehicleLandingLocales({ ar: "بيجو", en: "Peugeot" }, { ar: "2008", en: "2008" }), ["ar", "en"]);
+  const pages = collectSearchPages({
+    brands: makes, modelNames: models,
+    categories: [{ slug: "filters", name: { ar: "فلاتر", en: "Filters" } }],
+    products: [], cms: [], guides: [],
+    modelCounts: { "mg/5": 1, "mg/6": 2, "mg/hs": 1, "peugeot/2008": 1 },
+    modelCategoryCounts: { "mg/5/filters": 1, "peugeot/2008/filters": 2 },
+  });
+  const xml = sitemapXml(pages, "https://mopc.store", "vehicles");
+  for (const slug of ["mg/5", "mg/6", "mg/hs", "peugeot/2008", "mg/5/filters", "peugeot/2008/filters"]) {
+    for (const lang of ["ar", "en"]) {
+      assert.ok(xml.includes(`<loc>https://mopc.store/${lang}/brands/${slug}</loc>`), `${slug} missing ${lang}`);
+    }
+  }
+});
+
+test("brand display name does not conceal untranslated model or category locale", () => {
+  const makes = [{ slug: "opel", ar: "أوبل", name: "Opel", models: ["astra-j"] }];
+  const pages = collectSearchPages({
+    brands: makes,
+    modelNames: [{ brand: "opel", slug: "astra-j", name: { ar: "استرا J", en: "استرا J" } }],
+    categories: [{ slug: "filters", name: { ar: "فلاتر", en: "فلاتر" } }],
+    products: [], cms: [], guides: [],
+    modelCounts: { "opel/astra-j": 1 },
+    modelCategoryCounts: { "opel/astra-j/filters": 1 },
+  });
+  const xml = sitemapXml(pages, "https://mopc.store", "vehicles");
+  assert.ok(xml.includes("https://mopc.store/ar/brands/opel/astra-j"));
+  assert.ok(!xml.includes("<loc>https://mopc.store/en/brands/opel/astra-j</loc>"));
+  assert.ok(!xml.includes("https://mopc.store/en/brands/opel/astra-j/filters"));
+});
+
+test("HTML site map never advertises a locale missing from XML sitemap", () => {
+  const pages = collectSearchPages({
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] }],
+    modelNames: [{ brand: "opel", slug: "astra-j", name: { ar: "استرا J", en: "استرا J" } }],
+    categories: [], products: [], cms: [], guides: [],
+    modelCounts: { "opel/astra-j": 1 }, modelCategoryCounts: {},
+  });
+  const arPages = searchPagesForLocale(pages, "ar");
+  const enPages = searchPagesForLocale(pages, "en");
+  assert.ok(arPages.some((p) => p.path === "/brands/opel/astra-j"));
+  assert.ok(!enPages.some((p) => p.path === "/brands/opel/astra-j"));
+  assert.ok(enPages.some((p) => p.path === "/brands/opel"));
 });
