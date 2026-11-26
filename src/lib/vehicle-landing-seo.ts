@@ -12,13 +12,21 @@ export function modelCategorySearchCopy(input: {
 }) {
   const { locale, make, model, category } = input;
   const fullName = `${make} ${model}`.trim();
-  if (locale === "ar")
+  // Keep category intent prominent for searches such as "قطع ميكانيكية شيفروليه كروز".
+  // A section is a subset of the model's recorded catalogue, not a universal
+  // fitment claim. Avoid repeating "قطع غيار" in generic category names.
+  if (locale === "ar") {
+    const isGeneric = category.trim() === "قطع غيار";
+    const title = isGeneric
+      ? `قسم قطع الغيار ${fullName} | موبِك`
+      : `${category} ${fullName} | قطع غيار موبِك`;
     return {
-      title: `قسم ${category} لموديل ${fullName} في مصر`,
-      description: `تصفح قسم ${category} لعربية ${fullName} في موبِك. ده جزء من المنتجات المسجلة للموديل؛ راجع رقم القطعة والموتور وسنة الصنع قبل الطلب.`,
+      title,
+      description: `تصفح ${category} ${fullName} في موبِك من المنتجات المسجلة للموديل. قارن اسم القطعة ورقمها وماركتها، وراجع سنة الصنع والموتور قبل الطلب.`,
     };
+  }
   return {
-    title: `${fullName} ${category} category in Egypt`,
-    description: `Browse MOPC's ${category} for ${fullName}. This filtered selection covers recorded model parts. Check part number, engine and year before buying.`,
+    title: `${fullName} ${category} | MOPC Egypt`,
+    description: `Shop ${category} for ${fullName} at MOPC. Browse the recorded model selection, compare part numbers and makers, and check the year and engine before ordering.`,
   };
 }
