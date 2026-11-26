@@ -854,3 +854,15 @@ test("homepage postpones below-fold rendering while reserving stable space", () 
   assert.ok(styles.includes("contain-intrinsic-size: auto 640px;"));
   assert.ok(!styles.includes(".cyan-home .cyan-hero { content-visibility: auto;"));
 });
+
+test("global cart counter stays independent of favorites and checkout bundles", () => {
+  const shell = readFileSync("src/components/shell.tsx", "utf8");
+  const badge = readFileSync("src/components/cart-count.tsx", "utf8");
+  assert.ok(shell.includes('import { CartCount } from "./cart-count"'));
+  assert.ok(!shell.includes('import { CartCount } from "./favorites"'));
+  assert.ok(!badge.includes('from "./favorites"'));
+  assert.ok(!badge.includes('from "./purchase-buttons"'));
+  assert.ok(badge.includes('localStorage.getItem("cart")'));
+  assert.ok(badge.includes('window.addEventListener("store-change", update)'));
+  assert.ok(badge.includes('window.addEventListener("storage", update)'));
+});
