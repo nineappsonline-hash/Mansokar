@@ -499,6 +499,20 @@ export async function relatedProducts(
   }
   return products;
 }
+/** Published CMS copy is public, but remains fresh per request after edits.
+ * Both metadata and content share this read on the same render.
+ */
+export const publishedCmsPage = cache(async (slug: string) => {
+  if (!configured()) return null;
+  const { data, error } = await service()
+    .from("cms_pages")
+    .select("*")
+    .eq("slug", slug)
+    .eq("published", true)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+});
 export async function policyPages(slugs: string[]) {
   if (!configured() || !slugs.length) return [];
   const { data, error } = await service()
