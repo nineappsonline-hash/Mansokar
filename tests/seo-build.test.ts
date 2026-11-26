@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { canonicalPage } from "../src/lib/seo-policy";
+import { canonicalPage, categoryLandingIndexable } from "../src/lib/seo-policy";
 import { sitemapPublished } from "../src/lib/sitemap-visibility";
 import { sitemapIndex, sitemapXml, sitemapGroups } from "../src/lib/sitemap-xml";
 import { collectSearchPages } from "../src/lib/seo-inventory";
@@ -131,4 +131,15 @@ test("untranslated categories and model names do not create fabricated hreflang 
   const xml = sitemapXml(pages, "https://mopc.store", "vehicles");
   assert.ok(xml.includes("https://mopc.store/ar/brands/opel/astra-j/filters"));
   assert.ok(!xml.includes("https://mopc.store/en/brands/opel/astra-j/filters"));
+});
+
+
+test("empty categories and untranslated categories cannot be indexed", () => {
+  const category = { ar: "فلاتر", en: "Filters" };
+  assert.equal(categoryLandingIndexable(0, category, "ar"), false);
+  assert.equal(categoryLandingIndexable(3, category, "ar"), true);
+  assert.equal(categoryLandingIndexable(3, category, "en"), true);
+  assert.equal(categoryLandingIndexable(3, { ar: "فلاتر", en: "فلاتر" }, "en"), false);
+  assert.equal(categoryLandingIndexable(3, undefined, "ar"), false);
+  assert.equal(categoryLandingIndexable(Number.NaN, category, "ar"), false);
 });
