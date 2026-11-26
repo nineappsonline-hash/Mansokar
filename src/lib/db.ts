@@ -280,7 +280,7 @@ export const storefrontSettings = cache(
     return { storeName: { ar: "موبِك", en: "MOPC" }, ...data?.value };
   },
 );
-export const productImages = cache(async function loadProductImages(productId: string) {
+const sharedProductImages = unstable_cache(async function loadProductImages(productId: string) {
   if (!configured()) return [];
   const { data, error } = await service()
     .from("product_images")
@@ -292,7 +292,8 @@ export const productImages = cache(async function loadProductImages(productId: s
     url: isRemoteImageUrl(row.path) ? row.path : `/product-media/${row.id}`,
     alt: row.alt as { ar: string; en: string },
   }));
-});
+}, ["mopc-public-product-images-v1"], { revalidate: 60, tags: ["mopc-public-product-images"] });
+export const productImages = cache((productId: string) => sharedProductImages(productId));
 /** Fetch the first recorded photo for each requested product in bounded batches.
  * Featured cards can reuse these results rather than opening one query per SKU.
  */
@@ -554,7 +555,7 @@ const sharedPublishedCmsPage = unstable_cache(async (slug: string) => {
   return data;
 }, ["mopc-public-cms-page-v1"], { revalidate: 60, tags: ["mopc-public-cms"] });
 export const publishedCmsPage = cache(async (slug: string) => sharedPublishedCmsPage(slug));
-export async function policyPages(slugs: string[]) {
+const sharedPolicyPages = unstable_cache(async (slugs: string[]) => {
   if (!configured() || !slugs.length) return [];
   const { data, error } = await service()
     .from("cms_pages")
@@ -563,6 +564,9 @@ export async function policyPages(slugs: string[]) {
     .eq("published", true);
   if (error) throw error;
   return data ?? [];
+}, ["mopc-public-policy-pages-v1"], { revalidate: 60, tags: ["mopc-public-policies"] });
+export async function policyPages(slugs: string[]) {
+  return sharedPolicyPages([...new Set(slugs)].sort());
 }
 
 export async function deliveryAreas() {
