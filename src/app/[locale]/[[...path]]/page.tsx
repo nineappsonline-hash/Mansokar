@@ -5,6 +5,7 @@ import { siteCopy } from "@/lib/site-copy";
 import { ModelSearchContent } from "@/components/model-search-content";
 import {
   canonicalPage,
+  categoryLandingIndexable,
   eligibleProduct,
   translatedProduct,
 } from "@/lib/seo-policy";
@@ -204,11 +205,11 @@ export async function generateMetadata({
         .eq("slug", path[1])
         .maybeSingle();
       if (data) {
+        const categoryResult = await searchCatalog({ category: path[1], size: 1 });
+        categoryHasInventory = categoryResult.total > 0;
         categoryPageLocales = (["ar", "en"] as const).filter((lang) =>
-          translatedProduct({ name: data.name }, lang),
+          categoryLandingIndexable(categoryResult.total, data.name, lang),
         );
-        categoryHasInventory =
-          (await searchCatalog({ category: path[1], size: 1 })).total > 0;
         pageMeta = {
           title: {
             ar: data.seo?.title?.ar || data.name.ar,
