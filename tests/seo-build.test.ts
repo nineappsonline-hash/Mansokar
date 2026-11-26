@@ -659,7 +659,7 @@ test("model landing JSON-LD lists only actual page products with canonical URLs"
   assert.ok(page.includes('const publicModelCollection ='));
   assert.ok(page.includes('modelListing && listingBrand && listingModel && !vehicle &&'));
   assert.ok(page.includes('!q.q && !q.year && !q.sort && !q.manufacturer && !q.type'));
-  assert.ok(page.includes('canonicalPage(`/${locale}/${route}`, q)'));
+  assert.ok(page.includes('canonicalPage(`/${locale}/${route}`, { page: q.page })'));
   assert.ok(page.includes('"@type": "CollectionPage"'));
   assert.ok(page.includes('"@type": "ItemList"'));
   assert.ok(page.includes('"@type": "ListItem"'));
@@ -667,6 +667,21 @@ test("model landing JSON-LD lists only actual page products with canonical URLs"
   assert.ok(page.includes('publicProductSlug(item)'));
   assert.ok(page.includes('{publicModelCollection && ('));
   assert.ok(!page.includes('aggregateRating: { ratingValue:'));
+});
+
+test("paginated model CollectionPage URL matches canonical despite internal make-model filters", () => {
+  const input = {
+    make: "chevrolet", model: "cruze", category: "mechanical-parts", page: "2",
+  };
+  const route = "/ar/brands/chevrolet/cruze/mechanical-parts";
+  assert.equal(canonicalPage(route, input), route, "internal filters suppress pagination");
+  assert.equal(
+    canonicalPage(route, { page: input.page }),
+    route + "?page=2",
+    "CollectionPage must not reuse page-one URL for page two",
+  );
+  const source = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(source.includes('const url = new URL(canonicalPage(`/${locale}/${route}`, { page: q.page }), siteOrigin()).href;'));
 });
 
 test("model landings use curated tips for real catalog model slugs without inventing fitments", () => {
