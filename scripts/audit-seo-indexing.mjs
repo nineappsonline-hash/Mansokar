@@ -175,10 +175,18 @@ for (const url of sampleUrls) {
       throw Error("Product unexpectedly noindex");
     const products = structuredObjects(body).flatMap(productsIn);
     if (!products.length) throw Error("No valid Product JSON-LD found");
-    if (!products.some((product) => product.offers && product.offers.priceCurrency === "EGP" && product.offers.price !== undefined))
-      throw Error("Product has no EGP Offer; check live checkout orderability vs markup");
+    // A single valid Offer cannot hide another broken Product snippet.
+    // Check every Product on the canonical indexed SKU page, not just one.
+    if (!products.every((product) =>
+      product.url === url &&
+      product.offers?.["@type"] === "Offer" &&
+      product.offers.url === url &&
+      product.offers.priceCurrency === "EGP" &&
+      Number.isFinite(Number(product.offers.price)) &&
+      Number(product.offers.price) >= 0
+    )) throw Error("A Product snippet is missing a valid canonical EGP Offer; check orderability vs markup");
     sampled++;
-    pass(label, "200; canonical; indexable; Product/Offer EGP");
+    pass(label, `200; canonical; indexable; ${products.length} valid Product/Offer EGP snippet(s)`);
   });
 }
 if (!matches.length) fail("product samples", "No Arabic products in sitemap to sample");
