@@ -697,6 +697,21 @@ export default async function Page({ params, searchParams }: Props) {
           "model_id,year",
         )
       : [];
+    // Group year records once; avoid rescanning every vehicle and year for
+    // each model when building the homepage's car selector.
+    const yearsByModelId = new Map<string, Set<number>>();
+    const yearsByModelSlug = new Map<string, Set<number>>();
+    for (const row of registeredYears) {
+      const years = yearsByModelId.get(row.model_id) ?? new Set<number>();
+      years.add(row.year);
+      yearsByModelId.set(row.model_id, years);
+    }
+    for (const currentVehicle of vehicles) {
+      const key = `${currentVehicle.brand}/${currentVehicle.model}`;
+      const years = yearsByModelSlug.get(key) ?? new Set<number>();
+      years.add(currentVehicle.year);
+      yearsByModelSlug.set(key, years);
+    }
     const slideshow = await heroSlideshow(
       branding.hero?.url ?? settings.heroImage ?? "/images/cyan/hero-blue.webp",
     );
@@ -720,16 +735,10 @@ export default async function Page({ params, searchParams }: Props) {
         }))}
         models={vehicleModels.map((m) => ({
           ...m,
-          years: [
-            ...new Set([
-              ...registeredYears
-                .filter((y) => y.model_id === m.id)
-                .map((y) => y.year),
-              ...vehicles
-                .filter((v) => v.brand === m.brand && v.model === m.slug)
-                .map((v) => v.year),
-            ]),
-          ],
+          years: [...new Set([
+            ...(yearsByModelId.get(m.id) ?? []),
+            ...(yearsByModelSlug.get(`${m.brand}/${m.slug}`) ?? []),
+          ])],
         }))}
       />
     );
