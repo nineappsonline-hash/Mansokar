@@ -521,7 +521,13 @@ export async function relatedProductGroups(id: string, vehicle?: string) {
   );
   const ids = [...new Set([...alternativeIds, ...togetherIds])];
   if (!ids.length) return { together: [] as Product[], alternative: [] as Product[] };
-  const products = await catalog({ ids });
+  // catalog({ ids }) bounds queries to 40 IDs; preserve every relation from
+  // both groups rather than accidentally dropping cross-sells after merging.
+  const batches = Array.from(
+    { length: Math.ceil(ids.length / 40) },
+    (_, index) => ids.slice(index * 40, (index + 1) * 40),
+  );
+  const products = (await Promise.all(batches.map((batch) => catalog({ ids: batch })))).flat();
   const alternatives = products.filter((product) => alternativeIds.has(product.id));
   if (!vehicle || !togetherIds.size)
     return { together: [] as Product[], alternative: alternatives };
