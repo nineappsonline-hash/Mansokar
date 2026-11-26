@@ -1,14 +1,15 @@
 import type { MetadataRoute } from "next";
-import { siteOrigin } from "@/lib/site-url";
+import { indexingApproved, siteOrigin } from "@/lib/site-url";
 export default function robots(): MetadataRoute.Robots {
+  const crawlEnabled = indexingApproved() && !!process.env.NEXT_PUBLIC_SUPABASE_URL;
   return {
     rules: [
       {
         userAgent: "*",
-        allow: process.env.NEXT_PUBLIC_SUPABASE_URL
+        allow: crawlEnabled
           ? ["/", "/api/merchant-feed"]
           : undefined,
-        disallow: process.env.NEXT_PUBLIC_SUPABASE_URL
+        disallow: crawlEnabled
           ? ["/admin", "/api/", "/auth/"]
           : "/",
       },

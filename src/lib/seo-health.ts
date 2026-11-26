@@ -24,7 +24,7 @@ export function seoHealthRows(
     const linked =
       fitments.some((f) => f.product_id === p.id) ||
       readApplications(p.specs).some(
-        (a) => modelIds.includes(a.model_id) && a.years.length > 0,
+        (a) => modelIds.includes(a.model_id),
       );
     const issues = [
       ...productQualityIssues(p, photoCount, linked),
