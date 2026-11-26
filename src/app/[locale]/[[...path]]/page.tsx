@@ -691,12 +691,17 @@ export default async function Page({ params, searchParams }: Props) {
   );
   let content: React.ReactNode;
   if (!route) {
-    const registeredYears = configured()
-      ? await allRows<{ model_id: string; year: number }>(
-          "vehicle_model_years",
-          "model_id,year",
-        )
-      : [];
+    const [registeredYears, slideshow] = await Promise.all([
+      configured()
+        ? allRows<{ model_id: string; year: number }>(
+            "vehicle_model_years",
+            "model_id,year",
+          )
+        : Promise.resolve([]),
+      heroSlideshow(
+        branding.hero?.url ?? settings.heroImage ?? "/images/cyan/hero-blue.webp",
+      ),
+    ]);
     // Group year records once; avoid rescanning every vehicle and year for
     // each model when building the homepage's car selector.
     const yearsByModelId = new Map<string, Set<number>>();
@@ -712,9 +717,6 @@ export default async function Page({ params, searchParams }: Props) {
       years.add(currentVehicle.year);
       yearsByModelSlug.set(key, years);
     }
-    const slideshow = await heroSlideshow(
-      branding.hero?.url ?? settings.heroImage ?? "/images/cyan/hero-blue.webp",
-    );
     content = (
       <CyanHome
         locale={locale}
