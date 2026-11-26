@@ -866,3 +866,11 @@ test("global cart counter stays independent of favorites and checkout bundles", 
   assert.ok(badge.includes('window.addEventListener("store-change", update)'));
   assert.ok(badge.includes('window.addEventListener("storage", update)'));
 });
+
+test("disabled analytics never hydrates the analytics client bundle", () => {
+  const shell = readFileSync("src/components/shell.tsx", "utf8");
+  assert.ok(shell.includes('process.env.ANALYTICS_ENABLED === "true" && ('));
+  assert.ok(shell.includes("<Analytics locale={locale} enabled />"));
+  assert.ok(!shell.includes('enabled={process.env.ANALYTICS_ENABLED === "true"}'));
+  assert.ok(shell.includes('<CartSync />'));
+});
