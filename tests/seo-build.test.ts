@@ -925,3 +925,18 @@ test("every product card uses lightweight favorite toggle without hydrating favo
   assert.ok(favorites.includes("export function Favorites("));
   assert.ok(favorites.includes("PurchaseButtons"));
 });
+
+test("homepage vehicle selector serializes only selected-language labels and needed fields", () => {
+  const home = readFileSync("src/components/cyan-home.tsx", "utf8");
+  const finder = readFileSync("src/components/home-vehicle-finder.tsx", "utf8");
+  assert.ok(home.includes("label: ar ? brand.ar : brand.name"));
+  assert.ok(home.includes("label: model.name[locale]"));
+  assert.ok(home.includes("years: model.years"));
+  assert.ok(finder.includes("brands: { slug: string; label: string }[]"));
+  assert.ok(finder.includes("models: { brand: string; slug: string; label: string; years: number[] }[]"));
+  assert.ok(finder.includes("m.label"));
+  assert.ok(!finder.includes("Text }"));
+  assert.ok(finder.includes('name="make"'));
+  assert.ok(finder.includes('name="model"'));
+  assert.ok(finder.includes('name="year"'));
+});
