@@ -3,9 +3,18 @@ import Link from "next/link";
 import type { Locale } from "@/lib/catalog";
 import { buyingGuides } from "@/lib/buying-guides";
 import { catalog, vehicleCatalog } from "@/lib/db";
+import { unstable_cache } from "next/cache";
 import { eligibleProduct } from "@/lib/seo-policy";
 import { publicProduct } from "@/lib/public-product";
 import { readApplications } from "@/lib/product-applications";
+// Guides show at most four SKU links and eight model links. Avoid scanning
+// the complete inventory on every article request; refresh published candidates
+// regularly so links remain representative of the live catalog.
+const guideProductCandidates = unstable_cache(
+  async () => catalog({ limit: 96 }),
+  ["mopc-public-guide-candidates-v1"],
+  { revalidate: 120, tags: ["mopc-public-guide-candidates"] },
+);
 export async function BuyingGuide({
   guide,
   locale,
@@ -14,17 +23,18 @@ export async function BuyingGuide({
   locale: Locale;
 }) {
   const [products, { models, brands }] = await Promise.all([
-    catalog({ all: true }),
+    guideProductCandidates(),
     vehicleCatalog(),
   ]);
   const eligible = products.filter((p) => eligibleProduct(p, locale));
-  const related = models.filter((m) =>
-    eligible.some((p) =>
-      readApplications(p.specs).some(
-        (a) => a.model_id === m.id && a.years.length,
-      ),
+  const modelIdsWithYears = new Set(
+    eligible.flatMap((p) =>
+      readApplications(p.specs)
+        .filter((application) => application.years.length > 0)
+        .map((application) => application.model_id),
     ),
   );
+  const related = models.filter((model) => modelIdsWithYears.has(model.id));
   return (
     <article className="shell section narrow stack">
       <script
