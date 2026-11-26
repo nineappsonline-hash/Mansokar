@@ -1,4 +1,4 @@
-import { readApplications } from "./product-applications";
+import { hasModelApplication } from "./seo-policy";
 import { eligibleProduct } from "./seo-policy";
 import "server-only";
 import { cache } from "react";
@@ -44,9 +44,7 @@ export const searchPages = cache(async () => {
     modelCounts[`${m.brand}/${m.slug}`] = products.filter(
       (p) =>
         eligibleProduct(p) &&
-        (readApplications(p.specs).some(
-          (a) => a.model_id === m.id,
-        ) ||
+        (hasModelApplication(p.specs, m.id) ||
           fitments.some(
             (f) =>
               f.product_id === p.id &&
