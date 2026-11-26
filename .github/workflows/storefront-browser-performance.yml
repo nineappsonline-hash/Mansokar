@@ -1,0 +1,49 @@
+name: Storefront browser performance audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/storefront-browser-performance.yml"
+      - "scripts/audit-browser-network.mjs"
+      - "package.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: storefront-perf-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+      - name: Audit mobile (read-only)
+        run: npm run perf:routes
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_REPORT_PATH: reports/browser-network-mobile.json
+      - name: Audit desktop (read-only)
+        if: always()
+        run: npm run perf:routes -- --desktop
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_REPORT_PATH: reports/browser-network-desktop.json
+      - name: Upload browser network reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storefront-browser-network
+          path: reports/browser-network-*.json
+          if-no-files-found: warn
+          retention-days: 14
