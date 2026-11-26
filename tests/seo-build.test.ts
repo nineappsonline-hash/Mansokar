@@ -100,8 +100,8 @@ test("same car model and maker get distinct sitemap links for different part num
     ...demoProducts[0], demo: false, status: "published" as const, price: 10000,
     name: { ar: "فلتر زيت", en: "Oil Filter" }, manufacturer: "GM",
   };
-  const one = { ...common, id: "a", partNumber: "555111" };
-  const two = { ...common, id: "b", partNumber: "555222" };
+  const one = { ...common, id: "a", slug: "filter-one-p-11111111-1111-4111-8111-111111111111", partNumber: "555111" };
+  const two = { ...common, id: "b", slug: "filter-two-p-22222222-2222-4222-8222-222222222222", partNumber: "555222" };
   const entries = collectSearchPages({
     brands: [], modelNames: [], categories: [], cms: [], guides: [],
     products: [one, two],
