@@ -1543,6 +1543,30 @@ export default async function Page({ params, searchParams }: Props) {
             </div>
           </section>
         </details>
+        <nav
+          className="panel stack"
+          aria-label={locale === "ar" ? "روابط تصفح قطع الغيار المرتبطة" : "Related parts browsing links"}
+        >
+          <h2>{locale === "ar" ? "تصفح قطع غيار مرتبطة" : "Explore related parts"}</h2>
+          <Link href={`/${locale}/categories/${p.category}`}>
+            {locale === "ar" ? "كل منتجات قسم " : "All products in "}
+            {categories.find((item) => item.slug === p.category)?.name[locale] ?? p.category}
+          </Link>
+          {[...new Map(
+            compatibleCars
+              .filter((car) => Boolean(car.href))
+              .map((car) => [car.href!, car]),
+          ).values()].slice(0, 6).map((car) => (
+            <Link key={car.href} href={car.href!}>
+              {locale === "ar" ? "قطع غيار " : "Parts for "}{car.make} {car.model || car.name}
+            </Link>
+          ))}
+          <p>
+            {locale === "ar"
+              ? "روابط الموديلات دي مبنية على التوافق المسجل للمنتج. راجع رقم القطعة وسنة الصنع والموتور قبل الشراء."
+              : "Model links reflect recorded product applications. Verify the part number, model year and engine before ordering."}
+          </p>
+        </nav>
         {together.length > 0 && (
           <section className="section product-page-animate slide">
             <h2>
