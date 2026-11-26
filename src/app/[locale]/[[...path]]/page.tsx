@@ -25,7 +25,7 @@ import { CatalogCarFilters } from "@/components/catalog-car-filters";
 import { readApplications } from "@/lib/product-applications";
 import { StoreQuestions } from "@/components/store-questions";
 import { searchPages } from "@/lib/seo-pages";
-import { cmsTranslatedLocales, vehicleLandingLocales } from "@/lib/seo-inventory";
+import { cmsTranslatedLocales, vehicleLandingLocales, searchPagesForLocale } from "@/lib/seo-inventory";
 import { modelCategorySearchCopy } from "@/lib/vehicle-landing-seo";
 import { ContactForm } from "@/components/contact-form";
 import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
@@ -827,6 +827,15 @@ export default async function Page({ params, searchParams }: Props) {
           Number(normalize(b.partNumber) === normalize(q.q!)) -
           Number(normalize(a.partNumber) === normalize(q.q!)),
       );
+    // Model-category navigation must match the indexable XML/HTML sitemap
+    // inventory; an empty or canonicalized duplicate is not a landing link.
+    const indexableModelCategoryPaths = modelListing && listingBrand && listingModel
+      ? new Set(searchPagesForLocale(await searchPages(), locale)
+          .filter((item) => item.path.startsWith(
+            `/brands/${listingBrand.slug}/${listingModel.slug}/`,
+          ))
+          .map((item) => item.path))
+      : null;
     const page = Math.max(1, Math.min(10000, Number(q.page) || 1));
     content = (
       <div className="shell section">
@@ -923,14 +932,18 @@ export default async function Page({ params, searchParams }: Props) {
             </nav>
           </>
         )}
-        {(modelListing || route === "catalog") && categories.length > 0 && (
+        {(modelListing || route === "catalog") && (modelListing ? Boolean(indexableModelCategoryPaths?.size) : categories.length > 0) && (
           <nav
             className="category-image-links"
             aria-label={
               locale === "ar" ? "تصفح حسب الفئة" : "Browse by category"
             }
           >
-            {categories.map((item) => {
+            {categories
+              .filter((item) => !modelListing || indexableModelCategoryPaths?.has(
+                `/brands/${listingBrand!.slug}/${listingModel!.slug}/${item.slug}`,
+              ))
+              .map((item) => {
               const image = categoryImages[item.slug];
               const params = new URLSearchParams();
               if (modelListing) {
