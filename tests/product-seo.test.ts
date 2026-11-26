@@ -863,14 +863,14 @@ test("EGP piaster-priced merchant offers match user-visible prices", async () =>
     status: "published" as const,
     specs: { stock_status: "in_stock", product_condition: "new" },
   };
-  assert.match(money(item.price, "ar"), /509\\.98/);
+  assert.ok(money(item.price, "ar").includes("509.98"));
   assert.ok(!feedExclusionReasons(item, "ar", ["/part.jpg"]).length);
   assert.equal(
     productStructuredData(item, "ar", "https://mopc.store", [])?.offers?.price,
     "509.98",
   );
-  assert.match(
-    merchantFeed([{ product: item, images: ["/part.jpg"] }], "ar", "https://mopc.store"),
-    /<g:price>509\\.98 EGP<\\/g:price>/,
+  assert.ok(
+    merchantFeed([{ product: item, images: ["/part.jpg"] }], "ar", "https://mopc.store")
+      .includes("<g:price>509.98 EGP</g:price>"),
   );
 });
