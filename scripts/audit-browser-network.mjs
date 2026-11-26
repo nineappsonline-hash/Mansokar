@@ -42,6 +42,9 @@ try {
     });
     const page = await context.newPage();
     const failures = [];
+    // Canceled background RSC prefetches are expected on page teardown.
+    // They are not evidence of a broken user-facing request.
+    const canceledPrefetches = [];
     const cdp = await context.newCDPSession(page);
     const requestInfo = new Map();
     const entries = [];
@@ -62,7 +65,11 @@ try {
     });
     cdp.on("Network.loadingFailed", ({ requestId, errorText }) => {
       const item = requestInfo.get(requestId);
-      if (item) failures.push(`${item.url}: ${errorText}`);
+      if (!item) return;
+      const message = `${item.url}: ${errorText}`;
+      if (errorText === "net::ERR_ABORTED" && new URL(item.url).searchParams.has("_rsc"))
+        canceledPrefetches.push(message);
+      else failures.push(message);
     });
     page.on("pageerror", (error) => failures.push(`JavaScript: ${error.message}`));
     page.on("response", (response) => {
@@ -119,6 +126,7 @@ try {
         // Navigation timing excludes the artificial networkidle/1800ms audit wait.
         ttfbMs: nav ? Math.max(0, nav.responseStart - nav.requestStart) : null,
         responseStartMs: nav?.responseStart ?? null,
+        responseEndMs: nav?.responseEnd ?? null,
         fcpMs: performance.getEntriesByType("paint")
           .find((entry) => entry.name === "first-contentful-paint")?.startTime ?? null,
       };
@@ -183,10 +191,11 @@ try {
       // The critical product image may be a remote URL, not /product-media.
       heaviestRequests: heavy(allRequests),
       cssFiles: assets.css,
+      prefetchCanceledCount: new Set(canceledPrefetches).size,
       failures: [...new Set(failures)].slice(0, 30),
     };
     results.push(summary);
-    console.log(`[browser-perf] ${label}: HTTP ${summary.status}, JS ${(summary.bytes.js/1024).toFixed(1)} KB, CSS ${(summary.bytes.css/1024).toFixed(1)} KB, all-origin images ${(summary.bytes.imageAllOrigins/1024).toFixed(1)} KB, TTFB ${summary.ttfbMs?.toFixed(0) ?? "n/a"} ms, FCP ${summary.fcpMs?.toFixed(0) ?? "n/a"} ms, LCP ${summary.lcpMs?.toFixed(0) ?? "n/a"} ms, errors ${summary.failures.length}`);
+    console.log(`[browser-perf] ${label}: HTTP ${summary.status}, JS ${(summary.bytes.js/1024).toFixed(1)} KB, CSS ${(summary.bytes.css/1024).toFixed(1)} KB, all-origin images ${(summary.bytes.imageAllOrigins/1024).toFixed(1)} KB, TTFB ${summary.ttfbMs?.toFixed(0) ?? "n/a"} ms, FCP ${summary.fcpMs?.toFixed(0) ?? "n/a"} ms, LCP ${summary.lcpMs?.toFixed(0) ?? "n/a"} ms, errors ${summary.failures.length}, canceled-prefetches ${summary.prefetchCanceledCount}`);
     const links = await page.locator(`a[href*="/${locale}/products/"]`).evaluateAll((elements) =>
       elements.map((item) => item.getAttribute("href")).filter(Boolean)
     ).catch(() => []);
