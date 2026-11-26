@@ -587,9 +587,12 @@ export default async function Page({ params, searchParams }: Props) {
     storefrontSettings(),
     siteMedia(["logo"]),
   ]);
+  // Informational routes do not render category cards or breadcrumbs;
+  // avoid loading that catalog before their article content.
+  const informationalPage = ["guides", "policies", "faq", "contact", "about", "installments", "site-map"].includes(path[0]);
   const [vehicleData, categories] = await Promise.all([
     vehicleCatalog(),
-    categoryCatalog(),
+    informationalPage ? Promise.resolve([] as Awaited<ReturnType<typeof categoryCatalog>>) : categoryCatalog(),
   ]);
   const {
     brands: storedBrands,
