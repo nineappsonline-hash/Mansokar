@@ -567,6 +567,12 @@ export default async function Page({ params, searchParams }: Props) {
     w = t(locale),
     q = { ...(await searchParams) },
     route = path.join("/");
+  // Start the published SKU lookup before waiting for public vehicle/category
+  // catalogs and the visitor's selected car. React cache shares this lookup
+  // with metadata and root 404 validation for this request.
+  const productLookupPromise = path[0] === "products" && path.length === 2
+    ? catalogBySlug(path[1])
+    : Promise.resolve([] as Product[]);
   // Public CMS lookups for guides and policies can run beside catalog work.
   // Keep metadata and page reads deduplicated without stale cross-request copies.
   const publicCmsPromise =
@@ -674,9 +680,7 @@ export default async function Page({ params, searchParams }: Props) {
   // Homepage offers and regular inventory are independent; fetch both
   // alongside the product lookup instead of serializing database requests.
   const [primary, homeOffers, homeProducts] = await Promise.all([
-    path[0] === "products"
-      ? catalogBySlug(path[1])
-      : Promise.resolve([] as Product[]),
+    productLookupPromise,
     !route
       ? configured()
         ? searchCatalog({ offers: true, vehicle: vehicle?.id, size: 4 })
