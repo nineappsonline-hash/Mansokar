@@ -1,0 +1,32 @@
+name: Temporary storefront browser measurements
+on:
+  push:
+    branches:
+      - perf/browser-navigation-timings-20261127
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-perf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Measure live MOPC routes (read-only)
+        run: npm run perf:routes
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_LOCALE: ar
+      - name: Upload route timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mopc-browser-perf
+          path: reports/browser-network.json
+          if-no-files-found: ignore
