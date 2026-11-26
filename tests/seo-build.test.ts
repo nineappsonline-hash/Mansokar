@@ -869,8 +869,12 @@ test("model category totals cache is public, short-lived and not affected by use
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(source.includes("unstable_cache("));
   assert.ok(source.includes("{ revalidate: 60 }"));
-  assert.ok(source.includes("const base = { make, model, size: 1 }"));
-  assert.ok(source.includes("categorySlugs.map((category) => searchCatalog({ ...base, category }))"));
+  assert.ok(source.includes('service().rpc("model_category_inventory_counts"'));
+  assert.ok(source.includes("p_make: make"));
+  assert.ok(source.includes("p_model: model"));
+  assert.ok(source.includes("categorySlugs.map((slug) => [slug, result?.categoryTotals?.[slug] ?? 0])"));
+  assert.ok(!source.includes("categorySlugs.map((category) => searchCatalog"));
+  assert.ok(source.includes("mopc-public-model-category-totals-v2"));
   assert.ok(page.includes("categories.map((item) => item.slug)"));
   assert.ok(page.includes("counts.categoryTotals[item.slug] ?? 0"));
   assert.ok(!page.includes("searchPagesForLocale(await searchPages(), locale)"));
