@@ -3,7 +3,7 @@ import { siteOrigin } from "@/lib/site-url";
 import { siteIdentity } from "@/lib/site-identity";
 import { knownBrandRoute } from "@/lib/seo-brand-route";
 import { notFound } from "next/navigation";
-import { catalog, vehicleCatalog } from "@/lib/db";
+import { catalogBySlug, vehicleCatalog } from "@/lib/db";
 import { storefrontSettings } from "@/lib/db";
 import "./globals.css";
 import { headers } from "next/headers";
@@ -62,7 +62,7 @@ export default async function RootLayout({
   if (
     ["ar", "en"].includes(segments[0]) &&
     segments[1] === "products" &&
-    (segments.length !== 3 || !(await catalog({ slug: segments[2] })).length)
+    (segments.length !== 3 || !(await catalogBySlug(segments[2])).length)
   )
     notFound();
   const settings = await storefrontSettings();
