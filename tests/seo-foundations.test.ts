@@ -340,3 +340,30 @@ function collectSitemapFixture() {
     modelCounts,
   });
 }
+
+
+test("model-category SEO pages are generated only when catalog fitment inventory exists", async () => {
+  const { collectSearchPages } = await import("../src/lib/seo-inventory");
+  const pages = collectSearchPages({
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] }],
+    modelNames: [{ brand: "opel", slug: "astra-j", name: { ar: "أسترا J", en: "Astra J" } }],
+    categories: [
+      { slug: "filters", name: { ar: "فلاتر", en: "Filters" } },
+      { slug: "brakes", name: { ar: "فرامل", en: "Brakes" } },
+    ],
+    cms: [],
+    guides: [],
+    products: [],
+    modelCounts: { "opel/astra-j": 1 },
+    modelCategoryCounts: { "opel/astra-j/filters": 1, "opel/astra-j/brakes": 0 },
+  });
+  assert.ok(pages.some((page) => page.path === "/brands/opel/astra-j/filters"));
+  assert.ok(!pages.some((page) => page.path === "/brands/opel/astra-j/brakes"));
+  const pagesWithoutCounts = collectSearchPages({
+    brands: [{ slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] }],
+    modelNames: [],
+    categories: [{ slug: "filters", name: { ar: "فلاتر", en: "Filters" } }],
+    cms: [], guides: [], products: [],
+  });
+  assert.ok(!pagesWithoutCounts.some((page) => page.path === "/brands/opel/astra-j/filters"));
+});

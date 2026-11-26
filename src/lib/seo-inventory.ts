@@ -31,6 +31,7 @@ export function collectSearchPages(input: {
   guides: { slug: string; title: Text }[];
   products: Product[];
   modelCounts?: Record<string, number>;
+  modelCategoryCounts?: Record<string, number>;
   productDates?: Record<string, string | undefined>;
   productImages?: { id: string; product_id: string; path: string }[];
 }): SearchPage[] {
@@ -120,6 +121,20 @@ export function collectSearchPages(input: {
             kind: "model" as const,
           };
         }),
+      ...b.models.flatMap((model) =>
+        input.categories
+          .filter((category) =>
+            (input.modelCategoryCounts?.[`${b.slug}/${model}/${category.slug}`] ?? 0) > 0,
+          )
+          .map((category) => ({
+            path: `/brands/${b.slug}/${model}/${category.slug}`,
+            title: {
+              ar: `${category.name.ar} ${b.ar} ${input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name.ar ?? model}`,
+              en: `${b.name} ${input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name.en ?? model} ${category.name.en}`,
+            },
+            kind: "model" as const,
+          })),
+      ),
     ]),
     ...input.products
       .filter((p) => eligibleProduct(p))

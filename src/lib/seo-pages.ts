@@ -40,22 +40,26 @@ export const searchPages = cache(async () => {
       )
     : [];
   const modelCounts: Record<string, number> = {};
-  for (const m of models)
-    modelCounts[`${m.brand}/${m.slug}`] = products.filter(
-      (p) =>
-        eligibleProduct(p) &&
-        (hasModelApplication(p.specs, m.id) ||
-          fitments.some(
-            (f) =>
-              f.product_id === p.id &&
-              vehicles.some(
-                (v) =>
-                  v.id === f.vehicle_config_id &&
-                  v.brand === m.brand &&
-                  v.model === m.slug,
-              ),
-          )),
-    ).length;
+  const modelCategoryCounts: Record<string, number> = {};
+  const vehicleById = new Map(vehicles.map((vehicle) => [vehicle.id, vehicle]));
+  const fitmentsByProduct = new Map<string, Set<string>>();
+  for (const fitment of fitments) {
+    const linked = fitmentsByProduct.get(fitment.product_id) ?? new Set<string>();
+    const vehicle = vehicleById.get(fitment.vehicle_config_id);
+    if (vehicle) linked.add(`${vehicle.brand}/${vehicle.model}`);
+    fitmentsByProduct.set(fitment.product_id, linked);
+  }
+  for (const model of models) {
+    const key = `${model.brand}/${model.slug}`;
+    for (const product of products) {
+      if (!eligibleProduct(product)) continue;
+      if (!hasModelApplication(product.specs, model.id) &&
+          !fitmentsByProduct.get(product.id)?.has(key)) continue;
+      modelCounts[key] = (modelCounts[key] ?? 0) + 1;
+      const categoryKey = `${key}/${product.category}`;
+      modelCategoryCounts[categoryKey] = (modelCategoryCounts[categoryKey] ?? 0) + 1;
+    }
+  }
   const brands = coveredBrands(storedBrands);
   const modelNames = brands.flatMap((b) =>
     b.models.map((slug) => ({
@@ -70,6 +74,7 @@ export const searchPages = cache(async () => {
     modelNames,
     categories,
     modelCounts,
+    modelCategoryCounts,
     productDates: Object.fromEntries(
       products.map((p) => [p.id, p.seo_updated_at ?? undefined]),
     ),

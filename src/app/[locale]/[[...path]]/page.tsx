@@ -230,12 +230,20 @@ export async function generateMetadata({
     const brands = coveredBrands(storedBrands);
     const brand = brands.find((b) => b.slug === path[1]);
     const model = models.find((m) => m.brand === path[1] && m.slug === path[2]);
-    if (!brand || (path[2] && !model) || path.length > 3) notFound();
+    const categoryForModel = path[3]
+      ? (await categoryCatalog()).find((category) => category.slug === path[3])
+      : undefined;
+    if (!brand || (path[2] && !model) || path.length > 4 ||
+        (path.length === 4 && !categoryForModel)) notFound();
     if (brand && (!path[2] || model)) {
       if (path[2] && configured())
         modelHasInventory =
-          (await searchCatalog({ make: brand.slug, model: path[2], size: 1 }))
-            .total > 0;
+          (await searchCatalog({
+            make: brand.slug,
+            model: path[2],
+            category: categoryForModel?.slug,
+            size: 1,
+          })).total > 0;
       const target = targetModel(brand.slug, path[2]);
       const nameAr =
         brand.ar +
@@ -245,18 +253,20 @@ export async function generateMetadata({
         (path[2] ? " " + (model?.name.en ?? target?.name.en ?? path[2]) : "");
       pageMeta = {
         title: {
-          ar: "قطع غيار " + nameAr + " في مصر",
-          en: nameEn + " spare parts in Egypt",
+          ar: categoryForModel
+            ? categoryForModel.name.ar + " " + nameAr + " في مصر"
+            : "قطع غيار " + nameAr + " في مصر",
+          en: categoryForModel
+            ? nameEn + " " + categoryForModel.name.en + " in Egypt"
+            : nameEn + " spare parts in Egypt",
         },
         description: {
           ar:
-            "استعرض قطع غيار " +
-            nameAr +
-            " وحدد سنة الصنع والموتور للتحقق من التوافق.",
+            "استعرض " + (categoryForModel?.name.ar ?? "قطع غيار") + " " +
+            nameAr + " المتاحة في الكتالوج، وراجع سنة الصنع والموتور قبل الشراء.",
           en:
-            "Browse " +
-            nameEn +
-            " parts and select your year and engine to check compatibility.",
+            "Browse " + nameEn + " " + (categoryForModel?.name.en ?? "spare parts") +
+            " in the catalog, and check vehicle year and engine before buying.",
         },
       };
     }
@@ -479,7 +489,7 @@ export default async function Page({ params, searchParams }: Props) {
     models: vehicleModels,
   } = await vehicleCatalog();
   const brands = coveredBrands(storedBrands);
-  const modelListing = path[0] === "brands" && path.length === 3;
+  const modelListing = path[0] === "brands" && (path.length === 3 || path.length === 4);
   const listingBrand = modelListing
     ? brands.find((b) => b.slug === path[1])
     : undefined;
@@ -490,6 +500,10 @@ export default async function Page({ params, searchParams }: Props) {
     if (!listingBrand || !listingModel) notFound();
     q.make = listingBrand.slug;
     q.model = listingModel.slug;
+    if (path.length === 4) {
+      if (!path[3] || !((await categoryCatalog()).some((item) => item.slug === path[3]))) notFound();
+      q.category = path[3];
+    }
   }
   const settings = await storefrontSettings();
   const mediaSlots = [
@@ -687,7 +701,7 @@ export default async function Page({ params, searchParams }: Props) {
       notFound();
     const category = path[0] === "categories" ? path[1] : q.category;
     const currentCategory =
-      path[0] === "categories"
+      path[0] === "categories" || (modelListing && path.length === 4)
         ? categories.find((c) => c.slug === category)
         : undefined;
     let filtered = products.filter(
@@ -745,8 +759,12 @@ export default async function Page({ params, searchParams }: Props) {
                   },
                   {
                     label: listingModel.name[locale],
-                    href: `/${locale}/${route}`,
+                    href: `/${locale}/brands/${listingBrand.slug}/${listingModel.slug}`,
                   },
+                  ...(currentCategory ? [{
+                    label: currentCategory.name[locale],
+                    href: `/${locale}/${route}`,
+                  }] : []),
                 ]
               : currentCategory
                 ? [
@@ -778,8 +796,8 @@ export default async function Page({ params, searchParams }: Props) {
         <h1>
           {listingBrand && listingModel
             ? locale === "ar"
-              ? `قطع غيار ${listingBrand.ar} ${listingModel.name.ar}`
-              : `${listingBrand.name} ${listingModel.name.en} parts`
+              ? `${currentCategory?.name.ar ?? "قطع غيار"} ${listingBrand.ar} ${listingModel.name.ar}`
+              : `${listingBrand.name} ${listingModel.name.en} ${currentCategory?.name.en ?? "parts"}`
             : (currentCategory?.name[locale] ??
               (route === "offers" ? w.offers : w.catalog))}
         </h1>
@@ -840,12 +858,14 @@ export default async function Page({ params, searchParams }: Props) {
                 if (q.model) params.set("model", q.model);
                 if (q.year) params.set("year", q.year);
               }
-              params.set("category", item.slug);
+              if (!modelListing) params.set("category", item.slug);
               return (
                 <Link
                   key={item.slug}
                   className={category === item.slug ? "active" : ""}
-                  href={`/${locale}/${route}?${params}`}
+                  href={modelListing
+                    ? `/${locale}/brands/${listingBrand!.slug}/${listingModel!.slug}/${item.slug}${q.year ? `?year=${encodeURIComponent(q.year)}` : ""}`
+                    : `/${locale}/${route}?${params}`}
                 >
                   {image && <img src={image.url} alt="" loading="lazy" />}
                   <span>{item.name[locale]}</span>
