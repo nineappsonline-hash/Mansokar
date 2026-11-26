@@ -590,6 +590,29 @@ export default async function Page({ params, searchParams }: Props) {
       ? undefined
       : ((await cookies()).get("vehicle")?.value ??
         (await memberActiveVehicle()))))();
+  // Public product detail work can start as soon as the SKU lookup resolves,
+  // independently of vehicle/category catalog and layout requests. Preserve
+  // request-bound selected-car fitments and never share private data in cache.
+  const productDetailsPromise = path[0] === "products"
+    ? Promise.all([productLookupPromise, selectedIdPromise]).then(([found, selectedId]) => {
+        const raw = found[0];
+        if (!raw) return null;
+        return Promise.all([
+          productImages(raw.id).catch(() => []),
+          deliveryAreas(),
+          policyPages(
+            raw.policy_refs?.length
+              ? raw.policy_refs
+              : ["policies/shipping", "policies/returns", "policies/warranty"],
+          ),
+          relatedProductGroups(raw.id, selectedId),
+        ]);
+      })
+    : null;
+  const familyPromise = path[0] === "products"
+    ? productLookupPromise.then((found) =>
+        found[0] ? catalog({ family: found[0].family, limit: 12 }) : [])
+    : Promise.resolve([] as Product[]);
   // Start site identity fetches immediately. Shell consumes the same promise
   // later instead of waiting until the content has finished loading.
   const shellDataPromise = Promise.all([
@@ -692,24 +715,10 @@ export default async function Page({ params, searchParams }: Props) {
       : Promise.resolve([] as Product[]),
     !route ? catalog({ limit: 10 }) : Promise.resolve([] as Product[]),
   ]);
-  // Start public detail data immediately after finding the SKU, while the
-  // related product family and vehicle fitment are still loading. The same
-  // product photo request is shared with generateMetadata via React cache.
-  const productDetailsPromise = path[0] === "products" && primary[0]
-    ? Promise.all([
-        productImages(primary[0].id).catch(() => []),
-        deliveryAreas(),
-        policyPages(
-          primary[0].policy_refs?.length
-            ? primary[0].policy_refs
-            : ["policies/shipping", "policies/returns", "policies/warranty"],
-        ),
-        relatedProductGroups(primary[0].id, vehicle?.id),
-      ])
-    : null;
-  const family = primary[0]
-    ? await catalog({ family: primary[0].family, limit: 12 })
-    : [];
+  // Detail and related-family queries were started as soon as the SKU
+  // lookup began, before waiting on the vehicle/category/site-shell data.
+  // Resolve the already-running family lookup only when constructing cards.
+  const family = await familyPromise;
   const products =
     serverResults?.products ??
     (primary.length
@@ -1389,7 +1398,7 @@ export default async function Page({ params, searchParams }: Props) {
     // Independent product sections can fetch concurrently. A missing image
     // must not block a product page, while policy/shipping data errors stay visible.
     const [media, areas, policies, relationGroups] =
-      await productDetailsPromise!;
+      (await productDetailsPromise)!;
     const { together, alternative: curatedAlternatives } = relationGroups;
     const alternatives = (
       curatedAlternatives.length ? curatedAlternatives : products
