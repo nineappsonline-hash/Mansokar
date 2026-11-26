@@ -43,6 +43,13 @@ export function productSerpTitle(
     if (withStore.length <= 60) return withStore;
     if (noYearRanges.length < base.length) return noYearRanges;
   }
+  // Use compact separators and a standard "with" abbreviation only when
+  // they bring the generated title into the SERP budget. Keep the full
+  // manufacturer, vehicle and part reference; merchant titles stay untouched.
+  const compact = noYearRanges
+    .replace(/\s+with\s+/gi, " w/")
+    .replace(/\s+\|\s+/g, "|");
+  if (compact.length <= 60) return compact;
   // Only drop the store suffix if it would consume search-result title space;
   // product names and references remain intact.
   return base.length < titled.length ? base : titled;
