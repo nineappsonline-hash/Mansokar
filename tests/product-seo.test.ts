@@ -185,8 +185,8 @@ test("visible answers reflect the SKU and current payment methods in both langua
     assert.ok(
       answers.some((a) =>
         locale === "ar"
-          ? a.answer.includes("ضمان الوكيل أو المورد")
-          : a.answer.includes("agent or supplier warranty"),
+          ? a.answer.includes("شروط الضمان المكتوبة")
+          : a.answer.includes("product-specific warranty terms"),
       ),
     );
     assert.ok(!JSON.stringify(answers).includes("9000"));
@@ -211,6 +211,11 @@ test("product answers explain genuine brand fallback and use only recorded warra
   );
   const unknown = productAnswers({ ...generic, specs: {} }, "en");
   assert.ok(!unknown.some((item) => item.answer.includes("6 months")));
+  assert.ok(!unknown.some((item) => /MOPC lists genuine spare parts|agent or supplier warranty/.test(item.answer)));
+  assert.ok(!productAnswers({ ...generic, specs: {} }, "ar").some((item) =>
+    item.answer.includes("قطع الغيار في موبِك أصلية بضمان الوكيل")));
+  assert.ok(en.some((item) => item.answer.includes("6 months")));
+
 });
 
 test("deleted makes and models stay absent from navigation and SEO inventory for every make", async () => {

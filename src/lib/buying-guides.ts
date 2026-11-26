@@ -18,8 +18,8 @@ export const buyingGuides = [
           "What does “genuine” mean on a product page?",
         ),
         body: text(
-          "موبِك بتعرض قطع غيار أصلية بضمان حسب المنتج. الماركة بتظهر GM لو كانت غير مسجلة أو مكتوب بدلها «أصلي» في بيانات الكتالوج. «أصلي» وصف للقطعة، مش بلد المنشأ. راجع رقم القطعة وماركتها وصورة العبوة الفعلية لو متاحة؛ ولو صورة المنتج مش متاحة هنوضح ده بدل ما نعرض صورة قطعة تانية.",
-          "MOPC lists genuine spare parts with a product-specific warranty. The brand field defaults to GM when it was missing or previously said “أصلي” (“Genuine”) in the catalog. “Genuine” describes the part, not its country of manufacture. Check the saved part number, item brand and a real package photo where available. A labeled placeholder means no product photo is available.",
+          "مش كل قطعة مكتوب عليها «أصلي» معناها إن مصدرها متأكد منه. لو ماركة القطعة مش واضحة أو البيانات فيها اسم عام، اطلب رقم القطعة وصورة العبوة أو مستند المورد للتأكيد. وصف «أصلي» مش بلد المنشأ. راجع رقم القطعة وماركتها وصورة العبوة الفعلية لو متاحة؛ ولو صورة المنتج مش متاحة هنوضح ده بدل ما نعرض صورة قطعة تانية.",
+          "A “genuine” label by itself does not prove a part's source. If the item maker is unclear or a generic label appears in the catalog, request the part number and available packaging or supplier documentation. “Genuine” is not a country of manufacture. Check the saved part number, item brand and a real package photo where available. A labeled placeholder means no product photo is available.",
         ),
       },
       {
@@ -38,8 +38,8 @@ export const buyingGuides = [
           "Who provides the warranty, and how long is it?",
         ),
         body: text(
-          "الضمان من الوكيل أو المورد حسب القطعة. مدة الضمان ونطاقه بيتحددوا في صفحة المنتج أو مستند الضمان المرفق؛ مفيش مدة واحدة تنطبق على كل القطع. راجع الشروط واحتفظ بالفاتورة لأنها بتثبت تاريخ الشراء.",
-          "The agent or supplier provides the warranty according to the product. Its period and coverage are stated on the product page or accompanying warranty document; one period does not apply to every item. Read the terms and keep your invoice as proof of purchase date.",
+          "ما تفترضش إن كل القطع ليها نفس الضمان أو إن الضمان صادر من الوكيل. مدة الضمان وجهة تقديمه ونطاقه لازم تتراجع في بيانات القطعة أو مستند الضمان الخاص بيها؛ ولو مش واضحة اسألنا قبل الشراء. راجع الشروط واحتفظ بالفاتورة لأنها بتثبت تاريخ الشراء.",
+          "Do not assume all items have the same warranty or that a dealer provides it. Check the product details or applicable warranty document for the provider, duration and coverage, and ask for confirmation before buying if these are unspecified. Read the terms and keep your invoice as proof of purchase date.",
         ),
       },
       {
@@ -48,8 +48,8 @@ export const buyingGuides = [
           "What is covered, and how do I request a review?",
         ),
         body: text(
-          "الضمان بيغطي عيوب الصناعة حسب شروط الوكيل أو المورد. الضرر الناتج عن تركيب غلط أو سوء استخدام أو تعديل أو استهلاك طبيعي أو تركيب القطعة على عربية غير مناسبة مش مشمول. لو ظهرت مشكلة، تواصل معانا برقم الطلب أو الفاتورة ورقم القطعة ووصف العيب؛ ونوضحلك خطوات الفحص. تفاصيل الاسترجاع والعيوب المصنعية موجودة في سياسات المتجر.",
-          "The warranty covers manufacturing defects under the agent's or supplier's terms. Damage from incorrect installation, misuse, modification, normal wear or fitting an incompatible vehicle is excluded. For a problem, contact us with the order or invoice number, part number and fault description so we can explain the review process. See the store policies for returns and manufacturing defects.",
+          "تغطية الضمان والاستثناءات بتختلف حسب القطعة وشروط الجهة اللي بتقدمه. راجع إذا كانت عيوب الصناعة مشمولة، وشروط التركيب والاستخدام والاستهلاك، وأي استثناءات مكتوبة قبل الطلب. لو ظهرت مشكلة، تواصل معانا برقم الطلب أو الفاتورة ورقم القطعة ووصف العيب؛ ونوضحلك خطوات الفحص. تفاصيل الاسترجاع والعيوب المصنعية موجودة في سياسات المتجر.",
+          "Coverage and exclusions depend on the product-specific warranty terms. Check whether manufacturing defects are covered and what conditions apply to installation, use, normal wear and incompatible fitting before ordering. For a problem, contact us with the order or invoice number, part number and fault description so we can explain the review process. See the store policies for returns and manufacturing defects.",
         ),
       },
     ],
