@@ -1267,6 +1267,20 @@ test("live Product Offer smoke checks prioritize known Google-indexed SKUs in bo
   assert.ok(!audit.includes("method: \"POST\""));
 });
 
+test("scheduled SEO smoke validates XML-discovered model pages and their real Product ItemLists", () => {
+  const audit = readFileSync("scripts/audit-seo-indexing.mjs", "utf8");
+  assert.ok(audit.includes('fetchPage("/sitemaps/vehicles.xml")'));
+  assert.ok(audit.includes("const modelSitemapUrls ="));
+  assert.ok(audit.includes("const modelSample = ["));
+  assert.ok(audit.includes("for (const url of modelSample)"));
+  assert.ok(audit.includes('item?.["@type"] === "CollectionPage"'));
+  assert.ok(audit.includes('item?.mainEntity?.["@type"] === "ItemList"'));
+  assert.ok(audit.includes("modelPagesPassed, modelPagesAttempted: modelSample.length"));
+  assert.ok(audit.includes("if (!canonical || new URL(canonical, origin).href !== url)"));
+  assert.ok(audit.includes('throw Error("Model unexpectedly noindex")'));
+  assert.ok(!audit.includes('method: "POST"'));
+});
+
 test("phase 9 monitors live crawl, canonical, sitemap and Product Offers without buying", () => {
   const pkg = JSON.parse(readFileSync("package.json", "utf8"));
   const audit = readFileSync("scripts/audit-seo-indexing.mjs", "utf8");
