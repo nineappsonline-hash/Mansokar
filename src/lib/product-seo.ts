@@ -41,7 +41,7 @@ export function productSerpTitle(
   if (noYearRanges !== base) {
     const withStore = suffix ? `${noYearRanges} | ${suffix}` : noYearRanges;
     if (withStore.length <= 60) return withStore;
-    if (noYearRanges.length <= 60) return noYearRanges;
+    if (noYearRanges.length < base.length) return noYearRanges;
   }
   // Only drop the store suffix if it would consume search-result title space;
   // product names and references remain intact.
