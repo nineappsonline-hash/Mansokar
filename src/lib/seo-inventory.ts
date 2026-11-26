@@ -11,6 +11,13 @@ export type SearchPage = {
   kind:
     "main" | "brand" | "model" | "category" | "guide" | "policy" | "product";
 };
+/** Use identical locale eligibility for CMS sitemap entries and page metadata. */
+export function cmsTranslatedLocales(title: Text): ("ar" | "en")[] {
+  return (["ar", "en"] as const).filter((locale) =>
+    translatedProduct({ name: title }, locale),
+  );
+}
+
 export function publicCmsPath(slug: string) {
   return (
     /^(about|contact|faq|guides)$/.test(slug) ||
@@ -87,9 +94,7 @@ export function collectSearchPages(input: {
       .map((p) => ({
         path: `/${p.slug}`,
         title: p.title,
-        locales: (["ar", "en"] as const).filter((locale) =>
-          translatedProduct({ name: p.title }, locale),
-        ),
+        locales: cmsTranslatedLocales(p.title),
         lastModified: p.seo_updated_at || undefined,
         kind: (p.slug.startsWith("policies/")
           ? "policy"
