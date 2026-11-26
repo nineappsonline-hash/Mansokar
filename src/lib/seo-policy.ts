@@ -27,7 +27,7 @@ export function canonicalPage(
   filters: Record<string, string | undefined>,
 ) {
   const page = Number(filters.page);
-  return /^\/(?:ar|en)\/brands\/[^/]+\/[^/]+(?:\/[^/]+)?$/.test(path) &&
+  return (/^\/(?:ar|en)\/brands\/[^/]+\/[^/]+(?:\/[^/]+)?$/.test(path) ||\n    /^\/(?:ar|en)\/site-map$/.test(path)) &&
     Number.isInteger(page) &&
     page > 1 &&
     !Object.keys(filters).some(
