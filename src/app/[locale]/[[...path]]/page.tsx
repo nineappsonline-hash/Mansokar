@@ -378,6 +378,31 @@ export async function generateMetadata({
   const identity = siteCopy[l];
   const siteName = settings.storeName?.[l] || identity.name;
   const homeTitle = `${identity.heading} | ${siteName}`;
+  // Fallback only when the CMS/category record has no meaningful description.
+  const fallbackDescription =
+    slug === "policies/privacy"
+      ? l === "ar"
+        ? "اعرف كيفية استخدام بياناتك وطلباتك ومعلومات التواصل في متجر موبِك، وحقوقك في مراجعة بيانات الحساب وطلب حذفها."
+        : "Learn how MOPC handles your account, order and contact information, including your rights to access or request deletion of your data."
+      : slug === "policies/terms"
+        ? l === "ar"
+          ? "اقرأ شروط استخدام متجر موبِك، وإتمام الطلبات والدفع والشحن والاستبدال والاسترجاع قبل شراء قطع الغيار."
+          : "Read the terms for using MOPC, placing orders, payments, delivery, returns and exchanges before buying car parts."
+        : path[0] === "categories" && path[1]
+          ? l === "ar"
+            ? `تسوق ${pageMeta?.title?.ar || "قطع غيار السيارات"} في مصر من موبِك. راجع رقم القطعة وماركتها وتوافقها مع موديل عربيتك قبل الطلب.`
+            : `Browse ${pageMeta?.title?.en || "car spare parts"} at MOPC Egypt. Check part numbers, brands and vehicle compatibility before ordering.`
+          : undefined;
+  const metaDescription =
+    productCopy?.description?.trim() ||
+    (slug === "installments"
+      ? l === "ar"
+        ? "دليل تقسيط قطع الغيار في مصر بالكريدت كارد وشركات التمويل، وشروط الأهلية والتكلفة وتوافر الدفع في المتجر."
+        : "A guide to credit cards, spare-parts installments in Egypt, eligibility, total costs and store payment availability."
+      : undefined) ||
+    pageMeta?.description?.[l]?.trim() ||
+    fallbackDescription ||
+    (!slug ? identity.description : undefined);
   return {
     keywords: productMeta
       ? [
@@ -387,15 +412,7 @@ export async function generateMetadata({
           ...yearKeywords,
         ]
       : undefined,
-    description:
-      productCopy?.description ??
-      (slug === "installments"
-        ? l === "ar"
-          ? "دليل تقسيط قطع الغيار في مصر بالكريدت كارد وشركات التمويل، وشروط الأهلية والتكلفة وتوافر الدفع في المتجر."
-          : "A guide to credit cards, spare-parts installments in Egypt, eligibility, total costs and store payment availability."
-        : undefined) ??
-      pageMeta?.description?.[locale] ??
-      (!slug ? identity.description : undefined),
+    description: metaDescription,
     title:
       productCopy?.title ??
       pageMeta?.title?.[locale] ??
@@ -442,7 +459,7 @@ export async function generateMetadata({
               type: "website",
               siteName,
               title: pageMeta?.title?.[l] ?? routeTitles[slug] ?? siteName,
-              description: pageMeta?.description?.[l] ?? identity.description,
+              description: metaDescription ?? identity.description,
               url: canonicalPage(`/${l}/${slug}`, filters),
               locale: l === "ar" ? "ar_EG" : "en_EG",
               images: [{ url: "/images/mopc/logo.png", alt: "MOPC · موبِك" }],
@@ -450,7 +467,7 @@ export async function generateMetadata({
             twitter: {
               card: "summary",
               title: pageMeta?.title?.[l] ?? routeTitles[slug] ?? siteName,
-              description: pageMeta?.description?.[l] ?? identity.description,
+              description: metaDescription ?? identity.description,
               images: ["/images/mopc/logo.png"],
             },
           }),

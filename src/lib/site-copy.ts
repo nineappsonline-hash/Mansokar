@@ -4,15 +4,15 @@ import type { Locale } from "./catalog";
 export const siteCopy = {
   ar: {
     name: "موبِك",
-    heading: "قطع غيار سيارات أصلية بضمان في مصر",
+    heading: "قطع غيار سيارات في مصر حسب الماركة والموديل",
     description:
-      "قطع غيار أصلية لأوبل وشيفروليه وبيجو وستروين وإم جي في مصر من موبِك، بضمان الوكيل أو المورد حسب المنتج. راجع توافق القطعة وأسعارها بالجنيه المصري.",
+      "تسوق قطع غيار أوبل وشيفروليه وبيجو وستروين وإم جي في مصر من موبِك. ابحث برقم القطعة أو ماركة وموديل عربيتك، وراجع التوافق والسعر قبل الطلب.",
   },
   en: {
     name: "MOPC",
-    heading: "Genuine Car Parts with Warranty in Egypt",
+    heading: "Car Spare Parts in Egypt by Make and Model",
     description:
-      "Shop genuine Opel, Chevrolet, Peugeot, Citroën and MG spare parts in Egypt at MOPC, with agent or supplier warranties. Check fitment and prices in EGP.",
+      "Shop Opel, Chevrolet, Peugeot, Citroën and MG car spare parts in Egypt. Search by part number, make and model, then review fitment, prices and product-specific terms before ordering.",
   },
 } satisfies Record<
   Locale,
