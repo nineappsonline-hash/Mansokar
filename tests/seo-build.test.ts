@@ -653,7 +653,7 @@ test("product pages expose crawlable category and recorded model links without i
 test("model landing JSON-LD lists only actual page products with canonical URLs", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes('const publicModelCollection ='));
-  assert.ok(page.includes('modelListing && listingBrand && listingModel &&'));
+  assert.ok(page.includes('modelListing && listingBrand && listingModel && !vehicle &&'));
   assert.ok(page.includes('!q.q && !q.year && !q.sort && !q.manufacturer && !q.type'));
   assert.ok(page.includes('canonicalPage(`/${locale}/${route}`, q)'));
   assert.ok(page.includes('"@type": "CollectionPage"'));
