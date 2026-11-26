@@ -199,9 +199,20 @@ export function publicProduct(
       projected.description[locale] = description;
       projected.seo ??= {};
       projected.seo.title = { ...projected.seo.title, [locale]: title } as Text;
+      // Keep the complete compatibility description visible to shoppers.
+      // For a single vehicle family, use a concise independent SERP snippet.
+      // Never rewrite merchant-authored metadata or hide multi-car fitments.
+      const searchDescription =
+        !manualDescription && cars.length === 1
+          ? locale === "ar"
+            ? `${p.name.ar} من ${p.manufacturer} لـ${vehicleText}. رقم القطعة ${p.partNumber}. راجع التوافق قبل الشراء.`
+            : `${p.name.en} by ${p.manufacturer} for ${vehicleText}. Part ${p.partNumber}. Check compatibility before ordering.`
+          : description;
       projected.seo.description = {
         ...projected.seo.description,
-        [locale]: description,
+        [locale]: searchDescription.length <= 155
+          ? searchDescription
+          : description,
       } as Text;
     }
   }
