@@ -58,6 +58,19 @@ export function collectSearchPages(input: {
   productDates?: Record<string, string | undefined>;
   productImages?: { id: string; product_id: string; path: string }[];
 }): SearchPage[] {
+  // One eligibility pass powers both category and product URL generation.
+  // Index images by product once, rather than scanning the entire media table
+  // for every product when Google requests a large XML sitemap.
+  const publishedProducts = input.products.filter((product) => eligibleProduct(product));
+  const publishedCategories = new Set(publishedProducts.map((product) => product.category));
+  const imagesByProduct = new Map<string, string[]>();
+  for (const image of input.productImages ?? []) {
+    const images = imagesByProduct.get(image.product_id) ?? [];
+    images.push(
+      isRemoteImageUrl(image.path) ? image.path : `/product-media/${image.id}`,
+    );
+    imagesByProduct.set(image.product_id, images);
+  }
   const pages: SearchPage[] = [
     { path: "", title: { ar: "الرئيسية", en: "Home" }, kind: "main" },
     {
@@ -86,9 +99,7 @@ export function collectSearchPages(input: {
       kind: "main",
     },
     ...input.categories
-      .filter((c) =>
-        input.products.some((p) => eligibleProduct(p) && p.category === c.slug),
-      )
+      .filter((c) => publishedCategories.has(c.slug))
       .map((c) => ({
         path: `/categories/${c.slug}`,
         title: c.name,
@@ -172,22 +183,14 @@ export function collectSearchPages(input: {
           })),
       ),
     ]),
-    ...input.products
-      .filter((p) => eligibleProduct(p))
-      .map((p) => ({
+    ...publishedProducts.map((p) => ({
         path: `/products/${p.slug}`,
         title: p.name,
         locales: (["ar", "en"] as const).filter((locale) =>
           translatedProduct(p, locale),
         ),
         lastModified: input.productDates?.[p.id],
-        images: input.productImages
-          ?.filter((image) => image.product_id === p.id)
-          .map((image) =>
-            isRemoteImageUrl(image.path)
-              ? image.path
-              : `/product-media/${image.id}`,
-          ),
+        images: input.productImages ? imagesByProduct.get(p.id) ?? [] : undefined,
         kind: "product" as const,
       })),
   ];
