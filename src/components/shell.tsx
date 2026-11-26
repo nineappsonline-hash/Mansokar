@@ -1,3 +1,6 @@
+// Only storefront routes need the storefront overrides; preserve cascade order.
+import "./mopc-premium-v2.css";
+import "./mopc-showroom.css";
 import { MobileNavigation } from "./mobile-navigation";
 import responsive from "./shell-responsive.module.css";
 import { SearchBox } from "./search";
