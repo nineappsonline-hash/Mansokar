@@ -105,6 +105,8 @@ export function collectSearchPages(input: {
   products: Product[];
   modelCounts?: Record<string, number>;
   modelCategoryCounts?: Record<string, number>;
+  modelDates?: Record<string, string>;
+  modelCategoryDates?: Record<string, string>;
   productVehicleLabels?: Record<string, Text[]>;
   productDates?: Record<string, string | undefined>;
   productImages?: { id: string; product_id: string; path: string }[];
@@ -201,6 +203,7 @@ export function collectSearchPages(input: {
           )?.name;
           return {
             path: `/brands/${b.slug}/${m}`,
+            lastModified: input.modelDates?.[`${b.slug}/${m}`],
             locales: vehicleLandingLocales(
               { ar: b.ar, en: b.name },
               name ?? { ar: m, en: m },
@@ -226,6 +229,7 @@ export function collectSearchPages(input: {
           )
           .map((category) => ({
             path: `/brands/${b.slug}/${model}/${category.slug}`,
+            lastModified: input.modelCategoryDates?.[`${b.slug}/${model}/${category.slug}`],
             locales: vehicleLandingLocales(
               { ar: b.ar, en: b.name },
               input.modelNames.find((item) => item.brand === b.slug && item.slug === model)?.name ??
