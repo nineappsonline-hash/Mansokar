@@ -32,6 +32,7 @@ export async function ProductCard({
   context,
   contextMatched = false,
   cover,
+  mediaResolved = false,
   carCatalog,
 }: {
   product: Product;
@@ -42,6 +43,7 @@ export async function ProductCard({
   context?: CarContext;
   contextMatched?: boolean;
   cover?: { url: string; alt: { ar: string; en: string } };
+  mediaResolved?: boolean;
 }) {
   const p = publicProduct(raw, context, contextMatched || confirmed);
   const origin = p.specs.country_of_origin;
@@ -68,7 +70,7 @@ export async function ProductCard({
   );
   let media;
   try {
-    media = cover ?? (await productImages(p.id))?.[0] ?? undefined;
+    media = mediaResolved ? cover : (cover ?? (await productImages(p.id))?.[0] ?? undefined);
   } catch {
     /* A missing photo does not conceal the product. */
   }
@@ -102,6 +104,9 @@ export async function ProductCard({
           src={photo}
           alt={photoAlt}
           loading="lazy"
+          decoding="async"
+          width={320}
+          height={240}
           className="product-card-image"
         />
         {p.demo && <span className={styles.demo}>{w.demoProduct}</span>}
