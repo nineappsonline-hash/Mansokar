@@ -37,12 +37,12 @@ export default function Loading() {
           <span className={styles.eyebrow} aria-hidden="true">
             PRECISION IN EVERY DETAIL
           </span>
-          <h1 className={styles.ar} lang="ar" dir="rtl">
+          <div className={`${styles.loadingTitle} ${styles.ar}`} lang="ar" dir="rtl">
             لحظات ونكون معك.
-          </h1>
-          <h1 className={styles.en} lang="en" dir="ltr">
+          </div>
+          <div className={`${styles.loadingTitle} ${styles.en}`} lang="en" dir="ltr">
             A moment. Then you’re on your way.
-          </h1>
+          </div>
           <p className={styles.ar} lang="ar" dir="rtl">
             نجهّز الصفحة لك
           </p>
