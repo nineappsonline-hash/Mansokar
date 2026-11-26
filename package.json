@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack --hostname 0.0.0.0",
     "build": "next build --webpack",
+    "postbuild": "node scripts/report-client-assets.mjs",
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "node --import tsx tests/domain.test.ts && node --import tsx tests/database.test.ts && node --import tsx tests/files.test.ts && node --import tsx tests/reporting.test.ts && node --import tsx tests/product-seo.test.ts && node --import tsx tests/seo-foundations.test.ts && node --import tsx tests/seo-build.test.ts && node --import tsx tests/manual-transfer.test.ts && node --import tsx tests/admin-message-atomic.test.ts && node --import tsx tests/admin-delete-product-atomic.test.ts && node --import tsx tests/product-image-cleanup.test.ts && node --import tsx tests/product-image-cleanup-rpc.test.ts && node --import tsx tests/product-photos.test.ts && node --import tsx tests/product-fitment.test.ts && node --import tsx tests/vehicle-year-ranges.test.ts",
