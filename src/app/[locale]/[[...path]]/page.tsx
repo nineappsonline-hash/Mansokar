@@ -27,6 +27,7 @@ import { StoreQuestions } from "@/components/store-questions";
 import { searchPages } from "@/lib/seo-pages";
 import { cmsTranslatedLocales, vehicleLandingLocales } from "@/lib/seo-inventory";
 import { modelCategoryBrowsePaths } from "@/lib/model-category-navigation";
+import { cachedModelCategoryTotals } from "@/lib/model-category-totals";
 import { modelCategorySearchCopy } from "@/lib/vehicle-landing-seo";
 import { ContactForm } from "@/components/contact-form";
 import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
@@ -852,30 +853,31 @@ export default async function Page({ params, searchParams }: Props) {
       );
     // Avoid building the entire public sitemap (all catalog, image and CMS
     // records) just to render a single model's category navigation.
-    const indexableModelCategoryPaths = modelListing && listingBrand && listingModel
-      ? await (async () => {
-          // The canonical model/category totals must ignore the current search
-          // query, optional year, sorting and pagination.
-          const base = { make: listingBrand.slug, model: listingModel.slug, size: 1 };
-          const [modelInventory, ...categoryInventory] = await Promise.all([
-            searchCatalog(base),
-            ...categories.map((item) => searchCatalog({ ...base, category: item.slug })),
-          ]);
-          return modelCategoryBrowsePaths({
-            locale,
-            make: listingBrand.slug,
-            model: listingModel.slug,
-            makeName: { ar: listingBrand.ar, en: listingBrand.name },
-            modelName: listingModel.name,
-            modelTotal: modelInventory.total,
-            categories: categories.map((item, index) => ({
-              slug: item.slug,
-              name: item.name,
-              total: categoryInventory[index].total,
-            })),
-          });
-        })()
-      : null;
+    const indexableModelCategoryPaths =
+      configured() && modelListing && listingBrand && listingModel
+        ? await (async () => {
+            // Counts are public and model-scoped: no year, cookies, query,
+            // sort or pagination can enter the shared short-lived cache.
+            const counts = await cachedModelCategoryTotals(
+              listingBrand.slug,
+              listingModel.slug,
+              categories.map((item) => item.slug),
+            );
+            return modelCategoryBrowsePaths({
+              locale,
+              make: listingBrand.slug,
+              model: listingModel.slug,
+              makeName: { ar: listingBrand.ar, en: listingBrand.name },
+              modelName: listingModel.name,
+              modelTotal: counts.modelTotal,
+              categories: categories.map((item) => ({
+                slug: item.slug,
+                name: item.name,
+                total: counts.categoryTotals[item.slug] ?? 0,
+              })),
+            });
+          })()
+        : null;
     const page = Math.max(1, Math.min(10000, Number(q.page) || 1));
     content = (
       <div className="shell section">
