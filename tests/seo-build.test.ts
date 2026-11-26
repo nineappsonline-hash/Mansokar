@@ -648,3 +648,18 @@ test("homepage cards use batched first-image lookup with no redundant per-produc
   assert.ok(card.includes("width={320}"));
   assert.ok(card.includes("height={240}"));
 });
+
+test("image loading priorities protect hero and main product LCP without eager thumbnails", () => {
+  const hero = readFileSync("src/components/hero-slideshow.tsx", "utf8");
+  const controls = readFileSync("src/components/controls.tsx", "utf8");
+  assert.ok(hero.includes('fetchPriority={i === 0 ? "high" : "low"}'));
+  assert.ok(hero.includes('loading={i === 0 ? undefined : "lazy"}'));
+  const gallery = controls.slice(controls.indexOf("export function Gallery("), controls.indexOf("export function VehicleSync("));
+  assert.ok(gallery.includes('fetchPriority="high"'));
+  assert.ok(gallery.includes('loading="eager"'));
+  assert.ok(gallery.includes("width={800}"));
+  assert.ok(gallery.includes("height={600}"));
+  assert.ok(gallery.includes('loading="lazy"'));
+  assert.ok(gallery.includes("width={96}"));
+  assert.ok(gallery.includes("height={72}"));
+});
