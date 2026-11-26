@@ -11,6 +11,8 @@ import { sitemapFitmentCounts } from "../src/lib/seo-fitment-counts";
 import { demoProducts } from "../src/lib/catalog";
 import { brandModelBuyingNotes } from "../src/lib/vehicle-coverage";
 import { brandModelListSchema } from "../src/lib/brand-model-schema";
+import { planImportVehicles } from "../src/lib/import-vehicles";
+import { canonicalVehicleModelSlug, resolveImportModelAlias } from "../src/lib/vehicle-model-aliases";
 
 const brand = { slug: "opel", name: "Opel", ar: "أوبل", models: ["astra-j"] };
 const modelNames = [
@@ -419,4 +421,42 @@ test("car brand page publishes ItemList markup but does not claim product-level 
   const source = readFileSync("src/components/car-model-page.tsx", "utf8");
   assert.match(source, /brandModelListSchema/);
   assert.match(source, /application\/ld\+json/);
+});
+
+test("known car spelling aliases resolve only to already registered canonical models", () => {
+  const models = [
+    { id: "legacy", brand: "chevrolet", slug: "cruz" },
+    { id: "canonical", brand: "chevrolet", slug: "cruze" },
+  ];
+  assert.equal(canonicalVehicleModelSlug("chevrolet", "cruz"), "cruze");
+  assert.equal(canonicalVehicleModelSlug("opel", "insginia-a"), "insignia-a");
+  assert.equal(canonicalVehicleModelSlug("mg", "5"), "5");
+  assert.equal(resolveImportModelAlias("chevrolet", models[0], models).id, "canonical");
+  assert.equal(resolveImportModelAlias("chevrolet", models[0], [models[0]]).id, "legacy");
+});
+
+test("new Excel imports avoid duplicate Cruz/Cruze and Insignia spelling model fitments", () => {
+  const brands = [
+    { slug: "chevrolet", name: "Chevrolet", ar: "شيفروليه" },
+    { slug: "opel", name: "Opel", ar: "أوبل" },
+  ];
+  const models = [
+    { id: "legacy-cruz", brand: "chevrolet", slug: "cruz", name: { ar: "Cruz", en: "Cruz" } },
+    { id: "canonical-cruze", brand: "chevrolet", slug: "cruze", name: { ar: "كروز", en: "Cruze" } },
+    { id: "legacy-insginia", brand: "opel", slug: "insginia-a", name: { ar: "انسيجنيا", en: "Insginia A" } },
+    { id: "canonical-insignia", brand: "opel", slug: "insignia-a", name: { ar: "إنسيجنيا A", en: "Insignia A" } },
+  ];
+  const rows = [
+    { spreadsheet: true, applications_input: [{ make: "Chevrolet", model: "Cruz", years: "all" }] },
+    { spreadsheet: true, applications_input: [{ make: "Opel", model: "insginia-a", years: "all" }] },
+  ];
+  const result = planImportVehicles(rows, models, brands, [
+    { model_id: "canonical-cruze", year: 2018 },
+    { model_id: "canonical-insignia", year: 2015 },
+  ]);
+  assert.deepEqual(result.rows[0].applications_input, [{ make: "chevrolet", model: "cruze", years: [2018] }]);
+  assert.deepEqual(result.rows[1].applications_input, [{ make: "opel", model: "insignia-a", years: [2015] }]);
+  assert.equal(result.additions.length, 0);
+  const legacyOnly = planImportVehicles([rows[0]], [models[0]], brands, [{ model_id: "legacy-cruz", year: 2019 }]);
+  assert.deepEqual(legacyOnly.rows[0].applications_input, [{ make: "chevrolet", model: "cruz", years: [2019] }]);
 });
