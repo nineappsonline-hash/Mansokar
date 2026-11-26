@@ -1,0 +1,52 @@
+name: MOPC Chromium storefront performance audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/mopc-browser-performance.yml"
+      - "scripts/audit-browser-network.mjs"
+  schedule:
+    - cron: "45 5 * * 5"
+
+permissions:
+  contents: read
+
+jobs:
+  production-browser-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci
+      - name: Install headless Chromium and system libraries
+        run: npx playwright install --with-deps chromium
+      - name: Mobile cold-first-view network audit (read-only)
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_LOCALE: ar
+          PERF_PRODUCT_URL: /ar/products/coolant-overflow-tank-gm-p-c4c0ce8c-7060-4591-9e4e-64650dfc7f15
+          PERF_REPORT_PATH: reports/browser-network-mobile.json
+        run: npm run perf:routes
+      - name: Desktop cold-first-view network audit (read-only)
+        if: success()
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_LOCALE: ar
+          PERF_PRODUCT_URL: /ar/products/coolant-overflow-tank-gm-p-c4c0ce8c-7060-4591-9e4e-64650dfc7f15
+          PERF_REPORT_PATH: reports/browser-network-desktop.json
+        run: npm run perf:routes -- --desktop
+      - name: Upload browser network and lab paint reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mopc-chromium-performance
+          path: reports/browser-network-*.json
+          if-no-files-found: warn
+          retention-days: 30
