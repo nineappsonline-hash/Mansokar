@@ -234,18 +234,24 @@ test("SEO timestamps leave legacy dates unknown, ignore cost-only edits and trac
   }
 });
 
-test("fractional legacy prices are withheld from merchant offers instead of disagreeing with whole-pound display", async () => {
+test("EGP piaster prices match the visible product page, JSON-LD and Merchant feed", async () => {
   const { productStructuredData } = await import("../src/lib/product-seo");
-  const p = { ...product, price: 12345, sale: null };
-  assert.equal(
-    productStructuredData(p, "ar", "https://mopc.store", [])!.offers,
-    undefined,
-  );
-  assert.ok(
-    feedExclusionReasons(p, "ar", ["/image.jpg"]).includes(
-      "fractional_price_review",
-    ),
-  );
+  const { money } = await import("../src/lib/catalog");
+  const priced = {
+    ...product,
+    price: 12345,
+    sale: null,
+    orderable: true,
+    specs: { stock_status: "in_stock", product_condition: "new" },
+  };
+  assert.match(money(priced.price, "ar"), /123\\.45/);
+  assert.match(money(12300, "ar"), /123/);
+  assert.ok(!feedExclusionReasons(priced, "ar", ["/image.jpg"]).includes("invalid_price"));
+  const schema = productStructuredData(priced, "ar", "https://mopc.store", []);
+  assert.equal(schema?.offers?.price, "123.45");
+  const xml = merchantFeed([{ product: priced, images: ["/image.jpg"] }], "ar", "https://mopc.store");
+  assert.ok(xml.includes("<g:price>123.45 EGP</g:price>"));
+  assert.ok(feedExclusionReasons({ ...priced, price: -1 }, "ar", ["/image.jpg"]).includes("invalid_price"));
 });
 
 test("genuine fallback remains visible copy without claiming a verified manufacturer in product data or feed", async () => {
