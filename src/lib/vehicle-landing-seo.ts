@@ -14,7 +14,7 @@ export function modelCategorySearchCopy(input: {
   const fullName = `${make} ${model}`.trim();
   if (locale === "ar")
     return {
-      title: `قسم ${category} لـ${fullName} في مصر`,
+      title: `قسم ${category} لموديل ${fullName} في مصر`,
       description: `تصفح المنتجات الموجودة في قسم ${category} لعربية ${fullName} في كتالوج موبِك. القسم جزء من المنتجات المسجلة للموديل؛ راجع رقم القطعة والموتور وسنة الصنع قبل الطلب.`,
     };
   return {
