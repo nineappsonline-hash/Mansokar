@@ -19,7 +19,7 @@ import {
   ChevronDown,
   Tags,
 } from "lucide-react";
-import { Language, VehicleSync, CartSync, ClearVehicle } from "./controls";
+import { Language, VehicleSync, CartSync, ClearVehicle } from "./shell-client-controls";
 import type { Locale, Vehicle } from "@/lib/catalog";
 import { t } from "@/lib/i18n";
 import styles from "./storefront.module.css";
