@@ -164,9 +164,9 @@ try {
     return links[0] || null;
   }
 
-  await audit("home", pathFor(""));
-  const firstProduct = await audit("catalog", pathFor("/catalog"));
-  const product = process.env.PERF_PRODUCT_URL || firstProduct;
+  const homeProduct = await audit("home", pathFor(""));
+  const catalogProduct = await audit("catalog", pathFor("/catalog"));
+  const product = process.env.PERF_PRODUCT_URL || catalogProduct || homeProduct;
   if (product) await audit("product", product);
   else console.warn("[browser-perf] No publicly linked product detected. Set PERF_PRODUCT_URL to test one.");
   await audit("checkout-view-only", pathFor("/checkout"));
@@ -181,3 +181,12 @@ writeFileSync(output, JSON.stringify({
   results,
 }, null, 2));
 console.log("[browser-perf] Wrote", output);
+
+const critical = results.filter((row) =>
+  ["home", "catalog"].includes(row.label) &&
+  (row.status !== 200 || row.failures.some((f) => f.startsWith("Navigation:")))
+);
+if (critical.length) {
+  console.error("[browser-perf] Critical pages did not load:", critical.map((r) => r.label + ": " + r.status).join(", "));
+  process.exitCode = 1;
+}
