@@ -1296,6 +1296,17 @@ test("scheduled SEO smoke validates XML-discovered model pages and their real Pr
   assert.ok(!audit.includes('method: "POST"'));
 });
 
+test("SEO monitoring validates every Product snippet, not just one valid offer", () => {
+  const audit = readFileSync("scripts/audit-seo-indexing.mjs", "utf8");
+  assert.ok(audit.includes('if (!products.every((product) =>'));
+  assert.ok(audit.includes('product.url === url'));
+  assert.ok(audit.includes('product.offers?.["@type"] === "Offer"'));
+  assert.ok(audit.includes('product.offers.url === url'));
+  assert.ok(audit.includes('product.offers.priceCurrency === "EGP"'));
+  assert.ok(audit.includes('Number.isFinite(Number(product.offers.price))'));
+  assert.ok(!audit.includes('products.some((product) => product.offers'));
+});
+
 test("phase 9 monitors live crawl, canonical, sitemap and Product Offers without buying", () => {
   const pkg = JSON.parse(readFileSync("package.json", "utf8"));
   const audit = readFileSync("scripts/audit-seo-indexing.mjs", "utf8");
