@@ -106,6 +106,18 @@ test("each SKU has localized metadata and merchant overrides", () => {
   );
 });
 
+test("automatic product metadata descriptions stay within the snippet budget", () => {
+  const longProduct = {
+    ...p,
+    description: { ar: "وصف طويل ".repeat(80), en: "Extra details ".repeat(80) },
+  };
+  for (const locale of ["ar", "en"] as const) {
+    const copy = productSearchCopy(longProduct, locale);
+    assert.ok(copy.description.length <= 155);
+    assert.ok(copy.description.includes(longProduct.partNumber));
+  }
+});
+
 test("product markup uses public identifiers, real images and EGP without claiming stock or finance", () => {
   const data = productStructuredData(p, "ar", "https://example.com", [
     "/part.jpg",
