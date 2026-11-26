@@ -106,6 +106,28 @@ test("each SKU has localized metadata and merchant overrides", () => {
   );
 });
 
+test("one-model product SERP description stays concise while full fitment remains visible", async () => {
+  const { publicProduct } = await import("../src/lib/public-product");
+  const product = {
+    ...p,
+    name: { ar: "اويل سيل كرنك خلفي بالقاعدة", en: "Rear Crankshaft Seal with Housing" },
+    manufacturer: "GM",
+    partNumber: "24563770",
+    specs: { "car_years:captiva": "2019,2020,2021,2022,2023" },
+  };
+  const catalog = {
+    brands: [{ slug: "chevrolet", name: "Chevrolet", ar: "شيفروليه" }],
+    models: [{ id: "captiva", brand: "chevrolet", slug: "captiva", name: { ar: "كابتيفا", en: "Captiva" } }],
+  };
+  const result = publicProduct(product, undefined, false, catalog);
+  const seo = productSearchCopy(result, "en").description;
+  assert.ok(seo.length <= 155, seo);
+  assert.ok(seo.includes("24563770"));
+  assert.ok(seo.includes("Captiva"));
+  assert.ok(result.description.en.includes("2019"));
+  assert.ok(result.description.en.length >= seo.length);
+});
+
 test("automatic product metadata descriptions stay within the snippet budget", () => {
   const longProduct = {
     ...p,
