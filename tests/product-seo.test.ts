@@ -5,6 +5,7 @@ import {
   productAnswers,
   productSearchCopy,
   productStructuredData,
+  recordedPartReferences,
 } from "../src/lib/product-seo";
 
 const p = {
@@ -791,4 +792,21 @@ test("automatic public SEO copy does not invent stock or genuine-part claims", a
   });
   assert.doesNotMatch(generated.description.en, /Order in Egypt|available to order/i);
   assert.doesNotMatch(generated.description.ar, /متاح للطلب/i);
+});
+
+
+test("recorded alternate part numbers are deduplicated, bounded and never mislabelled OEM", () => {
+  const raw = {
+    ...p,
+    partNumber: "OP-123",
+    partNumbers: [" OP-123 ", "REF-9", "ref-9", "", "OEM-UNVERIFIED", " REF-10 "],
+  };
+  assert.deepEqual(recordedPartReferences(raw), ["REF-9", "OEM-UNVERIFIED", "REF-10"]);
+  const { additionalProperty } = productStructuredData(raw, "ar", "https://mopc.store", [])!;
+  assert.ok(additionalProperty?.some((item) =>
+    item.name === "Additional recorded part reference" && item.value === "REF-9"
+  ));
+  assert.ok(!additionalProperty?.some((item) => item.name === "Verified OEM number"));
+  assert.ok(!additionalProperty?.some((item) => item.value === "OP-123"));
+  assert.deepEqual(recordedPartReferences({ ...p, partNumbers: [] }), []);
 });

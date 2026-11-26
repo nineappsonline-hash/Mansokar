@@ -7,6 +7,22 @@ import { countryOfOrigin } from "./product-specifications";
 import { validGtin } from "./merchant-feed";
 import { money, type Locale, type Product } from "./catalog";
 
+/** Additional catalog references are not automatically verified OEM identifiers. */
+export function recordedPartReferences(p: Pick<Product, "partNumber" | "partNumbers">) {
+  const seen = new Set<string>();
+  seen.add(p.partNumber.trim().toLocaleLowerCase());
+  return (p.partNumbers ?? [])
+    .filter((value): value is string => typeof value === "string")
+    .map((value) => value.trim())
+    .filter((value) => {
+      const key = value.toLocaleLowerCase();
+      if (!value || value.length > 100 || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, 12);
+}
+
 export function productSearchCopy(p: Product, locale: Locale) {
   return {
     title:
@@ -50,14 +66,22 @@ export function productStructuredData(
     ...(images.length
       ? { image: images.map((src) => new URL(src, base).href) }
       : {}),
-    ...(countryOfOrigin(p.specs.country_of_origin)
+    ...((countryOfOrigin(p.specs.country_of_origin) ||
+      recordedPartReferences(p).length)
       ? {
           additionalProperty: [
-            {
+            ...(countryOfOrigin(p.specs.country_of_origin)
+              ? [{
+                  "@type": "PropertyValue",
+                  name: "Country of origin",
+                  value: countryOfOrigin(p.specs.country_of_origin),
+                }]
+              : []),
+            ...recordedPartReferences(p).map((value) => ({
               "@type": "PropertyValue",
-              name: "Country of origin",
-              value: countryOfOrigin(p.specs.country_of_origin),
-            },
+              name: "Additional recorded part reference",
+              value,
+            })),
           ],
         }
       : {}),

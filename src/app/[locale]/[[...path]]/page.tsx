@@ -29,7 +29,7 @@ import { coveredBrands, targetModel } from "@/lib/vehicle-coverage";
 import { buyingGuides } from "@/lib/buying-guides";
 import { BuyingGuide } from "@/components/buying-guide";
 import { InstallmentsGuide } from "@/components/installments-guide";
-import { productSearchCopy, productStructuredData } from "@/lib/product-seo";
+import { productSearchCopy, productStructuredData, recordedPartReferences } from "@/lib/product-seo";
 import { builtInPolicy } from "@/lib/policy-content";
 import { ShippingEstimate } from "@/components/shipping-estimate";
 import { ProductCard as Card } from "@/components/product-card";
@@ -1070,6 +1070,7 @@ export default async function Page({ params, searchParams }: Props) {
               ...car,
               make: locale === "ar" ? brand?.ar : brand?.name,
               model: model?.name[locale],
+              href: model && brand ? `/${locale}/brands/${brand.slug}/${model.slug}` : undefined,
               logo,
             };
           },
@@ -1291,14 +1292,27 @@ export default async function Page({ params, searchParams }: Props) {
                       >
                         {compatibleCars.map((car) => (
                           <li key={car.id}>
-                            <VehicleBadge
-                              locale={locale}
-                              make={car.make}
-                              model={car.model || car.name}
-                              years={car.years}
-                              logo={car.logo}
-                              size="large"
-                            />
+                            {car.href ? (
+                              <Link href={car.href} aria-label={`${car.name} — ${locale === "ar" ? "عرض قطع الغيار" : "Browse spare parts"}`}>
+                                <VehicleBadge
+                                  locale={locale}
+                                  make={car.make}
+                                  model={car.model || car.name}
+                                  years={car.years}
+                                  logo={car.logo}
+                                  size="large"
+                                />
+                              </Link>
+                            ) : (
+                              <VehicleBadge
+                                locale={locale}
+                                make={car.make}
+                                model={car.model || car.name}
+                                years={car.years}
+                                logo={car.logo}
+                                size="large"
+                              />
+                            )}
                           </li>
                         ))}
                       </ul>
@@ -1384,6 +1398,19 @@ export default async function Page({ params, searchParams }: Props) {
               <p className="lead">
                 <ProductText text={p.description[locale]} locale={locale} />
               </p>
+              {recordedPartReferences(p).length > 0 && (
+                <div className="product-reference-numbers">
+                  <h3>{locale === "ar" ? "أرقام قطع مرجعية مسجلة" : "Additional recorded part numbers"}</h3>
+                  <p>{locale === "ar"
+                    ? "أرقام مرجعية مرتبطة بالمنتج في الكتالوج؛ مش بالضرورة أرقام OEM مؤكدة. راجع التوافق قبل الشراء."
+                    : "References recorded in the catalog; these are not necessarily verified OEM identifiers. Confirm fitment before ordering."}</p>
+                  <ul>
+                    {recordedPartReferences(p).map((number) => (
+                      <li key={number}><bdi dir="ltr">{number}</bdi></li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {p.editorial?.why && (
                 <p className="product-story-why">{p.editorial.why[locale]}</p>
               )}
