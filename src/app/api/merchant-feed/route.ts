@@ -3,6 +3,7 @@ import { requireAdmin, allRows, service } from "@/lib/db";
 import { siteOrigin } from "@/lib/site-url";
 import { merchantFeed, feedExclusionReasons } from "@/lib/merchant-feed";
 import { isRemoteImageUrl } from "@/lib/image-links";
+import { merchantImagesByProduct } from "@/lib/merchant-readiness";
 import type { Product } from "@/lib/catalog";
 export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
@@ -59,13 +60,10 @@ export async function GET(request: Request) {
     ]);
     const locale =
       new URL(request.url).searchParams.get("locale") === "en" ? "en" : "ar";
+    const imagesByProduct = merchantImagesByProduct(images, isRemoteImageUrl);
     const rows = products.map((product) => ({
       product,
-      images: images
-        .filter((i) => i.product_id === product.id)
-        .map((i) =>
-          isRemoteImageUrl(i.path) ? i.path : `/product-media/${i.id}`,
-        ),
+      images: imagesByProduct.get(product.id) ?? [],
     }));
     if (
       !rows.some(
