@@ -193,6 +193,13 @@ export function collectSearchPages(input: {
   ];
   return [...new Map(pages.map((p) => [p.path, p])).values()];
 }
+/** The HTML site map must never link to language URLs omitted from XML. */
+export function searchPagesForLocale(pages: SearchPage[], locale: "ar" | "en") {
+  return pages.filter((page) =>
+    !page.locales || page.locales.includes(locale),
+  );
+}
+
 export function sitemapEntries(pages: SearchPage[], base: string) {
   const origin = new URL(base).origin;
   return pages.flatMap((p) =>
