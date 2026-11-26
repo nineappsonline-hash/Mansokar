@@ -902,6 +902,20 @@ test("SEO requests share SKU lookup and cache only short-lived public homepage d
   assert.ok(page.includes("publicModelYears()"));
 });
 
+test("product pages use a lightweight client island instead of the cart and compare bundle", () => {
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  const detail = readFileSync("src/components/product-detail-controls.tsx", "utf8");
+  assert.ok(page.includes('from "@/components/product-detail-controls"'));
+  assert.ok(page.includes('import { Cart, Compare } from "@/components/controls";'));
+  for (const name of ["ProductActions", "Gallery", "CopyPart", "MobileBuyBar"])
+    assert.ok(detail.includes(`export function ${name}(`), name);
+  assert.ok(!detail.includes("export function Cart("));
+  assert.ok(!detail.includes("export function Compare("));
+  assert.ok(detail.includes('window.dispatchEvent(new Event("store-change"))'));
+  assert.ok(detail.includes("addCartItem("));
+  assert.ok(detail.includes("dialog.current?.showModal()"));
+});
+
 test("product and home data sources fetch independently in parallel without hiding critical failures", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes("const [media, areas, policies, relationGroups] ="));
