@@ -215,7 +215,8 @@ export async function ProductCard({
           {p.sale !== null && <del>{money(p.price, locale)}</del>}
         </div>
         <PurchaseButtons
-          product={{ id: p.id, name: p.name, orderable: p.orderable }}
+          product={{ id: p.id, orderable: p.orderable }}
+          label={p.name[locale]}
           locale={locale}
           vehicle={
             vehicle
