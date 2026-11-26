@@ -387,8 +387,8 @@ export async function generateMetadata({
   const routeTitles: Record<string, string> = {
     installments:
       l === "ar"
-        ? "تقسيط قطع غيار العربيات في مصر: الكروت وشركات التمويل"
-        : "Car parts installments in Egypt: cards and finance companies",
+        ? "تقسيط قطع غيار السيارات في مصر: الطرق والشروط"
+        : "Car parts installments in Egypt: options and terms",
     catalog: labels.catalog,
     offers: labels.offers,
     cart: labels.cart,
