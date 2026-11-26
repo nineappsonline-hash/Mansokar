@@ -1346,7 +1346,7 @@ export default async function Page({ params, searchParams }: Props) {
         : 0;
     content = (
       <div className={`shell section product-detail ${compactProduct.page}`}>
-        <MobileBuyBar product={p} locale={locale} />
+        <MobileBuyBar product={{ id: p.id, orderable: p.orderable, price: p.price, sale: p.sale }} locale={locale} />
         {!p.demo && (
           <script
             type="application/ld+json"
@@ -1533,7 +1533,7 @@ export default async function Page({ params, searchParams }: Props) {
             </div>
             <div className="purchase-actions">
               <ProductActions
-                product={p}
+                product={{ id: p.id, orderable: p.orderable, family: p.family }}
                 locale={locale}
                 vehicle={vehicle}
                 context={browsingContext}
