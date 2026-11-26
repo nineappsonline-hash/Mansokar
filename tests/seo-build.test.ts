@@ -632,3 +632,19 @@ test("scoped model category navigation excludes empty, duplicate and untranslate
     ...input, locale: "en", modelName: { ar: "أسترا J", en: "أسترا J" },
   }).size, 0);
 });
+
+test("homepage cards use batched first-image lookup with no redundant per-product fetch", () => {
+  const db = readFileSync("src/lib/db.ts", "utf8");
+  const home = readFileSync("src/components/cyan-home.tsx", "utf8");
+  const card = readFileSync("src/components/product-card.tsx", "utf8");
+  assert.ok(db.includes("export async function firstProductImages("));
+  assert.ok(db.includes('.in("product_id", ids.slice(offset, offset + 100))'));
+  assert.ok(db.includes("if (result[row.product_id]) continue"));
+  assert.ok(home.includes("firstProductImages(products.map((product) => product.id))"));
+  assert.ok(!home.includes("products.map(async (product)"));
+  assert.ok(home.includes("mediaResolved"));
+  assert.ok(card.includes("mediaResolved ? cover :"));
+  assert.ok(card.includes('decoding="async"'));
+  assert.ok(card.includes("width={320}"));
+  assert.ok(card.includes("height={240}"));
+});
