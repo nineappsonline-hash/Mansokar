@@ -976,3 +976,15 @@ test("decorative home banners render on server with no hydration or viewport obs
   assert.ok(banner.includes("aria-labelledby={labelledBy}"));
   assert.ok(sections.includes("<BannerMotion"));
 });
+
+test("bundle report correlates Next App Router client manifests to emitted route chunks", () => {
+  const audit = readFileSync("scripts/report-client-assets.mjs", "utf8");
+  assert.ok(audit.includes('"_client-reference-manifest.js"'));
+  assert.ok(audit.includes("manifest.clientModules || {}"));
+  assert.ok(audit.includes("manifest.entryCSSFiles || {}"));
+  assert.ok(audit.includes("runInNewContext("));
+  assert.ok(audit.includes("jsGzip:"));
+  assert.ok(audit.includes("cssGzip:"));
+  assert.ok(audit.includes("manifestSources"));
+  assert.ok(audit.includes("NOT first-view downloads"));
+});
