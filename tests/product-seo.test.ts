@@ -832,3 +832,22 @@ test("automated product headline prioritizes part number, model and maker over l
   assert.ok(manual.endsWith("| موبِك"));
   assert.equal(productSerpTitle("طقم فرامل GM | أوبل 2012–2022 | 12345678", "موبِك").includes("12345678"), true);
 });
+
+test("non-orderable public catalog products never advertise purchasable offers", () => {
+  const available = productStructuredData(
+    { ...p, orderable: true },
+    "ar",
+    "https://mopc.store",
+    [],
+  );
+  const unavailable = productStructuredData(
+    { ...p, orderable: false },
+    "ar",
+    "https://mopc.store",
+    [],
+  );
+  assert.ok(available?.offers);
+  assert.equal(unavailable?.offers, undefined);
+  assert.equal(unavailable?.["@type"], "Product");
+  assert.equal(unavailable?.mpn, p.partNumber);
+});
