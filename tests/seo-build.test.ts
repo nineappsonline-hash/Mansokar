@@ -710,6 +710,18 @@ test("product and home data sources fetch independently in parallel without hidi
   assert.ok(!page.includes("const slideshow = await heroSlideshow("));
 });
 
+test("SKU and policy SEO lookups share only short-lived public cache", () => {
+  const db = readFileSync("src/lib/db.ts", "utf8");
+  const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
+  assert.ok(page.includes("const productLookupPromise = path[0] ==="));
+  assert.ok(page.includes("    productLookupPromise,"));
+  assert.ok(db.includes('["mopc-public-product-images-v1"], { revalidate: 60'));
+  assert.ok(db.includes('["mopc-public-policy-pages-v1"], { revalidate: 60'));
+  assert.ok(db.includes("sharedPolicyPages([...new Set(slugs)].sort())"));
+  assert.ok(db.includes("export const productImages = cache((productId: string)"));
+  assert.ok(!db.includes("const sharedProductImages = unstable_cache(async function loadProductImages(productId: string) {\n  const user"));
+});
+
 test("SKU relation groups retain verified together recommendations and batch related products", () => {
   const db = readFileSync("src/lib/db.ts", "utf8");
   assert.ok(db.includes("export async function relatedProductGroups(id: string, vehicle?: string)"));
@@ -720,7 +732,7 @@ test("SKU relation groups retain verified together recommendations and batch rel
 
 test("product photos share request data with metadata and vehicle-free cross-sells skip database", () => {
   const db = readFileSync("src/lib/db.ts", "utf8");
-  assert.ok(db.includes("export const productImages = cache(async function loadProductImages"));
+  assert.ok(db.includes("export const productImages = cache((productId: string) => sharedProductImages(productId))"));
   assert.ok(db.includes('if (!configured() || (kind === "together" && !vehicle)) return [];'));
 });
 
