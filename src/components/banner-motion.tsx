@@ -1,8 +1,10 @@
-"use client";
+import type { ReactNode } from "react";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
-
-/** Play each decorative entrance once, when the banner reaches the viewport. */
+/**
+ * Decorative storefront banners are static server-rendered content.
+ * The previous client island hydrated a full IntersectionObserver solely to
+ * release paused CSS keyframes; keep the same markup accessible with no JS.
+ */
 export function BannerMotion({
   children,
   className,
@@ -14,30 +16,12 @@ export function BannerMotion({
   label?: string;
   labelledBy?: string;
 }) {
-  const ref = useRef<HTMLElement>(null);
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.15 },
-    );
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
   return (
     <section
-      ref={ref}
       className={className}
       aria-label={label}
       aria-labelledby={labelledBy}
-      data-in-view={visible}
+      data-in-view="true"
     >
       {children}
     </section>
