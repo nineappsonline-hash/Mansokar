@@ -58,11 +58,20 @@ export function SiteMap({
       {count > 1 && (
         <nav aria-label={locale === "ar" ? "صفحات المنتجات" : "Product pages"}>
           {current > 1 && (
-            <Link href={`/${locale}/site-map?page=${current - 1}`}>
+            <Link href={current === 2 ? `/${locale}/site-map` : `/${locale}/site-map?page=${current - 1}`}>
               {locale === "ar" ? "السابق" : "Previous"}
             </Link>
           )}{" "}
-          {current} / {count}{" "}
+          {Array.from({ length: count }, (_, index) => index + 1).map((number) => (
+            <Link
+              key={number}
+              href={number === 1 ? `/${locale}/site-map` : `/${locale}/site-map?page=${number}`}
+              aria-current={number === current ? "page" : undefined}
+              className={number === current ? "current-page" : undefined}
+            >
+              {number}
+            </Link>
+          ))}{" "}
           {current < count && (
             <Link href={`/${locale}/site-map?page=${current + 1}`}>
               {locale === "ar" ? "التالي" : "Next"}
