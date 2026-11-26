@@ -78,6 +78,7 @@ import {
   memberActiveVehicle,
   relatedProducts,
   policyPages,
+  publishedCmsPage,
   currentUser,
   configured,
   service,
@@ -231,12 +232,7 @@ export async function generateMetadata({
         categoryHasInventory = false;
       }
     } else if (!privatePage) {
-      const { data } = await service()
-        .from("cms_pages")
-        .select("title,seo")
-        .eq("slug", slug)
-        .eq("published", true)
-        .maybeSingle();
+      const data = await publishedCmsPage(slug);
       if (data) {
         cmsPageLocales = cmsTranslatedLocales(data.title);
         pageMeta = {
@@ -571,6 +567,12 @@ export default async function Page({ params, searchParams }: Props) {
     w = t(locale),
     q = { ...(await searchParams) },
     route = path.join("/");
+  // Public CMS lookups for guides and policies can run beside catalog work.
+  // Keep metadata and page reads deduplicated without stale cross-request copies.
+  const publicCmsPromise =
+    ["about", "contact", "faq", "guides", "policies"].includes(path[0])
+      ? publishedCmsPage(route)
+      : Promise.resolve(null);
   // Start vehicle selection independently of public catalog queries.
   // The member lookup remains request-bound and is never shared-cached.
   const selectedIdPromise = (async () =>
@@ -2149,16 +2151,7 @@ export default async function Page({ params, searchParams }: Props) {
       (!allowed.includes(path[1]) || path.length !== 2)
     )
       notFound();
-    let cms = null;
-    if (configured()) {
-      const { data } = await service()
-        .from("cms_pages")
-        .select("*")
-        .eq("slug", path.join("/"))
-        .eq("published", true)
-        .maybeSingle();
-      cms = data;
-    }
+    const cms = await publicCmsPromise;
     const builtInGuide =
       path[0] === "guides" && path.length === 2
         ? buyingGuides.find((g) => g.slug === path[1])
