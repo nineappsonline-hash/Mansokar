@@ -905,11 +905,11 @@ test("SEO requests share SKU lookup and cache only short-lived public homepage d
 test("product and home data sources fetch independently in parallel without hiding critical failures", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes("const [media, areas, policies, relationGroups] ="));
-  assert.ok(page.includes("const productDetailsPromise = path[0] === \"products\" && primary[0]"));
-  assert.ok(page.includes("await productDetailsPromise!;"));
-  assert.ok(page.includes("productImages(primary[0].id).catch(() => [])"));
+  assert.ok(page.includes('const productDetailsPromise = path[0] === "products"'));
+  assert.ok(page.includes("(await productDetailsPromise)!;"));
+  assert.ok(page.includes("productImages(raw.id).catch(() => [])"));
   assert.ok(page.includes("deliveryAreas(),"));
-  assert.ok(page.includes("relatedProductGroups(primary[0].id, vehicle?.id)"));
+  assert.ok(page.includes("relatedProductGroups(raw.id, selectedId)"));
   assert.ok(page.includes("const { together, alternative: curatedAlternatives } = relationGroups;"));
   assert.ok(page.includes("const homeDataPromise = !route"));
   assert.ok(page.includes("const [registeredYears, slideshow] = await homeDataPromise!;"));
