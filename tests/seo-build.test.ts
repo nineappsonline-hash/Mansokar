@@ -902,6 +902,19 @@ test("SEO requests share SKU lookup and cache only short-lived public homepage d
   assert.ok(page.includes("publicModelYears()"));
 });
 
+test("local gallery thumbnails use responsive sizing while full-resolution hero remains unchanged", () => {
+  const detail = readFileSync("src/components/product-detail-controls.tsx", "utf8");
+  const gallery = detail.slice(detail.indexOf("export function Gallery("), detail.indexOf("export function MobileBuyBar("));
+  assert.ok(gallery.includes('from "next/image"') || detail.includes('import Image from "next/image"'));
+  assert.ok(gallery.includes('item.url) ? ('));
+  assert.ok(gallery.includes('sizes="54px"'));
+  assert.ok(gallery.includes('<Image'));
+  assert.ok(gallery.includes('src={items[index].url}'));
+  assert.ok(gallery.includes('fetchPriority="high"'));
+  assert.ok(gallery.includes('width={1200}'));
+  assert.ok(gallery.includes('height={900}'));
+});
+
 test("product pages use a lightweight client island instead of the cart and compare bundle", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   const detail = readFileSync("src/components/product-detail-controls.tsx", "utf8");
