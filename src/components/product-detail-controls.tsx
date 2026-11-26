@@ -1,6 +1,7 @@
 "use client";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { addCartItem } from "@/lib/cart";
 import { partArt } from "@/lib/visuals";
 import { money, type Locale, type Product, type Vehicle } from "@/lib/catalog";
@@ -270,14 +271,25 @@ export function Gallery({
               aria-pressed={i === index}
               onClick={() => setIndex(i)}
             >
-              <img
-                src={item.url}
-                alt={item.alt[locale]}
-                width={96}
-                height={72}
-                loading="lazy"
-                decoding="async"
-              />
+              {/^\\/product-media\\/[0-9a-f-]{36}$/i.test(item.url) ? (
+                <Image
+                  src={item.url}
+                  alt={item.alt[locale]}
+                  width={96}
+                  height={72}
+                  sizes="54px"
+                  loading="lazy"
+                />
+              ) : (
+                <img
+                  src={item.url}
+                  alt={item.alt[locale]}
+                  width={96}
+                  height={72}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
             </button>
           ))}
         </div>
