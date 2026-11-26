@@ -18,6 +18,6 @@ export default function robots(): MetadataRoute.Robots {
         ? []
         : [{ userAgent: ["GPTBot", "Google-Extended"], disallow: "/" }]),
     ],
-    sitemap: siteOrigin() + "/sitemap.xml",
+    ...(crawlEnabled ? { sitemap: siteOrigin() + "/sitemap.xml" } : {}),
   };
 }
