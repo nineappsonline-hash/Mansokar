@@ -25,8 +25,16 @@ export async function GET(request: Request) {
       token &&
       Buffer.byteLength(secret) === Buffer.byteLength(token) &&
       crypto.timingSafeEqual(Buffer.from(secret), Buffer.from(token));
-    if (!authorized) await requireAdmin();
-    const headers = { "Cache-Control": "private, no-store" };
+    // Product feeds include only public, published, purchasable catalog data.
+    // A public feed URL lets Merchant Center fetch reliably without HTTP Basic
+    // credentials; admin endpoints and customer information remain protected.
+    const publicFeed = process.env.MERCHANT_FEED_PUBLIC === "true";
+    if (!publicFeed && !authorized) await requireAdmin();
+    const headers = {
+      "Cache-Control": publicFeed
+        ? "public, max-age=0, s-maxage=300, stale-while-revalidate=60"
+        : "private, no-store",
+    };
     if (
       process.env.MERCHANT_FEED_ENABLED !== "true" ||
       process.env.MERCHANT_EG_ELIGIBILITY_CONFIRMED !== "true" ||
