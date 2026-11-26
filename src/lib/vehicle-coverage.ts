@@ -189,3 +189,19 @@ export function targetModel(brand: string, model: string) {
     .find((b) => b.slug === brand)
     ?.models.find((m) => m.slug === model);
 }
+
+
+/** Reuse only curated, model-specific buying notes for actual catalogue models.
+ * Missing editorial notes are skipped rather than fabricating specifications.
+ */
+export function brandModelBuyingNotes(
+  brand: string,
+  models: { slug: string; name: Text }[],
+) {
+  return models.flatMap((model) => {
+    const note = targetModel(brand, model.slug)?.note;
+    return note
+      ? [{ slug: model.slug, name: model.name, note }]
+      : [];
+  });
+}

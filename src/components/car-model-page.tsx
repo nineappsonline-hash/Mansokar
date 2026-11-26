@@ -1,4 +1,5 @@
 import { siteOrigin } from "@/lib/site-url";
+import { brandModelBuyingNotes } from "@/lib/vehicle-coverage";
 import Image from "next/image";
 import Link from "next/link";
 import { CarFront } from "lucide-react";
@@ -22,6 +23,7 @@ export function CarModelPage({
   logo?: string;
 }) {
   const ar = locale === "ar";
+  const buyingNotes = brandModelBuyingNotes(brand.slug, models);
   const known = ["opel", "mg", "chevrolet", "peugeot", "citroen"].includes(
     brand.slug,
   );
@@ -97,16 +99,7 @@ export function CarModelPage({
               <span aria-current="page">{ar ? brand.ar : brand.name}</span>
             </nav>
             <h1>
-              {ar ? (
-                <>
-                  قطع غيار {brand.ar} الأصلية و
-                  <span className={styles.aftermarket} dir="ltr">
-                    After Market
-                  </span>
-                </>
-              ) : (
-                `${brand.name} Original & After Market parts`
-              )}
+              {ar ? `قطع غيار ${brand.ar} حسب الموديل` : `${brand.name} spare parts by model`}
             </h1>
             <p>
               {ar
@@ -124,6 +117,30 @@ export function CarModelPage({
           initialQuery={query}
           initialSort={sort}
         />
+        {buyingNotes.length > 0 && (
+          <section className="panel stack" aria-labelledby="model-buying-notes-heading">
+            <h2 id="model-buying-notes-heading">
+              {ar
+                ? `إرشادات اختيار قطع غيار ${brand.ar} حسب الموديل`
+                : `Choosing ${brand.name} parts by model`}
+            </h2>
+            <p>
+              {ar
+                ? "ملاحظات خاصة بكل موديل مسجل في كتالوجنا. راجع رقم القطعة وسنة الصنع ومواصفات العربية قبل الشراء؛ الاسم وحده مش دليل على التوافق."
+                : "Model-specific guidance for registered cars. Verify the part number, model year and vehicle specifications before ordering; the model name alone does not prove fitment."}
+            </p>
+            <ul>
+              {buyingNotes.map((model) => (
+                <li key={model.slug}>
+                  <Link href={`/${locale}/brands/${brand.slug}/${model.slug}`}>
+                    {ar ? brand.ar : brand.name} {model.name[locale]}
+                  </Link>
+                  <p>{model.note[locale]}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
       </div>
     </div>
   );
