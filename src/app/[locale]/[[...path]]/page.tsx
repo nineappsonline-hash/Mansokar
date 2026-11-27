@@ -636,20 +636,6 @@ export default async function Page({ params, searchParams }: Props) {
     models: vehicleModels,
   } = vehicleData;
   const brands = coveredBrands(storedBrands);
-  // Offers are independent of brand images and slideshow CMS.
-  // Start them as soon as the already-running selected vehicle is resolved,
-  // rather than after all the homepage visual lookups have completed.
-  const homeOffersPromise = !route
-    ? selectedIdPromise.then((selectedId) =>
-        configured()
-          ? searchCatalog({
-              offers: true,
-              vehicle: vehicles.find((item) => item.id === selectedId)?.id,
-              size: 4,
-            }).then((result) => result.products)
-          : catalog().then((items) => items.filter((p) => p.sale !== null)),
-      )
-    : Promise.resolve([] as Product[]);
   const modelListing = path[0] === "brands" && (path.length === 3 || path.length === 4);
   const listingBrand = modelListing
     ? brands.find((b) => b.slug === path[1])
@@ -725,7 +711,12 @@ export default async function Page({ params, searchParams }: Props) {
   // alongside the product lookup instead of serializing database requests.
   const [primary, homeOffers, homeProducts] = await Promise.all([
     productLookupPromise,
-    homeOffersPromise,
+    !route
+      ? configured()
+        ? searchCatalog({ offers: true, vehicle: vehicle?.id, size: 4 })
+            .then((result) => result.products)
+        : catalog().then((items) => items.filter((p) => p.sale !== null))
+      : Promise.resolve([] as Product[]),
     homeProductsPromise,
   ]);
   // Detail and related-family queries were started as soon as the SKU
