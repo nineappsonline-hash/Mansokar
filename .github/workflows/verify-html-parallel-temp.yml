@@ -1,0 +1,48 @@
+name: Temporary verify homepage query parallelism
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 22
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Repeat LCP + font timing on production
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_LCP_REPORT: reports/lcp-html-parallel.json
+        run: node scripts/audit-lcp-attribution.mjs
+      - name: Browser check home, featured products, model selector and catalog
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium } from '@playwright/test';
+          const browser=await chromium.launch({headless:true});
+          for(const route of ['/ar','/en','/ar/catalog','/ar/checkout']){
+            const ctx=await browser.newContext({viewport:{width:390,height:844}});
+            const page=await ctx.newPage();const errors=[];
+            page.on('pageerror',e=>errors.push(e.message));
+            const resp=await page.goto('https://mopc.store'+route,{waitUntil:'networkidle',timeout:50000});
+            const hero=route==='/ar'||route==='/en'?await page.locator('.cyan-hero h1').count():null;
+            const cards=route==='/ar'||route==='/en'?await page.locator('.cyan-featured .product-card').count():null;
+            console.log('HTML-PARALLEL-CHECK',JSON.stringify({route,status:resp.status(),hero,cards,errors}));
+            if(resp.status()!==200||errors.length||(hero!==null&&(hero!==1||cards!==4)))process.exitCode=1;
+            await ctx.close();
+          }
+          await browser.close();
+          NODE
+      - name: Upload audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mopc-html-parallel-lcp
+          path: reports/lcp-html-parallel.json
+          if-no-files-found: ignore
