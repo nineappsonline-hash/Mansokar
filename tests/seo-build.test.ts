@@ -1058,10 +1058,10 @@ test("homepage regular items and special offers load concurrently", () => {
   assert.ok(page.includes("const homeProductsPromise = !route"));
   assert.ok(page.includes("catalog({ limit: 10 })"));
   assert.ok(page.indexOf("const homeProductsPromise = !route") < page.indexOf("const [vehicleData, categories] = await Promise.all(["));
-  // Offers wait for the selected vehicle, but start while brand media loads.
-  assert.ok(page.includes("const homeOffersPromise = !route"));
-  assert.ok(page.indexOf("const homeOffersPromise = !route") < page.indexOf("const [settings, branding, categoryImages] = await Promise.all(["));
-  assert.ok(page.includes("    homeOffersPromise,\n    homeProductsPromise,"));
+  // Inventory starts early; vehicle-specific offer query retains its previous
+  // ordering to avoid competing with the first-render brand media lookups.
+  assert.ok(page.includes("searchCatalog({ offers: true, vehicle: vehicle?.id, size: 4 })"));
+  assert.ok(page.includes("    homeProductsPromise,"));
   assert.ok(page.includes("...homeProducts, ...homeOffers"));
   assert.ok(!page.includes("...(await catalog({ limit: 10 })), ...homeOffers"));
 });
