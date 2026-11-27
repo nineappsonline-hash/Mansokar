@@ -1,4 +1,5 @@
 import "./mopc-home-2026.css";
+import { Suspense } from "react";
 import { firstProductImages } from "@/lib/db";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,7 +10,7 @@ import { BenefitsBanner, PaymentBanner } from "./storefront-banners";
 import { HomeVehicleFinder } from "./home-vehicle-finder";
 import { HeroSlideshow, type HeroSlide } from "./hero-slideshow";
 
-export async function CyanHome({
+export function CyanHome({
   locale,
   brands,
   models,
@@ -57,18 +58,6 @@ export async function CyanHome({
       (order.includes(a.slug) ? order.indexOf(a.slug) : 99) -
       (order.includes(b.slug) ? order.indexOf(b.slug) : 99),
   );
-  const covers = await firstProductImages(products.map((product) => product.id)).catch(
-    () => ({} as Awaited<ReturnType<typeof firstProductImages>>),
-  );
-  const candidates = products.map((product) => ({
-    product,
-    media: covers[product.id],
-  }));
-  const featured = [
-    ...candidates.filter((p) => p.media),
-    ...candidates.filter((p) => !p.media),
-  ].slice(0, 4);
-
   return (
     <div className="cyan-home">
       {/* Loaded only for the homepage, not products/catalog/checkout/admin. */}
@@ -197,31 +186,16 @@ export async function CyanHome({
         </div>
       </section>
       {campaigns}
-      <section className="cyan-featured shell">
-        <div className="section-heading">
-          <h2 className="cyan-section-title">
-            {ar ? "منتجات مميزة" : "Featured products"}
-          </h2>
-          <Link className="cyan-all-products" href={`/${locale}/catalog`}>
-            {ar ? "عرض كل المنتجات" : "View all products"}
-            <ArrowUpRight size={18} />
-          </Link>
-        </div>
-        <div className="product-grid">
-          {featured.map(({ product: p, media }) => (
-            <ProductCard
-              key={p.id}
-              product={p}
-              carCatalog={{ brands, models }}
-              cover={media}
-              mediaResolved
-              locale={locale}
-              vehicle={vehicle}
-              confirmed={fitments[p.id]}
-            />
-          ))}
-        </div>
-      </section>
+      <Suspense fallback={<FeaturedProductsSkeleton locale={locale} />}>
+        <FeaturedProducts
+          locale={locale}
+          products={products}
+          brands={brands}
+          models={models}
+          vehicle={vehicle}
+          fitments={fitments}
+        />
+      </Suspense>
       {cardPayments && <PaymentBanner locale={locale} />}
       <section
         className="shell showroom-request"
@@ -254,5 +228,57 @@ export async function CyanHome({
         </Link>
       </section>
     </div>
+  );
+}
+
+/**
+ * Product thumbnail lookup is independent of the visible hero. Keeping it
+ * inside its own Suspense boundary lets React stream the hero + vehicle
+ * selector before the below-fold product-media query completes.
+ */
+async function FeaturedProducts({
+  locale, products, brands, models, vehicle, fitments,
+}: {
+  locale: Locale;
+  products: Product[];
+  brands: {slug:string;name:string;ar:string;photo?:string;logo?:string}[];
+  models: {id:string;brand:string;slug:string;name:Text;years:number[]}[];
+  vehicle?: Vehicle;
+  fitments: Record<string, boolean>;
+}) {
+  const covers = await firstProductImages(products.map((product) => product.id)).catch(
+    () => ({} as Awaited<ReturnType<typeof firstProductImages>>),
+  );
+  const candidates = products.map((product) => ({product, media: covers[product.id]}));
+  const featured = [...candidates.filter((p) => p.media), ...candidates.filter((p) => !p.media)].slice(0, 4);
+  const ar = locale === "ar";
+  return (
+    <section className="cyan-featured shell">
+      <div className="section-heading">
+        <h2 className="cyan-section-title">{ar ? "منتجات مميزة" : "Featured products"}</h2>
+        <Link className="cyan-all-products" href={`/${locale}/catalog`}>
+          {ar ? "عرض كل المنتجات" : "View all products"} <ArrowUpRight size={18} />
+        </Link>
+      </div>
+      <div className="product-grid">
+        {featured.map(({product:p,media}) => (
+          <ProductCard
+            key={p.id} product={p} carCatalog={{brands,models}} cover={media}
+            mediaResolved locale={locale} vehicle={vehicle} confirmed={fitments[p.id]}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function FeaturedProductsSkeleton({locale}: {locale: Locale}) {
+  return (
+    <section className="cyan-featured shell" aria-busy="true">
+      <div className="section-heading">
+        <h2 className="cyan-section-title">{locale === "ar" ? "منتجات مميزة" : "Featured products"}</h2>
+      </div>
+      <div className="product-grid" style={{minHeight:300}} />
+    </section>
   );
 }
