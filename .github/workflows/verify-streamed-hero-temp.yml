@@ -1,0 +1,50 @@
+name: Temporary streamed homepage LCP verification
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Repeat mobile desktop LCP after production deploy
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_LCP_REPORT: reports/lcp-post-streaming.json
+        run: node scripts/audit-lcp-attribution.mjs
+      - name: Check homepage hero and featured products render
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium } from '@playwright/test';
+          const browser=await chromium.launch({headless:true});
+          for(const route of ['/ar','/en']){
+            const ctx=await browser.newContext({viewport:{width:390,height:844}});
+            const page=await ctx.newPage();const errs=[];
+            page.on('pageerror',e=>errs.push(String(e)));
+            const response=await page.goto('https://mopc.store'+route,{waitUntil:'networkidle',timeout:50000});
+            await page.waitForTimeout(600);
+            const h1=await page.locator('.cyan-hero h1').count();
+            const cards=await page.locator('.cyan-featured .product-card-reference').count();
+            const finder=await page.locator('.cyan-vehicle-finder select').count();
+            console.log('STREAM-VERIFY',JSON.stringify({route,status:response.status(),h1,cards,finder,errors:errs}));
+            if(response.status()!==200||h1<1||cards<1||finder<2||errs.length)process.exitCode=1;
+            await ctx.close();
+          }
+          await browser.close();
+          NODE
+      - name: Upload benchmark
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lcp-post-streaming
+          path: reports/lcp-post-streaming.json
+          if-no-files-found: ignore
