@@ -1,0 +1,91 @@
+/* Styles for public policy content only; extracted verbatim from globals.css. */
+.policy-page {
+  max-width: 720px;
+  margin: 0 auto;
+}
+.policy-header {
+  text-align: center;
+  padding-block: 32px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 32px;
+}
+.policy-eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #c8a45c;
+  margin-bottom: 12px;
+}
+.policy-header h1 {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--light);
+  margin: 0 0 12px;
+}
+.policy-sub {
+  font-size: 15px;
+  color: var(--muted);
+  margin: 0;
+}
+.policy-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.policy-text {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--light);
+  margin: 0;
+  white-space: pre-wrap;
+}
+.policy-section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--light);
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #f6f0e2;
+  display: inline-block;
+}
+.policy-callout {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 10px;
+  background: #f7f5f0;
+  border-left: 4px solid #c8a45c;
+  margin: 0;
+}
+.policy-callout p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+  margin: 0;
+  flex: 1;
+}
+.policy-callout::before {
+  content: "!";
+  font-size: 18px;
+  font-weight: 700;
+  color: #c8a45c;
+  flex-shrink: 0;
+  line-height: 1;
+}
+@media (max-width: 640px) {
+  .policy-header {
+    padding-block: 24px 16px;
+    margin-bottom: 24px;
+  }
+  .policy-text {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .policy-callout {
+    padding: 14px 16px;
+  }
+}
