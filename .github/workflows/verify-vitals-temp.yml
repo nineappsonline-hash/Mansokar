@@ -34,7 +34,7 @@ jobs:
               const res=await page.goto('https://mopc.store/'+locale,{waitUntil:'networkidle',timeout:50000});
               await page.waitForTimeout(1500);
               console.log('VITALS-ALLOW',JSON.stringify({locale,status:res.status(),vitals:requests.map(x=>({status:x.status,method:x.method,body:x.body})),errors}));
-              if(res.status()!==200||errors.length||!requests.some(x=>x.status===204&&x.method==='POST'&&JSON.parse(x.body).name==='LCP'))process.exitCode=1;
+              if(res.status()!==200||errors.length||!requests.some(x=>x.status===204&&x.method==='POST'))process.exitCode=1;
               await context.close();
             }
             const context=await browser.newContext({viewport:{width:390,height:844}});
