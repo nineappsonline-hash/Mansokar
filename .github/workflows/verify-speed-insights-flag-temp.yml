@@ -1,0 +1,39 @@
+name: Temporary verify Speed Insights consent gate on Production
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Check storefront remains error-free before Speed Insights activation
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium } from '@playwright/test';
+          const browser=await chromium.launch({headless:true});
+          for(const consent of ['yes','no']){
+            const ctx=await browser.newContext({viewport:{width:390,height:844}});
+            await ctx.addInitScript((v)=>localStorage.setItem('analytics-consent',v),consent);
+            const page=await ctx.newPage();
+            const errors=[], speedRequests=[], customVitals=[];
+            page.on('pageerror',e=>errors.push(e.message));
+            page.on('request',r=>{if(r.url().includes('/speed-insights/'))speedRequests.push(r.url());});
+            page.on('response',r=>{if(r.url().includes('/api/web-vitals'))customVitals.push(r.status());});
+            const resp=await page.goto('https://mopc.store/ar',{waitUntil:'networkidle',timeout:50000});
+            await page.waitForTimeout(900);
+            console.log('SPEED-INSIGHTS-GATE',JSON.stringify({consent,status:resp.status(),speedRequests,customVitals,errors}));
+            if(resp.status()!==200||errors.length||speedRequests.length||(consent==='yes'&&!customVitals.includes(204))||(consent==='no'&&customVitals.length))process.exitCode=1;
+            await ctx.close();
+          }
+          await browser.close();
+          NODE
