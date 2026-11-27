@@ -1,0 +1,51 @@
+name: Temporary MOPC homepage CSS verification
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Browser audit live storefront
+        env:
+          PERF_BASE_URL: https://mopc.store
+          PERF_LOCALE: ar
+        run: npm run perf:routes
+      - name: Check route-only CSS delivery and homepage hero
+        run: |
+          node --input-type=module <<'NODE'
+          import { chromium } from '@playwright/test';
+          const browser=await chromium.launch({headless:true});
+          for(const route of ['/ar','/en','/ar/catalog','/ar/checkout','/admin']){
+            const ctx=await browser.newContext({viewport:{width:390,height:844}});
+            const page=await ctx.newPage();
+            const errors=[];const css=[];
+            page.on('pageerror',e=>errors.push(String(e)));
+            page.on('response',r=>{if(r.url().includes('/styles/home-legacy-theme.css'))css.push({status:r.status(),url:r.url()});});
+            const res=await page.goto('https://mopc.store'+route,{waitUntil:'networkidle',timeout:45000});
+            const hasStyle=await page.locator('link[href*="home-legacy-theme.css"]').count()>0;
+            const isHome=route==='/ar'||route==='/en';
+            const hero=isHome?await page.locator('.cyan-hero h1').count():0;
+            console.log('HOME-CSS',JSON.stringify({route,status:res.status(),hasStyle,css,hero,errors}));
+            if(res.status()!==200||hasStyle!==isHome||(isHome&&(!hero||!css.some(r=>r.status===200)))||errors.length)process.exitCode=1;
+            await ctx.close();
+          }
+          await browser.close();
+          NODE
+      - name: Upload timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mopc-home-css-production
+          path: reports/browser-network.json
+          if-no-files-found: ignore
