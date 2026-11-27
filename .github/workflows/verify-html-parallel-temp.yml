@@ -1,4 +1,5 @@
 name: Temporary verify homepage query parallelism
+# Second independent cold-context sampling run to distinguish jitter from change.
 on:
   pull_request:
     branches: [main]
