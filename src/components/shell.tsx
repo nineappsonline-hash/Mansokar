@@ -11,6 +11,7 @@ import cyan from "./cyan-storefront.module.css";
 import { configured, siteMedia, storefrontSettings } from "@/lib/db";
 import { BrandLogo } from "./brand-logo";
 import { Analytics } from "./analytics";
+import { WebVitalsReporter } from "./web-vitals-reporter";
 import Link from "next/link";
 import {
   ShoppingCart,
@@ -62,6 +63,7 @@ export async function Shell({
       {process.env.ANALYTICS_ENABLED === "true" && (
         <Analytics locale={locale} enabled />
       )}
+      <WebVitalsReporter locale={locale} showConsentUI={process.env.ANALYTICS_ENABLED !== "true"} />
       <a href="#main" className="skip">
         {locale === "ar" ? "انتقل للمحتوى" : "Skip to content"}
       </a>
