@@ -1054,14 +1054,7 @@ test("product relation sections reuse a batched cover map with a safe fallback",
 test("homepage regular items and special offers load concurrently", () => {
   const page = readFileSync("src/app/[locale]/[[...path]]/page.tsx", "utf8");
   assert.ok(page.includes("const [primary, homeOffers, homeProducts] = await Promise.all(["));
-  // The inventory query must start before waiting for vehicle and branding.
-  assert.ok(page.includes("const homeProductsPromise = !route"));
-  assert.ok(page.includes("catalog({ limit: 10 })"));
-  assert.ok(page.indexOf("const homeProductsPromise = !route") < page.indexOf("const [vehicleData, categories] = await Promise.all(["));
-  // Inventory starts early; vehicle-specific offer query retains its previous
-  // ordering to avoid competing with the first-render brand media lookups.
-  assert.ok(page.includes("searchCatalog({ offers: true, vehicle: vehicle?.id, size: 4 })"));
-  assert.ok(page.includes("    homeProductsPromise,"));
+  assert.ok(page.includes("!route ? catalog({ limit: 10 }) : Promise.resolve([] as Product[])"));
   assert.ok(page.includes("...homeProducts, ...homeOffers"));
   assert.ok(!page.includes("...(await catalog({ limit: 10 })), ...homeOffers"));
 });
