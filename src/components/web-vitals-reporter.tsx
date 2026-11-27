@@ -1,7 +1,7 @@
 "use client";
 
 import { useReportWebVitals } from "next/web-vitals";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { webVitalInput, metricValue } from "@/lib/web-vitals";
 
 // One report per metric update, only after explicit existing analytics consent.
@@ -17,7 +17,7 @@ export function WebVitalsReporter({ locale, showConsentUI }: { locale: "ar" | "e
     document.cookie = `analytics-consent=${value};path=/;max-age=31536000;SameSite=Lax`;
     setConsent(value);
   };
-  useReportWebVitals((metric) => {
+  useReportWebVitals(useCallback((metric) => {
     if (window.localStorage.getItem("analytics-consent") !== "yes") return;
     if (!["LCP", "INP", "CLS", "FCP", "TTFB"].includes(metric.name)) return;
     const parts = location.pathname.split("/").filter(Boolean);
@@ -53,7 +53,7 @@ export function WebVitalsReporter({ locale, showConsentUI }: { locale: "ar" | "e
     } catch {
       // Performance telemetry must never interrupt shopping.
     }
-  });
+  }, []));
   if (!showConsentUI || consent === "loading") return null;
   if (consent === null) return (
     <aside className="consent-banner" aria-label={locale === "ar" ? "تفضيلات الخصوصية" : "Privacy preferences"}>
