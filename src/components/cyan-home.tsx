@@ -71,6 +71,8 @@ export async function CyanHome({
 
   return (
     <div className="cyan-home">
+      {/* Loaded only for the homepage, not products/catalog/checkout/admin. */}
+      <link rel="stylesheet" href="/styles/home-legacy-theme.css" precedence="default" />
       <section className="cyan-hero">
         <HeroSlideshow
           slides={slides}
