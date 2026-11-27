@@ -1,5 +1,5 @@
 name: Temporary verify homepage query parallelism
-# Third independent sample after reverting speculative early offers query; keep public inventory early.
+# Final production measurement after restoring fastest prior streamed-hero query ordering.
 on:
   pull_request:
     branches: [main]
