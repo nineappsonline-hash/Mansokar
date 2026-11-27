@@ -612,11 +612,6 @@ export default async function Page({ params, searchParams }: Props) {
     ? productLookupPromise.then((found) =>
         found[0] ? catalog({ family: found[0].family, limit: 12 }) : [])
     : Promise.resolve([] as Product[]);
-  // Public homepage inventory does not depend on vehicle, media, or site identity.
-  // Launch it before the vehicle/category/branding waterfalls below.
-  const homeProductsPromise = !route
-    ? catalog({ limit: 10 })
-    : Promise.resolve([] as Product[]);
   // Start site identity fetches immediately. Shell consumes the same promise
   // later instead of waiting until the content has finished loading.
   const shellDataPromise = Promise.all([
@@ -717,7 +712,7 @@ export default async function Page({ params, searchParams }: Props) {
             .then((result) => result.products)
         : catalog().then((items) => items.filter((p) => p.sale !== null))
       : Promise.resolve([] as Product[]),
-    homeProductsPromise,
+    !route ? catalog({ limit: 10 }) : Promise.resolve([] as Product[]),
   ]);
   // Detail and related-family queries were started as soon as the SKU
   // lookup began, before waiting on the vehicle/category/site-shell data.
