@@ -1,6 +1,7 @@
 "use client";
 
 import { useReportWebVitals } from "next/web-vitals";
+import Script from "next/script";
 import { useCallback, useEffect, useState } from "react";
 import { webVitalInput, metricValue } from "@/lib/web-vitals";
 
@@ -54,7 +55,14 @@ export function WebVitalsReporter({ locale, showConsentUI }: { locale: "ar" | "e
       // Performance telemetry must never interrupt shopping.
     }
   }, []));
-  if (!showConsentUI || consent === "loading") return null;
+  // Speed Insights requires dashboard activation before its route exists. Keep
+  // disabled until that action is complete; never make 404 requests on visits.
+  // The same explicit analytics consent controls both telemetry providers.
+  const speedInsightsEnabled = process.env.NEXT_PUBLIC_SPEED_INSIGHTS_ENABLED === "true";
+  const speedInsightsScript = speedInsightsEnabled && consent === "yes" ? (
+    <Script src="/_vercel/speed-insights/script.js" strategy="afterInteractive" />
+  ) : null;
+  if (!showConsentUI || consent === "loading") return speedInsightsScript;
   if (consent === null) return (
     <aside className="consent-banner" aria-label={locale === "ar" ? "تفضيلات الخصوصية" : "Privacy preferences"}>
       <p>{locale === "ar"
@@ -65,10 +73,13 @@ export function WebVitalsReporter({ locale, showConsentUI }: { locale: "ar" | "e
     </aside>
   );
   return (
+    <>
+    {speedInsightsScript}
     <button className="privacy-choice" onClick={() => {
       localStorage.removeItem("analytics-consent");
       document.cookie = "analytics-consent=;path=/;max-age=0;SameSite=Lax";
       setConsent(null);
     }}>{locale === "ar" ? "تفضيلات الخصوصية" : "Privacy preferences"}</button>
+    </>
   );
 }
