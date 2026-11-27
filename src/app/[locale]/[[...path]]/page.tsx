@@ -2312,6 +2312,7 @@ export default async function Page({ params, searchParams }: Props) {
           ["shipping", "returns", "warranty"].includes(path[1]) &&
           policyPage ? (
             <section className="policy-page">
+              <link rel="stylesheet" href="/styles/policy-only.css" precedence="default" />
               <div className="policy-header">
                 <span className="policy-eyebrow">
                   {locale === "ar" ? "سياسة المتجر" : "Store Policy"}
